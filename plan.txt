@@ -1,0 +1,44 @@
+App.py
+	NavMenu
+	NavBurgerIcon
+	NavMenuItem
+	
+	MainLayout
+
+Login
+	LoginUsername
+	LoginPassword
+	LoginConfirm
+
+Register
+	RegisterUsername
+	RegisterPassword
+	RegisterConfirm
+
+Home	
+	HomeText
+	GamesList
+		GamesItem
+
+ShuuroShop
+	ShuuroShopTimer
+	ShuuroShopPieces
+		ShuuroShopPiece
+	ShuuroShopCoinLeft
+
+ShuuroSet
+	ShuuroSetTimer
+	ShuuroSetPieces
+	ShuuroTable
+		ShuuroPiece
+
+ShuuroMatch
+	ShuuroTable
+		ShuuroPiece	
+	ShuuroMatchNavigator
+		ShuuroMatchNavigatorPrevious
+		ShuuroMatchNavigatorCurrent
+		ShuuroMatchNavigatorNext
+	ShuuroMatchClocks
+		ShuuroTimer
+		ShuuroTimer	
