@@ -41,4 +41,7 @@ ShuuroMatch
 		ShuuroMatchNavigatorNext
 	ShuuroMatchClocks
 		ShuuroTimer
-		ShuuroTimer	
+		ShuuroTimer
+HowTo
+	ShuuroExplained
+	OtherVariantExplained
