@@ -1,8 +1,6 @@
-App.py
-	NavMenu
 	NavBurgerIcon
-	NavMenuItem
-	
+	NavMenu
+		NavMenuItem
 	MainLayout
 
 Login
