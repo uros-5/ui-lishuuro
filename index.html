@@ -1,20 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="public/favicon.ico" />
-    <link
-          rel="stylesheet"
-          href="https://use.fontawesome.com/releases/v5.13.0/css/all.css"
-          integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V"
-          crossorigin="anonymous"
-        />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" href="public/favicon.ico" />
+		<link
+			rel="stylesheet"
+			href="https://use.fontawesome.com/releases/v5.13.0/css/all.css"
+			integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V"
+			crossorigin="anonymous"
+		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<style>
+			.home-btn {
+				display: inline-block;
+				outline: 0;
+				appearance: none;
+				padding: 0px 12px;
+				border: 0px solid transparent;
+				border-radius: 4px;
+				text-decoration: none;
+				cursor: pointer;
+				background-color: var(--primary-dark);
+				box-shadow: var(--primary-light) 0px 2px 3px;
+				color: white;
+				font-size: 2rem;
+				font-weight: 400;
+				height: 1.25em;
+				transition: all 150ms ease-in-out 0s;
+			}
 
-    <title>Chess3 - Play Chess Variants for free</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+			.home-btn:hover {
+				color: rgb(255, 255, 255);
+				background-color: rgb(17, 97, 73);
+				box-shadow: rgb(19 170 82 / 40%) 0px 2px 3px, rgb(195 231 202) 0px 0px 0px 3px;
+			}
+		</style>
+
+		<title>Chess3 - Play Chess Variants for free</title>
+	</head>
+	<body>
+		<div id="app"></div>
+		<script type="module" src="/src/main.ts"></script>
+	</body>
 </html>
