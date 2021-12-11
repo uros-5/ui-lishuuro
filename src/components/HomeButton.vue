@@ -6,7 +6,7 @@
 <script setup lang="ts">
 const props = defineProps({ text: String });
 </script>
-<style scoped>
+<style>
 .home-btn {
   display: inline-block;
   outline: 0;

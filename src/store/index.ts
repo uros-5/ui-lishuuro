@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 export const useStore = defineStore("main", {
   state: () => ({
-    navVisible: false,
+    navVisible: false, username: "", password: ""
   }),
   getters: {
     navVisible(): boolean {
@@ -15,6 +15,6 @@ export const useStore = defineStore("main", {
     },
     toggleFalse(): void {
       this.$state.navVisible = false;
-    },
+    }, checkUsername(): void { }
   },
 });
