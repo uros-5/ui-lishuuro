@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewbox="0 0 800 800">
+<defs>
+        <linearGradient id="whiteLinear">
+            <stop offset="0%" stop-color="rgba(114, 114, 114, 0.441)"></stop>
+            <stop offset="35%" stop-color="rgba(232, 232, 232, 0.441)"></stop>
+            <stop offset="65%" stop-color="rgba(232, 232, 232, 0.441)"></stop>
+            <stop offset="100%" stop-color="rgba(114, 114, 114, 0.441)"></stop>
+        </linearGradient>
+
+        <radialGradient id="blackRadial">
+            <stop offset="0%" stop-color="rgba(75, 64, 68, 0.95)"></stop>
+            <stop offset="4.5%" stop-color="rgba(75, 64, 64, 0.95)"></stop>
+            <stop offset="65.5%" stop-color="black"></stop>
+            <stop offset="100%" stop-color="black"></stop>
+        </radialGradient>
+        
+</defs>
+<rect x="0.0" y="0.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="66.66666666666667" y="0.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="133.33333333333334" y="0.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="200.0" y="0.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="266.6666666666667" y="0.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="333.33333333333337" y="0.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="400.0" y="0.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="466.6666666666667" y="0.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="533.3333333333334" y="0.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="600.0" y="0.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="666.6666666666667" y="0.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="733.3333333333334" y="0.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="0.0" y="66.66666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="66.66666666666667" y="66.66666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="133.33333333333334" y="66.66666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="200.0" y="66.66666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="266.6666666666667" y="66.66666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="333.33333333333337" y="66.66666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="400.0" y="66.66666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="466.6666666666667" y="66.66666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="533.3333333333334" y="66.66666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="600.0" y="66.66666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="666.6666666666667" y="66.66666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="733.3333333333334" y="66.66666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="0.0" y="133.33333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="66.66666666666667" y="133.33333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="133.33333333333334" y="133.33333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="200.0" y="133.33333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="266.6666666666667" y="133.33333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="333.33333333333337" y="133.33333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="400.0" y="133.33333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="466.6666666666667" y="133.33333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="533.3333333333334" y="133.33333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="600.0" y="133.33333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="666.6666666666667" y="133.33333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="733.3333333333334" y="133.33333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="0.0" y="200.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="66.66666666666667" y="200.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="133.33333333333334" y="200.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="200.0" y="200.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="266.6666666666667" y="200.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="333.33333333333337" y="200.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="400.0" y="200.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="466.6666666666667" y="200.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="533.3333333333334" y="200.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="600.0" y="200.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="666.6666666666667" y="200.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="733.3333333333334" y="200.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="0.0" y="266.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="66.66666666666667" y="266.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="133.33333333333334" y="266.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="200.0" y="266.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="266.6666666666667" y="266.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="333.33333333333337" y="266.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="400.0" y="266.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="466.6666666666667" y="266.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="533.3333333333334" y="266.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="600.0" y="266.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="666.6666666666667" y="266.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="733.3333333333334" y="266.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="0.0" y="333.33333333333337" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="66.66666666666667" y="333.33333333333337" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="133.33333333333334" y="333.33333333333337" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="200.0" y="333.33333333333337" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="266.6666666666667" y="333.33333333333337" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="333.33333333333337" y="333.33333333333337" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="400.0" y="333.33333333333337" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="466.6666666666667" y="333.33333333333337" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="533.3333333333334" y="333.33333333333337" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="600.0" y="333.33333333333337" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="666.6666666666667" y="333.33333333333337" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="733.3333333333334" y="333.33333333333337" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="0.0" y="400.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="66.66666666666667" y="400.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="133.33333333333334" y="400.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="200.0" y="400.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="266.6666666666667" y="400.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="333.33333333333337" y="400.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="400.0" y="400.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="466.6666666666667" y="400.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="533.3333333333334" y="400.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="600.0" y="400.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="666.6666666666667" y="400.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="733.3333333333334" y="400.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="0.0" y="466.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="66.66666666666667" y="466.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="133.33333333333334" y="466.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="200.0" y="466.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="266.6666666666667" y="466.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="333.33333333333337" y="466.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="400.0" y="466.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="466.6666666666667" y="466.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="533.3333333333334" y="466.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="600.0" y="466.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="666.6666666666667" y="466.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="733.3333333333334" y="466.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="0.0" y="533.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="66.66666666666667" y="533.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="133.33333333333334" y="533.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="200.0" y="533.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="266.6666666666667" y="533.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="333.33333333333337" y="533.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="400.0" y="533.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="466.6666666666667" y="533.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="533.3333333333334" y="533.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="600.0" y="533.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="666.6666666666667" y="533.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="733.3333333333334" y="533.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="0.0" y="600.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="66.66666666666667" y="600.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="133.33333333333334" y="600.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="200.0" y="600.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="266.6666666666667" y="600.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="333.33333333333337" y="600.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="400.0" y="600.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="466.6666666666667" y="600.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="533.3333333333334" y="600.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="600.0" y="600.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="666.6666666666667" y="600.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="733.3333333333334" y="600.0" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="0.0" y="666.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="66.66666666666667" y="666.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="133.33333333333334" y="666.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="200.0" y="666.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="266.6666666666667" y="666.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="333.33333333333337" y="666.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="400.0" y="666.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="466.6666666666667" y="666.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="533.3333333333334" y="666.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="600.0" y="666.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="666.6666666666667" y="666.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="733.3333333333334" y="666.6666666666667" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="0.0" y="733.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="66.66666666666667" y="733.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="133.33333333333334" y="733.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="200.0" y="733.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="266.6666666666667" y="733.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="333.33333333333337" y="733.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="400.0" y="733.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="466.6666666666667" y="733.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="533.3333333333334" y="733.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="600.0" y="733.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+<rect x="666.6666666666667" y="733.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#blackRadial)" stroke="black" stroke-width="1"></rect>
+<rect x="733.3333333333334" y="733.3333333333334" width="66.66666666666667" height="66.66666666666667"  fill="url(#whiteLinear)" stroke="black" stroke-width="1"></rect>
+</svg>

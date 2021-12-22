@@ -1,19 +1,20 @@
-<template>
-  <div class="app">
+<template> <div class="app">
     <NavFakeBg />
-    <header>
-      <div class="nav">
-        <span v-if="store.$state.navVisible == false" > <NavBurgerIcon /> </span> 
-        <NavMenu />
-      </div>
-    </header>
-    <main>
+	  <Header />
+        <main>
       <router-view />
     </main>
   </div>
 </template>
 
+<script setup lang="ts">
+import Header from '@/components/Header.vue';
+import NavFakeBg from '@/components/NavFakeBg.vue';
+</script>
+
 <style>
+
+
 :root {
   --primary-color: #448960;
   --primary-light: #9cc5ad;
@@ -30,8 +31,10 @@
   --complementary-color: #bf715f;
   --complementary-light: #e6a495;
   --complementary-lighter: #ffd4ca;
-  --complementary-dark: #9C4C39;
+  --complementary-dark: #9c4c39;
   --complementary-darker: #7821c9;
+
+  --nav-dark: #173222;
   box-sizing: border-box;
 }
 
@@ -40,32 +43,12 @@
 ::after {
   box-sizing: inherit;
 }
+
 body {
   margin: 0;
 }
-.app {
-  display: grid;
-  grid-template-areas:
-    "nav main-c main-c"
-    "nav main-c main-c"
-    "nav main-c main-c"
-    "nav main-c main-c";
-  grid-template-columns: 0.3fr 4fr 0.7fr;
-  grid-template-rows: repeat(3, 1fr);
-  column-gap: 1em;
-  position: relative;
-}
-header {
-  grid-area: nav;
-}
-.nav {
-  position: static;
-}
 
-main {
-  grid-area: main-c;
-  /*height: 200vh*/
-}
+
 
 body::after {
   content: "";
@@ -82,15 +65,38 @@ body::after {
   z-index: -1;
 }
 
-a {
-  font-size: 3rem;
+.app {
+  display: grid;
+  grid-template-areas: "nav main main" "nav main main" "nav main main";
+  grid-template-columns: 0.3fr 4fr 0.7fr;
+  grid-template-rows: repeat(3, 1fr);
+  column-gap: 1em;
+  position: relative;
 }
-</style>
 
-<script setup lang="ts">
-import NavMenu from "@/components/NavMenu.vue";
-import NavBurgerIcon from "@/components/NavBurgerIcon.vue";
-import NavFakeBg from "@/components/NavFakeBg.vue";
-import { useStore } from '@/store/';
-const store = useStore();
-</script>
+main {
+  grid-area: main;
+}
+
+@media screen and (max-width: 975px) {
+    .app { display: grid; grid-template-areas:
+     "nav . ."
+     "main main main"
+     "main main main"
+     "main main main"
+     "main main main";
+    grid-template-rows: 0.1fr 1fr 1fr 1fr;grid-template-columns: 0.3fr 4fr 0.7fr;position: relative;
+            
+        }    
+        /* active header 
+    header {}
+     header.active-header { grid-area: abc; position: absolute; height:100vh; width: 100vw; background: none;}*/
+}
+
+
+
+
+
+
+
+</style>

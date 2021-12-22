@@ -5,7 +5,7 @@
 <style>
 
 .fake-bg {
-  z-index: 1;
+  z-index: 2;
   background: rgb(0,0,0);
 background: linear-gradient(90deg, rgba(0,0,0,1) 10%, rgba(68,137,96,1) 100%, rgba(18,86,46,1) 100%);  
   position: absolute;
@@ -17,12 +17,12 @@ background: linear-gradient(90deg, rgba(0,0,0,1) 10%, rgba(68,137,96,1) 100%, rg
 
 .bgFakeActive {
   width: 100%;
-  height: 100vh;
+  /*height: calc(89.7167px * 6 + 6 * 1em + 80px);*/
 }
 </style>
 
 <script setup lang="ts">
-import {useStore} from '@/store';
-const store = useStore()
+import { useStore } from '@/store';
+const store = useStore();
 </script>
 
