@@ -1,108 +1,92 @@
 <template>
-  <div class="shuuro-shop-container">
-    <ShuuroClock text="00:20" />
-    <div class="shuuro-shop__pieces">
-      <div class="pieces">
-        <div
-          class="piece"
-          v-for="piece in pieces"
-          :key="piece"
-          :style="`background-image: url(/src/assets/images/pieces/${piece}.svg);`"
-        />
-      </div>
-      <div class="pieces" style="border-top: 2px solid black">
-        <div class="counter" v-for="counter in 5" :key="counter">+</div>
-      </div>
-      <div class="pieces" style="border-top: 2px solid black">
-        <div class="counter" v-for="price in prices" :key="price">
-          {{ price }}
+    <div class="shuuro-shop">
+        <div class="shuuro-shop__table">
+            <div v-for="i in pieces" :key="i" class="table-item">
+                <div class="shop-piece" :class="i.piece"></div>
+                <button> + </button>
+                <p> {{ i.price }} </p>
+                <p> 0/{{i.toBuy}} </p>
+            </div>
         </div>
-      </div>
     </div>
 
-    <div class="shuuro-shop__credit">
-      <h4>Credit: 800, 00</h4>
-    </div>
-  </div>
 </template>
-<script setup lang="ts">
-import ShuuroClock from "@/components/ShuuroClock.vue";
-const pieces = ["bq", "br", "bb", "bn", "bp"];
-const prices = [110, 70, 40, 40, 10];
+<script setup lang='ts'>
+
+const pieces = [
+  { piece: "wQ", price: 110, toBuy: 3 },
+  { piece: "wR", price: 70, toBuy: 6 },
+  { piece: "wB", price: 40, toBuy: 9 },
+  { piece: "wN", price: 40, toBuy: 9 },
+  { piece: "wP", price: 10, toBuy: 18 },
+];
+
 </script>
 <style scoped>
-@font-face {
-  font-family: digital7;
-  src: url("@/assets/fonts/digital-7.ttf");
-}
-.shuuro-shop-container {
-  display: grid;
-  grid-template-areas: ". . . clock" ". pieces pieces ." ". credit . .";
-  grid-template-columns: 1fr 2fr 2fr 1fr;
-  gap: 1em;
+
+#mainboard {
+    display: flex;
+    align-items: center;
 }
 
-@media (max-width: 970px) {
-  .shuuro-shop-container {
-    grid-template-areas: ". . clock clock" "pieces pieces pieces pieces" "credit credit credit .";
-  }
+.shuuro-shop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.shuuro-shop__clock {
-  grid-area: clock;
-  border: 1px solid black;
-  font-size: 2.75em;
-  padding: 0.5em;
-  color: white;
-  background-color: var(--primary-darker);
-  box-shadow: rgba(147, 147, 147, 0.2) 0px 7px 29px 0px;
-  border-radius: 0.25em;
-  border-top: 1px solid var(--primary-dark);
-  font-family: digital7;
-}
-
-@media (max-width: 970px) {
-  .shuuro-shop__clock {
-    text-align: center;
-  }
-}
-
-.shuuro-shop__pieces {
-  grid-area: pieces;
-  background-color: white;
-}
-
-.pieces {
+.shuuro-shop__table {
   display: flex;
   flex-direction: row;
+  gap: 0.5em;
   justify-content: space-around;
-  gap: 0.35em;
-  box-shadow: rgba(143, 225, 183, 0.35) 0px 8px 24px;
-  border-radius: 0.3em;
+  background: var(--bg-color0);
+  box-shadow: var(--base-shadow);
+  font-size: 1.5em;
+  padding: 0.5em;
 }
 
-.shuuro-shop__credit {
-  grid-area: credit;
-  font-size: 2em;
-  color: white;
-  font-family: "Zilla Slab", serif;
-}
-
-.piece,
-.counter {
-  background-image: url(/src/assets/images/pieces/bb.svg);
-  width: 61px;
-  height: 61px;
-  background-position: center;
-  background-size: cover;
+.shop-piece {
+  background-size: contain;
+  width: 60px;
+  height: 60px;
   background-repeat: no-repeat;
+  background-position: center;
 }
 
-.counter {
-  background-image: none;
-  text-align: center;
-  font-size: 2em;
-  cursor: pointer;
-  margin-top: 5%;
+.table-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    justify-content: space-around;
+    align-items: center;
 }
+
+
+@media (max-width: 820px) {
+  .shuuro-shop {
+    grid-template-columns: 1fr;
+    grid-template-areas: "t" "credit" "rightside" "chat";
+    grid-template-rows: 1fr repeat(3, fit-content(0));
+    margin: 0.25em;
+    align-items: normal;
+  }
+
+  .shuuro-shop__table {
+    flex-direction: column;
+  }
+
+  .table-item {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .lobbychat {
+    grid-area: chat;
+  }
+}
+
 </style>
