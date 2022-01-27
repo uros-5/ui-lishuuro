@@ -8,12 +8,14 @@
             <router-link v-for="i in nav" :key="i" :to="i.url" class="nav-link"> {{ i.text }}</router-link>
         </div>
     </div>
+    <HeaderAccount />
 </header>
 
 
 </template>
 <script setup lang='ts'>
 import HomeHamburgerIcon from '@/components/HomeHamburgerIcon.vue';
+import HeaderAccount from '@/components/HeaderAccount.vue';
 let nav = [{url: "/", text: "Tv"},{url: "/", text: "Current games"},{url: "/", text: "Tournaments"},{url: "/", text: "Players"}];
 
 </script>
