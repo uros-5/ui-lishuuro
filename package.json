@@ -9,7 +9,9 @@
   "dependencies": {
     "axios": "^0.25.0",
     "vue": "^3.2.25",
-    "vue-cookie-next": "^1.3.0"
+    "vue-cookie-next": "^1.3.0",
+    "vue3-cookies": "^1.0.6",
+    "ws": "^8.5.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.0.0",

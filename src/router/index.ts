@@ -5,6 +5,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "Home" */ "@/views/Home.vue"),
   },
   {
+    path: "/logged",
+    component: () => import(/* webpackChunkName: "Logged" */ "@/views/Logged.vue"),
+  },
+  {
     path: "/shuuro/",
     component: () => import(/* webpackChunkName: "ShuuroLayout" */ "@/components/ShuuroLayout.vue"),
     children: [
@@ -24,7 +28,8 @@ const routes: Array<RouteRecordRaw> = [
   }
 
 ];
-console.log(process);
+
+//console.log(process);
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

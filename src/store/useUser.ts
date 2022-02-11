@@ -1,31 +1,34 @@
 import GET from "@/plugins/axios";
 import { defineStore } from "pinia";
-import { useCookie } from "vue-cookie-next";
+import { useCookies } from "vue3-cookies";
 
-export const cookie = useCookie();
-const cookieData = { expire: "1d", sameSite: "" };
+const cookie = useCookies().cookies;
+const cookieData = { expire: "365d", sameSite: "" };
 
 export const useUser = defineStore("useUser", {
   state: () => {
-    return { uID: "", username: "" };
+    return { username: "", reg: false };
   },
   actions: {
     checkCookie() {
-      if (cookie.getCookie("uID") == null) {
+      console.log(cookie);
+      if (cookie.get("username") == null) {
         this.updateAnonCookie();
       } else {
+         this.$state.username = cookie.get("username")
+       this.$state.reg = cookie.get("reg");
       }
     },
     updateAnonCookie() {
-      GET("newAnon").then((res) => {
-        this.setUser(res.data.uID, res.data.username);
+      GET("vue_user").then((res) => {
+        this.setUser(res.data.username, res.data.reg);
       });
     },
-    setUser(uID: string, username: string) {
-      this.$state.uID = uID;
+    setUser(username: string, reg: boolean) {
       this.$state.username = username;
-      cookie.setCookie("username", username, cookieData);
-      cookie.setCookie("uID", uID, cookieData);
+      this.$state.reg = reg;
+      cookie.set("username", username, cookieData);
+      cookie.set("reg", reg, cookieData);
     },
   },
 });
