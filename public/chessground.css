@@ -4,10 +4,17 @@
     display: block;
 }
 
+
+
 /* 8x8 */
 .cg-wrap.cg-512 {
     padding-bottom: 100%;
 }
+
+.shuuro-board cg-board {
+  background-image: url("./assets/board/12x12brown.svg");
+}
+
 .cg-wrap.cg-512.mini {
   width: 256px;
 }
@@ -115,8 +122,8 @@ cg-board square {
   position: absolute;
   top: 0;
   left: 0;
-  width: 12.5%;
-  height: 12.5%;
+  width: 8.33333333333%;
+  height: 8.33333333333%;
   pointer-events: none;
 }
 .cg-640 cg-board square{
@@ -198,12 +205,12 @@ cg-board square.current-premove {
   position: absolute;
   top: 0;
   left: 0;
-  width: 12.5%;
-  height: 12.5%;
+  width: 8.333333333%;
+  height: 8.333333333%;
   background-size: cover;
   z-index: 2;
   will-change: transform;
-  pointer-events: none;
+  pointer-events: auto;
 }
 .blindfold piece {
   opacity: 0;

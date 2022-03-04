@@ -7,10 +7,20 @@ export default defineConfig({
   define: {
     'process.env': process.env
   },
-  plugins: [vue()],
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => CUSTOM_ELEMENTS.includes(tag),
+        },
+      },
+    }),
+  ],
     resolve: {
         alias: {
           '@': path.resolve(__dirname, './src')
         }
     }
 })
+
+const CUSTOM_ELEMENTS = ["info-date", "selection", "square", "piece", "cg-board", "cg-container", "piece", "i-side.online", "player-title", "rating", "player", "round-player0", "san", "eval", "i-side.online"];

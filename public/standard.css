@@ -1,36 +1,36 @@
 .standard .cg-wrap piece.p-piece.white {
-    background-image: url('../../images/pieces/merida/wP.svg');
+    background-image: url('./assets/pieces/merida/wP.svg');
 }
 .standard .cg-wrap piece.b-piece.white {
-    background-image: url('../../images/pieces/merida/wB.svg');
+    background-image: url('./assets/pieces/merida/wB.svg');
 }
 .standard .cg-wrap piece.n-piece.white {
-    background-image: url('../../images/pieces/merida/wN.svg');
+    background-image: url('./assets/pieces/merida/wN.svg');
 }
 .standard .cg-wrap piece.r-piece.white {
-    background-image: url('../../images/pieces/merida/wR.svg');
+    background-image: url('./assets/pieces/merida/wR.svg');
 }
 .standard .cg-wrap piece.q-piece.white {
-    background-image: url('../../images/pieces/merida/wQ.svg');
+    background-image: url('./assets/pieces/merida/wQ.svg');
 }
 .standard .cg-wrap piece.k-piece.white {
-    background-image: url('../../images/pieces/merida/wK.svg');
+    background-image: url('./assets/pieces/merida/wK.svg');
 }
 .standard .cg-wrap piece.p-piece.black {
-    background-image: url('../../images/pieces/merida/bP.svg');
+    background-image: url('./assets/pieces/merida/bP.svg');
 }
 .standard .cg-wrap piece.b-piece.black {
-    background-image: url('../../images/pieces/merida/bB.svg');
+    background-image: url('./assets/pieces/merida/bB.svg');
 }
 .standard .cg-wrap piece.n-piece.black {
-    background-image: url('../../images/pieces/merida/bN.svg');
+    background-image: url('./assets/pieces/merida/bN.svg');
 }
 .standard .cg-wrap piece.r-piece.black {
-    background-image: url('../../images/pieces/merida/bR.svg');
+    background-image: url('./assets/pieces/merida/bR.svg');
 }
 .standard .cg-wrap piece.q-piece.black {
-    background-image: url('../../images/pieces/merida/bQ.svg');
+    background-image: url('./assets/pieces/merida/bQ.svg');
 }
 .standard .cg-wrap piece.k-piece.black {
-    background-image: url('../../images/pieces/merida/bK.svg');
+    background-image: url('./assets/pieces/merida/bK.svg');
 }
