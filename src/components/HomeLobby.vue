@@ -13,17 +13,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="i in matches">
+                        <tr v-for="i in store.$state.homeLobby" :key="i" @click="acceptGame(i)">
                             <td>
                                 <i-side class="icon icon-white">
                                 </i-side>
                             </td>
                             <td>
                                 <player-title>
-                                </player-title>{{ i.player }}
+                                </player-title>{{ i.username }}
                             </td>
-                            <td>{{ i.rating }}</td>
-                            <td>{{ i.min }} + {{ i.sec }}</td>
+                            <td>//</td>
+                            <td>{{ i.time }} + {{ i.incr }}</td>
                             <td class="icon" data-icon="Q">
                                 <variant-name> {{ i.variant }}</variant-name>
                             </td>
@@ -35,7 +35,23 @@
     </div>
 </template>
 <script setup lang='ts'>
-let matches = [{player: "username1", rating: 1500, min: 5, sec: 3, variant: "Shuuro"}];
+import { ws } from '@/plugins/webSockets';
+import { useHomeLobby } from '@/store/useHomeLobby';
+import { onMounted } from 'vue';
+import { LobbyGame } from '@/store/useHomeLobby';
+
+const store = useHomeLobby();
+
+function acceptGame(game: LobbyGame): void {
+    game.t = "home_lobby_accept";
+    ws.send(JSON.stringify(game));
+}
+
+onMounted( () => {
+    ws.send(JSON.stringify({"t": "home_lobby_full"}));    
+});
+
+//let matches = [{player: "username1", rating: 1500, min: 5, sec: 3, variant: "Shuuro"}];
 </script>
 <style>
 
