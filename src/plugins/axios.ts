@@ -9,4 +9,3 @@ export default function GET(query: string): Promise<any> {
 export function POST(query: string, data: any): Promise<any> {
   return axios.post(`${path}${query}`, data);
 }
-

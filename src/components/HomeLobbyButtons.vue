@@ -2,7 +2,9 @@
   <aside class="sidebar-second">
     <div id="seekbuttons">
       <HomeVariantsForm />
-      <button class="lobby-button" @click="store.changeVariant('Shuuro')">Create a game</button>
+      <button class="lobby-button" @click="store.changeVariant('Shuuro')">
+        Create a game
+      </button>
       <button class="lobby-button">Play with a friend</button>
       <button class="lobby-button">Play with AI</button>
       <button class="lobby-button">Practice with Random-Mover</button>
@@ -13,7 +15,7 @@
   </aside>
 </template>
 <script setup lang="ts">
-import { useVariantHome } from '@/store/useVariantHome';
+import { useVariantHome } from "@/store/useVariantHome";
 const store = useVariantHome();
 
 import HomeVariantsForm from "@/components/HomeVariantsForm.vue";

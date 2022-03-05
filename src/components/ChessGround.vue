@@ -18,7 +18,6 @@
           :style="vueTranslate(i, state)"
         ></square>
 
-        
         <square
           v-if="state.selectedPiece.value.sq != ''"
           class="selected"
@@ -33,12 +32,16 @@
           :style="vueTranslate(i, state)"
         ></square>
         <piece
-          v-for="i in state.pieces.value.filter(
-            (item) => { if (state.dragging.value) {return item.sq != state.selectedPiece.value.sq;} else {return item;} }
-          )"
+          v-for="i in state.pieces.value.filter((item) => {
+            if (state.dragging.value) {
+              return item.sq != state.selectedPiece.value.sq;
+            } else {
+              return item;
+            }
+          })"
           :key="i.sq"
           :id="i.sq"
-          :class="cssPiece(i)"
+          :class="[cssPiece(i), { pDest: isPieceInDest(state, i) }]"
           :style="[vueTranslate(i.sq, state)]"
         ></piece>
         <piece
@@ -65,11 +68,7 @@
 import { onMounted, ref } from "vue";
 import { useBoardSize } from "@/store/useBoardSize";
 import {
-  State,
-  draggingState,
-  getLegalMoves,
-  updateRect,
-  isDestInPieces
+  *
 } from "@/composables/chessground/state";
 import { mousedown, mouseup, mousemove } from "@/composables/chessground/event";
 import { cssPiece } from "@/composables/chessground/cssBoard";
@@ -93,14 +92,4 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-.dragging { pointer-events: none; cursor: move; z-index: 9; }
-cg-board square.oc.move-dest:hover {
-  background: rgba(20, 85, 30, 0.3);
-}
-
-.cg-wrap piece:hover {
-  pointer-events: none;
-}
-
-</style>
+<style scoped></style>

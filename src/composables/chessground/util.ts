@@ -35,5 +35,5 @@ export function vueTranslate(k: string, state: State): string {
 }
 
 export function vueDragTranslate(state: State): string {
-    return `transform: translate(${state.movingPiece.value.x}px, ${state.movingPiece.value.y}px)`;
+  return `transform: translate(${state.movingPiece.value.x}px, ${state.movingPiece.value.y}px)`;
 }

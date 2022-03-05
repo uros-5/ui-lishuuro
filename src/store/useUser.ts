@@ -14,8 +14,8 @@ export const useUser = defineStore("useUser", {
       if (cookie.get("username") == null) {
         this.updateAnonCookie();
       } else {
-         this.$state.username = cookie.get("username")
-       this.$state.reg = cookie.get("reg");
+        this.$state.username = cookie.get("username");
+        this.$state.reg = cookie.get("reg");
       }
     },
     updateAnonCookie() {
@@ -30,10 +30,10 @@ export const useUser = defineStore("useUser", {
       cookie.set("reg", reg.toString(), cookieData);
     },
     updatePlCount(cnt: number): void {
-        this.$state.plCount = cnt;
+      this.$state.plCount = cnt;
     },
     updateGamesCount(cnt: number): void {
-        this.$state.gamesCount = cnt;
-    }
+      this.$state.gamesCount = cnt;
+    },
   },
 });

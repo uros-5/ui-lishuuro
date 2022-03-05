@@ -15,12 +15,10 @@
   </button>
 </template>
 
-<script setup lang='ts'>
+<script setup lang="ts">
 const props = defineProps({ variant: Object });
 </script>
 <style>
-
-
 .piece-container {
   display: flex;
   align-items: baseline;
@@ -83,20 +81,20 @@ const props = defineProps({ variant: Object });
 }
 
 .variant-category {
-	border: none;
-	background-color: var(--vpanel-button);
-	color: #999;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	transition: 450ms ease-in-out;
-	position: relative;
-	overflow: hidden;
-	text-transform: uppercase;
-	max-height: 100%;
-	border-radius: 3px;
-	box-shadow: var(--box-shadow-panel-btn);
+  border: none;
+  background-color: var(--vpanel-button);
+  color: #999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: 450ms ease-in-out;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  max-height: 100%;
+  border-radius: 3px;
+  box-shadow: var(--box-shadow-panel-btn);
   --shuuro-h: 500px;
   --shuuro-b: 300px;
   --chess-bishopT: 500px;
@@ -119,14 +117,13 @@ const props = defineProps({ variant: Object });
 }
 
 .variant-category {
-    justify-content: normal;
+  justify-content: normal;
 }
 
 @media (max-width: 799px) and (orientation: portrait) {
-    .variant-category {
-        justify-content: normal;
-        flex-direction: row;
-    }
+  .variant-category {
+    justify-content: normal;
+    flex-direction: row;
+  }
 }
-
 </style>

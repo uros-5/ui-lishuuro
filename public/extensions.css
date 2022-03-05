@@ -14,24 +14,24 @@
   --movelist-max-height: 8rem;
 }
 .mini .pocket {
-    width: 100%;
-    justify-content: center;
+  width: 100%;
+  justify-content: center;
 }
 .mini .pocket piece {
-    flex: 0 0 calc(100% / var(--files));
+  flex: 0 0 calc(100% / var(--files));
 }
 .mini .pocket.top {
-    border-radius: 3px 3px 0px 0px;
-    position: absolute;
-    top: calc(-100% / var(--ranks));
+  border-radius: 3px 3px 0px 0px;
+  position: absolute;
+  top: calc(-100% / var(--ranks));
 }
 .mini .pocket.bottom {
-    border-radius: 3px 3px 0px 0px;
-    position: absolute;
-    bottom: calc(-100% / var(--ranks));
+  border-radius: 3px 3px 0px 0px;
+  position: absolute;
+  bottom: calc(-100% / var(--ranks));
 }
 .mini .pocket piece::after {
-    padding: 1px 0.1em;
+  padding: 1px 0.1em;
 }
 #extension_choice {
   position: absolute;
@@ -64,7 +64,7 @@
   height: 11.11%;
   width: 11.11%;
 }
-.cg-448-516  #extension_choice square {
+.cg-448-516 #extension_choice square {
   width: 14.2857%;
   height: 14.2857%;
 }
@@ -107,7 +107,7 @@
   width: calc(var(--pocketLength) * (var(--cg-width) / var(--files)));
   height: calc(var(--cg-height) / var(--ranks));
   border-radius: 3px;
-  box-shadow: 0 2px 3px rgba(0,0,0,0.3) inset;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
   background: #888;
   white-space: nowrap;
   display: flex;
@@ -125,18 +125,18 @@
 .pocket.bottom.editor {
   margin-top: 18px;
 }
-.pocket .editor{
+.pocket .editor {
   width: calc(var(--editorLength) * (var(--cg-width) / var(--files)));
 }
 .pocket piece {
   flex: 0 0 calc(100% / var(--pocketLength));
-  height: 100%!important;
-  width: 100%!important;
-  position: relative!important;
+  height: 100% !important;
+  width: 100% !important;
+  position: relative !important;
   background-position: center;
 }
 
-.pocket piece.selected-square{
+.pocket piece.selected-square {
   background-color: #14551e80 !important;
 }
 
@@ -160,7 +160,7 @@
 .pocket.usable piece.premove:hover {
   background-color: #666;
 }
-.pocket piece[data-nb='0'] {
+.pocket piece[data-nb="0"] {
   cursor: auto;
   opacity: 0.1;
 }
@@ -175,11 +175,11 @@
   border-radius: 2px;
   font-size: 1.1em;
 }
-.pocket piece[data-nb='0']::after {
+.pocket piece[data-nb="0"]::after {
   content: none;
 }
 /* board editor pieces are unlimited */
-.pocket piece[data-nb='-1']::after {
+.pocket piece[data-nb="-1"]::after {
   content: none;
 }
 .pocket piece::after {
@@ -196,7 +196,7 @@
   left: 0%;
   background: rgba(230, 230, 230, 0.2);
   box-shadow: 0 0 10px rgb(0 0 0 / 70%);
-  content: '';
+  content: "";
   z-index: 1;
   position: absolute;
   pointer-events: none;
@@ -209,7 +209,7 @@
   left: 0%;
   background: rgba(230, 230, 230, 0.2);
   box-shadow: 0 0 10px rgb(0 0 0 / 70%);
-  content: '';
+  content: "";
   z-index: 1;
   position: absolute;
   pointer-events: none;

@@ -1,10 +1,12 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export const useVariantHome = defineStore('variantHome', {
+export const useVariantHome = defineStore("variantHome", {
   state: () => {
-    return { clickedVariant: "" }
+    return { clickedVariant: "" };
   },
   actions: {
-    changeVariant(s: string): void { this.clickedVariant = s; }
+    changeVariant(s: string): void {
+      this.clickedVariant = s;
+    },
   },
-})
+});

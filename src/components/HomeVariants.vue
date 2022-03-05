@@ -1,19 +1,19 @@
 <template>
-    <div id="panel-container" class="panel-container">
-        <div id="variantcont" class="variants-container">
-            <HomeVariant
-            v-for="i in variants"
-            @click="store.changeVariant(i.title)"
-            :key="i"
-            :variant="i"
-            />
-        </div>
+  <div id="panel-container" class="panel-container">
+    <div id="variantcont" class="variants-container">
+      <HomeVariant
+        v-for="i in variants"
+        @click="store.changeVariant(i.title)"
+        :key="i"
+        :variant="i"
+      />
     </div>
+  </div>
 </template>
 
-<script setup lang='ts'>
-import HomeVariant from '@/components/HomeVariant.vue';
-import { useVariantHome } from '@/store/useVariantHome'
+<script setup lang="ts">
+import HomeVariant from "@/components/HomeVariant.vue";
+import { useVariantHome } from "@/store/useVariantHome";
 const store = useVariantHome();
 let variants: VariantMain[] = [
   {
@@ -35,13 +35,12 @@ let variants: VariantMain[] = [
 ];
 </script>
 <style>
-
 .panel-container {
-	grid-area: vpanel;
-	flex: 1;
-	background-color: var(--bg-color1);
-	display: flex;
-	align-items: center;
+  grid-area: vpanel;
+  flex: 1;
+  background-color: var(--bg-color1);
+  display: flex;
+  align-items: center;
 }
 
 .variants-container {
@@ -52,5 +51,4 @@ let variants: VariantMain[] = [
   width: 100%;
   height: 95%;
 }
-
 </style>

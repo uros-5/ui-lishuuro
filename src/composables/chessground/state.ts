@@ -15,7 +15,7 @@ export interface State {
   lastMoves: Ref<string[]>;
   selectedPiece: Ref<Piece>;
   rect: Ref<Rect>;
-  movingPiece: Ref<{x: number, y: number}>;
+  movingPiece: Ref<{ x: number; y: number }>;
 }
 
 interface Piece {
@@ -42,7 +42,10 @@ export function draggingState() {
     dragging: ref(false),
     sideToMove: ref("white"),
     mySide: ref("white"),
-    pieces: ref([{ sq: "d1", piece: "r", color: "white" }, { sq: "h12", piece: "n", color: "black"}]),
+    pieces: ref([
+      { sq: "d1", piece: "r", color: "white" },
+      { sq: "h12", piece: "n", color: "black" },
+    ]),
     plinths: ref([]),
     legalMoves: ref(new Map<string, []>()),
     moveDest: ref([]),
@@ -51,8 +54,8 @@ export function draggingState() {
     flippedBoard: ref(true),
     lastMoves: ref([]),
     selectedPiece: ref({ sq: "", piece: "", color: "" }),
-    rect: ref({left: 0, top: 0, width: 0, height: 0 }),
-    movingPiece: ref({x:0, y:0})
+    rect: ref({ left: 0, top: 0, width: 0, height: 0 }),
+    movingPiece: ref({ x: 0, y: 0 }),
   };
   return state;
 }
@@ -76,8 +79,21 @@ export function getPiece(state: State, sq: string): Piece | undefined {
 }
 
 export function isDestInPieces(state: State, sq: string): boolean {
-    let piece = state.pieces.value.find( item => item.sq == sq );
-    if (piece) { return true; } else { return false; }
+  let piece = state.pieces.value.find((item) => item.sq == sq);
+  if (piece) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export function isPieceInDest(state: State, piece: Piece): boolean {
+  let sq = state.moveDest.value.find((item) => item == piece.sq);
+  if (sq) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // SETTERS
@@ -96,7 +112,7 @@ export function select(event: MouseEvent, state: State): void {
           state.selectedPiece.value.sq != "" &&
           piece.sq != state.selectedPiece.value.sq
         ) {
-            // CLICKED PIECE THAT IS DIFFERENT FROM SELECTED
+          // CLICKED PIECE THAT IS DIFFERENT FROM SELECTED
           if (state.moveDest.value.includes(piece.sq)) {
             movePiece(state, node.id);
             deselectAll(state);
@@ -115,7 +131,7 @@ export function select(event: MouseEvent, state: State): void {
         }
       } else {
         if (state.moveDest.value.includes(node.id)) {
-            movePiece(state, node.id);
+          movePiece(state, node.id);
         }
       }
     } else {
@@ -125,42 +141,44 @@ export function select(event: MouseEvent, state: State): void {
 }
 
 export function removePiece(state: State, sq: string): void {
-    state.pieces.value = state.pieces.value.filter ( item => { return item.sq != sq });
+  state.pieces.value = state.pieces.value.filter((item) => {
+    return item.sq != sq;
+  });
 }
 
 export function addPiece(state: State, piece: Piece): void {
-    state.pieces.value.push(piece);
+  state.pieces.value.push(piece);
 }
 
 export function movePiece(state: State, sq: string): void {
-    let selectedPiece = state.selectedPiece.value;
-    removePiece(state,sq);
-    removePiece(state, selectedPiece.sq);
-    selectedPiece.sq = sq;
-    addPiece(state, selectedPiece);
-    deselectAll(state);
-    toggleSideToMove(state);
+  let selectedPiece = state.selectedPiece.value;
+  removePiece(state, sq);
+  removePiece(state, selectedPiece.sq);
+  selectedPiece.sq = sq;
+  addPiece(state, selectedPiece);
+  deselectAll(state);
+  toggleSideToMove(state);
 }
 
 export function toggleSideToMove(state: State): void {
-    if (state.sideToMove.value == "black") {
-        state.sideToMove.value = "white";
-        state.mySide.value = "white";
-    }
-    else {
-        state.sideToMove.value = "black";
-        state.mySide.value = "black";
-    }
+  if (state.sideToMove.value == "black") {
+    state.sideToMove.value = "white";
+    state.mySide.value = "white";
+  } else {
+    state.sideToMove.value = "black";
+    state.mySide.value = "black";
+  }
 }
 
 export function deselectAll(state: State): void {
   state.selectedPiece.value = { sq: "", piece: "", color: "" };
   state.moveDest.value = [];
   state.dragging.value = false;
-  state.movingPiece.value = {x: 0, y: 0};
+  state.movingPiece.value = { x: 0, y: 0 };
 }
 
 export function updateRect(state: State): void {
-	state.rect.value = document.querySelector("cg-board")?.getBoundingClientRect(); 
+  state.rect.value = document
+    .querySelector("cg-board")
+    ?.getBoundingClientRect();
 }
-

@@ -12,4 +12,3 @@ function toggle(): void {
     document.querySelector(".hamburger")?.classList.toggle("is-active");
 }
 </script>
-

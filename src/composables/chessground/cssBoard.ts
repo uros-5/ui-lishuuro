@@ -1,5 +1,5 @@
 import { RANKS, FILES, sqRegx } from "@/plugins/cgutils";
-import { Piece } from '@/composables/state';
+import { Piece } from "@/composables/state";
 
 export function cssTranslate(s: string, store: any): string {
   let sq = store.$state.height / 12;
@@ -13,7 +13,5 @@ export function cssTranslate(s: string, store: any): string {
 }
 
 export function cssPiece(s: Piece): string {
-  return `${s.color} ${s.piece[0]}-piece`
-
-
+  return `${s.color} ${s.piece[0]}-piece`;
 }

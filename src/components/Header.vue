@@ -1,61 +1,62 @@
 <template>
-
-<header>
+  <header>
     <div class="site-title-nav">
-        <HomeHamburgerIcon />
-        <div class="topnav">
-            <router-link to="/" class="nav-link active home">lishuuro</router-link>
-            <router-link v-for="i in nav" :key="i" :to="i.url" class="nav-link"> {{ i.text }}</router-link>
-        </div>
+      <HomeHamburgerIcon />
+      <div class="topnav">
+        <router-link to="/" class="nav-link active home">lishuuro</router-link>
+        <router-link v-for="i in nav" :key="i" :to="i.url" class="nav-link">
+          {{ i.text }}</router-link
+        >
+      </div>
     </div>
     <HeaderAccount />
-</header>
-
-
+  </header>
 </template>
-<script setup lang='ts'>
-import HomeHamburgerIcon from '@/components/HomeHamburgerIcon.vue';
-import HeaderAccount from '@/components/HeaderAccount.vue';
-let nav = [{url: "/", text: "Tv"},{url: "/", text: "Current games"},{url: "/", text: "Tournaments"},{url: "/", text: "Players"}];
-
+<script setup lang="ts">
+import HomeHamburgerIcon from "@/components/HomeHamburgerIcon.vue";
+import HeaderAccount from "@/components/HeaderAccount.vue";
+let nav = [
+  { url: "/", text: "Tv" },
+  { url: "/", text: "Current games" },
+  { url: "/", text: "Tournaments" },
+  { url: "/", text: "Players" },
+];
 </script>
 <style>
-
 header {
-	display: flex;
-	justify-content: space-between;
-	position: relative;
-	height: var(--site-header-height);
-	z-index: 106;
-	max-width: 1800px;
-	margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  height: var(--site-header-height);
+  z-index: 106;
+  max-width: 1800px;
+  margin: 0 auto;
 }
 
 .site-title-nav {
-	display: flex;
-	justify-content: flex-start;
-	padding-left: 14px;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 14px;
 }
 
 .topnav {
-	display: flex;
-	margin: 0;
-	padding: 0;
-	height: var(--site-header-height);
-	color: var(--font-color);
+  display: flex;
+  margin: 0;
+  padding: 0;
+  height: var(--site-header-height);
+  color: var(--font-color);
 }
 
 @media (max-width: 799px) and (orientation: portrait) {
-    .site-title-nav {
-        padding-left: 0;
-        flex-direction: column;
-    }
+  .site-title-nav {
+    padding-left: 0;
+    flex-direction: column;
+  }
 
-    .topnav {
-	    flex-direction: column;
-	    height: initial;
-	    transform: translateX(-100%);
-    }
+  .topnav {
+    flex-direction: column;
+    height: initial;
+    transform: translateX(-100%);
+  }
 }
-
 </style>

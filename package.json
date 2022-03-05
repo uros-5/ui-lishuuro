@@ -3,22 +3,29 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
+    "watch": "rsw watch",
+    "rsw": "rsw",
     "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
+    "format": "prettier .  --write"
   },
   "dependencies": {
     "axios": "^0.25.0",
-    "sockette": "^2.0.6",
     "vue": "^3.2.25",
     "vue-cookie-next": "^1.3.0",
     "vue3-cookies": "^1.0.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.0.0",
+    "eslint": "^8.10.0",
+    "eslint-plugin-vue": "^8.5.0",
+    "pinia": "^2.0.6",
+    "prettier": "2.5.1",
     "typescript": "^4.4.4",
     "vite": "^2.7.2",
-    "vue-tsc": "^0.29.8",
+    "vite-plugin-rsw": "^2.0.2",
     "vue-router": "^4.0.12",
-    "pinia": "^2.0.6"
+    "vue-tsc": "^0.29.8"
   }
 }

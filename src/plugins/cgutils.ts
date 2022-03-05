@@ -25,10 +25,12 @@ export function DomSq(
   const bbox = node.getBoundingClientRect();
   const x = event.clientX - bbox.left;
   const y = event.clientY - bbox.top;
-    
-  if (node.id != "") { return node.id; }
+
+  if (node.id != "") {
+    return node.id;
+  }
   let sq: string | number = height / 12;
-    
+
   let file = Math.floor((12 * x) / bbox.width);
   let rank = 12 - 1 - Math.floor((12 * y) / bbox.height);
   sq = `${FILES[file]}${RANKS[rank]}`;
@@ -41,6 +43,6 @@ export function DomSq(
 }
 
 export function EventSquare(event: MouseEvent): string {
-    const node = event.target as HTMLElement;
-    return node.id;
+  const node = event.target as HTMLElement;
+  return node.id;
 }

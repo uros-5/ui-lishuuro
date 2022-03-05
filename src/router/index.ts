@@ -6,27 +6,33 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/logged",
-    component: () => import(/* webpackChunkName: "Logged" */ "@/views/Logged.vue"),
+    component: () =>
+      import(/* webpackChunkName: "Logged" */ "@/views/Logged.vue"),
   },
   {
     path: "/shuuro/",
-    component: () => import(/* webpackChunkName: "ShuuroLayout" */ "@/components/ShuuroLayout.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "ShuuroLayout" */ "@/components/ShuuroLayout.vue"
+      ),
     children: [
       {
         path: "shop",
-        component: () => import(/* webpackChunkName: "ShuuroShop" */ "@/views/ShuuroShop.vue"),
-      }, 
+        component: () =>
+          import(/* webpackChunkName: "ShuuroShop" */ "@/views/ShuuroShop.vue"),
+      },
       {
         path: "set",
-        component: () => import(/* webpackChunkName: "ShuuroSet" */ "@/views/ShuuroSet.vue"),
-      }, 
+        component: () =>
+          import(/* webpackChunkName: "ShuuroSet" */ "@/views/ShuuroSet.vue"),
+      },
       {
         path: "play",
-        component: () => import(/* webpackChunkName: "ShuuroSet" */ "@/views/ShuuroPlay.vue"),
-      }, 
-    ]
-  }
-
+        component: () =>
+          import(/* webpackChunkName: "ShuuroSet" */ "@/views/ShuuroPlay.vue"),
+      },
+    ],
+  },
 ];
 
 //console.log(process);

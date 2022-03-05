@@ -1,11 +1,12 @@
-import { defineConfig } from 'vite'
-import path from 'path'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from "vite";
+import path from "path";
+import vue from "@vitejs/plugin-vue";
+import ViteRsw from "vite-plugin-rsw";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   define: {
-    'process.env': process.env
+    "process.env": process.env,
   },
   plugins: [
     vue({
@@ -15,12 +16,29 @@ export default defineConfig({
         },
       },
     }),
+    ViteRsw(),
   ],
-    resolve: {
-        alias: {
-          '@': path.resolve(__dirname, './src')
-        }
-    }
-})
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+});
 
-const CUSTOM_ELEMENTS = ["info-date", "selection", "square", "piece", "cg-board", "cg-container", "piece", "i-side.online", "player-title", "rating", "player", "round-player0", "san", "eval", "i-side.online"];
+const CUSTOM_ELEMENTS = [
+  "info-date",
+  "selection",
+  "square",
+  "piece",
+  "cg-board",
+  "cg-container",
+  "piece",
+  "i-side.online",
+  "player-title",
+  "rating",
+  "player",
+  "round-player0",
+  "san",
+  "eval",
+  "i-side.online",
+];
