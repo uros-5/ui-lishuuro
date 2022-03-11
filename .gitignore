@@ -3,3 +3,9 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# rust
+target/
+Cargo.lock
+pkg/
+/.rsw
