@@ -4,13 +4,12 @@
 <script setup lang="ts">
 import ChessGround from "@/components/ChessGround.vue";
 import { onMounted } from "vue";
-import init, { greet } from "shuuro-wasm";
+import { useShuuroStore } from "@/store/useShuuroStore";
 
-onMounted(() => {
-  init().then((exports) => {
-    exports.greet();
-  });
-});
+const shuuroStore = useShuuroStore();
+shuuroStore.updateClientStage("fight");
+
+onMounted(() => {});
 </script>
 
 <style scoped></style>

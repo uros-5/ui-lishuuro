@@ -7,8 +7,14 @@
 </template>
 <script setup lang="ts">
 import { useBoardSize } from "@/store/useBoardSize";
+import { useShuuroStore } from "@/store/useShuuroStore";
+
 const store = useBoardSize();
+const shuuroStore = useShuuroStore();
+
 store.updateRowsAndCols(12);
+shuuroStore.updateClientStage("deploy");
+
 function setStyle(): string {
   let height = store.$state.height;
   return `width: ${height}px; height: ${height}px;`;
