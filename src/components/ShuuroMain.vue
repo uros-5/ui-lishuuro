@@ -7,15 +7,12 @@
     <ShuuroMatchPieceMenu pieces="rrrb" color="white" pID="1" part="bottom" />
     <ShuuroClock min="20" sec="00" increment="0" part="0" />
     <div id="expiration-top"></div>
-    <ShuuroFenPlayer :player="{ username: 'Test' }" />
+    <ShuuroFenPlayer :player="topPlayer()" :online="false" />
     <ShuuroFenButtons />
     <ShuuroFen />
     <div id="offer-dialog"></div>
     <ShuuroAfterButtons />
-    <ShuuroFenPlayer
-      :player="{ username: 'Test' }"
-      style="grid-area: user-bot"
-    />
+    <ShuuroFenPlayer :player="bottomPlayer()" :online="true" style="grid-area: user-bot" />
     <div id="expiration-bottom"></div>
     <ShuuroClock min="20" sec="00" increment="0" part="1" />
     <ShuuroMatchPieceMenu
@@ -34,16 +31,36 @@ import ShuuroFenPlayer from "@/components/ShuuroFenPlayer.vue";
 import ShuuroFenButtons from "@/components/ShuuroFenButtons.vue";
 import ShuuroFen from "@/components/ShuuroFen.vue";
 import ShuuroAfterButtons from "@/components/ShuuroAfterButtons.vue";
+import { useShuuroStore } from "@/store/useShuuroStore";
+const store = useShuuroStore();
+
+function topPlayer(): string {
+  if (store.$state.flippedBoard) {
+    return store.$state.white;
+  } else {
+    return store.$state.black;
+  }
+}
+
+function bottomPlayer(): string {
+  if (store.$state.flippedBoard) {
+    return store.$state.black;
+  } else {
+    return store.$state.white;
+  }
+}
 </script>
 <style>
 .round-app {
-  grid-template-columns: minmax(
+  grid-template-columns:
+    minmax(
       calc(70vmin * var(--board-scale)),
       calc(
         100vh * var(--board-scale) -
           calc(var(--site-header-height) + var(--site-header-margin)) - 3rem
       )
-    ) minmax(240px, 400px);
+    )
+    minmax(240px, 400px);
   grid-template-rows: min-content auto auto min-content auto auto auto auto auto auto auto min-content auto auto min-content;
   grid-template-areas: "board ." "board mat-top" "board pocket-top" "board clock-top" "board expi-top" "board user-top" "board move-controls" "board moves" "board offer" "board game-controls" "board user-bot" "board expi-bot" "board clock-bot" "board pocket-bot" "board mat-bot" "board .";
 }

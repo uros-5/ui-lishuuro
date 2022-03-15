@@ -1,17 +1,26 @@
 <template>
   <round-player0>
     <div class="player-data">
-      <i-side.online id="player0" class="icon icon-offline"> </i-side.online>
+      <i-side id="player0" class="icon" :class="cssOnline()"> </i-side>
       <player>
         <a class="user-link" href="/"
-          ><player-title> </player-title>{{ player.username }}</a
+          ><player-title> </player-title>{{ player }}</a
         ><rating></rating>
       </player>
     </div>
   </round-player0>
 </template>
 <script setup lang="ts">
-const props = defineProps({ player: Object });
+const props = defineProps({ player: String, online: Boolean});
+function cssOnline(): string {
+	if (props.online!) {
+		return `icon-online`;
+	}
+	return `icon-offline`;
+
+}
+
+
 </script>
 
 <style></style>

@@ -6,9 +6,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import router from "@/router";
 import ShuuroLeftSide from "@/components/ShuuroLeftSide.vue";
 import ShuuroMain from "@/components/ShuuroMain.vue";
+import { useShuuroStore } from "@/store/useShuuroStore";
+
+const store = useShuuroStore();
+
+console.log(router.currentRoute.value.params);
+onMounted(() => {
+  const id = router.currentRoute.value.params["id"];
+  if (id == "" || id == undefined) {
+    router.push("/");
+  } else {
+    store.$state.gameId = router.currentRoute.value.params["id"].toString();
+  }
+});
 
 const zoomValue = ref("100");
 </script>

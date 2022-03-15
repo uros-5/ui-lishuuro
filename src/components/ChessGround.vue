@@ -13,7 +13,7 @@
           v-for="i in state.moveDest.value"
           :key="i"
           class="move-dest"
-          v-bind:class="{ oc: isDestInPieces(state, i) }"
+          v-bind:class="{ oc: cgState.isDestInPieces(state, i) }"
           :id="i"
           :style="vueTranslate(i, state)"
         ></square>
@@ -41,7 +41,7 @@
           })"
           :key="i.sq"
           :id="i.sq"
-          :class="[cssPiece(i), { pDest: isPieceInDest(state, i) }]"
+          :class="[cssPiece(i), { pDest: cgState.isPieceInDest(state, i) }]"
           :style="[vueTranslate(i.sq, state)]"
         ></piece>
         <piece
@@ -67,14 +67,14 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useBoardSize } from "@/store/useBoardSize";
-import {
-  *
-} from "@/composables/chessground/state";
+import 
+  * as cgState
+ from "@/composables/chessground/state";
 import { mousedown, mouseup, mousemove } from "@/composables/chessground/event";
 import { cssPiece } from "@/composables/chessground/cssBoard";
 import { vueTranslate, vueDragTranslate } from "@/composables/chessground/util";
 const boardSizeStore = useBoardSize();
-const state = draggingState();
+const state = cgState.draggingState();
 boardSizeStore.updateRowsAndCols(12);
 const el = ref();
 
@@ -87,7 +87,7 @@ onMounted(() => {
     true
   );
   setTimeout(() => {
-    updateRect(state);
+    cgState.updateRect(state);
   }, 140);
 });
 </script>

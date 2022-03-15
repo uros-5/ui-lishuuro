@@ -7,7 +7,7 @@ const cookieData = { expire: "365d", sameSite: "" };
 
 export const useUser = defineStore("useUser", {
   state: () => {
-    return { username: "", reg: false, plCount: 0, gamesCount: 0 };
+    return { username: "uros", reg: false, plCount: 0, gamesCount: 0 };
   },
   actions: {
     checkCookie() {
@@ -23,7 +23,7 @@ export const useUser = defineStore("useUser", {
         this.setUser(res.data.username, res.data.logged);
       });
     },
-    setUser(username: string, reg: boolean) {
+    setUser(username: string, reg: boolean) {console.log(username);
       this.$state.username = username;
       this.$state.reg = reg;
       cookie.set("username", username, cookieData);

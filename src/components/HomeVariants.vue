@@ -1,29 +1,24 @@
 <template>
   <div id="panel-container" class="panel-container">
-    <div id="variantcont" class="variants-container">
-      <HomeVariant
-        v-for="i in variants"
-        @click="store.changeVariant(i.title)"
-        :key="i"
-        :variant="i"
-      />
-    </div>
+    <HomeVariantsForm />
   </div>
 </template>
 
 <script setup lang="ts">
 import HomeVariant from "@/components/HomeVariant.vue";
+import HomeVariantsForm from "@/components/HomeVariantsForm.vue";
 import { useVariantHome } from "@/store/useVariantHome";
 const store = useVariantHome();
-let variants: VariantMain[] = [
+let variants = [
   {
-    title: "Shuuro",
+    title: "Standard Shuuro",
     imgs: [
       { className: "home-piece" },
       { className: "home-side-piece shuuro-knight" },
       { className: "home-side-piece shuuro-plynth" },
     ],
   },
+  /*
   {
     title: "Chess",
     imgs: [
@@ -32,6 +27,7 @@ let variants: VariantMain[] = [
       { className: "home-side-piece chess-rook" },
     ],
   },
+   */
 ];
 </script>
 <style>

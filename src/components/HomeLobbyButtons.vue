@@ -1,7 +1,6 @@
 <template>
   <aside class="sidebar-second">
     <div id="seekbuttons">
-      <HomeVariantsForm />
       <button class="lobby-button" @click="store.changeVariant('Shuuro')">
         Create a game
       </button>
@@ -18,7 +17,6 @@
 import { useVariantHome } from "@/store/useVariantHome";
 const store = useVariantHome();
 
-import HomeVariantsForm from "@/components/HomeVariantsForm.vue";
 </script>
 <style>
 [data-icon]::before {

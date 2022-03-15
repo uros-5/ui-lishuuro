@@ -1,4 +1,4 @@
-function ServerDate(date: String) {
+function ServerDate(date: String): Date {
   date = date.split(" +0")[0];
   date = new Date(date);
   var newDate = new Date(date);

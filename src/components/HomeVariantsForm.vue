@@ -1,14 +1,5 @@
 <template>
-  <div
-    id="id01"
-    class="modal"
-    style="display: block"
-    v-if="store.$state.clickedVariant != ''"
-  >
-    <form class="modal-content">
-      <div id="closecontainer" @click="store.changeVariant('')">
-        <span class="close" data-icon="j" title="Cancel"></span>
-      </div>
+    <form class="modal-content full-width">
       <div class="container">
         <div>
           <label for="variant">Variant</label>
@@ -73,14 +64,13 @@
         </div>
       </div>
     </form>
-  </div>
 </template>
 <script setup lang="ts">
 import { useVariantHome } from "@/store/useVariantHome";
 import { allowedDuration } from "@/store/useHomeLobby";
 import { ws } from "@/plugins/webSockets";
 import { useUser } from "@/store/useUser";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 const userStore = useUser();
 const store = useVariantHome();
@@ -89,6 +79,10 @@ let time = ref(14);
 let incr = ref(14);
 let variant = ref("");
 let color = ref("white");
+
+onMounted( () => {
+    store.$state.clickedVariant = "";
+});
 
 function createGame() {
   let game = {
@@ -103,8 +97,12 @@ function createGame() {
 }
 </script>
 
-<style>
+<style scoped>
 .modal-content {
-  margin: 10% auto 15% auto;
+  margin: 10% auto 15% auto;backgruond-color: var(--bg-color1);
+}
+
+.full-width {
+    width: 100%;
 }
 </style>
