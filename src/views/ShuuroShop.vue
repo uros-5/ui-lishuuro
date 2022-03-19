@@ -1,135 +1,97 @@
 <template>
   <div class="shuuro-shop">
-    <div class="shuuro-shop__table">
-      <div
-        v-for="(i, index) in store.$state.choices"
-        :key="i.piece"
-        class="table-item"
-      >
-        <div class="shop-piece" :class="i.piece"></div>
-        <button @click="buy(`${i.piece}`)">+</button>
-        <p :class="{ smaller: smallerFont(i.price.toString()) }">
-          {{ i.price }}
-        </p>
-        <p :class="{ smaller: smallerFont(i.price.toString()) }">
-          {{ store.$state.pieceCounter![index + 1] }}/{{ i.toBuy }}
-        </p>
-      </div>
+    <div class="shop-table">
+      <p v-for="(i, index) in pieces">
+        <span class="local-piece">{{ i[0] }}</span>
+        <span class="local-price"> {{ dataPrice[index] }} </span>
+      </p>
     </div>
-    <div class="shuuro-credit">Credit: {{ store.$state.credit }}</div>
-    <button @click="confirm" class="shuuro-confirm">Confirm</button>
+    <PlayerHand
+      side=""
+      :inCenter="true"
+      :counter="[1, 0, 0, 0, 0, 0, 0]"
+      :color="store.getColor(userStore.$state.username)"
+      handType="shop"
+    />
+    <p class="local-credit">Credit: {{ store.$state.credit }}</p>
+    <button
+      @click="store.confirm(userStore.$state.username)"
+      class="shuuro-confirm"
+    >
+      Confirm
+    </button>
   </div>
 </template>
+
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import router from "@/router";
+import PlayerHand from "@/components/PlayerHand.vue";
+import { onMounted } from "vue";
 import { useShuuroStore } from "@/store/useShuuroStore";
 import { ShopAndPlaceServerData } from "@/store/useShuuroStore";
 import { useUser } from "@/store/useUser";
+import { dataPrice, pieces } from "@/store/useShuuroStore";
 
 const store = useShuuroStore();
 const userStore = useUser();
-store.updateClientStage("shop");
-
 onMounted(() => {
-  if (store.$state.shopHistory?.length == 0) {
-    // fetch
-    store.setShuuroShop(getColor());
-  }
+  store.updateClientStage("shop");
+  store.setShuuroShop(store.getColor(userStore.$state.username));
 });
-
-function buy(p: string) {
-  if (getColor() == "n" && store.$state.stage == "shop") {return ;}
-  if (p[0] == "w") {
-    store.$state.pieceCounter = store.$state.shopWasm.buy(p[1].toUpperCase());
-
-  } else if (p[0] == "b") {
-    store.$state.pieceCounter = store.$state.shopWasm.buy(p[1].toLowerCase());
-  }
-
-  let newCredit = store.$state.shopWasm.getCredit(getColor());
-  if (newCredit < store.$state.credit!) {
-    store.$state.shopHistory?.push(`+${p[1]}`);
-    store.$state.credit! = newCredit;
-    scrollToBottom();
-  }
-}
-
-function confirm() {
-    if (getColor() == "n" && store.$state.stage == "shop") {return ;}
-  store.$state.shopWasm.confirm(getColor());
-  if (store.$state.shopWasm.isConfirmed(getColor())) {
-    router.push("/");
-    store.$state.shopWasm.free();
-  }
-}
-
-function getColor(): string {
-  let username = userStore.$state.username;
-  if (username == store.$state.white) {
-    return "w";
-  } else if (username == store.$state.black) {
-    return "b";
-  }
-  return "n";
-}
-
-function smallerFont(s: string): boolean {
-  if (s.length > 2) {
-    return true;
-  }
-  return false;
-}
-
-function scrollToBottom(): void {
-  const container = document.querySelector("#movelist");
-  container!.scrollTop = container!.scrollHeight;
-}
 </script>
-<style scoped>
-#mainboard {
-  display: flex;
-  align-items: center;
-}
 
+<style scoped>
 .shuuro-shop {
   display: flex;
+  justify-content: center;
   flex-direction: column;
   align-items: center;
-  font-size: 1.5em;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
+  background: rgba(136, 136, 136, 0.527);
+  border-radius: 0.3em;
 }
 
-.shuuro-shop__table {
+.table.price {
   display: flex;
-  flex-direction: row;
-  gap: 0.5em;
   justify-content: space-around;
+  flex-direction: column;
+}
+
+.shop-table {
   background: var(--bg-color0);
   box-shadow: var(--base-shadow);
-  font-size: 1.5em;
-  padding: 0.5em;
-}
-
-.shop-piece {
-  background-size: contain;
-  width: 60px;
-  height: 60px;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-.table-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.shuuro-credit {
-  margin-top: 0.35em;
   font-size: 1.2em;
-  border-bottom: 1px solid var(--link-color);
+  padding: 0.5em;
+  margin: 0.45em;
+  width: 45%;
+  text-align: center;
+  background: rgba(129, 102, 102, 0.562);
+}
+
+.pocket {
+  width: calc(var(--pocketLength) * (var(--cg-width) / var(--files)));
+  height: calc(var(--cg-height) / var(--ranks));
+  border-radius: 3px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
+  background: #888;
+  white-space: nowrap;
+  display: flex;
+}
+
+.local-piece {
+  font-size: 1.55em;
+  font-family: Cambria;
+}
+
+.local-price {
+  font-size: 1.75em;
+  font-family: "Courier New", Courier, monospace;
+  text-decoration: underline;
+  margin: 0.5em;
+}
+
+.local-credit {
+  font-size: 1.5em;
+  text-decoration: underline;
 }
 
 .shuuro-confirm {
@@ -138,39 +100,10 @@ function scrollToBottom(): void {
   text-align: center;
   background-color: var(--border-color);
   border-radius: 0.3em;
+  font-size: 1.7em;
 }
 
 .shuuro-confirm:hover {
   background-color: var(--white-text);
-}
-
-@media (max-width: 820px) {
-  .shuuro-shop {
-    grid-template-columns: 1fr;
-    grid-template-areas: "t" "credit" "rightside" "chat";
-    grid-template-rows: 1fr repeat(3, fit-content(0));
-    margin: 0.25em;
-    align-items: normal;
-  }
-
-  .shuuro-shop__table {
-    flex-direction: column;
-  }
-
-  .table-item {
-    display: flex;
-    flex-direction: row;
-    gap: 0.5em;
-    justify-content: space-around;
-    align-items: center;
-  }
-
-  .lobbychat {
-    grid-area: chat;
-  }
-
-  .smaller {
-    font-size: 0.8em;
-  }
 }
 </style>

@@ -164,6 +164,48 @@
   cursor: auto;
   opacity: 0.1;
 }
+
+/*
+.pocket piece.shop.price::before {
+  content: attr(data-price);
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  line-height: 0.9em;
+  padding: 3px 5px 4px 5px;
+  font-weight: bold;
+  border-radius: 2px;
+  font-size: 1.1em;
+}
+
+.pocket piece.shop.price::before {
+  color: #fff !important;
+  text-shadow: 0 1px 0 #000 !important;
+  background: #d8b400 !important;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15) inset !important;
+}
+*/
+
+
+.pocket piece.shop::before {
+  content: attr(data-max);
+  bottom: 1;
+  left: 0;
+  position: absolute;
+  line-height: 0.9em;
+  padding: 3px 5px 4px 5px;
+  font-weight: bold;
+  border-radius: 2px;
+  font-size: 1.1em;
+}
+
+.pocket piece.shop::before {
+  color: #fff !important;
+  text-shadow: 0 1px 0 #000 !important;
+  background: #d85000 !important;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15) inset !important;
+}
+
 .pocket piece::after {
   content: attr(data-nb);
   bottom: 0;
@@ -175,6 +217,7 @@
   border-radius: 2px;
   font-size: 1.1em;
 }
+
 .pocket piece[data-nb="0"]::after {
   content: none;
 }
