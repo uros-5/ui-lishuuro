@@ -7,15 +7,15 @@ const cookieData = { expire: "365d", sameSite: "" };
 
 export const useUser = defineStore("useUser", {
   state: () => {
-    return { username: "uros", reg: false, plCount: 0, gamesCount: 0 };
+    return { username: "", reg: false, plCount: 0, gamesCount: 0 };
   },
   actions: {
-    checkCookie() {
+    checkCookie() {console.log(cookie.get('username'));
       if (cookie.get("username") == null) {
         this.updateAnonCookie();
       } else {
         this.$state.username = cookie.get("username");
-        this.$state.reg = cookie.get("reg");
+        this.$state.reg = JSON.parse(cookie.get("reg"));
       }
     },
     updateAnonCookie() {
@@ -27,7 +27,7 @@ export const useUser = defineStore("useUser", {
       this.$state.username = username;
       this.$state.reg = reg;
       cookie.set("username", username, cookieData);
-      cookie.set("reg", reg.toString(), cookieData);
+      cookie.set("reg", reg, cookieData);
     },
     updatePlCount(cnt: number): void {
       this.$state.plCount = cnt;

@@ -1,10 +1,18 @@
 <template>
-  <div class="round-app">
+  <div class="round-app standard">
     <selection id="mainboard" class="standard">
       <router-view />
     </selection>
     <div class="material material-top black standard disabled"></div>
-    <ShuuroMatchPieceMenu pieces="rrrb" color="white" pID="1" part="bottom" />
+    <div class="pocket-top">
+      <PlayerHand
+        :inCenter="false"
+	side="top"
+        :counter="[0, 0, 0, 0, 0, 0, 0]"
+        :color="store.getColor(topPlayer())"
+        handType="pocket"
+      />
+    </div>
     <ShuuroClock min="20" sec="00" increment="0" part="0" />
     <div id="expiration-top"></div>
     <ShuuroFenPlayer :player="topPlayer()" :online="false" />
@@ -12,16 +20,22 @@
     <ShuuroFen />
     <div id="offer-dialog"></div>
     <ShuuroAfterButtons />
-    <ShuuroFenPlayer :player="bottomPlayer()" :online="true" style="grid-area: user-bot" />
+    <ShuuroFenPlayer
+      :player="bottomPlayer()"
+      :online="true"
+      style="grid-area: user-bot"
+    />
     <div id="expiration-bottom"></div>
     <ShuuroClock min="20" sec="00" increment="0" part="1" />
-    <ShuuroMatchPieceMenu
-      pieces="rrrb"
-      color="white"
-      style="grid-area: pocket-bot"
-      pID="1"
-      part="bottom"
-    />
+    <div class="pocket-bot">
+      <PlayerHand
+      	side="bottom"
+        :inCenter="false"
+        :counter="[0, 0, 0, 0, 0, 0, 0]"
+        :color="store.getColor(bottomPlayer())"
+        handType="pocket"
+      />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -31,8 +45,11 @@ import ShuuroFenPlayer from "@/components/ShuuroFenPlayer.vue";
 import ShuuroFenButtons from "@/components/ShuuroFenButtons.vue";
 import ShuuroFen from "@/components/ShuuroFen.vue";
 import ShuuroAfterButtons from "@/components/ShuuroAfterButtons.vue";
+import PlayerHand from "./PlayerHand.vue";
 import { useShuuroStore } from "@/store/useShuuroStore";
+import { useUser } from "@/store/useUser";
 const store = useShuuroStore();
+const userStore = useUser();
 
 function topPlayer(): string {
   if (store.$state.flippedBoard) {
@@ -48,6 +65,16 @@ function bottomPlayer(): string {
   } else {
     return store.$state.white;
   }
+}
+
+function canPlay2(): boolean {
+  if (
+    store.$state.stage == "deploy" &&
+    store.isThisPlayer(userStore.$state.username)
+  ) {
+    return true;
+  }
+  return false;
 }
 </script>
 <style>

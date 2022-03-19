@@ -11,8 +11,10 @@ import router from "@/router";
 import ShuuroLeftSide from "@/components/ShuuroLeftSide.vue";
 import ShuuroMain from "@/components/ShuuroMain.vue";
 import { useShuuroStore } from "@/store/useShuuroStore";
-
+import { useUser } from "@/store/useUser";
 const store = useShuuroStore();
+const userStore = useUser();
+store.isThisPlayer(userStore.$state.username);
 
 console.log(router.currentRoute.value.params);
 onMounted(() => {

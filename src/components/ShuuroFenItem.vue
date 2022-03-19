@@ -3,14 +3,21 @@
     {{ Math.floor((index! /2) +1) }}
   </div>
 
-  <div class="move" :ply="index">
+  <div class="move" @click="updateIndex" :class="{active: shuuroStore.$state.currentIndex == index!-1}" :ply="index">
     <san>{{ fen }}</san
-    ><eval :id="`ply${index}`"></eval>
+    ><eval :id="`ply${index!}`"></eval>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useShuuroStore } from "@/store/useShuuroStore";
+
 const props = defineProps({ index: Number, fen: String });
+const shuuroStore = useShuuroStore();
+
+function updateIndex(): void {
+  shuuroStore.$state.currentIndex = props.index!-1;
+}
 
 </script>
 
@@ -34,5 +41,9 @@ const props = defineProps({ index: Number, fen: String });
 .move:hover {
     color: var(font-color);
     background-color: var(--blue-hover);
+}
+
+.move.active {
+	background-color: var(--blue-active);
 }
 </style>

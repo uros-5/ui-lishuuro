@@ -2,10 +2,14 @@
   <div class="movelist-block">
     <div id="movelist">
       <ShuuroFenItem
-        v-if="store.$state.clientStage == 'shop' || store.$state.clientStage == 'deploy'"
+        v-if="
+          store.$state.clientStage == 'shop' ||
+          store.$state.clientStage == 'deploy'
+        "
         v-for="(item, index) in getHistory()"
         :fen="item"
         :index="index + 1"
+        @key="index"
       />
 
       <div id="result">{{ resultMessage() }}</div>
@@ -20,7 +24,6 @@ const store = useShuuroStore();
 
 onMounted(() => {
   if (store.$state.stage == "shop") {
-    console.log(store.$state.shopHistory);
   }
 });
 
@@ -56,5 +59,6 @@ function resultMessage(): string {
       return "";
   }
 }
+
 </script>
 <style scoped></style>

@@ -12,7 +12,7 @@ export const useBoardSize = defineStore("variantHome", {
     updateRowsAndCols(n: number): void {
       this.rowsAndCols = n;
     },
-    genVars(): String {
+    genVars(): string {
       return `--cg-width: ${this.height}px; --cg-height: ${this.height}px;`;
     },
     resize(event: Event) {
