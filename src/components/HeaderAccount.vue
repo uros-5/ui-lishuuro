@@ -4,7 +4,7 @@
       <a class="user-link" href="/">{{ store.$state.username }}</a>
     </div>
     <a
-      v-if="store.$state.reg == 'false'"
+      v-if="store.$state.reg == false"
       class="login nav-link"
       href="http://localhost:8080/login"
       title="Login with Lichess"

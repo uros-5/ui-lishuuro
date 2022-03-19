@@ -1,5 +1,5 @@
 <template>
-  <div id="lobbychat" class="lobbychat chat">
+  <div id="roundchat" class="roundchat chat">
     <div class="chatroom">
       Chat room
       <input
@@ -7,12 +7,12 @@
         title="Toggle the chat"
         name="checkbox"
         type="checkbox"
-        @click="hiddenChat = !hiddenChat"
+        @click="toggle"
       />
     </div>
     <ol id="lobbychat-messages">
-      <div id="messages" v-if="hiddenChat == false">
-        <li v-for="i in store.$state.homeChat" :key="i" class="message">
+      <div id="messages" v-if="hiddenChat">
+        <li v-for="i in messages" class="message">
           <div class="time">{{ i.time }}</div>
           <span class="user">
             <a href="/">{{ i.user }}</a>
@@ -31,37 +31,31 @@
       name="entry"
       autocomplete="off"
       :placeholder="setPlaceholder()"
+      :disabled="toDisableInput()"
     />
   </div>
 </template>
+
 <script setup lang="ts">
-import { useHomeChat } from "@/store/useHomeChat";
-import { useUser } from "@/store/useUser";
-import { ref } from "vue";
+import { ref, Ref } from "vue";
 import { useCookies } from "vue3-cookies";
 import { ws } from "@/plugins/webSockets";
+import {useUser} from "@/store/useUser";
 
+const props = defineProps<{ messages: ChatMessage[]; wsType: String }>();
+const messages: Ref<ChatMessage[]> = ref(props.messages!);
+const message = ref("");
+const hiddenChat = ref(true);
 const cookie = useCookies().cookies;
 const user = useUser();
-const message = ref("");
-const store = useHomeChat();
-let hiddenChat = ref(false);
 
-function setPlaceholder(): String {
-  if (cookie.get("reg") == "false") {
-    return "Sign in to chat";
-  } else {
-    return "Please be nice in the chat!";
-  }
-}
-
-function onEnter(event) {
+function onEnter(): void {
   if (message.value.length > 0 && message.value.length < 80) {
     ws.send(
       JSON.stringify({
-        t: "home_chat_message",
+        t: props.wsType!, //"home_chat_message",
         message: message.value,
-        user: cookie.get("username"),
+        user: user.$state.username, 
         time: "",
       })
     );
@@ -69,14 +63,32 @@ function onEnter(event) {
   }
 }
 
-/*
-let messages = [];
-for (let i = 0; i<50; i++) {
-    messages.push({ time: "00:50", user: `user${i}`, message: "This is message" });
+function setPlaceholder(): string {
+  if (cookie.get("reg") == undefined) {
+    return "Sign in to chat";
+  } else {
+    return "Please be nice in the chat!";
+  }
 }
-// let messages = [ { time: "00:50", user: "user1", message: "This is message" }];
-*/
+
+function toDisableInput() {
+  if (cookie.get("reg") == undefined || cookie.get("reg") == "false") {
+    return true;
+  }
+  return false;
+}
+
+let toggle = (): void => {
+  hiddenChat.value = !hiddenChat.value;
+};
+
+interface ChatMessage {
+  time: String;
+  user: String;
+  message: String;
+}
 </script>
+
 <style scoped>
 .user {
   padding-right: 6px;

@@ -7,10 +7,11 @@
         title="Toggle the chat"
         name="checkbox"
         type="checkbox"
+        @click="hiddenChat = !hiddenChat"
       />
     </div>
     <ol id="lobbychat-messages">
-      <div id="messages">
+      <div id="messages" v-if="hiddenChat">
         <li v-for="i in messages" :key="i" class="message">
           <div class="time">{{ i.time }}</div>
           <span class="user">
@@ -23,7 +24,11 @@
   </div>
 </template>
 <script setup lang="ts">
+import { ref } from 'vue';
+
 let messages = [];
+let hiddenChat = ref(false); console.log(hiddenChat);
+
 for (let i = 0; i < 50; i++) {
   messages.push({
     time: "00:50",

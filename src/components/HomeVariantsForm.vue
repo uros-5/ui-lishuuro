@@ -11,7 +11,7 @@
             </optgroup>
           </select>
         </div>
-        <label for="min">Minutes per side:</label>
+        <label for="min">&nbsp; Minutes per side:</label>
         <span id="minutes">{{ allowedDuration[time] }}</span>
         <input
           id="min"
@@ -22,7 +22,7 @@
           max="27"
           v-model.number="time"
         />
-        <label id="incrementlabel" for="inc">Increment in seconds:</label>
+        <label id="incrementlabel" for="inc">&nbsp;Increment in seconds:</label>
         <span id="increment">{{ allowedDuration[incr] }}</span>
         <input
           id="inc"
