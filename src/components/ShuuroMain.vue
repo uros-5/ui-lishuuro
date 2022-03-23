@@ -39,7 +39,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import ShuuroMatchPieceMenu from "@/components/ShuuroMatchPieceMenu.vue";
 import ShuuroClock from "@/components/ShuuroClock.vue";
 import ShuuroFenPlayer from "@/components/ShuuroFenPlayer.vue";
 import ShuuroFenButtons from "@/components/ShuuroFenButtons.vue";

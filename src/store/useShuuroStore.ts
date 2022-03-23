@@ -28,7 +28,6 @@ export const useShuuroStore = defineStore("shuuro", {
       // SHOP PART
       shopHistory: [],
       credit: 800,
-      choices: defaultChoices("w"),
       pieceCounter: [1, 0, 0, 0, 0, 0, 0],
       //DEPLOY PART
       deployHistory: [],
@@ -115,15 +114,10 @@ export const useShuuroStore = defineStore("shuuro", {
       init().then((_exports) => {
         if (this.credit == 800 || color == "n") {
           this.$state.shopWasm = new ShuuroShop();
-          this.$state.choices = defaultChoices(color);
           this.$state.shopHistory = [];
 
-          let pos = new ShuuroPosition();
-          pos.set_sfen(
-            "1K2RR6/PPP9/57/57/57/57/57/57/L05L05/pppppp6/1k64/57 w - 0"
-          );
-          let moves = pos.legal_moves("b1");
-          console.log(moves);
+          this.$state.deployWasm = new ShuuroPosition();
+          this.$state.fightWasm = new ShuuroPosition();
           //sethand
           //wasmObject.setHand(reponse.hand);
           //credit.value = wasmObject.getCredit(color.value);
@@ -226,9 +220,8 @@ export interface ShuuroStore {
   blockedView?: boolean;
   clientStage?: Stage;
   shopWasm?: ShuuroShop | any;
-  deployWasm?: any;
+  deployWasm?: ShuuroPosition | any;
   fightWasm?: any;
-  choices?: ShopItem[];
   credit?: number;
   pieceCounter?: number[];
   amIPlayer?: boolean;
@@ -264,16 +257,6 @@ export interface ShopMove {
 }
 
 export type Color = "white" | "black";
-
-export function defaultChoices(c: string): ShopItem[] {
-  return [
-    { piece: `${c}Q`, price: 110, toBuy: 3 },
-    { piece: `${c}R`, price: 70, toBuy: 6 },
-    { piece: `${c}B`, price: 40, toBuy: 9 },
-    { piece: `${c}N`, price: 40, toBuy: 9 },
-    { piece: `${c}P`, price: 10, toBuy: 18 },
-  ];
-}
 
 export const defaultCounter = new Uint8Array([1, 0, 0, 0, 0, 0, 0]);
 export const dataMax = new Uint8Array([1, 3, 6, 9, 9, 18, 0]);

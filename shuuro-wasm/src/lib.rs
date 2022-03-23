@@ -3,7 +3,7 @@ mod utils;
 use itertools::Itertools;
 use js_sys::{Array, Uint8Array};
 use shuuro::{self, piece_type::PieceTypeIter, Color, Move, Piece, PieceType, Position};
-use shuuro::{square_bb, Square, SQUARE_BB};
+use shuuro::{init, square_bb, Square, SQUARE_BB};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsValue;
 
@@ -129,6 +129,7 @@ pub struct ShuuroPosition {
 impl ShuuroPosition {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
+        init();
         ShuuroPosition {
             shuuro: Position::default(),
         }
