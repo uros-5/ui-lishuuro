@@ -30,7 +30,14 @@ const routes: Array<RouteRecordRaw> = [
         path: "play/:id",
         component: () =>
           import(/* webpackChunkName: "ShuuroSet" */ "@/views/ShuuroPlay.vue"),
-      }
+      },
+      {
+        path: "play2/:id",
+        component: () =>
+          import(
+            /* webpackChunkName: "ShuuroClock" */ "@/views/ShuuroClock.vue"
+          ),
+      },
     ],
   },
 ];

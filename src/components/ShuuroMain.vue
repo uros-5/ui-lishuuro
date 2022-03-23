@@ -13,7 +13,7 @@
         handType="pocket"
       />
     </div>
-    <ShuuroClock min="20" sec="00" increment="0" part="0" />
+    <ShuuroClock :color="store.getColor(topPlayer())"  part="0" />
     <div id="expiration-top"></div>
     <ShuuroFenPlayer :player="topPlayer()" :online="false" />
     <ShuuroFenButtons />
@@ -26,7 +26,7 @@
       style="grid-area: user-bot"
     />
     <div id="expiration-bottom"></div>
-    <ShuuroClock min="20" sec="00" increment="0" part="1" />
+    <ShuuroClock :color="store.getColor(bottomPlayer())" part="1" />
     <div class="pocket-bot">
       <PlayerHand
       	side="bottom"

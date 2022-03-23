@@ -47,7 +47,7 @@ function resultMessage(): string {
       return `Checkmate, ${result}`;
     case 2:
       return `${
-        result === "1-0" ? store.$state.black : store.$state.white
+        result === "1-0" ? store.$state.white : store.$state.black
       }, resigned`;
     case 3:
       return "Stalemate";
