@@ -1,7 +1,9 @@
 mod utils;
 
+use itertools::Itertools;
 use js_sys::{Array, Uint8Array};
-use shuuro::{self, piece_type::PieceTypeIter, Color, Move, Piece, PieceType};
+use shuuro::{self, piece_type::PieceTypeIter, Color, Move, Piece, PieceType, Position};
+use shuuro::{square_bb, Square, SQUARE_BB};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsValue;
 
@@ -116,13 +118,66 @@ impl ShuuroShop {
     pub fn set_hand(&mut self, hand: &str) {
         self.shuuro.set_hand(&hand);
     }
+}
+
+#[wasm_bindgen]
+pub struct ShuuroPosition {
+    shuuro: Position,
+}
+
+#[wasm_bindgen]
+impl ShuuroPosition {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        ShuuroPosition {
+            shuuro: Position::default(),
+        }
+    }
 
     #[wasm_bindgen]
-    pub fn test(&self) -> Array {
-        let lista = Array::new();
-        lista.push(&JsValue::from_str(&"color"));
-        lista.push(&JsValue::from_str(&"piece"));
-        lista.push(&JsValue::bigint_from_str(&"11"));
-        lista
+    pub fn set_hand(&mut self, s: &str) {
+        self.shuuro.set_hand(s);
+    }
+
+    #[wasm_bindgen]
+    pub fn set_sfen(&mut self, s: &str) {
+        self.shuuro.set_sfen(s);
+    }
+    /*
+        #[wasm_bindgen]
+        pub fn set_move_history(&mut self, history: Vec<(String, u16)>) {}
+    */
+    #[wasm_bindgen]
+    pub fn place(&mut self, p: char, sq: String) -> bool {
+        let past_length = self.shuuro.get_sfen_history().len();
+        if let Some(piece) = Piece::from_sfen(p) {
+            if let Some(square) = Square::from_sfen(&sq) {
+                self.shuuro.place(piece, square);
+            }
+        }
+        let current_length = self.shuuro.get_sfen_history().len();
+        current_length > past_length
+    }
+
+    #[wasm_bindgen]
+    pub fn play(&mut self, from: &str, to: &str) -> String {
+        let res = self.shuuro.play(&from, &to);
+        match res {
+            Ok(i) => i.to_string(),
+            Err(_) => String::from("illegal_move"),
+        }
+    }
+
+    #[wasm_bindgen]
+    pub fn legal_moves(&self, sq: &str) -> Array {
+        let moves = Array::new();
+        if let Some(square) = Square::from_sfen(&String::from(sq)) {
+            let l_m = self.shuuro.legal_moves(&square);
+            for i in l_m {
+                let value = JsValue::from_str(&i.to_string()[..]);
+                moves.push(&value);
+            }
+        }
+        moves
     }
 }
