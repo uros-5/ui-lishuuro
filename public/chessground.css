@@ -124,6 +124,7 @@ cg-board square {
   height: 8.33333333333%;
   pointer-events: none;
 }
+
 .cg-640 cg-board square {
   width: 10%;
   height: 12.5%;

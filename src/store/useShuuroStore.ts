@@ -74,7 +74,7 @@ export const useShuuroStore = defineStore("shuuro", {
       this.$state.result = data.result;
       this.$state.status = data.status;
     },
-    activateClock(): void {
+    activateClock(): void {/*
       this.$state.whiteClock.onTick(this.$state.whiteClock.renderTime);
       this.$state.blackClock.onTick(this.$state.blackClock.renderTime);
       if (this.$state.status < 0) {
@@ -99,6 +99,7 @@ export const useShuuroStore = defineStore("shuuro", {
       } else {
         this.$state.amIPlayer = false;
       }
+    */
     },
     setShop(data: ShopAndPlaceServerData): void {
       this.shopHistory = data.history;
