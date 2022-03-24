@@ -181,4 +181,9 @@ impl ShuuroPosition {
         }
         moves
     }
+
+    #[wasm_bindgen]
+    pub fn side_to_move(&self) -> String {
+        self.shuuro.side_to_move().to_string()
+    }
 }

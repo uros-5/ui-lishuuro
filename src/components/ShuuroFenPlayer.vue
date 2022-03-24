@@ -3,7 +3,7 @@
     <div class="player-data">
       <i-side id="player0" class="icon" :class="cssOnline()"> </i-side>
       <player>
-        <a class="user-link" href="/"
+        <a class="user-link m-ul" href="/"
           ><player-title> </player-title>{{ player }}</a
         ><rating></rating>
       </player>
@@ -23,4 +23,11 @@ function cssOnline(): string {
 
 </script>
 
-<style></style>
+<style>
+@media(max-width: 720px) {
+    .m-ul {
+        font-size: 1.2em;
+    }
+}
+
+</style>
