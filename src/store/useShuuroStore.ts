@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { allowedDuration } from "./useHomeLobby";
 import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
+import  Chessground  from '@/plugins/chessground';
 
 export const useShuuroStore = defineStore("shuuro", {
   state: (): ShuuroStore => {
@@ -229,6 +230,8 @@ export interface ShuuroStore {
   currentIndex?: number;
   whiteClockSeconds?: { secs: number; nanos: number };
   blackClockSeconds?: { secs: number; nanos: number };
+  deployCground?: typeof Chessground;
+  fightCground?: typeof Chessground;
 }
 
 export interface ShopAndPlaceServerData {

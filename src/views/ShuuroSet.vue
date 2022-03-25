@@ -6,34 +6,39 @@
       <cg-board> </cg-board>
     </cg-container>
   </div>
---></template>
+-->
+</template>
 <script setup lang="ts">
 import Chessground from "@/plugins/chessground";
-import { Config } from "@/plugins/chessground/config";
+import { anonConfig, liveConfig } from "@/plugins/chessground/configs";
+import { renderPocketsInitial } from "@/plugins/chessground/pocket";
 import { useBoardSize } from "@/store/useBoardSize";
 import { useShuuroStore } from "@/store/useShuuroStore";
 import { onMounted } from "vue";
 
-onMounted(() => {
-  const elem = document.querySelector(".chessground12") as HTMLElement;
-  const config: Config = { drawable: { enabled: true, visible: true } };
-  const ground = Chessground(elem, config);
-  let m = new Map();
-  m.set("a1", { role: "l-piece", color: "black"})
-  ground.setPlinths(m);
-  m = new Map();
-  m.set("a1", { role: "n-piece", color: "white"})
-  m.set("a4", {role: "b-piece", color: "white"});
-  ground.setPieces(m);
-  //ground.state.pieces.set("a1", { role: "l-piece", color: "white"})
-  console.log(ground);
-});
+
 
 const store = useBoardSize();
 const shuuroStore = useShuuroStore();
 
 store.updateRowsAndCols(12);
 shuuroStore.updateClientStage("deploy");
+
+onMounted(() => {
+  const elem = document.querySelector(".chessground12") as HTMLElement;
+  const ground = Chessground(elem, liveConfig);
+  const pocketTop = document.querySelector(".pocket-top") as HTMLElement;
+  const pocketBottom = document.querySelector(".pocket-bottom") as HTMLElement;
+  let m = new Map();
+  m.set("f10", { role: "l-piece", color: "black"});
+  ground.setPlinths(m);
+  m = new Map();
+  m.set("f10", { role: "n-piece", color: "black"})
+  m.set("a4", {role: "b-piece", color: "white"});
+  ground.setPieces(m);
+  //ground.state.pieces.set("a1", { role: "l-piece", color: "white"})
+  console.log(ground);
+});
 
 function setStyle(): string {
   let height = store.$state.height;

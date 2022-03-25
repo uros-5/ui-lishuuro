@@ -31,6 +31,10 @@ export interface Api {
 
   setPlinths(pieces: cg.PiecesDiff): void;
 
+  wasmPieceLoad(pieces: string[]): void;
+
+  wasmPlinthLoad(pieces: string[]): void;
+
   // click a square programmatically
   selectSquare(key: cg.Key | null, force?: boolean): void;
 
@@ -104,7 +108,7 @@ export function start(state: State, redrawAll: cg.Redraw): Api {
     },
 
     setPlinths(pieces): void {
-      anim(state => board.setPlinths(state,pieces), state);
+      anim(state => board.setPlinths(state, pieces), state);
     },
 
     selectSquare(key, force): void {
@@ -113,6 +117,25 @@ export function start(state: State, redrawAll: cg.Redraw): Api {
         board.unselect(state);
         state.dom.redraw();
       }
+    },
+
+    wasmPieceLoad(pieces: string[]): void {
+      for (let i = 0; i < pieces.length; i += 3) {
+        let square = pieces[i];
+        let piece = pieces[i + 1];
+        let color = pieces[i + 2];
+        state.pieces.set(square as cg.Key, { role: (piece as cg.Role), color: color as cg.Color });
+      }
+    },
+
+    wasmPlinthLoad(plinths: string[]): void {
+      for (let i = 0; i < plinths.length; i += 3) {
+        let square = plinths[i];
+        let piece = plinths[i + 1];
+        let color = plinths[i + 2];
+        state.plinths.set(square as cg.Key, { role: (piece as cg.Role), color: color as cg.Color });
+      }
+
     },
 
     move(orig, dest): void {
