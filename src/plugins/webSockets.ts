@@ -1,6 +1,7 @@
 import { useUser } from "@/store/useUser";
 import { useHomeChat } from "@/store/useHomeChat";
 import { useHomeLobby } from "@/store/useHomeLobby";
+import { useShuuroStore } from "@/store/useShuuroStore";
 
 export const ws = new WebSocket("ws://localhost:8080/ws/");
 
@@ -8,7 +9,10 @@ ws.onmessage = function (event) {
   const user = useUser();
   const homeChat = useHomeChat();
   const homeLobby = useHomeLobby();
+  const shuuroStore = useShuuroStore();
+
   let msg = JSON.parse(event.data);
+  console.log(msg);
   switch (msg.t) {
     case "active_players_count":
       user.updatePlCount(msg.cnt);
@@ -32,6 +36,9 @@ ws.onmessage = function (event) {
     case "home_lobby_remove":
       delete msg["t"];
       homeLobby.removeLobbyGame(msg);
+      break;
+    case "live_game_start":
+      shuuroStore.setBasicData(msg);
       break;
   }
 };

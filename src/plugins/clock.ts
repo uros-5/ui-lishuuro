@@ -24,7 +24,6 @@ export class Clock {
   public currentMin: Ref<String> | string;
   public currentSec: Ref<String> | string;
 
-
   // game baseTime (min) and increment (sec)
   constructor(
     baseTime: number,
@@ -61,7 +60,6 @@ export class Clock {
     ];
     this.currentMin = ref("");
     this.currentSec = ref("");
-    console.log(this.currentMin.value);
 
     this.renderTime(this.duration);
   }

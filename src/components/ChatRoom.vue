@@ -43,7 +43,7 @@ import { ws } from "@/plugins/webSockets";
 import {useUser} from "@/store/useUser";
 
 const props = defineProps<{ messages: ChatMessage[]; wsType: String }>();
-const messages: Ref<ChatMessage[]> = ref(props.messages!);
+const messages2: Ref<ChatMessage[]> = ref(props.messages!);
 const message = ref("");
 const hiddenChat = ref(true);
 const cookie = useCookies().cookies;
@@ -64,7 +64,7 @@ function onEnter(): void {
 }
 
 function setPlaceholder(): string {
-  if (cookie.get("reg") == undefined) {
+  if (user.$state.reg == false) {
     return "Sign in to chat";
   } else {
     return "Please be nice in the chat!";

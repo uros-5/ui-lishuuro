@@ -48,10 +48,10 @@ function cgWidth(): string {
   return boardSize.genVars();
 }
 
-function pieceCounter(): Number[] {
+function piece_counter(): Number[] {
   if (props.handType == "shop") {
     // read from shop
-    return shuuroStore.$state.pieceCounter!;
+    return shuuroStore.$state.piece_counter!;
   } else {
     // read from props
     return props.counter!.slice().splice(1);
@@ -59,7 +59,7 @@ function pieceCounter(): Number[] {
 }
 
 function dataNb(index: number): Number | string {
-  let counter = pieceCounter()[index];
+  let counter = piece_counter()[index];
   if (counter == 0 && props.handType == "shop") {
     // only shop has plus
     return "+";

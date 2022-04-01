@@ -16,14 +16,13 @@ import { Clock } from "@/plugins/clock";
 const shuuroStore = useShuuroStore();
 const userStore = useUser();
 shuuroStore.isThisPlayer(userStore.$state.username);
-
-//console.log(router.currentRoute.value.params);
 onMounted(() => {
   const id = router.currentRoute.value.params["id"];
   if (id == "" || id == undefined) {
     router.push("/");
   } else {
-    shuuroStore.$state.gameId =
+    console.log(id);
+    shuuroStore.$state.game_id =
       router.currentRoute.value.params["id"].toString();
     fetchData();
   }
@@ -38,17 +37,18 @@ function fetchData() {
     black: "anona",
     stage: "shop",
     result: "*",
-    sideToMove: "white",
+    side_to_move: "white",
     status: -1,
-    gameStarted: "2021",
-    gameId: "1",
-    ratedGame: true,
+    game_started: "2021",
+    game_id: "1",
+    rated_game: true,
   };
   shuuroStore.setBasicData(data);
   shuuroStore.activateClock();
 }
 </script>
 
-<style>
+<style >
 @import "../assets/styles/round.css";
+
 </style>

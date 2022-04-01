@@ -9,11 +9,11 @@
         :inCenter="false"
 	side="top"
         :counter="[0, 0, 0, 0, 0, 0, 0]"
-        :color="store.getColor(topPlayer())"
+        :color="shuuroStore.getColor(topPlayer())"
         handType="pocket"
       />
     </div>
-    <ShuuroClock :color="store.getColor(topPlayer())"  part="0" />
+    <ShuuroClock :color="shuuroStore.getColor(topPlayer())"  part="0" />
     <div id="expiration-top"></div>
     <ShuuroFenPlayer :player="topPlayer()" :online="false" />
     <ShuuroFenButtons />
@@ -26,13 +26,13 @@
       style="grid-area: user-bot"
     />
     <div id="expiration-bottom"></div>
-    <ShuuroClock :color="store.getColor(bottomPlayer())" part="1" />
+    <ShuuroClock :color="shuuroStore.getColor(bottomPlayer())" part="1" />
     <div class="pocket-bot">
       <PlayerHand
       	side="bottom"
         :inCenter="false"
         :counter="[0, 0, 0, 0, 0, 0, 0]"
-        :color="store.getColor(bottomPlayer())"
+        :color="shuuroStore.getColor(bottomPlayer())"
         handType="pocket"
       />
     </div>
@@ -47,29 +47,29 @@ import ShuuroAfterButtons from "@/components/ShuuroAfterButtons.vue";
 import PlayerHand from "./PlayerHand.vue";
 import { useShuuroStore } from "@/store/useShuuroStore";
 import { useUser } from "@/store/useUser";
-const store = useShuuroStore();
+const shuuroStore = useShuuroStore();
 const userStore = useUser();
 
 function topPlayer(): string {
-  if (store.$state.flippedBoard) {
-    return store.$state.white;
+  if (shuuroStore.$state.flipped_board) {
+    return shuuroStore.$state.white;
   } else {
-    return store.$state.black;
+    return shuuroStore.$state.black;
   }
 }
 
 function bottomPlayer(): string {
-  if (store.$state.flippedBoard) {
-    return store.$state.black;
+  if (shuuroStore.$state.flipped_board) {
+    return shuuroStore.$state.black;
   } else {
-    return store.$state.white;
+    return shuuroStore.$state.white;
   }
 }
 
 function canPlay2(): boolean {
   if (
-    store.$state.stage == "deploy" &&
-    store.isThisPlayer(userStore.$state.username)
+    shuuroStore.$state.stage == "deploy" &&
+    shuuroStore.isThisPlayer(userStore.$state.username)
   ) {
     return true;
   }

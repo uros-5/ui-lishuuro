@@ -19,7 +19,7 @@
               @click="acceptGame(i)"
             >
               <td>
-                <i-side class="icon icon-white"> </i-side>
+                <i-side class="icon" :class="iconColor(i.color)" > </i-side>
               </td>
               <td><player-title> </player-title>{{ i.username }}</td>
               <td>//</td>
@@ -45,6 +45,13 @@ const store = useHomeLobby();
 function acceptGame(game: LobbyGame): void {
   game.t = "home_lobby_accept";
   ws.send(JSON.stringify(game));
+}
+
+function iconColor(color: string): string {
+    if (color == "random") {
+        return `icon-adjust`;
+    }
+    return `icon-${color}`;
 }
 
 onMounted(() => {

@@ -29,27 +29,27 @@ const shuuroStore = useShuuroStore();
 
 function min(): string {
   if (props.color == "white") {
-    return shuuroStore.$state.whiteClock.currentMin;
+    return shuuroStore.$state.white_clock.current_min;
   }
   else if(props.color == "black") {
-    return shuuroStore.$state.blackClock.currentMin;
+    return shuuroStore.$state.black_clock.current_min;
   }
   return "";
 }
 
 function sec(): string {
   if (props.color == "white") {
-    return shuuroStore.$state.whiteClock.currentSec;
+    return shuuroStore.$state.white_clock.current_sec;
   }
   else if(props.color == "black") {
-    return shuuroStore.$state.blackClock.currentSec;
+    return shuuroStore.$state.black_clock.current_sec;
   }
   return "";
 }
 
 function isRunning(): boolean {
-  if (props.color == "white") { return shuuroStore.$state.whiteClock.running; }
-  else if (props.color == "black") { return shuuroStore.$state.blackClock.running; }
+  if (props.color == "white") { return shuuroStore.$state.white_clock.running; }
+  else if (props.color == "black") { return shuuroStore.$state.black_clock.running; }
   return false;
 }
 

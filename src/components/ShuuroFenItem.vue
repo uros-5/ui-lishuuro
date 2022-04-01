@@ -3,7 +3,7 @@
     {{ Math.floor((index! /2) +1) }}
   </div>
 
-  <div class="move" @click="updateIndex" :class="{active: shuuroStore.$state.currentIndex == index!-1}" :ply="index">
+  <div class="move" @click="updateIndex" :class="{active: shuuroStore.$state.current_index == index!-1}" :ply="index">
     <san>{{ fen }}</san
     ><eval :id="`ply${index!}`"></eval>
   </div>
@@ -16,7 +16,7 @@ const props = defineProps({ index: Number, fen: String });
 const shuuroStore = useShuuroStore();
 
 function updateIndex(): void {
-  shuuroStore.$state.currentIndex = props.index!-1;
+  shuuroStore.$state.current_index = props.index!-1;
 }
 
 </script>

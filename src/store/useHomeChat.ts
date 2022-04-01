@@ -20,7 +20,9 @@ export const useHomeChat = defineStore("useHomeChat", {
       this.$state.homeChat = homeChat;
     },
     sendMessage(message: ChatMessage) {
+      delete message["t"];console.log(message);
       this.$state.homeChat.push(message);
+      this.$state.homeChat = this.$state.homeChat;
     },
   },
 });

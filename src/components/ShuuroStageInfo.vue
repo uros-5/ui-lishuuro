@@ -3,12 +3,12 @@
     <section>
       <ShuuroStageMatchInfo
         variant="Shuuro"
-        :minute="store.$state.min"
-        :sec="store.$state.incr"
+        :minute="shuuroStore.$state.min"
+        :sec="shuuroStore.$state.incr"
         date="*"
       />
-      <ShuuroLeftSideUsername :player="store.$state.white" color="white" />
-      <ShuuroLeftSideUsername :player="store.$state.black" color="black" />
+      <ShuuroLeftSideUsername :player="shuuroStore.$state.white" color="white" />
+      <ShuuroLeftSideUsername :player="shuuroStore.$state.black" color="black" />
     </section>
     <section class="shuuro-navigator">
       <router-link class="user-link" :to="navRoute('shop')">Shop</router-link>
@@ -23,10 +23,10 @@
 import { useShuuroStore } from "@/store/useShuuroStore";
 import ShuuroLeftSideUsername from "./ShuuroLeftSideUsername.vue";
 import ShuuroStageMatchInfo from "@/components/ShuuroStageMatchInfo.vue";
-const store = useShuuroStore();
+const shuuroStore = useShuuroStore();
 
-function navRoute(stage: string): string {
-  return `/shuuro/${stage}/${store.$state.gameId}`;
+function navRoute(stage: string): string {console.log(shuuroStore.$state.game_id);
+  return `/shuuro/${stage}/${shuuroStore.$state.game_id}`;
 }
 </script>
 <style>

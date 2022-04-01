@@ -16,4 +16,8 @@ import HomeVariants from "@/components/HomeVariants.vue";
 import HomeBlogNews from "@/components/HomeBlogNews.vue";
 import HomeSpectators from "@/components/HomeSpectators.vue";
 </script>
-<style></style>
+<style>
+:root {
+  --main-max-width: 1300px ;
+}
+</style>

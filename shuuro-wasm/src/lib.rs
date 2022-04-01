@@ -1,7 +1,8 @@
 mod utils;
 
 use itertools::Itertools;
-use js_sys::{Array, Uint8Array};
+use js_sys::{Array, Map, Uint8Array};
+use serde::{Deserialize, Serialize};
 use shuuro::{self, piece_type::PieceTypeIter, Color, Move, Piece, PieceType, Position};
 use shuuro::{init, square_bb, Square, SQUARE_BB};
 use wasm_bindgen::prelude::*;
@@ -186,4 +187,24 @@ impl ShuuroPosition {
     pub fn side_to_move(&self) -> String {
         self.shuuro.side_to_move().to_string()
     }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Example {
+    pub role: String,
+    pub color: String,
+}
+
+#[wasm_bindgen]
+pub fn test() -> Map {
+    let mut list = Map::new();
+    let example = Example {
+        role: String::from("k-piece"),
+        color: String::from("white"),
+    };
+    list.set(
+        &JsValue::from_str("a1"),
+        &JsValue::from_serde(&example).unwrap(),
+    );
+    list
 }

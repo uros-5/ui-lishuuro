@@ -10,10 +10,10 @@ export const useUser = defineStore("useUser", {
     return { username: "", reg: false, plCount: 0, gamesCount: 0 };
   },
   actions: {
-    checkCookie() {console.log(cookie.get('username'));
+    checkCookie() {
       if (cookie.get("username") == null) {
         this.updateAnonCookie();
-      } else {
+      } else {this.updateAnonCookie();
         this.$state.username = cookie.get("username");
         this.$state.reg = JSON.parse(cookie.get("reg"));
       }
@@ -23,7 +23,7 @@ export const useUser = defineStore("useUser", {
         this.setUser(res.data.username, res.data.logged);
       });
     },
-    setUser(username: string, reg: boolean) {console.log(username);
+    setUser(username: string, reg: boolean) {
       this.$state.username = username;
       this.$state.reg = reg;
       cookie.set("username", username, cookieData);

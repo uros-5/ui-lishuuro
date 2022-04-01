@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { allowedDuration } from "./useHomeLobby";
-import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
+import init, { ShuuroShop, ShuuroPosition, test } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
-import  Chessground  from '@/plugins/chessground';
+import Chessground from "@/plugins/chessground";
 
 export const useShuuroStore = defineStore("shuuro", {
   state: (): ShuuroStore => {
@@ -11,115 +11,117 @@ export const useShuuroStore = defineStore("shuuro", {
       incr: 3,
       white: "uros",
       black: "anon",
-      sideToMove: "white",
+      side_to_move: "white",
       stage: "shop",
-      ratedGame: false,
-      whiteClock: new Clock(5, 3, 0, "1"),
-      blackClock: new Clock(5, 3, 0, "0"),
-      blackHand: "",
-      whiteHand: "",
-      gameStarted: "",
-      gameId: "1",
-      currentFen: "",
-      flippedBoard: false,
+      rated_game: false,
+      white_clock: new Clock(5, 3, 0, "1"),
+      black_clock: new Clock(5, 3, 0, "0"),
+      black_hand: "",
+      white_hand: "",
+      game_started: "",
+      game_id: "1",
+      current_fen: "",
+      flipped_board: false,
       result: "*",
       status: -2,
-      clientStage: "shop",
-      amIPlayer: false,
+      client_stage: "shop",
+      am_i_player: false,
       // SHOP PART
-      shopHistory: [],
+      shop_history: [],
       credit: 800,
-      pieceCounter: [1, 0, 0, 0, 0, 0, 0],
+      piece_counter: [1, 0, 0, 0, 0, 0, 0],
       //DEPLOY PART
-      deployHistory: [],
-      deployWasm: {},
+      deploy_history: [],
+      deploy_wasm: {},
       //FIGHT PART
-      fightHistory: [],
-      fightMoveHistory: [],
-      fightWasm: {},
-      currentIndex: 0,
-      whiteClockSeconds: { secs: 0, nanos: 0 },
-      blackClockSeconds: { secs: 0, nanos: 0 },
+      fight_history: [],
+      fight_move_history: [],
+      fight_wasm: {},
+      current_index: 0,
+      white_clock_seconds: { secs: 0, nanos: 0 },
+      black_clock_seconds: { secs: 0, nanos: 0 },
     };
   },
 
   actions: {
     updateClientStage(stage: Stage): void {
-      this.$state.clientStage = stage;
+      this.$state.client_stage = stage;
     },
     wsHistory(): void {},
     getHistory(): string[] | undefined {
-      switch (this.$state.clientStage) {
+      switch (this.$state.client_stage) {
         case "shop":
-          return this.$state.shopHistory;
+          return this.$state.shop_history;
         case "deploy":
-          return this.$state.deployHistory;
+          return this.$state.deploy_history;
         case "fight":
-          return this.$state.fightHistory;
+          return this.$state.fight_history;
       }
     },
     setBasicData(data: ShuuroStore): void {
-      this.$state.gameId = data.gameId;
+      this.$state.game_id = data.game_id;
       this.$state.min = data.min;
       this.$state.incr = data.incr;
       this.$state.white = data.white;
       this.$state.black = data.black;
-      this.$state.sideToMove = data.sideToMove;
+      this.$state.side_to_move = data.side_to_move;
       this.$state.stage = data.stage;
-      this.$state.ratedGame = data.ratedGame;
-      this.$state.whiteClockSeconds = data.whiteClockSeconds;
-      this.$state.blackClockSeconds = data.blackClockSeconds;
-      this.$state.whiteClock = new Clock(data.min, data.incr, 0, "1");
-      this.$state.blackClock = new Clock(data.min, data.incr, 0, "1");
-      this.$state.gameStarted = data.gameStarted;
+      this.$state.rated_game = data.rated_game;
+      this.$state.white_clock_seconds = data.white_clock_seconds;
+      this.$state.black_clock_seconds = data.black_clock_seconds;
+      this.$state.white_clock = new Clock(data.min, data.incr, 0, "1");
+      this.$state.black_clock = new Clock(data.min, data.incr, 0, "1");
+      this.$state.game_started = data.game_started;
       this.$state.result = data.result;
       this.$state.status = data.status;
     },
-    activateClock(): void {/*
-      this.$state.whiteClock.onTick(this.$state.whiteClock.renderTime);
-      this.$state.blackClock.onTick(this.$state.blackClock.renderTime);
+    activateClock(): void {
+      /*
+      this.$state.whiteClock.onTick(this.$state.whiteClock.render_time);
+      this.$state.blackClock.onTick(this.$state.blackClock.render_time);
       if (this.$state.status < 0) {
         if (this.$state.stage == "shop") {
-          (this.$state.whiteClock as Clock).start();
-          (this.$state.blackClock as Clock).start();
+          (this.$state.whiteClock as _clock).start();
+          (this.$state.blackClock as _clock).start();
         } else {
-          if (this.$state.sideToMove == "white") {
+          if (this.$state.side_to_move == "white") {
             let calc =
-              this.$state.whiteClockSeconds!.secs * 1000 +
-              this.$state.whiteClockSeconds!.nanos;
-            (this.$state.blackClock as Clock).pause(true);
-            (this.$state.whiteClock as Clock).start(calc);
-          } else if (this.$state.sideToMove == "black") {
+              this.$state.whiteClock_seconds!.secs * 1000 +
+              this.$state.whiteClock_seconds!.nanos;
+            (this.$state.blackClock as _clock).pause(true);
+            (this.$state.whiteClock as _clock).start(calc);
+          } else if (this.$state.side_to_move == "black") {
             let calc =
-              this.$state.blackClockSeconds!.secs * 1000 +
-              this.$state.blackClockSeconds!.nanos;
-            (this.$state.whiteClock as Clock).pause(true);
-            (this.$state.blackClock as Clock).start(calc);
+              this.$state.blackClock_seconds!.secs * 1000 +
+              this.$state.blackClock_seconds!.nanos;
+            (this.$state.whiteClock as _clock).pause(true);
+            (this.$state.blackClock as _clock).start(calc);
           }
         }
       } else {
-        this.$state.amIPlayer = false;
+        this.$state.am_i_player = false;
       }
     */
     },
     setShop(data: ShopAndPlaceServerData): void {
-      this.shopHistory = data.history;
+      this.shop_history = data.history;
     },
     toggleStm(): void {
-      if (this.$state.sideToMove == "black") {
-        this.$state.sideToMove = "white";
-      } else if (this.$state.sideToMove == "white") {
-        this.$state.sideToMove = "black";
+      if (this.$state.side_to_move == "black") {
+        this.$state.side_to_move = "white";
+      } else if (this.$state.side_to_move == "white") {
+        this.$state.side_to_move = "black";
       }
     },
     setShuuroShop(color: string): void {
       init().then((_exports) => {
         if (this.credit == 800 || color == "n") {
-          this.$state.shopWasm = new ShuuroShop();
-          this.$state.shopHistory = [];
+          this.$state.shop_wasm = new ShuuroShop();
+          this.$state.shop_history = [];
 
-          this.$state.deployWasm = new ShuuroPosition();
-          this.$state.fightWasm = new ShuuroPosition();
+          this.$state.deploy_wasm = new ShuuroPosition();
+          this.$state.fight_wasm = new ShuuroPosition();
+          console.log(test());
           //sethand
           //wasmObject.setHand(reponse.hand);
           //credit.value = wasmObject.getCredit(color.value);
@@ -132,27 +134,27 @@ export const useShuuroStore = defineStore("shuuro", {
       this.$state.white = "";
       this.$state.black = "";
       this.$state.stage = "shop";
-      this.$state.ratedGame = false;
-      this.$state.shopHistory = [];
-      this.$state.fightHistory = [];
-      this.$state.deployHistory = [];
-      this.$state.fightMoveHistory = [];
-      this.$state.whiteClock = new Clock(0, 0, 0, "1");
-      this.$state.blackClock = new Clock(0, 0, 0, "0");
-      this.$state.currentFen = "";
-      this.$state.blackHand = "";
-      this.$state.whiteHand = "";
-      this.$state.gameStarted = "";
-      this.$state.gameId = "";
-      this.$state.flippedBoard = false;
-      this.$state.blockedView = false;
+      this.$state.rated_game = false;
+      this.$state.shop_history = [];
+      this.$state.fight_history = [];
+      this.$state.deploy_history = [];
+      this.$state.fight_move_history = [];
+      this.$state.white_clock = new Clock(0, 0, 0, "1");
+      this.$state.black_clock = new Clock(0, 0, 0, "0");
+      this.$state.current_fen = "";
+      this.$state.black_hand = "";
+      this.$state.white_hand = "";
+      this.$state.game_started = "";
+      this.$state.game_id = "";
+      this.$state.flipped_board = false;
+      this.$state.blocked_view = false;
       this.$state.result = "";
       this.$state.status = -2;
-      this.$state.clientStage = "shop";
+      this.$state.client_stage = "shop";
       this.$state.credit = 800;
     },
     isThisPlayer(user: string): void {
-      this.$state.amIPlayer = [this.$state.black, this.$state.white].includes(
+      this.$state.am_i_player = [this.$state.black, this.$state.white].includes(
         user
       );
     },
@@ -165,73 +167,73 @@ export const useShuuroStore = defineStore("shuuro", {
       return "white";
     },
     buy(p: string, color: string) {
-      this.$state.pieceCounter = this.$state.shopWasm.buy(p);
-      let newCredit = this.$state.shopWasm.getCredit(color);
-      let counter = this.$state.shopWasm.get_piece(p);
-      if (newCredit < this.$state.credit!) {
+      this.$state.piece_counter = this.$state.shop_wasm.buy(p);
+      let new_credit = this.$state.shop_wasm.get_credit(color);
+      let counter = this.$state.shop_wasm.get_piece(p);
+      if (new_credit < this.$state.credit!) {
         // ws send move to server
-        this.$state.shopHistory?.push(`+${p} ${counter}`);
-        this.$state.currentIndex = this.$state.shopHistory?.length! - 1;
-        this.$state.credit! = newCredit;
+        this.$state.shop_history?.push(`+${p} ${counter}`);
+        this.$state.current_index = this.$state.shop_history?.length! - 1;
+        this.$state.credit! = new_credit;
       }
     },
     confirm(username: string): void {
-      if (this.$state.amIPlayer && this.$state.stage == "shop") {
-        this.$state.shopWasm.confirm(this.getColor(username));
-        if (this.$state.shopWasm.isConfirmed(this.getColor(username))) {
+      if (this.$state.am_i_player && this.$state.stage == "shop") {
+        this.$state.shop_wasm.confirm(this.getColor(username));
+        if (this.$state.shop_wasm.isConfirmed(this.getColor(username))) {
           // ws send send move to server
-          this.$state.shopWasm.free();
+          this.$state.shop_wasm.free();
         }
       }
     },
     switchClock() {
       console.log("clicked");
-      if (this.$state.whiteClock.running) {
-        this.$state.whiteClock.pause(true);
-        this.$state.blackClock.start();
-      } else if (this.$state.blackClock.running) {
-        this.$state.blackClock.pause(true);
-        this.$state.whiteClock.start();
+      if (this.$state.white_clock.running) {
+        this.$state.white_clock.pause(true);
+        this.$state.black_clock.start();
+      } else if (this.$state.black_clock.running) {
+        this.$state.black_clock.pause(true);
+        this.$state.white_clock.start();
       }
     },
   },
 });
 
 export interface ShuuroStore {
-  min: typeof allowedDuration[number];
-  incr: typeof allowedDuration[number];
+  min: typeof allowedDuration[number] | [number, number];
+  incr: typeof allowedDuration[number] | [number, number];
   white: string;
   black: string;
   stage: Stage;
   result: string;
   status: number;
-  gameStarted: string;
-  gameId: string;
-  ratedGame: boolean;
-  sideToMove: Color;
-  shopHistory?: string[];
-  deployHistory?: string[];
-  fightHistory?: string[];
-  fightMoveHistory?: string[];
-  whiteClock?: any | Clock;
-  blackClock?: any | Clock;
-  currentFen?: string;
-  blackHand?: string;
-  whiteHand?: string;
-  flippedBoard?: boolean;
-  blockedView?: boolean;
-  clientStage?: Stage;
-  shopWasm?: ShuuroShop | any;
-  deployWasm?: ShuuroPosition | any;
-  fightWasm?: any;
+  game_started: string;
+  game_id: string;
+  rated_game: boolean;
+  side_to_move: Color;
+  shop_history?: string[];
+  deploy_history?: string[];
+  fight_history?: string[];
+  fight_move_history?: string[];
+  white_clock?: any | Clock;
+  black_clock?: any | Clock;
+  current_fen?: string;
+  black_hand?: string;
+  white_hand?: string;
+  flipped_board?: boolean;
+  blocked_view?: boolean;
+  client_stage?: Stage;
+  shop_wasm?: ShuuroShop | any;
+  deploy_wasm?: ShuuroPosition | any;
+  fight_wasm?: any;
   credit?: number;
-  pieceCounter?: number[];
-  amIPlayer?: boolean;
-  currentIndex?: number;
-  whiteClockSeconds?: { secs: number; nanos: number };
-  blackClockSeconds?: { secs: number; nanos: number };
-  deployCground?: typeof Chessground;
-  fightCground?: typeof Chessground;
+  piece_counter?: number[];
+  am_i_player?: boolean;
+  current_index?: number;
+  white_clock_seconds?: { secs: number; nanos: number };
+  black_clock_seconds?: { secs: number; nanos: number };
+  deploy_cground?: typeof Chessground;
+  fight_cground?: typeof Chessground;
 }
 
 export interface ShopAndPlaceServerData {

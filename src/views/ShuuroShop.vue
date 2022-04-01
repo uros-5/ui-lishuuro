@@ -10,12 +10,12 @@
       side=""
       :inCenter="true"
       :counter="[1, 0, 0, 0, 0, 0, 0]"
-      :color="store.getColor(userStore.$state.username)"
+      :color="shuuroStore.getColor(userStore.$state.username)"
       handType="shop"
     />
-    <p class="local-credit">Credit: {{ store.$state.credit }}</p>
+    <p class="local-credit">Credit: {{ shuuroStore.$state.credit }}</p>
     <button
-      @click="store.confirm(userStore.$state.username)"
+      @click="shuuroStore.confirm(userStore.$state.username)"
       class="shuuro-confirm"
     >
       Confirm
@@ -31,11 +31,11 @@ import { ShopAndPlaceServerData } from "@/store/useShuuroStore";
 import { useUser } from "@/store/useUser";
 import { dataPrice, pieces } from "@/store/useShuuroStore";
 
-const store = useShuuroStore();
+const shuuroStore = useShuuroStore();
 const userStore = useUser();
 onMounted(() => {
-  store.updateClientStage("shop");
-  store.setShuuroShop(store.getColor(userStore.$state.username));
+  shuuroStore.updateClientStage("shop");
+  shuuroStore.setShuuroShop(shuuroStore.getColor(userStore.$state.username));
 });
 </script>
 

@@ -42,5 +42,5 @@ const CUSTOM_ELEMENTS = [
   "round-player0",
   "san",
   "eval",
-  "i-side.online",
+  "i-side.online","variant-name","i-side","icon"
 ];
