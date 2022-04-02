@@ -19,7 +19,7 @@ let nav = [
   { url: "/", text: "Tv" },
   { url: "/", text: "Current games" },
   { url: "/", text: "Tournaments" },
-  { url: "/", text: "Players" },
+  { url: "/shuuro/shop/2", text: "Players" },
 ];
 </script>
 <style>

@@ -21,10 +21,9 @@ onMounted(() => {
   if (id == "" || id == undefined) {
     router.push("/");
   } else {
-    console.log(id);
     shuuroStore.$state.game_id =
       router.currentRoute.value.params["id"].toString();
-    fetchData();
+    //fetchData();
   }
 });
 const zoomValue = ref("100");

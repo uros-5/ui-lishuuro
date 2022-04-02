@@ -27,6 +27,7 @@ import { onMounted } from "vue";
 import { useBoardSize } from "@/store/useBoardSize";
 import { useShuuroStore } from "@/store/useShuuroStore";
 import { pieces, dataMax } from "@/store/useShuuroStore";
+const boardSize = useBoardSize();
 
 onMounted(() => {
   let element = document.querySelector("#mainboard") as HTMLElement;
@@ -40,7 +41,7 @@ const props = defineProps<{
   inCenter: boolean;
   side: string;
 }>();
-const boardSize = useBoardSize();
+
 const shuuroStore = useShuuroStore();
 window.addEventListener("resize", boardSize.resize, true);
 
@@ -68,7 +69,7 @@ function dataNb(index: number): Number | string {
 }
 
 function increment(index: number, p: string): void {
-  if (props.handType == "shop" && shuuroStore.$state.amIPlayer == true) {
+  if (props.handType == "shop" && shuuroStore.$state.am_i_player == true) {
     if (props.color == "white") {
       p = p.toUpperCase();
     } else {
@@ -84,18 +85,17 @@ function scrollToBottom(): void {
   container!.scrollTop = container!.scrollHeight;
 }
 
-
 function localPieces(): string[] {
   let pieces2 = pieces.slice();
   return props.handType == "shop" ? pieces : pieces2.splice(1);
 }
 
 function pocketCss(): string {
-	return `pocket ${props.side} usable`;
+  return `pocket ${props.side} usable`;
 }
 
 function files(): number {
-    return props.handType == "shop" ? 8 : 10;
+  return props.handType == "shop" ? 8 : 10;
 }
 </script>
 

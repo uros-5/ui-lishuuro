@@ -18,14 +18,12 @@ function flipSide(): void {
 
 function fastBackward(): void {
   shuuroStore.$state.current_index = 0;
-  console.log(shuuroStore.$state.shopHistory![shuuro_store.$state.current_index]);
 }
 
 function stepBackward(): void {
   if (shuuroStore.$state.current_index > 0) {
     shuuroStore.$state.current_index -= 1;
   }
-  console.log(shuuroStore.$state.shopHistory![shuuro_store.$state.current_index]);
 }
 
 function stepForward(): void {
@@ -34,13 +32,11 @@ function stepForward(): void {
   if (index+1 < history.length) {
     shuuroStore.$state.current_index += 1;
   }
-  console.log(shuuroStore.$state.shopHistory![shuuro_store.$state.current_index]);
 }
 
 function fastForward(): void {
   let history = currentHistory();
   shuuroStore.$state.current_index = history.length-1; 
-  console.log(shuuroStore.$state.shopHistory![shuuro_store.$state.current_index]);
 }
 
 function currentHistory(): string[] {

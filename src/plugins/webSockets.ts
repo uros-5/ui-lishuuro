@@ -37,8 +37,13 @@ ws.onmessage = function (event) {
       delete msg["t"];
       homeLobby.removeLobbyGame(msg);
       break;
+    case "home_lobby_remove_user":
+      delete msg["t"];
+      homeLobby.removeLobbyGameByUser(msg.username);
+      break;
     case "live_game_start":
-      shuuroStore.setBasicData(msg);
+      msg["game_info"]["game_id"] = msg["game_id"];
+      shuuroStore.setBasicData(msg["game_info"]);
       break;
   }
 };

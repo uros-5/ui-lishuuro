@@ -66,14 +66,12 @@
     </form>
 </template>
 <script setup lang="ts">
-import { useVariantHome } from "@/store/useVariantHome";
 import { allowedDuration } from "@/store/useHomeLobby";
 import { ws } from "@/plugins/webSockets";
 import { useUser } from "@/store/useUser";
 import { ref, onMounted } from "vue";
 
 const userStore = useUser();
-const store = useVariantHome();
 
 let time = ref(14);
 let incr = ref(14);
@@ -82,7 +80,6 @@ let color = ref("white");
 let incrementDuration = [0].concat(allowedDuration);
 
 onMounted( () => {
-    store.$state.clickedVariant = "";
 });
 
 function createGame() {
@@ -100,7 +97,7 @@ function createGame() {
 
 <style scoped>
 .modal-content {
-  margin: 10% auto 15% auto;backgruond-color: var(--bg-color1);
+  margin: 10% auto 15% auto;background-color: var(--bg-color1);
 }
 
 .full-width {

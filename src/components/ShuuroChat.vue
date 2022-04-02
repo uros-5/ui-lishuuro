@@ -27,7 +27,7 @@
 import { ref } from 'vue';
 
 let messages = [];
-let hiddenChat = ref(false); console.log(hiddenChat);
+let hiddenChat = ref(false); 
 
 for (let i = 0; i < 50; i++) {
   messages.push({

@@ -7,8 +7,6 @@
 <script setup lang="ts">
 import HomeVariant from "@/components/HomeVariant.vue";
 import HomeVariantsForm from "@/components/HomeVariantsForm.vue";
-import { useVariantHome } from "@/store/useVariantHome";
-const store = useVariantHome();
 let variants = [
   {
     title: "Standard Shuuro",

@@ -34,7 +34,14 @@ export const useHomeLobby = defineStore("useHomeLobby", {
           return item;
         }
       });
-      console.log(this.$state.homeLobby);
+    },
+    removeLobbyGameByUser(user: String): void {
+      this.$state.homeLobby = this.$state.homeLobby.filter((item) => {
+        let game = item as LobbyGame;
+        if (game.username != user) {
+          return item;
+        }
+      });
     },
   },
 });

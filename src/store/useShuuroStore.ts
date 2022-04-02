@@ -3,16 +3,18 @@ import { allowedDuration } from "./useHomeLobby";
 import init, { ShuuroShop, ShuuroPosition, test } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
 import Chessground from "@/plugins/chessground";
+import { useRouter } from "vue-router";
+import router from "@/router";
 
 export const useShuuroStore = defineStore("shuuro", {
   state: (): ShuuroStore => {
     return {
-      min: 5,
-      incr: 3,
+      min: [5 * 60, 0],
+      incr: [3, 0],
       white: "uros",
       black: "anon",
       side_to_move: "white",
-      stage: "shop",
+      current_stage: "shop",
       rated_game: false,
       white_clock: new Clock(5, 3, 0, "1"),
       black_clock: new Clock(5, 3, 0, "0"),
@@ -59,19 +61,29 @@ export const useShuuroStore = defineStore("shuuro", {
       }
     },
     setBasicData(data: ShuuroStore): void {
+      router.push({ path: "/shuuro/shop/1" });
       this.$state.game_id = data.game_id;
       this.$state.min = data.min;
       this.$state.incr = data.incr;
       this.$state.white = data.white;
       this.$state.black = data.black;
       this.$state.side_to_move = data.side_to_move;
-      this.$state.stage = data.stage;
-      this.$state.rated_game = data.rated_game;
+      this.$state.current_stage = data.current_stage;
       this.$state.white_clock_seconds = data.white_clock_seconds;
       this.$state.black_clock_seconds = data.black_clock_seconds;
-      this.$state.white_clock = new Clock(data.min, data.incr, 0, "1");
-      this.$state.black_clock = new Clock(data.min, data.incr, 0, "1");
-      this.$state.game_started = data.game_started;
+      this.$state.white_clock = new Clock(
+        data.min[0] / 60,
+        data.incr[0],
+        0,
+        "1"
+      );
+      this.$state.black_clock = new Clock(
+        data.min[0] / 60,
+        data.incr[0],
+        0,
+        "1"
+      );
+      //this.$state.game_started = data.game_started;
       this.$state.result = data.result;
       this.$state.status = data.status;
     },
@@ -129,11 +141,11 @@ export const useShuuroStore = defineStore("shuuro", {
       });
     },
     setEmptyState(): void {
-      this.$state.min = 0;
-      this.$state.incr = 0;
+      this.$state.min = [0, 0];
+      this.$state.incr = [0, 0];
       this.$state.white = "";
       this.$state.black = "";
-      this.$state.stage = "shop";
+      this.$state.current_stage = "shop";
       this.$state.rated_game = false;
       this.$state.shop_history = [];
       this.$state.fight_history = [];
@@ -168,7 +180,7 @@ export const useShuuroStore = defineStore("shuuro", {
     },
     buy(p: string, color: string) {
       this.$state.piece_counter = this.$state.shop_wasm.buy(p);
-      let new_credit = this.$state.shop_wasm.get_credit(color);
+      let new_credit = this.$state.shop_wasm.getCredit(color);
       let counter = this.$state.shop_wasm.get_piece(p);
       if (new_credit < this.$state.credit!) {
         // ws send move to server
@@ -178,7 +190,7 @@ export const useShuuroStore = defineStore("shuuro", {
       }
     },
     confirm(username: string): void {
-      if (this.$state.am_i_player && this.$state.stage == "shop") {
+      if (this.$state.am_i_player && this.$state.current_stage == "shop") {
         this.$state.shop_wasm.confirm(this.getColor(username));
         if (this.$state.shop_wasm.isConfirmed(this.getColor(username))) {
           // ws send send move to server
@@ -187,7 +199,6 @@ export const useShuuroStore = defineStore("shuuro", {
       }
     },
     switchClock() {
-      console.log("clicked");
       if (this.$state.white_clock.running) {
         this.$state.white_clock.pause(true);
         this.$state.black_clock.start();
@@ -200,11 +211,11 @@ export const useShuuroStore = defineStore("shuuro", {
 });
 
 export interface ShuuroStore {
-  min: typeof allowedDuration[number] | [number, number];
-  incr: typeof allowedDuration[number] | [number, number];
+  min: [number, number];
+  incr: [number, number];
   white: string;
   black: string;
-  stage: Stage;
+  current_stage: Stage;
   result: string;
   status: number;
   game_started: string;

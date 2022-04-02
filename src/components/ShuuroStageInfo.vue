@@ -25,7 +25,7 @@ import ShuuroLeftSideUsername from "./ShuuroLeftSideUsername.vue";
 import ShuuroStageMatchInfo from "@/components/ShuuroStageMatchInfo.vue";
 const shuuroStore = useShuuroStore();
 
-function navRoute(stage: string): string {console.log(shuuroStore.$state.game_id);
+function navRoute(stage: string): string {
   return `/shuuro/${stage}/${shuuroStore.$state.game_id}`;
 }
 </script>

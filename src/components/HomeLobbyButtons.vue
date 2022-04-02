@@ -1,7 +1,7 @@
 <template>
   <aside class="sidebar-second">
     <div id="seekbuttons">
-      <button class="lobby-button" @click="store.changeVariant('Shuuro')">
+      <button class="lobby-button">
         Create a game
       </button>
       <button class="lobby-button">Play with a friend</button>
@@ -14,8 +14,6 @@
   </aside>
 </template>
 <script setup lang="ts">
-import { useVariantHome } from "@/store/useVariantHome";
-const store = useVariantHome();
 
 </script>
 <style>

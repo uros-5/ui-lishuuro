@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export const useBoardSize = defineStore("variantHome", {
+export const useBoardSize = defineStore("boardSize", {
   state: () => {
     return { height: 0, rowsAndCols: 8 };
   },
