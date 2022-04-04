@@ -35,7 +35,7 @@ dir = "my-template"
 #! npm package name
 name = "shuuro-wasm"
 #! run `npm link`: `true` | `false`, default is `false`
-link = true
+link = true 
 
 #! =======================================================
 
