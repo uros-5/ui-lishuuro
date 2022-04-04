@@ -43,7 +43,7 @@ ws.onmessage = function (event) {
       break;
     case "live_game_start":
       msg["game_info"]["game_id"] = msg["game_id"];
-      shuuroStore.setBasicData(msg["game_info"]);
+      shuuroStore.setBasicData(msg["game_info"], user.$state.username);
       break;
   }
 };

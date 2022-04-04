@@ -16,9 +16,12 @@ export default defineConfig({
         },
       },
     }),
-	ViteRsw({
+    //ViteRsw(),
+    
+	/*ViteRsw({
 		crates: [{name: "shuuro-wasm", unwatch: [ '../src/**' ],}],
-	}),
+	}),*/
+    
   ],
   resolve: {
     alias: {

@@ -13,6 +13,8 @@ import ShuuroMain from "@/components/ShuuroMain.vue";
 import { ShuuroStore, useShuuroStore } from "@/store/useShuuroStore";
 import { useUser } from "@/store/useUser";
 import { Clock } from "@/plugins/clock";
+import { ws } from "@/plugins/webSockets";
+
 const shuuroStore = useShuuroStore();
 const userStore = useUser();
 shuuroStore.isThisPlayer(userStore.$state.username);
@@ -21,8 +23,15 @@ onMounted(() => {
   if (id == "" || id == undefined) {
     router.push("/");
   } else {
-    shuuroStore.$state.game_id =
-      router.currentRoute.value.params["id"].toString();
+    if (shuuroStore.$state.game_id == "1") {
+      ws.send(
+        JSON.stringify({
+          t: "live_game_start",
+          game_id: id, 
+	  color: "white"
+        })
+      );
+    }
     //fetchData();
   }
 });
@@ -42,12 +51,11 @@ function fetchData() {
     game_id: "1",
     rated_game: true,
   };
-  shuuroStore.setBasicData(data);
-  shuuroStore.activateClock();
+  shuuroStore.setBasicData(data, userStore.$state.username);
+  //shuuroStore.activateClock();
 }
 </script>
 
-<style >
+<style>
 @import "../assets/styles/round.css";
-
 </style>

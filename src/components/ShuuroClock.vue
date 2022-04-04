@@ -29,20 +29,20 @@ const shuuroStore = useShuuroStore();
 
 function min(): string {
   if (props.color == "white") {
-    return shuuroStore.$state.white_clock.current_min;
+    return shuuroStore.$state.white_clock.currentMin;
   }
   else if(props.color == "black") {
-    return shuuroStore.$state.black_clock.current_min;
+    return shuuroStore.$state.black_clock.currentMin;
   }
   return "";
 }
 
 function sec(): string {
   if (props.color == "white") {
-    return shuuroStore.$state.white_clock.current_sec;
+    return shuuroStore.$state.white_clock.currentSec;
   }
   else if(props.color == "black") {
-    return shuuroStore.$state.black_clock.current_sec;
+    return shuuroStore.$state.black_clock.currentSec;
   }
   return "";
 }
