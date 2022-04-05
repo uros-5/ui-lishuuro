@@ -150,10 +150,11 @@ export const useShuuroStore = defineStore("shuuro", {
         }
       });
     },
-    setShuuroHand(hand: string): void {
+    setShuuroHand(hand: string,user: string): void {
       init().then((_exports) => {
         this.$state.shop_wasm = new ShuuroShop();
         (this.$state.shop_wasm as ShuuroShop).set_hand(hand);
+        this.$state.piece_counter = this.$state.shop_wasm.shop_items(this.getColor(user));
       });
     },
     getServerCredit(user: string, data: ShuuroStore) {

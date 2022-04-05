@@ -86,6 +86,23 @@ impl ShuuroShop {
         }
     }
 
+    #[wasm_bindgen]
+    pub fn shop_items(&self, s: char) -> Uint8Array {
+        let color = Color::from_char(s);
+        match color {
+            Some(c) => match c {
+                Color::NoColor => {
+                    return Uint8Array::new_with_length(7);
+                }
+                _ => {
+                    return self.js_shop_items(&c);
+                }
+            },
+            None => (),
+        }
+        Uint8Array::new_with_length(7)
+    }
+
     fn js_shop_items(&self, color: &Color) -> Uint8Array {
         let array = Uint8Array::new_with_length(7);
         let mut current_state: [u8; 7] = [0, 0, 0, 0, 0, 0, 0];
