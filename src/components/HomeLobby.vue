@@ -5,7 +5,7 @@
         <table id="seeks">
           <thead>
             <tr>
-              <th></th>
+              <th />
               <th>Player</th>
               <th>Rating</th>
               <th>Time</th>
@@ -19,12 +19,18 @@
               @click="acceptGame(i)"
             >
               <td>
-                <i-side class="icon" :class="iconColor(i.color)"> </i-side>
+                <i-side
+                  class="icon"
+                  :class="iconColor(i.color)"
+                />
               </td>
-              <td><player-title> </player-title>{{ i.username }}</td>
+              <td><player-title />{{ i.username }}</td>
               <td>//</td>
               <td>{{ i.time }} + {{ i.incr }}</td>
-              <td class="icon" data-icon="Q">
+              <td
+                class="icon"
+                data-icon="Q"
+              >
                 <variant-name> {{ i.variant }}</variant-name>
               </td>
             </tr>

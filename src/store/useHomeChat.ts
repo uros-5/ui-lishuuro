@@ -4,9 +4,9 @@ import { useCookies } from "vue3-cookies";
 const cookie = useCookies().cookies;
 
 export interface ChatMessage {
-  user: String;
-  message: String;
-  time: String;
+  user: string;
+  message: string;
+  time: string;
 }
 
 export const useHomeChat = defineStore("useHomeChat", {

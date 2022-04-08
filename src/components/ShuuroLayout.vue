@@ -1,5 +1,8 @@
 <template>
-  <main class="round" style="--zoom: 100">
+  <main
+    class="round"
+    style="--zoom: 100"
+  >
     <ShuuroLeftSide />
     <ShuuroMain />
   </main>

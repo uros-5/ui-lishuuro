@@ -11,7 +11,7 @@ ws.onmessage = function (event) {
   const homeLobby = useHomeLobby();
   const shuuroStore = useShuuroStore();
 
-  let msg = JSON.parse(event.data);
+  const msg = JSON.parse(event.data);
   console.log(msg);
   switch (msg.t) {
     case "active_players_count":

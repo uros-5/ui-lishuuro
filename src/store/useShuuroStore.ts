@@ -163,7 +163,7 @@ export const useShuuroStore = defineStore("shuuro", {
       });
     },
     getServerCredit(user: string, data: ShuuroStore) {
-      let color = this.getColor(user);
+      const color = this.getColor(user);
       if (color == "white") {
         this.$state.credit = data.white_credit;
       } else if (color == "black") {
@@ -210,11 +210,11 @@ export const useShuuroStore = defineStore("shuuro", {
     },
     buy(p: string, color: string) {
       this.$state.piece_counter = this.$state.shop_wasm.buy(p);
-      let new_credit = this.$state.shop_wasm.getCredit(color);
-      let counter = this.$state.shop_wasm.get_piece(p);
+      const new_credit = this.$state.shop_wasm.getCredit(color);
+      const counter = this.$state.shop_wasm.get_piece(p);
       if (new_credit < this.$state.credit!) {
         // ws send move to server
-        let game_move = `+${p}`;
+        const game_move = `+${p}`;
         this.$state.shop_history?.push([`${game_move} ${counter}`, counter]);
         ws.send(
           JSON.stringify({
@@ -257,18 +257,18 @@ export const useShuuroStore = defineStore("shuuro", {
     },
     shopDuration() {
       if (this.$state.current_stage != "shop") return;
-      let now = new Date();
-      let converted_date = ServerDate(this.$state.last_clock!);
-      let elapsed = now.getTime() - converted_date.getTime();
+      const now = new Date();
+      const converted_date = ServerDate(this.$state.last_clock!);
+      const elapsed = now.getTime() - converted_date.getTime();
       this.$state.white_clock_ms! -= elapsed;
       this.$state.black_clock_ms! -= elapsed;
     },
     setDeployCg(element: HTMLElement) {
-      let config = this.$state.am_i_player ? liveConfig : anonConfig;
+      const config = this.$state.am_i_player ? liveConfig : anonConfig;
       this.$state.deploy_cground = Chessground(element!, config) as Api;
     },
     setFightCg(element: HTMLElement) {
-      let config = this.$state.am_i_player ? liveConfig : anonConfig;
+      const config = this.$state.am_i_player ? liveConfig : anonConfig;
       this.$state.fight_cground = Chessground(element!, config) as Api;
     },
 

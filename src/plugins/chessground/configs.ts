@@ -1,6 +1,6 @@
 import { Config } from "./config";
 
-let dests = new Map();
+const dests = new Map();
 dests.set("a4", ["a6", "a7"]);
 
 export const anonConfig: Config = {

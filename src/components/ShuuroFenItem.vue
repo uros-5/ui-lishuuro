@@ -1,16 +1,18 @@
 <template>
-  <div class="move counter" v-if="index! % 2 == 1">
+  <div
+    v-if="index! % 2 == 1"
+    class="move counter"
+  >
     {{ Math.floor((index! /2) +1) }}
   </div>
 
   <div
     class="move"
-    @click="updateIndex"
     :class="{active: shuuroStore.$state.current_index == index!-1}"
     :ply="index"
+    @click="updateIndex"
   >
-    <san>{{ fen }}</san
-    ><eval :id="`ply${index!}`"></eval>
+    <san>{{ fen }}</san><eval :id="`ply${index!}`" />
   </div>
 </template>
 

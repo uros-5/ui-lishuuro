@@ -3,10 +3,20 @@
     <div class="site-title-nav">
       <HomeHamburgerIcon />
       <div class="topnav">
-        <router-link to="/" class="nav-link active home">lishuuro</router-link>
-        <router-link v-for="i in nav" :key="i" :to="i.url" class="nav-link">
-          {{ i.text }}</router-link
+        <router-link
+          to="/"
+          class="nav-link active home"
         >
+          lishuuro
+        </router-link>
+        <router-link
+          v-for="i in nav"
+          :key="i"
+          :to="i.url"
+          class="nav-link"
+        >
+          {{ i.text }}
+        </router-link>
       </div>
     </div>
     <HeaderAccount />

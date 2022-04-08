@@ -8,15 +8,17 @@
     </div>
     <PlayerHand
       side=""
-      :inCenter="true"
+      :in-center="true"
       :counter="[1, 0, 0, 0, 0, 0, 0]"
       :color="shuuroStore.getColor(userStore.$state.username)"
-      handType="shop"
+      hand-type="shop"
     />
-    <p class="local-credit">Credit: {{ shuuroStore.$state.credit }}</p>
+    <p class="local-credit">
+      Credit: {{ shuuroStore.$state.credit }}
+    </p>
     <button
-      @click="shuuroStore.confirm(userStore.$state.username)"
       class="shuuro-confirm"
+      @click="shuuroStore.confirm(userStore.$state.username)"
     >
       Confirm
     </button>

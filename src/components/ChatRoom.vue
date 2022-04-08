@@ -1,5 +1,8 @@
 <template>
-  <div id="roundchat" class="roundchat chat">
+  <div
+    id="roundchat"
+    class="roundchat chat"
+  >
     <div class="chatroom">
       Chat room
       <input
@@ -8,12 +11,21 @@
         name="checkbox"
         type="checkbox"
         @click="toggle"
-      />
+      >
     </div>
     <ol id="lobbychat-messages">
-      <div id="messages" v-if="hiddenChat">
-        <li v-for="i in messages" class="message">
-          <div class="time">{{ i.time }}</div>
+      <div
+        v-if="hiddenChat"
+        id="messages"
+      >
+        <li
+          v-for="i in messages"
+          :key="0"
+          class="message"
+        >
+          <div class="time">
+            {{ i.time }}
+          </div>
           <span class="user">
             <a href="/">{{ i.user }}</a>
           </span>
@@ -23,16 +35,16 @@
     </ol>
 
     <input
-      v-model="message"
-      v-on:keyup.enter="onEnter"
       id="chat-entry"
+      v-model="message"
       maxlength="140"
       type="text"
       name="entry"
       autocomplete="off"
       :placeholder="setPlaceholder()"
       :disabled="toDisableInput()"
-    />
+      @keyup.enter="onEnter"
+    >
   </div>
 </template>
 
@@ -42,7 +54,7 @@ import { useCookies } from "vue3-cookies";
 import { ws } from "@/plugins/webSockets";
 import { useUser } from "@/store/useUser";
 
-const props = defineProps<{ messages: ChatMessage[]; wsType: String }>();
+const props = defineProps<{ messages: ChatMessage[]; wsType: string }>();
 const messages2: Ref<ChatMessage[]> = ref(props.messages!);
 const message = ref("");
 const hiddenChat = ref(true);
@@ -83,9 +95,9 @@ let toggle = (): void => {
 };
 
 interface ChatMessage {
-  time: String;
-  user: String;
-  message: String;
+  time: string;
+  user: string;
+  message: string;
 }
 </script>
 

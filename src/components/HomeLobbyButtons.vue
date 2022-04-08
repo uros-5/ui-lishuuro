@@ -1,11 +1,22 @@
 <template>
   <aside class="sidebar-second">
     <div id="seekbuttons">
-      <button class="lobby-button">Create a game</button>
-      <button class="lobby-button">Play with a friend</button>
-      <button class="lobby-button">Play with AI</button>
-      <button class="lobby-button">Practice with Random-Mover</button>
-      <button class="lobby-button" style="display: none">
+      <button class="lobby-button">
+        Create a game
+      </button>
+      <button class="lobby-button">
+        Play with a friend
+      </button>
+      <button class="lobby-button">
+        Play with AI
+      </button>
+      <button class="lobby-button">
+        Practice with Random-Mover
+      </button>
+      <button
+        class="lobby-button"
+        style="display: none"
+      >
         Host a game for others
       </button>
     </div>

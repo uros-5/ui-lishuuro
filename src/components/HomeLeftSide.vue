@@ -8,7 +8,10 @@ const store = useHomeChat();
 <template>
   <aside class="sidebar-first">
     <HomeArenaNotification />
-    <ChatRoom :messages="store.$state.homeChat" wsType="home_chat_message" />
+    <ChatRoom
+      :messages="store.$state.homeChat"
+      ws-type="home_chat_message"
+    />
   </aside>
 </template>
 

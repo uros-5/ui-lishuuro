@@ -1,15 +1,17 @@
 <template>
   <div class="site-buttons">
     <div id="username">
-      <a class="user-link" href="/">{{ store.$state.username }}</a>
+      <a
+        class="user-link"
+        href="/"
+      >{{ store.$state.username }}</a>
     </div>
     <a
       v-if="store.$state.reg == false"
       class="login nav-link"
       href="http://localhost:8080/login"
       title="Login with Lichess"
-      >Log in</a
-    >
+    >Log in</a>
   </div>
 </template>
 <script setup lang="ts">

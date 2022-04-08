@@ -1,5 +1,8 @@
 <template>
-  <div class="cg-wrap pocket" :style="inCenter ? '' : cgWidth()">
+  <div
+    class="cg-wrap pocket"
+    :style="inCenter ? '' : cgWidth()"
+  >
     <div
       id="pocket0"
       :style="`--pocketLength: ${6};
@@ -16,8 +19,7 @@
         :data-nb="dataNb(index)"
         :data-max="dataMax[index]"
         @click="increment(index, i[0])"
-      >
-      </piece>
+      />
     </div>
   </div>
 </template>
@@ -37,7 +39,7 @@ onMounted(() => {
 const props = defineProps<{
   color: string;
   handType: string;
-  counter: Number[];
+  counter: number[];
   inCenter: boolean;
   side: string;
 }>();
@@ -49,7 +51,7 @@ function cgWidth(): string {
   return boardSize.genVars();
 }
 
-function piece_counter(): Number[] {
+function piece_counter(): number[] {
   if (props.handType == "shop") {
     // read from shop
     return shuuroStore.$state.piece_counter!;
@@ -59,7 +61,7 @@ function piece_counter(): Number[] {
   }
 }
 
-function dataNb(index: number): Number | string {
+function dataNb(index: number): number | string {
   let counter = piece_counter()[index];
   if (counter == 0 && props.handType == "shop") {
     // only shop has plus

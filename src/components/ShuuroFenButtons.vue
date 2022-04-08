@@ -1,15 +1,23 @@
 <template>
-  <div id="btn-controls-top" class="btn-controls">
-    <button id="flip" @click="flipSide()">
-      <i class="icon icon-refresh"></i></button
-    ><button @click="fastBackward">
-      <i class="icon icon-fast-backward"></i></button
-    ><button @click="stepBackward">
-      <i class="icon icon-step-backward"></i></button
-    ><button @click="stepForward">
-      <i class="icon icon-step-forward"></i>
+  <div
+    id="btn-controls-top"
+    class="btn-controls"
+  >
+    <button
+      id="flip"
+      @click="flipSide()"
+    >
+      <i class="icon icon-refresh" />
+    </button><button @click="fastBackward">
+      <i class="icon icon-fast-backward" />
+    </button><button @click="stepBackward">
+      <i class="icon icon-step-backward" />
+    </button><button @click="stepForward">
+      <i class="icon icon-step-forward" />
     </button>
-    <button @click="fastForward"><i class="icon icon-fast-forward"></i></button>
+    <button @click="fastForward">
+      <i class="icon icon-fast-forward" />
+    </button>
   </div>
 </template>
 <script setup lang="ts">

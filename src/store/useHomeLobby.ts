@@ -4,12 +4,12 @@ import { useCookies } from "vue3-cookies";
 const cookie = useCookies().cookies;
 
 export interface LobbyGame {
-  t?: String;
-  username: String;
-  variant: String;
+  t?: string;
+  username: string;
+  variant: string;
   time: number;
   incr: number;
-  color: String;
+  color: string;
 }
 
 export const allowedDuration = [
@@ -35,9 +35,9 @@ export const useHomeLobby = defineStore("useHomeLobby", {
         }
       });
     },
-    removeLobbyGameByUser(user: String): void {
+    removeLobbyGameByUser(user: string): void {
       this.$state.homeLobby = this.$state.homeLobby.filter((item) => {
-        let game = item as LobbyGame;
+        const game = item as LobbyGame;
         if (game.username != user) {
           return item;
         }

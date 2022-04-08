@@ -17,9 +17,24 @@
       />
     </section>
     <section class="shuuro-navigator">
-      <router-link class="user-link" :to="navRoute('shop')">Shop</router-link>
-      <router-link class="user-link" :to="navRoute('set')">Deploy</router-link>
-      <router-link class="user-link" :to="navRoute('play')">Fight</router-link>
+      <router-link
+        class="user-link"
+        :to="navRoute('shop')"
+      >
+        Shop
+      </router-link>
+      <router-link
+        class="user-link"
+        :to="navRoute('set')"
+      >
+        Deploy
+      </router-link>
+      <router-link
+        class="user-link"
+        :to="navRoute('play')"
+      >
+        Fight
+      </router-link>
     </section>
   </div>
 </template>

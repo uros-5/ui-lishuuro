@@ -19,7 +19,7 @@ export const useBoardSize = defineStore("boardSize", {
       this.updateHeight(document.querySelector("#mainboard").offsetWidth);
     },
     cgContainerStyle(): string {
-      let height = this.height;
+      const height = this.height;
       return `width: ${height}px; height: ${height}px;`;
     },
   },

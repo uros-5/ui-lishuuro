@@ -1,12 +1,13 @@
 <template>
-  <div class="chessground12"></div>
+  <div class="chessground12" />
   <!--
   <div class="cg-wrap cg-512 orientation-white shuuro-board manipulable">
     <cg-container :style="setStyle()">
       <cg-board> </cg-board>
     </cg-container>
   </div>
---></template>
+-->
+</template>
 <script setup lang="ts">
 import Chessground from "@/plugins/chessground";
 import { anonConfig, liveConfig } from "@/plugins/chessground/configs";

@@ -21,8 +21,8 @@ export class Clock {
   byoyomiPeriod: number;
   hurry: boolean;
   ticks: boolean[];
-  public currentMin: Ref<String> | string;
-  public currentSec: Ref<String> | string;
+  public currentMin: Ref<string> | string;
+  public currentSec: Ref<string> | string;
 
   // game baseTime (min) and increment (sec)
   constructor(
@@ -203,7 +203,7 @@ export class Clock {
   }
 
   renderTime(time: number) {
-    let printed = this.printTime(time);
+    const printed = this.printTime(time);
     this.currentMin = printed.minutes;
     this.currentSec = printed.seconds;
     if (this.granularity > 100 && time < HURRY) this.granularity = 100;

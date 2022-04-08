@@ -122,9 +122,9 @@ export function start(state: State, redrawAll: cg.Redraw): Api {
 
     wasmPieceLoad(pieces: string[]): void {
       for (let i = 0; i < pieces.length; i += 3) {
-        let square = pieces[i];
-        let piece = pieces[i + 1];
-        let color = pieces[i + 2];
+        const square = pieces[i];
+        const piece = pieces[i + 1];
+        const color = pieces[i + 2];
         state.pieces.set(square as cg.Key, {
           role: piece as cg.Role,
           color: color as cg.Color,
@@ -134,9 +134,9 @@ export function start(state: State, redrawAll: cg.Redraw): Api {
 
     wasmPlinthLoad(plinths: string[]): void {
       for (let i = 0; i < plinths.length; i += 3) {
-        let square = plinths[i];
-        let piece = plinths[i + 1];
-        let color = plinths[i + 2];
+        const square = plinths[i];
+        const piece = plinths[i + 1];
+        const color = plinths[i + 2];
         state.plinths.set(square as cg.Key, {
           role: piece as cg.Role,
           color: color as cg.Color,

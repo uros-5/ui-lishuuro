@@ -1,6 +1,11 @@
 <template>
-  <div class="hamburger hamburger--vortex" @click="toggle">
-    <div class="hamburger-box"><div class="hamburger-inner"></div></div>
+  <div
+    class="hamburger hamburger--vortex"
+    @click="toggle"
+  >
+    <div class="hamburger-box">
+      <div class="hamburger-inner" />
+    </div>
   </div>
 </template>
 

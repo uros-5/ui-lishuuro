@@ -2,17 +2,19 @@
   <div class="movelist-block">
     <div id="movelist">
       <ShuuroFenItem
+        v-for="(item, index) in getHistory()"
         v-if="
           shuuroStore.$state.client_stage == 'shop' ||
-          shuuroStore.$state.client_stage == 'deploy'
+            shuuroStore.$state.client_stage == 'deploy'
         "
-        v-for="(item, index) in getHistory()"
         :fen="item[0]"
         :index="index + 1"
         @key="index"
       />
 
-      <div id="result">{{ resultMessage() }}</div>
+      <div id="result">
+        {{ resultMessage() }}
+      </div>
     </div>
   </div>
 </template>

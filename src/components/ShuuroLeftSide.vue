@@ -1,7 +1,10 @@
 <template>
   <aside class="sidebar-first">
     <ShuuroStageInfo />
-    <ChatRoom :messages="[]" wsType="game_live_message" />
+    <ChatRoom
+      :messages="[]"
+      ws-type="game_live_message"
+    />
   </aside>
 </template>
 <script setup lang="ts">

@@ -1,11 +1,15 @@
 <template>
   <div class="player-data">
-    <i-side class="icon" :class="cssColor()"></i-side
-    ><player
-      ><a class="user-link" href="/@/u"
-        ><player-title class="player-now"> </player-title>{{ player
-        }}<span></span></a
-    ></player>
+    <i-side
+      class="icon"
+      :class="cssColor()"
+    /><player>
+      <a
+        class="user-link"
+        href="/@/u"
+      ><player-title class="player-now" />{{ player
+      }}<span /></a>
+    </player>
   </div>
 </template>
 

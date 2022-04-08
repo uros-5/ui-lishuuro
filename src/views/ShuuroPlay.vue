@@ -1,4 +1,4 @@
-<template></template>
+<template />
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useShuuroStore } from "@/store/useShuuroStore";

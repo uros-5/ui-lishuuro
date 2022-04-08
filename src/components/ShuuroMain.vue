@@ -1,39 +1,51 @@
 <template>
   <div class="round-app standard">
-    <selection id="mainboard" class="standard">
+    <selection
+      id="mainboard"
+      class="standard"
+    >
       <router-view />
     </selection>
-    <div class="material material-top black standard disabled"></div>
+    <div class="material material-top black standard disabled" />
     <div class="pocket-top">
       <PlayerHand
-        :inCenter="false"
+        :in-center="false"
         side="top"
         :counter="[0, 0, 0, 0, 0, 0, 0]"
         :color="shuuroStore.getColor(topPlayer())"
-        handType="pocket"
+        hand-type="pocket"
       />
     </div>
-    <ShuuroClock :color="shuuroStore.getColor(topPlayer())" part="0" />
-    <div id="expiration-top"></div>
-    <ShuuroFenPlayer :player="topPlayer()" :online="false" />
+    <ShuuroClock
+      :color="shuuroStore.getColor(topPlayer())"
+      part="0"
+    />
+    <div id="expiration-top" />
+    <ShuuroFenPlayer
+      :player="topPlayer()"
+      :online="false"
+    />
     <ShuuroFenButtons />
     <ShuuroFen />
-    <div id="offer-dialog"></div>
+    <div id="offer-dialog" />
     <ShuuroAfterButtons />
     <ShuuroFenPlayer
       :player="bottomPlayer()"
       :online="true"
       style="grid-area: user-bot"
     />
-    <div id="expiration-bottom"></div>
-    <ShuuroClock :color="shuuroStore.getColor(bottomPlayer())" part="1" />
+    <div id="expiration-bottom" />
+    <ShuuroClock
+      :color="shuuroStore.getColor(bottomPlayer())"
+      part="1"
+    />
     <div class="pocket-bot">
       <PlayerHand
         side="bottom"
-        :inCenter="false"
+        :in-center="false"
         :counter="[0, 0, 0, 0, 0, 0, 0]"
         :color="shuuroStore.getColor(bottomPlayer())"
-        handType="pocket"
+        hand-type="pocket"
       />
     </div>
   </div>

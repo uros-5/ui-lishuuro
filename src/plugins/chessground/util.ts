@@ -32,7 +32,7 @@ export const key2pos = (k: cg.Key): cg.Pos => {
   if (k.length == 2) {
     return [k.charCodeAt(0) - 97, k.charCodeAt(1) - 49];
   } else {
-    let rank = parseInt(k.slice(1));
+    const rank = parseInt(k.slice(1));
     return [k.charCodeAt(0) - 97, rank - 1];
   }
 };

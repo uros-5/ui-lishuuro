@@ -1,12 +1,18 @@
 <template>
   <div class="under-lobby">
     <div class="news-latest">
-      <icon data-icon="2"></icon>
-      <a class="reflist" href="/"> Latest updated </a>
+      <icon data-icon="2" />
+      <a
+        class="reflist"
+        href="/"
+      > Latest updated </a>
     </div>
     <div class="posts">
-      <a class="post" href="/">
-        <img src="" />
+      <a
+        class="post"
+        href="/"
+      >
+        <img src="">
         <span class="text">
           <strong>News 1</strong>
           <span>Hello </span>

@@ -3,9 +3,18 @@
     <div class="container">
       <div>
         <label for="variant">Variant</label>
-        <select v-model="variant" id="variant" name="variant">
+        <select
+          id="variant"
+          v-model="variant"
+          name="variant"
+        >
           <optgroup label="ShuuroVariant">
-            <option value="shuuro12" title="Shuuro, unmodified.">SHUURO</option>
+            <option
+              value="shuuro12"
+              title="Shuuro, unmodified."
+            >
+              SHUURO
+            </option>
           </optgroup>
         </select>
       </div>
@@ -13,52 +22,58 @@
       <span id="minutes">{{ allowedDuration[time] }}</span>
       <input
         id="min"
+        v-model.number="time"
         class="slider"
         name="min"
         type="range"
         min="0"
         max="27"
-        v-model.number="time"
-      />
-      <label id="incrementlabel" for="inc">&nbsp;Increment in seconds:</label>
+      >
+      <label
+        id="incrementlabel"
+        for="inc"
+      >&nbsp;Increment in seconds:</label>
       <span id="increment">{{ incrementDuration[incr] }}</span>
       <input
         id="inc"
+        v-model.number="incr"
         class="slider"
         name="inc"
         type="range"
         min="0"
         max="28"
-        v-model.number="incr"
-      />
-      <div id="color-button-group" style="display: block">
+      >
+      <div
+        id="color-button-group"
+        style="display: block"
+      >
         <button
+          class="icon icon-black"
+          type="button"
+          title="Black"
           @click="
             color = 'black';
             createGame();
           "
-          class="icon icon-black"
-          type="button"
-          title="Black"
-        ></button>
+        />
         <button
+          class="icon icon-adjust"
+          type="button"
+          title="Random"
           @click="
             color = 'random';
             createGame();
           "
-          class="icon icon-adjust"
-          type="button"
-          title="Random"
-        ></button>
+        />
         <button
+          class="icon icon-white"
+          type="button"
+          title="White"
           @click="
             color = 'white';
             createGame();
           "
-          class="icon icon-white"
-          type="button"
-          title="White"
-        ></button>
+        />
       </div>
     </div>
   </form>
