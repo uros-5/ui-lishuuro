@@ -1,12 +1,12 @@
-import { State } from './state';
-import * as board from './board';
-import { write as fenWrite } from './fen';
-import { Config, configure, applyAnimation } from './config';
-import { anim, render } from './anim';
-import { cancel as dragCancel, dragNewPiece } from './drag';
-import { DrawShape } from './draw';
-import { explosion } from './explosion';
-import * as cg from './types';
+import { State } from "./state";
+import * as board from "./board";
+import { write as fenWrite } from "./fen";
+import { Config, configure, applyAnimation } from "./config";
+import { anim, render } from "./anim";
+import { cancel as dragCancel, dragNewPiece } from "./drag";
+import { DrawShape } from "./draw";
+import { explosion } from "./explosion";
+import * as cg from "./types";
 
 export interface Api {
   // reconfigure the instance. Accepts all config options, except for viewOnly & drawable.visible.
@@ -92,9 +92,10 @@ export function start(state: State, redrawAll: cg.Redraw): Api {
 
   return {
     set(config): void {
-      if (config.orientation && config.orientation !== state.orientation) toggleOrientation();
+      if (config.orientation && config.orientation !== state.orientation)
+        toggleOrientation();
       applyAnimation(state, config);
-      (config.fen ? anim : render)(state => configure(state, config), state);
+      (config.fen ? anim : render)((state) => configure(state, config), state);
     },
 
     state,
@@ -104,15 +105,15 @@ export function start(state: State, redrawAll: cg.Redraw): Api {
     toggleOrientation,
 
     setPieces(pieces): void {
-      anim(state => board.setPieces(state, pieces), state);
+      anim((state) => board.setPieces(state, pieces), state);
     },
 
     setPlinths(pieces): void {
-      anim(state => board.setPlinths(state, pieces), state);
+      anim((state) => board.setPlinths(state, pieces), state);
     },
 
     selectSquare(key, force): void {
-      if (key) anim(state => board.selectSquare(state, key, force), state);
+      if (key) anim((state) => board.selectSquare(state, key, force), state);
       else if (state.selected) {
         board.unselect(state);
         state.dom.redraw();
@@ -124,7 +125,10 @@ export function start(state: State, redrawAll: cg.Redraw): Api {
         let square = pieces[i];
         let piece = pieces[i + 1];
         let color = pieces[i + 2];
-        state.pieces.set(square as cg.Key, { role: (piece as cg.Role), color: color as cg.Color });
+        state.pieces.set(square as cg.Key, {
+          role: piece as cg.Role,
+          color: color as cg.Color,
+        });
       }
     },
 
@@ -133,17 +137,19 @@ export function start(state: State, redrawAll: cg.Redraw): Api {
         let square = plinths[i];
         let piece = plinths[i + 1];
         let color = plinths[i + 2];
-        state.plinths.set(square as cg.Key, { role: (piece as cg.Role), color: color as cg.Color });
+        state.plinths.set(square as cg.Key, {
+          role: piece as cg.Role,
+          color: color as cg.Color,
+        });
       }
-
     },
 
     move(orig, dest): void {
-      anim(state => board.baseMove(state, orig, dest), state);
+      anim((state) => board.baseMove(state, orig, dest), state);
     },
 
     newPiece(piece, key): void {
-      anim(state => board.baseNewPiece(state, piece, key), state);
+      anim((state) => board.baseNewPiece(state, piece, key), state);
     },
 
     playPremove(): boolean {
@@ -173,14 +179,14 @@ export function start(state: State, redrawAll: cg.Redraw): Api {
     },
 
     cancelMove(): void {
-      render(state => {
+      render((state) => {
         board.cancelMove(state);
         dragCancel(state);
       }, state);
     },
 
     stop(): void {
-      render(state => {
+      render((state) => {
         board.stop(state);
         dragCancel(state);
       }, state);
@@ -191,15 +197,20 @@ export function start(state: State, redrawAll: cg.Redraw): Api {
     },
 
     setAutoShapes(shapes: DrawShape[]): void {
-      render(state => (state.drawable.autoShapes = shapes), state);
+      render((state) => (state.drawable.autoShapes = shapes), state);
     },
 
     setShapes(shapes: DrawShape[]): void {
-      render(state => (state.drawable.shapes = shapes), state);
+      render((state) => (state.drawable.shapes = shapes), state);
     },
 
     getKeyAtDomPos(pos): cg.Key | undefined {
-      return board.getKeyAtDomPos(pos, board.whitePov(state), state.dom.bounds(), state.geometry);
+      return board.getKeyAtDomPos(
+        pos,
+        board.whitePov(state),
+        state.dom.bounds(),
+        state.geometry
+      );
     },
 
     redrawAll,

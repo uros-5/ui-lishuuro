@@ -5,9 +5,7 @@
 </template>
 
 <script setup lang="ts">
-
 import HomeVariantsForm from "@/components/HomeVariantsForm.vue";
-
 </script>
 <style>
 .panel-container {

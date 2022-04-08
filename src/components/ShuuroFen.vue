@@ -39,7 +39,7 @@ function getHistory(): FenItem[] {
         let p = item[0][1];
         if (color == "white") {
           if (p == p.toUpperCase()) {
-		console.log(p);
+            console.log(p);
             return item;
           }
         } else if (color == "black") {

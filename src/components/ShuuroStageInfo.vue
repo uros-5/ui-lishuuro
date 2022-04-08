@@ -7,14 +7,18 @@
         :sec="shuuroStore.$state.incr"
         date="*"
       />
-      <ShuuroLeftSideUsername :player="shuuroStore.$state.white" color="white" />
-      <ShuuroLeftSideUsername :player="shuuroStore.$state.black" color="black" />
+      <ShuuroLeftSideUsername
+        :player="shuuroStore.$state.white"
+        color="white"
+      />
+      <ShuuroLeftSideUsername
+        :player="shuuroStore.$state.black"
+        color="black"
+      />
     </section>
     <section class="shuuro-navigator">
       <router-link class="user-link" :to="navRoute('shop')">Shop</router-link>
-      <router-link class="user-link" :to="navRoute('set')"
-        >Deploy</router-link
-      >
+      <router-link class="user-link" :to="navRoute('set')">Deploy</router-link>
       <router-link class="user-link" :to="navRoute('play')">Fight</router-link>
     </section>
   </div>

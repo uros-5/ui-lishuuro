@@ -1,0 +1,13 @@
+*Home*
+
+<HomeLeftSide />
+<HomeContacts />
+<HomeLobby />
+<HomeVariants />
+<HomeBlogNews />
+<HomeLobbyButtons />
+<HomeSpectators />
+
+*ShuuroPlay*
+
+<ChessGround />

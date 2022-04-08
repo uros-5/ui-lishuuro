@@ -1,9 +1,9 @@
-import * as fen from './fen';
-import { AnimCurrent } from './anim';
-import { DragCurrent } from './drag';
-import { Drawable } from './draw';
-import { timer } from './util';
-import * as cg from './types';
+import * as fen from "./fen";
+import { AnimCurrent } from "./anim";
+import { DragCurrent } from "./drag";
+import { Drawable } from "./draw";
+import { timer } from "./util";
+import * as cg from "./types";
 
 export interface HeadlessState {
   pieces: cg.Pieces;
@@ -33,12 +33,16 @@ export interface HeadlessState {
   };
   movable: {
     free: boolean; // all moves are valid - board editor
-    color?: cg.Color | 'both'; // color that can move. white | black | both
+    color?: cg.Color | "both"; // color that can move. white | black | both
     dests?: cg.Dests; // valid moves. {"a2" ["a3" "a4"] "b1" ["a3" "c3"]}
     showDests: boolean; // whether to add the move-dest class on squares
     events: {
       after?: (orig: cg.Key, dest: cg.Key, metadata: cg.MoveMetadata) => void; // called after the move has been played
-      afterNewPiece?: (role: cg.Role, key: cg.Key, metadata: cg.MoveMetadata) => void; // called after a new piece is dropped on the board
+      afterNewPiece?: (
+        role: cg.Role,
+        key: cg.Key,
+        metadata: cg.MoveMetadata
+      ) => void; // called after a new piece is dropped on the board
     };
     rookCastle: boolean; // castle by moving the king to the rook
   };
@@ -49,7 +53,11 @@ export interface HeadlessState {
     dests?: cg.Key[]; // premove destinations for the current selection
     current?: cg.KeyPair; // keys of the current saved premove ["e2" "e4"]
     events: {
-      set?: (orig: cg.Key, dest: cg.Key, metadata?: cg.SetPremoveMetadata) => void; // called after the premove has been set
+      set?: (
+        orig: cg.Key,
+        dest: cg.Key,
+        metadata?: cg.SetPremoveMetadata
+      ) => void; // called after the premove has been set
       unset?: () => void; // called after the premove has been unset
     };
   };
@@ -122,8 +130,8 @@ export function defaults(): HeadlessState {
     pieces: fen.read(fen.initial),
     plinths: new Map(),
     plinthsPlaced: false,
-    orientation: 'white',
-    turnColor: 'white',
+    orientation: "white",
+    turnColor: "white",
     coordinates: true,
     autoCastle: true,
     viewOnly: false,
@@ -142,7 +150,7 @@ export function defaults(): HeadlessState {
     },
     movable: {
       free: true,
-      color: 'both',
+      color: "both",
       showDests: true,
       events: {},
       rookCastle: true,
@@ -175,7 +183,7 @@ export function defaults(): HeadlessState {
     stats: {
       // on touchscreen, default to "tap-tap" moves
       // instead of drag
-      dragged: !('ontouchstart' in window),
+      dragged: !("ontouchstart" in window),
     },
     events: {},
     drawable: {
@@ -186,29 +194,29 @@ export function defaults(): HeadlessState {
       shapes: [],
       autoShapes: [],
       brushes: {
-        green: { key: 'g', color: '#15781B', opacity: 1, lineWidth: 10 },
-        red: { key: 'r', color: '#882020', opacity: 1, lineWidth: 10 },
-        blue: { key: 'b', color: '#003088', opacity: 1, lineWidth: 10 },
-        yellow: { key: 'y', color: '#e68f00', opacity: 1, lineWidth: 10 },
-        paleBlue: { key: 'pb', color: '#003088', opacity: 0.4, lineWidth: 15 },
-        paleGreen: { key: 'pg', color: '#15781B', opacity: 0.4, lineWidth: 15 },
-        paleRed: { key: 'pr', color: '#882020', opacity: 0.4, lineWidth: 15 },
+        green: { key: "g", color: "#15781B", opacity: 1, lineWidth: 10 },
+        red: { key: "r", color: "#882020", opacity: 1, lineWidth: 10 },
+        blue: { key: "b", color: "#003088", opacity: 1, lineWidth: 10 },
+        yellow: { key: "y", color: "#e68f00", opacity: 1, lineWidth: 10 },
+        paleBlue: { key: "pb", color: "#003088", opacity: 0.4, lineWidth: 15 },
+        paleGreen: { key: "pg", color: "#15781B", opacity: 0.4, lineWidth: 15 },
+        paleRed: { key: "pr", color: "#882020", opacity: 0.4, lineWidth: 15 },
         paleGrey: {
-          key: 'pgr',
-          color: '#4a4a4a',
+          key: "pgr",
+          color: "#4a4a4a",
           opacity: 0.35,
           lineWidth: 15,
         },
       },
       pieces: {
-        baseUrl: 'https://lichess1.org/assets/piece/cburnett/',
+        baseUrl: "https://lichess1.org/assets/piece/cburnett/",
       },
-      prevSvgHash: '',
+      prevSvgHash: "",
     },
     hold: timer(),
     dimensions: { width: 12, height: 12 },
     geometry: cg.Geometry.dim12x12,
-    variant: 'shuuro',
+    variant: "shuuro",
     chess960: false,
     notation: cg.Notation.ALGEBRAIC,
   };

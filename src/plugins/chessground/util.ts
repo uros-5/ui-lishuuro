@@ -28,19 +28,14 @@ export function allPos(geom: cg.Geometry): cg.Pos[] {
 
 export const pos2key = (pos: cg.Pos): cg.Key =>
   (cg.files[pos[0]] + cg.ranks[pos[1]]) as cg.Key;
-export const key2pos = (k: cg.Key): cg.Pos =>  {
+export const key2pos = (k: cg.Key): cg.Pos => {
   if (k.length == 2) {
- return [
-  k.charCodeAt(0) - 97,
-  k.charCodeAt(1) - 49,
-]}
-else {
-  let rank = parseInt(k.slice(1));
-  return [k.charCodeAt(0) - 97, rank -1]
-}
-
+    return [k.charCodeAt(0) - 97, k.charCodeAt(1) - 49];
+  } else {
+    let rank = parseInt(k.slice(1));
+    return [k.charCodeAt(0) - 97, rank - 1];
   }
- 
+};
 
 export function roleOf(letter: cg.PieceLetter): cg.Role {
   return (letter.replace("+", "p").toLowerCase() + "-piece") as cg.Role;

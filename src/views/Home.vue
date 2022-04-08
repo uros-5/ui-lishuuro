@@ -18,6 +18,6 @@ import HomeSpectators from "@/components/HomeSpectators.vue";
 </script>
 <style>
 :root {
-  --main-max-width: 1300px ;
+  --main-max-width: 1300px;
 }
 </style>

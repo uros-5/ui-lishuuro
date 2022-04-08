@@ -186,7 +186,6 @@
 }
 */
 
-
 .pocket piece.shop::before {
   content: attr(data-max);
   bottom: 1;

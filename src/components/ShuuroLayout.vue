@@ -27,8 +27,8 @@ onMounted(() => {
       ws.send(
         JSON.stringify({
           t: "live_game_start",
-          game_id: id, 
-	  color: "white"
+          game_id: id,
+          color: "white",
         })
       );
     }

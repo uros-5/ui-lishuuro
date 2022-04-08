@@ -17,11 +17,10 @@ export default defineConfig({
       },
     }),
     //ViteRsw(),
-    
-	/*ViteRsw({
+
+    /*ViteRsw({
 		crates: [{name: "shuuro-wasm", unwatch: [ '../src/**' ],}],
 	}),*/
-    
   ],
   resolve: {
     alias: {
@@ -45,5 +44,8 @@ const CUSTOM_ELEMENTS = [
   "round-player0",
   "san",
   "eval",
-  "i-side.online","variant-name","i-side","icon"
+  "i-side.online",
+  "variant-name",
+  "i-side",
+  "icon",
 ];

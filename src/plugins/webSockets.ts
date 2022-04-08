@@ -45,9 +45,13 @@ ws.onmessage = function (event) {
       msg["game_info"]["game_id"] = msg["game_id"];
       shuuroStore.setBasicData(msg["game_info"], user.$state.username);
       break;
-    case "live_game_shop_hand":
-        delete msg["t"];
-        shuuroStore.setShuuroHand(msg.hand, user.$state.username);
-        break;
+    case "live_game_hand":
+      delete msg["t"];
+      shuuroStore.setShuuroHand(msg.hand, user.$state.username);
+      break;
+    case "redirect":
+      delete msg["t"];
+      shuuroStore.redirect(msg.path);
+      break;
   }
 };

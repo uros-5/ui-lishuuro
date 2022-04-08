@@ -20,7 +20,8 @@ import { useUser } from "@/store/useUser";
 const store = useUser();
 
 onMounted(function () {
-  store.checkCookie(); ws.addEventListener("open", function (event) {
+  store.checkCookie();
+  ws.addEventListener("open", function (event) {
     store.checkCookie();
   });
 });

@@ -7,6 +7,8 @@ import { useRouter } from "vue-router";
 import router from "@/router";
 import { ServerDate } from "@/plugins/serverDate";
 import { ws } from "@/plugins/webSockets";
+import { anonConfig, liveConfig } from "@/plugins/chessground/configs";
+import { Api } from "@/plugins/chessground/api";
 
 export const useShuuroStore = defineStore("shuuro", {
   state: (): ShuuroStore => {
@@ -93,10 +95,11 @@ export const useShuuroStore = defineStore("shuuro", {
       this.$state.shop_history = data.shop_history;
       console.log(this.$state.shop_history);
       this.isThisPlayer(user);
+      this.$state.flipped_board = this.getColor(user) == "black" ? true : false;
       this.activateClock();
       ws.send(
         JSON.stringify({
-          t: "live_game_shop_hand",
+          t: "live_game_hand",
           color: this.getColor(user),
           game_id: this.$state.game_id,
         })
@@ -150,11 +153,13 @@ export const useShuuroStore = defineStore("shuuro", {
         }
       });
     },
-    setShuuroHand(hand: string,user: string): void {
+    setShuuroHand(hand: string, user: string): void {
       init().then((_exports) => {
         this.$state.shop_wasm = new ShuuroShop();
         (this.$state.shop_wasm as ShuuroShop).set_hand(hand);
-        this.$state.piece_counter = this.$state.shop_wasm.shop_items(this.getColor(user));
+        this.$state.piece_counter = this.$state.shop_wasm.shop_items(
+          this.getColor(user)
+        );
       });
     },
     getServerCredit(user: string, data: ShuuroStore) {
@@ -226,10 +231,20 @@ export const useShuuroStore = defineStore("shuuro", {
       if (this.$state.am_i_player && this.$state.current_stage == "shop") {
         this.$state.shop_wasm.confirm(this.getColor(username));
         if (this.$state.shop_wasm.isConfirmed(this.getColor(username))) {
+          ws.send(
+            JSON.stringify({
+              t: "live_game_confirm",
+              game_id: this.$state.game_id,
+              game_move: "cc",
+            })
+          );
           // ws send send move to server
-          this.$state.shop_wasm.free();
+          //this.$state.shop_wasm.free();
         }
       }
+    },
+    redirect(path: string) {
+      router.push(path);
     },
     switchClock() {
       if (this.$state.white_clock.running) {
@@ -241,11 +256,27 @@ export const useShuuroStore = defineStore("shuuro", {
       }
     },
     shopDuration() {
+      if (this.$state.current_stage != "shop") return;
       let now = new Date();
       let converted_date = ServerDate(this.$state.last_clock!);
       let elapsed = now.getTime() - converted_date.getTime();
       this.$state.white_clock_ms! -= elapsed;
       this.$state.black_clock_ms! -= elapsed;
+    },
+    setDeployCg(element: HTMLElement) {
+      let config = this.$state.am_i_player ? liveConfig : anonConfig;
+      this.$state.deploy_cground = Chessground(element!, config) as Api;
+    },
+    setFightCg(element: HTMLElement) {
+      let config = this.$state.am_i_player ? liveConfig : anonConfig;
+      this.$state.fight_cground = Chessground(element!, config) as Api;
+    },
+
+    deployCground(): Api {
+      return this.$state.deploy_cground as Api;
+    },
+    fightCground(): Api {
+      return this.$state.fight_cground as Api;
     },
   },
 });
@@ -286,8 +317,8 @@ export interface ShuuroStore {
   current_index?: number;
   white_clock_ms?: number;
   black_clock_ms?: number;
-  deploy_cground?: typeof Chessground;
-  fight_cground?: typeof Chessground;
+  deploy_cground?: Api | any;
+  fight_cground?: Api | any;
 }
 
 export interface ShopAndPlaceServerData {

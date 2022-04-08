@@ -40,7 +40,7 @@
 import { ref, Ref } from "vue";
 import { useCookies } from "vue3-cookies";
 import { ws } from "@/plugins/webSockets";
-import {useUser} from "@/store/useUser";
+import { useUser } from "@/store/useUser";
 
 const props = defineProps<{ messages: ChatMessage[]; wsType: String }>();
 const messages2: Ref<ChatMessage[]> = ref(props.messages!);
@@ -55,7 +55,7 @@ function onEnter(): void {
       JSON.stringify({
         t: props.wsType!, //"home_chat_message",
         message: message.value,
-        user: user.$state.username, 
+        user: user.$state.username,
         time: "",
       })
     );

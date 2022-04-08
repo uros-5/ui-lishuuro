@@ -7,13 +7,13 @@
     <div class="pocket-top">
       <PlayerHand
         :inCenter="false"
-	side="top"
+        side="top"
         :counter="[0, 0, 0, 0, 0, 0, 0]"
         :color="shuuroStore.getColor(topPlayer())"
         handType="pocket"
       />
     </div>
-    <ShuuroClock :color="shuuroStore.getColor(topPlayer())"  part="0" />
+    <ShuuroClock :color="shuuroStore.getColor(topPlayer())" part="0" />
     <div id="expiration-top"></div>
     <ShuuroFenPlayer :player="topPlayer()" :online="false" />
     <ShuuroFenButtons />
@@ -29,7 +29,7 @@
     <ShuuroClock :color="shuuroStore.getColor(bottomPlayer())" part="1" />
     <div class="pocket-bot">
       <PlayerHand
-      	side="bottom"
+        side="bottom"
         :inCenter="false"
         :counter="[0, 0, 0, 0, 0, 0, 0]"
         :color="shuuroStore.getColor(bottomPlayer())"

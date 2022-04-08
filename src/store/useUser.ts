@@ -13,7 +13,8 @@ export const useUser = defineStore("useUser", {
     checkCookie() {
       if (cookie.get("username") == null) {
         this.updateAnonCookie();
-      } else {this.updateAnonCookie();
+      } else {
+        this.updateAnonCookie();
         this.$state.username = cookie.get("username");
         this.$state.reg = JSON.parse(cookie.get("reg"));
       }

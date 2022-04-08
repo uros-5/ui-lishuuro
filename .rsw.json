@@ -1,5 +1,3 @@
 {
-  "crates": [
-    "shuuro-wasm"
-  ]
+  "crates": ["shuuro-wasm"]
 }

@@ -1,4 +1,19 @@
 import { Config } from "./config";
 
-export const anonConfig: Config = { draggable: {enabled: false}, selectable: {enabled: false }, drawable: { enabled: true, visible: true } };
-export const liveConfig: Config = { drawable: { enabled: true, visible: true } };
+let dests = new Map();
+dests.set("a4", ["a6", "a7"]);
+
+export const anonConfig: Config = {
+  movable: { free: false },
+  draggable: { enabled: false },
+  premovable: { enabled: false },
+  predroppable: { enabled: false },
+};
+export const liveConfig: Config = {
+  animation: { enabled: true },
+  turnColor: "white",
+  selectable: { enabled: true },
+  drawable: { enabled: true, visible: true },
+  draggable: { enabled: true },
+  movable: { showDests: true, color: "white", free: false },
+};

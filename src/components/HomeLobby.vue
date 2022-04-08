@@ -19,7 +19,7 @@
               @click="acceptGame(i)"
             >
               <td>
-                <i-side class="icon" :class="iconColor(i.color)" > </i-side>
+                <i-side class="icon" :class="iconColor(i.color)"> </i-side>
               </td>
               <td><player-title> </player-title>{{ i.username }}</td>
               <td>//</td>
@@ -48,10 +48,10 @@ function acceptGame(game: LobbyGame): void {
 }
 
 function iconColor(color: string): string {
-    if (color == "random") {
-        return `icon-adjust`;
-    }
-    return `icon-${color}`;
+  if (color == "random") {
+    return `icon-adjust`;
+  }
+  return `icon-${color}`;
 }
 
 onMounted(() => {

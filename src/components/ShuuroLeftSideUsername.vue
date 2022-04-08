@@ -3,7 +3,8 @@
     <i-side class="icon" :class="cssColor()"></i-side
     ><player
       ><a class="user-link" href="/@/u"
-        ><player-title class="player-now"> </player-title>{{ player }}<span></span></a
+        ><player-title class="player-now"> </player-title>{{ player
+        }}<span></span></a
     ></player>
   </div>
 </template>
@@ -19,7 +20,7 @@ function cssColor(): string {
 </script>
 
 <style scoped>
-.player-now { padding-right: 0.35em; }
-
+.player-now {
+  padding-right: 0.35em;
+}
 </style>
-

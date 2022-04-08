@@ -2,7 +2,7 @@
   <div class="info0 icon" data-icon="S">
     <div class="info2">
       <div class="tc">
-        {{ minute[0]/60 }}+{{ sec[0] }} • {{ ratedGame() }}•
+        {{ minute[0] / 60 }}+{{ sec[0] }} • {{ ratedGame() }}•
         <a class="user-link" target="_blank" href="/">{{ variant }}</a>
       </div>
       <info-date timestamp="">

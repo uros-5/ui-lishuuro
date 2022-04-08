@@ -1,9 +1,7 @@
 <template>
   <aside class="sidebar-second">
     <div id="seekbuttons">
-      <button class="lobby-button">
-        Create a game
-      </button>
+      <button class="lobby-button">Create a game</button>
       <button class="lobby-button">Play with a friend</button>
       <button class="lobby-button">Play with AI</button>
       <button class="lobby-button">Practice with Random-Mover</button>
@@ -13,9 +11,7 @@
     </div>
   </aside>
 </template>
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 <style>
 [data-icon]::before {
   font-size: 1.8em;

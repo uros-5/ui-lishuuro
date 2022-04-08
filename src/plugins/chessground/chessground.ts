@@ -1,20 +1,26 @@
-import { Api, start } from './api';
-import { Config, configure } from './config';
-import { HeadlessState, State, defaults } from './state';
+import { Api, start } from "./api";
+import { Config, configure } from "./config";
+import { HeadlessState, State, defaults } from "./state";
 
-import { renderWrap } from './wrap';
-import * as events from './events';
-import { render, renderResized, updateBounds } from './render';
-import * as svg from './svg';
-import * as util from './util';
-import { renderPockets, renderPocketsInitial } from './pocket';
+import { renderWrap } from "./wrap";
+import * as events from "./events";
+import { render, renderResized, updateBounds } from "./render";
+import * as svg from "./svg";
+import * as util from "./util";
+import { renderPockets, renderPocketsInitial } from "./pocket";
 
-export function Chessground(element: HTMLElement, config?: Config, height?:number,  pocketTop?: HTMLElement, pocketBottom?: HTMLElement): Api {
+export function Chessground(
+  element: HTMLElement,
+  config?: Config,
+  height?: number,
+  pocketTop?: HTMLElement,
+  pocketBottom?: HTMLElement
+): Api {
   const maybeState: State | HeadlessState = defaults();
   configure(maybeState, config || {});
 
   function redrawAll(): State {
-    const prevUnbind = 'dom' in maybeState ? maybeState.dom.unbind : undefined;
+    const prevUnbind = "dom" in maybeState ? maybeState.dom.unbind : undefined;
     // compute bounds from existing board element if possible
     // this allows non-square boards from CSS to be handled (for 3D)
     const elements = renderWrap(element, maybeState, height),
@@ -22,7 +28,8 @@ export function Chessground(element: HTMLElement, config?: Config, height?:numbe
       redrawNow = (skipSvg?: boolean): void => {
         render(state);
         renderPockets(state);
-        if (!skipSvg && elements.svg) svg.renderSvg(state, elements.svg, elements.customSvg!);
+        if (!skipSvg && elements.svg)
+          svg.renderSvg(state, elements.svg, elements.customSvg!);
       },
       onResize = (): void => {
         updateBounds(state);
@@ -39,7 +46,7 @@ export function Chessground(element: HTMLElement, config?: Config, height?:numbe
       redrawNow,
       unbind: prevUnbind,
     };
-    state.drawable.prevSvgHash = '';
+    state.drawable.prevSvgHash = "";
     updateBounds(state);
     redrawNow(false);
     events.bindBoard(state, onResize);

@@ -11,23 +11,19 @@
   </round-player0>
 </template>
 <script setup lang="ts">
-const props = defineProps({ player: String, online: Boolean});
+const props = defineProps({ player: String, online: Boolean });
 function cssOnline(): string {
-	if (props.online!) {
-		return `icon-online`;
-	}
-	return `icon-offline`;
-
+  if (props.online!) {
+    return `icon-online`;
+  }
+  return `icon-offline`;
 }
-
-
 </script>
 
 <style>
-@media(max-width: 720px) {
-    .m-ul {
-        font-size: 1.2em;
-    }
+@media (max-width: 720px) {
+  .m-ul {
+    font-size: 1.2em;
+  }
 }
-
 </style>
