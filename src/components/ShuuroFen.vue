@@ -3,13 +3,10 @@
     <div id="movelist">
       <ShuuroFenItem
         v-for="(item, index) in getHistory()"
-        v-if="
-          shuuroStore.$state.client_stage == 'shop' ||
-            shuuroStore.$state.client_stage == 'deploy'
-        "
+        v-if="fenItemCheck()"
+        :key="index"
         :fen="item[0]"
         :index="index + 1"
-        @key="index"
       />
 
       <div id="result">
@@ -19,18 +16,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
+import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import ShuuroFenItem from "./ShuuroFenItem.vue";
-import { FenItem } from "@/store/useShuuroStore";
+import { FenItem } from "@/store/useShuuroStore2";
 import { useUser } from "@/store/useUser";
-const shuuroStore = useShuuroStore();
+const shuuroStore = useShuuroStore2();
 const userStore = useUser();
-
-onMounted(() => {
-  if (shuuroStore.$state.current_stage == "shop") {
-  }
-});
 
 function getHistory(): FenItem[] {
   if (shuuroStore.$state.client_stage == "shop") {
@@ -41,7 +32,6 @@ function getHistory(): FenItem[] {
         let p = item[0][1];
         if (color == "white") {
           if (p == p.toUpperCase()) {
-            console.log(p);
             return item;
           }
         } else if (color == "black") {
@@ -68,7 +58,7 @@ function resultMessage(): string {
       return `Checkmate, ${result}`;
     case 2:
       return `${
-        result === "1-0" ? shuuroStore.$state.white : shuuroStore.$state.black
+        result === "1-0" ? shuuroStore.$state.players[0]: shuuroStore.$state.players[1]
       }, resigned`;
     case 3:
       return "Stalemate";
@@ -79,6 +69,13 @@ function resultMessage(): string {
     default:
       return "";
   }
+}
+
+function fenItemCheck(): boolean {
+  return (
+    shuuroStore.$state.client_stage == "shop" ||
+    shuuroStore.$state.client_stage == "deploy"
+  );
 }
 </script>
 <style scoped></style>

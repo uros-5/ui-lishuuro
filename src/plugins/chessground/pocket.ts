@@ -23,6 +23,7 @@ export function readPockets(
   const pockets: cg.Pockets = {};
   const rWhite = pocketRoles("white");
   const rBlack = pocketRoles("black");
+  console.log(placementPockets);
   if (rWhite) {
     pockets.white = {};
     for (const r of rWhite)
@@ -46,6 +47,7 @@ function lc(
   let letterCount = 0;
   for (let position = 0; position < str.length; position++)
     if (str.charAt(position) === letter) letterCount += 1;
+    console.log(letterCount);
   return letterCount;
 }
 
@@ -80,7 +82,10 @@ export function renderPocketsInitial(
   pocketBottom?: HTMLElement
 ): void {
   function pocketView(pocketEl: HTMLElement, position: cg.PocketPosition) {
-    if (!state.pockets) return;
+
+    if (!state.pockets) {
+      return;
+    }
 
     const color =
       position === "top" ? util.opposite(state.orientation) : state.orientation;

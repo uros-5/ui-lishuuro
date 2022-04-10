@@ -1,9 +1,6 @@
 <template>
   <div class="round-app standard">
-    <selection
-      id="mainboard"
-      class="standard"
-    >
+    <selection id="mainboard" class="standard">
       <router-view />
     </selection>
     <div class="material material-top black standard disabled" />
@@ -16,15 +13,9 @@
         hand-type="pocket"
       />
     </div>
-    <ShuuroClock
-      :color="shuuroStore.getColor(topPlayer())"
-      part="0"
-    />
+    <ShuuroClock :color="shuuroStore.getColor(topPlayer())" part="0" />
     <div id="expiration-top" />
-    <ShuuroFenPlayer
-      :player="topPlayer()"
-      :online="false"
-    />
+    <ShuuroFenPlayer :player="topPlayer()" :online="false" />
     <ShuuroFenButtons />
     <ShuuroFen />
     <div id="offer-dialog" />
@@ -35,10 +26,7 @@
       style="grid-area: user-bot"
     />
     <div id="expiration-bottom" />
-    <ShuuroClock
-      :color="shuuroStore.getColor(bottomPlayer())"
-      part="1"
-    />
+    <ShuuroClock :color="shuuroStore.getColor(bottomPlayer())" part="1" />
     <div class="pocket-bot">
       <PlayerHand
         side="bottom"
@@ -57,31 +45,31 @@ import ShuuroFenButtons from "@/components/ShuuroFenButtons.vue";
 import ShuuroFen from "@/components/ShuuroFen.vue";
 import ShuuroAfterButtons from "@/components/ShuuroAfterButtons.vue";
 import PlayerHand from "./PlayerHand.vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
+import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { useUser } from "@/store/useUser";
-const shuuroStore = useShuuroStore();
+const shuuroStore = useShuuroStore2();
 const userStore = useUser();
 
 function topPlayer(): string {
   if (shuuroStore.$state.flipped_board) {
-    return shuuroStore.$state.white;
+    return shuuroStore.$state.players[0];
   } else {
-    return shuuroStore.$state.black;
+    return shuuroStore.$state.players[1];
   }
 }
 
 function bottomPlayer(): string {
   if (shuuroStore.$state.flipped_board) {
-    return shuuroStore.$state.black;
+    return shuuroStore.$state.players[1];
   } else {
-    return shuuroStore.$state.white;
+    return shuuroStore.$state.players[0];
   }
 }
 
 function canPlay2(): boolean {
   if (
-    shuuroStore.$state.stage == "deploy" &&
-    shuuroStore.isThisPlayer(userStore.$state.username)
+    shuuroStore.$state.current_stage == "deploy" &&
+    shuuroStore.$state.am_i_player
   ) {
     return true;
   }

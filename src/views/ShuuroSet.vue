@@ -6,26 +6,30 @@
       <cg-board> </cg-board>
     </cg-container>
   </div>
--->
-</template>
+--></template>
 <script setup lang="ts">
 import Chessground from "@/plugins/chessground";
 import { anonConfig, liveConfig } from "@/plugins/chessground/configs";
-import { renderPocketsInitial } from "@/plugins/chessground/pocket";
+import { readPockets, renderPocketsInitial } from "@/plugins/chessground/pocket";
 import { useBoardSize } from "@/store/useBoardSize";
-import { useShuuroStore } from "@/store/useShuuroStore";
+import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { onMounted } from "vue";
 import { defaults } from "@/plugins/chessground/state";
+import { Api } from "@/plugins/chessground/api";
+import { renderWrap } from "@/plugins/chessground/wrap";
 
 const store = useBoardSize();
-const shuuroStore = useShuuroStore();
+const shuuroStore = useShuuroStore2();
 
 store.updateRowsAndCols(12);
 shuuroStore.updateClientStage("deploy");
 
 onMounted(() => {
   const elem = document.querySelector(".chessground12") as HTMLElement;
-  const ground = Chessground(elem, liveConfig);
+  const top = document.querySelector("#pocket0") as HTMLElement;
+  const bot = document.querySelector("#pocket1") as HTMLElement;
+  const ground = Chessground(elem, liveConfig, 829, top, bot);
+ 
   let m = new Map();
   m.set("f10", { role: "l-piece", color: "black" });
   ground.setPlinths(m);
@@ -33,8 +37,9 @@ onMounted(() => {
   m.set("f10", { role: "n-piece", color: "black" });
   m.set("a4", { role: "b-piece", color: "white" });
   ground.setPieces(m);
-  //ground.state.pieces.set("a1", { role: "l-piece", color: "white"})
-  console.log(ground);
+  ground.state.pockets = readPockets("[KRRRk]", ground.state.pocketRoles!);
+  ground.redrawAll();
+  console.log(ground.state.pockets);
 });
 
 function setStyle(): string {

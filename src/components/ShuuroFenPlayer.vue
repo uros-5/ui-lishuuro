@@ -1,16 +1,10 @@
 <template>
   <round-player0>
     <div class="player-data">
-      <i-side
-        id="player0"
-        class="icon"
-        :class="cssOnline()"
-      />
+      <i-side id="player0" class="icon" :class="cssOnline()" />
       <player>
-        <a
-          class="user-link m-ul"
-          href="/"
-        ><player-title />{{ player }}</a><rating />
+        <a class="user-link m-ul" href="/"><player-title />{{ player }}</a
+        ><rating />
       </player>
     </div>
   </round-player0>

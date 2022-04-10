@@ -1,23 +1,19 @@
 <template>
   <div class="player-data">
-    <i-side
-      class="icon"
-      :class="cssColor()"
-    /><player>
-      <a
-        class="user-link"
-        href="/@/u"
-      ><player-title class="player-now" />{{ player
-      }}<span /></a>
+    <i-side class="icon" :class="cssColor()" /><player>
+      <a class="user-link" href="/@/u"
+        ><player-title class="player-now" />{{ player }}<span
+      /></a>
     </player>
   </div>
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
-  player: String,
-  color: String,
-});
+import { defineProps } from "vue";
+const props = defineProps<{
+  player: string;
+  color: string;
+}>();
 function cssColor(): string {
   return `icon-${props.color}`;
 }

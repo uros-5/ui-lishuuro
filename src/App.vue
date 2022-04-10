@@ -17,11 +17,7 @@ function cssVariable(): string {
 
 <template>
   <Header />
-  <div
-    id="main-wrap"
-    :style="cssVariable()"
-  >
+  <div id="main-wrap" :style="cssVariable()">
     <router-view />
   </div>
 </template>
-

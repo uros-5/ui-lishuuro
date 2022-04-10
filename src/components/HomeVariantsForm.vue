@@ -3,18 +3,9 @@
     <div class="container">
       <div>
         <label for="variant">Variant</label>
-        <select
-          id="variant"
-          v-model="variant"
-          name="variant"
-        >
+        <select id="variant" v-model="variant" name="variant">
           <optgroup label="ShuuroVariant">
-            <option
-              value="shuuro12"
-              title="Shuuro, unmodified."
-            >
-              SHUURO
-            </option>
+            <option value="shuuro12" title="Shuuro, unmodified.">SHUURO</option>
           </optgroup>
         </select>
       </div>
@@ -28,11 +19,8 @@
         type="range"
         min="0"
         max="27"
-      >
-      <label
-        id="incrementlabel"
-        for="inc"
-      >&nbsp;Increment in seconds:</label>
+      />
+      <label id="incrementlabel" for="inc">&nbsp;Increment in seconds:</label>
       <span id="increment">{{ incrementDuration[incr] }}</span>
       <input
         id="inc"
@@ -42,11 +30,8 @@
         type="range"
         min="0"
         max="28"
-      >
-      <div
-        id="color-button-group"
-        style="display: block"
-      >
+      />
+      <div id="color-button-group" style="display: block">
         <button
           class="icon icon-black"
           type="button"
@@ -80,9 +65,9 @@
 </template>
 <script setup lang="ts">
 import { allowedDuration } from "@/store/useHomeLobby";
-import { ws } from "@/plugins/webSockets";
+import { SEND, ws } from "@/plugins/webSockets";
 import { useUser } from "@/store/useUser";
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 
 const userStore = useUser();
 
@@ -91,8 +76,6 @@ let incr = ref(14);
 let variant = ref("");
 let color = ref("white");
 let incrementDuration = [0].concat(allowedDuration);
-
-onMounted(() => {});
 
 function createGame() {
   let game = {
@@ -103,7 +86,7 @@ function createGame() {
     color: color.value,
     username: userStore.$state.username,
   };
-  ws.send(JSON.stringify(game));
+  SEND(game);
 }
 </script>
 

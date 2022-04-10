@@ -1,9 +1,9 @@
 <template />
 <script setup lang="ts">
 import { onMounted } from "vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
+import { useShuuroStore2 } from "@/store/useShuuroStore2";
 
-const shuuroStore = useShuuroStore();
+const shuuroStore = useShuuroStore2();
 shuuroStore.updateClientStage("fight");
 
 onMounted(() => {});

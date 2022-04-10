@@ -254,12 +254,12 @@ export function renderResized(s: State): void {
 export function updateBounds(s: State): void {
   const bounds = s.dom.elements.wrap.getBoundingClientRect();
   const container = s.dom.elements.container;
-  const ratio = bounds.height / bounds.width;
+  //const ratio = bounds.height / bounds.width;
   const width =
     (Math.floor((bounds.width * window.devicePixelRatio) / s.dimensions.width) *
       s.dimensions.width) /
     window.devicePixelRatio;
-  const height = width * ratio;
+  //const height = width * ratio;
   container.style.width = width + "px";
   container.style.height = width + "px";
   s.dom.bounds.clear();

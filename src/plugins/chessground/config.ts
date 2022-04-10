@@ -182,6 +182,7 @@ export function configure(state: HeadlessState, config: Config): void {
   }
 }
 
+// eslint-disable-next-line
 function deepMerge(base: any, extend: any): void {
   for (const key in extend) {
     if (isObject(base[key]) && isObject(extend[key]))

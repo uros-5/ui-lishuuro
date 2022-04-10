@@ -15,7 +15,8 @@ export const useBoardSize = defineStore("boardSize", {
     genVars(): string {
       return `--cg-width: ${this.height}px; --cg-height: ${this.height}px;`;
     },
-    resize(event: Event) {
+    // eslint-disable-next-line
+    resize(_event: Event) {
       this.updateHeight(document.querySelector("#mainboard").offsetWidth);
     },
     cgContainerStyle(): string {

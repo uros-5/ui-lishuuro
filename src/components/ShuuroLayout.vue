@@ -1,8 +1,5 @@
 <template>
-  <main
-    class="round"
-    style="--zoom: 100"
-  >
+  <main class="round" style="--zoom: 100">
     <ShuuroLeftSide />
     <ShuuroMain />
   </main>
@@ -13,50 +10,30 @@ import { ref, onMounted } from "vue";
 import router from "@/router";
 import ShuuroLeftSide from "@/components/ShuuroLeftSide.vue";
 import ShuuroMain from "@/components/ShuuroMain.vue";
-import { ShuuroStore, useShuuroStore } from "@/store/useShuuroStore";
+import { ShuuroStore, useShuuroStore2 } from "@/store/useShuuroStore2";
 import { useUser } from "@/store/useUser";
 import { Clock } from "@/plugins/clock";
-import { ws } from "@/plugins/webSockets";
+import { SEND, ws } from "@/plugins/webSockets";
 
-const shuuroStore = useShuuroStore();
+const shuuroStore = useShuuroStore2();
 const userStore = useUser();
-shuuroStore.isThisPlayer(userStore.$state.username);
 onMounted(() => {
   const id = router.currentRoute.value.params["id"];
   if (id == "" || id == undefined) {
     router.push("/");
   } else {
-    if (shuuroStore.$state.game_id == "1") {
-      ws.send(
-        JSON.stringify({
-          t: "live_game_start",
-          game_id: id,
-          color: "white",
-        })
-      );
+    if (shuuroStore.$state.game_id == "") {
+      SEND({
+        t: "live_game_start",
+        game_id: id,
+        color: "white",
+      });
     }
     //fetchData();
   }
 });
 const zoomValue = ref("100");
 
-function fetchData() {
-  let data: ShuuroStore = {
-    min: 5,
-    incr: 5,
-    white: "uros",
-    black: "anona",
-    stage: "shop",
-    result: "*",
-    side_to_move: "white",
-    status: -1,
-    game_started: "2021",
-    game_id: "1",
-    rated_game: true,
-  };
-  shuuroStore.setBasicData(data, userStore.$state.username);
-  //shuuroStore.activateClock();
-}
 </script>
 
 <style>

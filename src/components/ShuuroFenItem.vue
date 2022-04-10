@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="index! % 2 == 1"
-    class="move counter"
-  >
+  <div v-if="index! % 2 == 1" class="move counter">
     {{ Math.floor((index! /2) +1) }}
   </div>
 
@@ -12,15 +9,17 @@
     :ply="index"
     @click="updateIndex"
   >
-    <san>{{ fen }}</san><eval :id="`ply${index!}`" />
+    <san>{{ fen }}</san
+    ><eval :id="`ply${index!}`" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useShuuroStore } from "@/store/useShuuroStore";
+import { defineProps } from "vue";
+import { useShuuroStore2 } from "@/store/useShuuroStore2";
 
 const props = defineProps({ index: Number, fen: String });
-const shuuroStore = useShuuroStore();
+const shuuroStore = useShuuroStore2();
 
 function updateIndex(): void {
   shuuroStore.$state.current_index = props.index! - 1;

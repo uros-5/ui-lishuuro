@@ -1,16 +1,9 @@
 <template>
-  <div
-    class="info0 icon"
-    data-icon="S"
-  >
+  <div class="info0 icon" data-icon="S">
     <div class="info2">
       <div class="tc">
-        {{ minute[0] / 60 }}+{{ sec[0] }} • {{ ratedGame() }}•
-        <a
-          class="user-link"
-          target="_blank"
-          href="/"
-        >{{ variant }}</a>
+        {{ minute / 60000 }}+{{ sec / 1000 }} • {{ ratedGame() }}•
+        <a class="user-link" target="_blank" href="/">{{ variant }}</a>
       </div>
       <info-date timestamp="">
         {{ gameDate() }}
@@ -19,15 +12,16 @@
   </div>
 </template>
 <script setup lang="ts">
+import { defineProps } from "vue";
 import { timeago } from "@/plugins/timeago";
 
-const props = defineProps({
-  variant: String,
-  minute: Number,
-  sec: Number,
-  date: String,
-  rated: Boolean,
-});
+const props = defineProps<{
+  variant: string;
+  minute: number;
+  sec: number;
+  date: string;
+  rated: boolean;
+}>();
 
 function ratedGame(): string {
   if (props.rated) {
@@ -41,7 +35,7 @@ function gameDate(): string {
   if (props.date == "*") {
     return "Playing right now";
   } else {
-    return timeago(props.date!);
+    return timeago(props.date);
   }
 }
 </script>

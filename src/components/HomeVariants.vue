@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="panel-container"
-    class="panel-container"
-  >
+  <div id="panel-container" class="panel-container">
     <HomeVariantsForm />
   </div>
 </template>

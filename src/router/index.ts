@@ -22,12 +22,12 @@ const routes: Array<RouteRecordRaw> = [
           import(/* webpackChunkName: "ShuuroShop" */ "@/views/ShuuroShop.vue"),
       },
       {
-        path: "set/:id",
+        path: "deploy/:id",
         component: () =>
           import(/* webpackChunkName: "ShuuroSet" */ "@/views/ShuuroSet.vue"),
       },
       {
-        path: "play/:id",
+        path: "fight/:id",
         component: () =>
           import(/* webpackChunkName: "ShuuroSet" */ "@/views/ShuuroPlay.vue"),
       },

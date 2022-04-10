@@ -1,7 +1,4 @@
 import { defineStore } from "pinia";
-import { useCookies } from "vue3-cookies";
-
-const cookie = useCookies().cookies;
 
 export interface LobbyGame {
   t?: string;

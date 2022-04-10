@@ -14,6 +14,7 @@ import { predrop } from "./predrop";
 import * as cg from "./types";
 import { cancelDropMode } from "./drop";
 
+// eslint-disable-next-line
 export function callUserFunction<T extends (...args: any[]) => void>(
   f: T | undefined,
   ...args: Parameters<T>

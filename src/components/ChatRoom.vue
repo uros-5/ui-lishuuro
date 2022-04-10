@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="roundchat"
-    class="roundchat chat"
-  >
+  <div id="roundchat" class="roundchat chat">
     <div class="chatroom">
       Chat room
       <input
@@ -11,25 +8,16 @@
         name="checkbox"
         type="checkbox"
         @click="toggle"
-      >
+      />
     </div>
     <ol id="lobbychat-messages">
-      <div
-        v-if="hiddenChat"
-        id="messages"
-      >
-        <li
-          v-for="i in messages"
-          :key="0"
-          class="message"
-        >
-          <div class="time">
-            {{ i.time }}
-          </div>
+      <div v-if="hiddenChat" id="messages">
+        <li v-for="i in messages" :key="i.time" class="message">
+          <div class="time">{{ i.time }}</div>
           <span class="user">
             <a href="/">{{ i.user }}</a>
           </span>
-          <span> {{ i.message }} </span>
+          <span>{{ i.message }}</span>
         </li>
       </div>
     </ol>
@@ -44,18 +32,18 @@
       :placeholder="setPlaceholder()"
       :disabled="toDisableInput()"
       @keyup.enter="onEnter"
-    >
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, Ref } from "vue";
+import { ref, defineProps } from "vue";
 import { useCookies } from "vue3-cookies";
 import { ws } from "@/plugins/webSockets";
 import { useUser } from "@/store/useUser";
+import { SEND } from "@/plugins/webSockets";
 
 const props = defineProps<{ messages: ChatMessage[]; wsType: string }>();
-const messages2: Ref<ChatMessage[]> = ref(props.messages!);
 const message = ref("");
 const hiddenChat = ref(true);
 const cookie = useCookies().cookies;
@@ -63,14 +51,12 @@ const user = useUser();
 
 function onEnter(): void {
   if (message.value.length > 0 && message.value.length < 80) {
-    ws.send(
-      JSON.stringify({
-        t: props.wsType!, //"home_chat_message",
-        message: message.value,
-        user: user.$state.username,
-        time: "",
-      })
-    );
+    SEND({
+      t: props.wsType, //"home_chat_message",
+      message: message.value,
+      user: user.$state.username,
+      time: "",
+    });
     message.value = "";
   }
 }

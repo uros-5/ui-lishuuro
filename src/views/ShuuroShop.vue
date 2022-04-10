@@ -13,9 +13,7 @@
       :color="shuuroStore.getColor(userStore.$state.username)"
       hand-type="shop"
     />
-    <p class="local-credit">
-      Credit: {{ shuuroStore.$state.credit }}
-    </p>
+    <p class="local-credit">Credit: {{ shuuroStore.$state.credit }}</p>
     <button
       class="shuuro-confirm"
       @click="shuuroStore.confirm(userStore.$state.username)"
@@ -28,16 +26,15 @@
 <script setup lang="ts">
 import PlayerHand from "@/components/PlayerHand.vue";
 import { onMounted } from "vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
-import { ShopAndPlaceServerData } from "@/store/useShuuroStore";
+import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { useUser } from "@/store/useUser";
-import { dataPrice, pieces } from "@/store/useShuuroStore";
+import { dataPrice, pieces } from "@/store/useShuuroStore2";
 
-const shuuroStore = useShuuroStore();
+const shuuroStore = useShuuroStore2();
 const userStore = useUser();
 onMounted(() => {
   shuuroStore.updateClientStage("shop");
-  shuuroStore.setShuuroShop(shuuroStore.getColor(userStore.$state.username));
+  shuuroStore.setWasm(shuuroStore.getColor(userStore.$state.username));
 });
 </script>
 

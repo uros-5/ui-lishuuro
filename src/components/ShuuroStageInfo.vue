@@ -5,44 +5,34 @@
         variant="Shuuro"
         :minute="shuuroStore.$state.min"
         :sec="shuuroStore.$state.incr"
+        :rated="shuuroStore.$state.rated_game"
         date="*"
       />
       <ShuuroLeftSideUsername
-        :player="shuuroStore.$state.white"
+        :player="shuuroStore.$state.players[0]"
         color="white"
       />
       <ShuuroLeftSideUsername
-        :player="shuuroStore.$state.black"
+        :player="shuuroStore.$state.players[1]"
         color="black"
       />
     </section>
     <section class="shuuro-navigator">
-      <router-link
-        class="user-link"
-        :to="navRoute('shop')"
-      >
-        Shop
-      </router-link>
-      <router-link
-        class="user-link"
-        :to="navRoute('set')"
-      >
+      <router-link class="user-link" :to="navRoute('shop')"> Shop </router-link>
+      <router-link class="user-link" :to="navRoute('deploy')">
         Deploy
       </router-link>
-      <router-link
-        class="user-link"
-        :to="navRoute('play')"
-      >
+      <router-link class="user-link" :to="navRoute('fight')">
         Fight
       </router-link>
     </section>
   </div>
 </template>
 <script setup lang="ts">
-import { useShuuroStore } from "@/store/useShuuroStore";
+import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import ShuuroLeftSideUsername from "./ShuuroLeftSideUsername.vue";
 import ShuuroStageMatchInfo from "@/components/ShuuroStageMatchInfo.vue";
-const shuuroStore = useShuuroStore();
+const shuuroStore = useShuuroStore2();
 
 function navRoute(stage: string): string {
   return `/shuuro/${stage}/${shuuroStore.$state.game_id}`;
