@@ -10,13 +10,18 @@
 <script setup lang="ts">
 import Chessground from "@/plugins/chessground";
 import { anonConfig, liveConfig } from "@/plugins/chessground/configs";
-import { readPockets, renderPocketsInitial } from "@/plugins/chessground/pocket";
+import {
+  readPockets,
+  renderPocketsInitial,
+} from "@/plugins/chessground/pocket";
 import { useBoardSize } from "@/store/useBoardSize";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { onMounted } from "vue";
 import { defaults } from "@/plugins/chessground/state";
 import { Api } from "@/plugins/chessground/api";
 import { renderWrap } from "@/plugins/chessground/wrap";
+import router from "@/router";
+import { SEND } from "@/plugins/webSockets";
 
 const store = useBoardSize();
 const shuuroStore = useShuuroStore2();
@@ -25,21 +30,13 @@ store.updateRowsAndCols(12);
 shuuroStore.updateClientStage("deploy");
 
 onMounted(() => {
-  const elem = document.querySelector(".chessground12") as HTMLElement;
-  const top = document.querySelector("#pocket0") as HTMLElement;
-  const bot = document.querySelector("#pocket1") as HTMLElement;
-  const ground = Chessground(elem, liveConfig, 829, top, bot);
- 
-  let m = new Map();
-  m.set("f10", { role: "l-piece", color: "black" });
-  ground.setPlinths(m);
-  m = new Map();
-  m.set("f10", { role: "n-piece", color: "black" });
-  m.set("a4", { role: "b-piece", color: "white" });
-  ground.setPieces(m);
-  ground.state.pockets = readPockets("[KRRRk]", ground.state.pocketRoles!);
-  ground.redrawAll();
-  console.log(ground.state.pockets);
+  if (!shuuroStore.$state.deploy_cground || shuuroStore.$state.game_id == "") {
+    SEND({
+      t: "live_game_start",
+      game_id: router.currentRoute.value.params["id"],
+      color: "white",
+    });
+  }
 });
 
 function setStyle(): string {

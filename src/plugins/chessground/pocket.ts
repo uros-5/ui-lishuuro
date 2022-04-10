@@ -23,7 +23,6 @@ export function readPockets(
   const pockets: cg.Pockets = {};
   const rWhite = pocketRoles("white");
   const rBlack = pocketRoles("black");
-  console.log(placementPockets);
   if (rWhite) {
     pockets.white = {};
     for (const r of rWhite)
@@ -47,7 +46,6 @@ function lc(
   let letterCount = 0;
   for (let position = 0; position < str.length; position++)
     if (str.charAt(position) === letter) letterCount += 1;
-    console.log(letterCount);
   return letterCount;
 }
 
@@ -82,7 +80,6 @@ export function renderPocketsInitial(
   pocketBottom?: HTMLElement
 ): void {
   function pocketView(pocketEl: HTMLElement, position: cg.PocketPosition) {
-
     if (!state.pockets) {
       return;
     }
@@ -132,6 +129,7 @@ export function renderPocketsInitial(
         p.addEventListener(name, (e: cg.MouchEvent) => {
           // movable.free is synonymous with editor mode, and right now click-drop not supported for pocket pieces
           if (/*state.movable.free ||*/ state.movable.color === color)
+
             click(state, e);
         })
       );
@@ -153,7 +151,6 @@ export function renderPocketsInitial(
 
 export function click(state: HeadlessState, e: cg.MouchEvent): void {
   if (e.button !== undefined && e.button !== 0) return; // only touch or left click
-
   const el = e.target as HTMLElement,
     role = el.getAttribute("data-role") as cg.Role,
     color = el.getAttribute("data-color") as cg.Color,
@@ -178,6 +175,7 @@ export function click(state: HeadlessState, e: cg.MouchEvent): void {
 }
 
 export function drag(state: HeadlessState, e: cg.MouchEvent): void {
+    
   if (e.button !== undefined && e.button !== 0) return; // only touch or left click
   const el = e.target as HTMLElement,
     role = el.getAttribute("data-role") as cg.Role,
@@ -200,7 +198,7 @@ export function drag(state: HeadlessState, e: cg.MouchEvent): void {
       el.setAttribute("canceledDropMode", "true");
     }
   }
-
+    
   if (state.movable.dests) {
     const dropDests = new Map([
       [

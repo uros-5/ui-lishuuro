@@ -4,9 +4,11 @@ import { Clock } from "@/plugins/clock";
 import Chessground from "@/plugins/chessground";
 import router from "@/router";
 import { ServerDate } from "@/plugins/serverDate";
-import { ws, SEND } from "@/plugins/webSockets";
+import { SEND } from "@/plugins/webSockets";
 import { anonConfig, liveConfig } from "@/plugins/chessground/configs";
 import { Api } from "@/plugins/chessground/api";
+import { readPockets } from "@/plugins/chessground/pocket";
+import { Key, Piece } from "@/plugins/chessground/types";
 
 export const useShuuroStore2 = defineStore("shuuro2", {
   state: (): ShuuroStore => {
@@ -53,6 +55,9 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         color: this.$state.player_color,
         game_id: this.$state.game_id,
       });
+      if (this.$state.current_stage == "deploy") {
+        this.setDeployCg();
+      }
     },
 
     // set wasm for all stages
@@ -162,19 +167,21 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           let confirmed = this.$state.confirmed_players?.findIndex(
             (item) => item == true
           );
-          if (confirmed != -1) {
-            this.clock(confirmed!).setTime(this.$state.clock_ms[confirmed!]);
-            this.clock(confirmed!).pause(false);
-            let otherClock = confirmed == 0 ? 1 : 0;
-            this.clock(otherClock).start(this.$state.clock_ms[otherClock]);
-            return;
-          }
           const now = new Date();
           const converted_date = ServerDate(this.$state.last_clock!);
           const elapsed = now.getTime() - converted_date.getTime();
+
+          let otherClock;
+          if (confirmed != -1) {
+            this.clock(confirmed!).setTime(this.$state.clock_ms[confirmed!]);
+            this.clock(confirmed!).pause(false);
+            otherClock = confirmed == 0 ? 1 : 0;
+            this.$state.clock_ms[otherClock] -= elapsed;
+            this.clock(otherClock).start(this.$state.clock_ms[otherClock]);
+            return;
+          }
           this.$state.clock_ms[0] -= elapsed;
           this.$state.clock_ms[1] -= elapsed;
-
           this.clock(0).start(this.$state.clock_ms[0]);
           this.clock(1).start(this.$state.clock_ms[1]);
         } else {
@@ -190,15 +197,42 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     // set deploy chessground
-    setDeployCg(element: HTMLElement) {
+    setDeployCg() {
       const config = this.$state.am_i_player ? liveConfig : anonConfig;
-      this.$state.deploy_cground = Chessground(element!, config) as Api;
+      const elem = document.querySelector(".chessground12") as HTMLElement;
+      const top = document.querySelector("#pocket0") as HTMLElement;
+      const bot = document.querySelector("#pocket1") as HTMLElement;
+      this.$state.deploy_cground = Chessground(
+        elem,
+        config,
+        800,
+        top,
+        bot
+      ) as Api;
+      this.$state.player! == 1
+        ? this.deployCground().toggleOrientation()
+        : null;
+      this.$state.deploy_cground.state.pockets = readPockets(
+        "[KRRRk]",
+        this.$state.deploy_cground.state.pocketRoles
+      );
+      let m = new Map().set("K@", ["a1", "a2"]);
+      this.deployCground().state.movable.dests = m;
+      this.$state.deploy_cground.redrawAll();
+      this.deployCground().state.events.dropNewPiece = this.decrementPocket;
+      console.log(this.$state.deploy_cground);
     },
 
     // set fight chessground
     setFightCg(element: HTMLElement) {
       const config = this.$state.am_i_player ? liveConfig : anonConfig;
       this.$state.fight_cground = Chessground(element!, config) as Api;
+    },
+
+    decrementPocket(piece: Piece, key: Key) {
+      console.log(piece, key);
+      //this.deployCground().state.pockets![piece.color!]?;
+      this.deployCground().state.pockets = readPockets("[qqqRR]", this.deployCground().state.pocketRoles!);
     },
 
     // pause current and start another clock

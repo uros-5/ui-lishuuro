@@ -16,7 +16,7 @@ ws.onmessage = function (event) {
   const shuuroStore = useShuuroStore2();
 
   const msg = JSON.parse(event.data);
-  //console.log(msg);
+  console.log(msg);
   switch (msg.t) {
     case "active_players_count":
       user.updatePlCount(msg.cnt);

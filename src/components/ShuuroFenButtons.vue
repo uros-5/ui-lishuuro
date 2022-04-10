@@ -15,12 +15,16 @@
   </div>
 </template>
 <script setup lang="ts">
+import { Api } from "@/plugins/chessground/api";
 import { useShuuroStore2 } from "../store/useShuuroStore2";
 const shuuroStore = useShuuroStore2();
 
 function flipSide(): void {
   let now = shuuroStore.$state.flipped_board;
   shuuroStore.$state.flipped_board = !now;
+  if (shuuroStore.current_stage == "deploy") {
+    (shuuroStore.$state.deploy_cground as Api).toggleOrientation();
+  }
 }
 
 function fastBackward(): void {

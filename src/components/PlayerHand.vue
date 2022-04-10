@@ -10,6 +10,7 @@
     >
       <piece
         v-for="(i, index) in pieces"
+	v-if="handType == 'shop' "
         :key="i"
         :class="`${color} ${i} ${handType}`"
         :data-color="color"
