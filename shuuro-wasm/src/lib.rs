@@ -178,6 +178,26 @@ impl ShuuroPosition {
         current_length > past_length
     }
 
+    pub fn place_moves(&mut self, piece: char) -> Map {
+        let list = Map::new();
+        if let Some(p) = Piece::from_sfen(piece) {
+            let bb = self.shuuro.empty_squares(p);
+            let moves = Array::new();
+            for i in bb {
+                moves.push(&JsValue::from_str(i.to_string().as_str()));
+            }
+            let key = format!("{}@", piece.to_uppercase());
+            let key = JsValue::from_str(key.as_str());
+            let value = JsValue::from(moves);
+            list.set(&key, &value);
+        }
+        list
+    }
+
+    pub fn side_to_move(&self) -> String {
+        self.shuuro.side_to_move().to_string()
+    }
+
     #[wasm_bindgen]
     pub fn play(&mut self, from: &str, to: &str) -> String {
         let res = self.shuuro.play(&from, &to);
