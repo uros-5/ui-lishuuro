@@ -11,30 +11,39 @@ export const anonConfig: Config = {
   draggable: { enabled: false },
   premovable: { enabled: false },
   predroppable: { enabled: false },
-  pocketRoles: p
+  pocketRoles: p,
 };
 export const liveConfig: Config = {
   animation: { enabled: true },
-  turnColor: "black",
+  turnColor: "white",
   selectable: { enabled: true },
   drawable: { enabled: true, visible: true },
   draggable: { enabled: true },
-  movable: { showDests: true, color: "black", free: false },
-  events: {
-    dropNewPiece: pieceDropped 
+  movable: {
+    showDests: true,
+    color: "black",
+    free: false,
   },
-  pocketRoles: p
-}
+  events: {
+    dropNewPiece: pieceDropped,
+    pocketSelect: select2,
+  },
+  pocketRoles: p,
+};
 
 export function p(color: Color): PieceLetter[] {
-    if (color == "white") {
-      return ["K", "Q", "R", "B", "N", "P"];
-    } else if (color == "black") {
-      return ["k", "q", "r", "b", "n", "p"];
-    }
-    return [];
+  if (color == "white") {
+    return ["K", "Q", "R", "B", "N", "P"];
+  } else if (color == "black") {
+    return ["k", "q", "r", "b", "n", "p"];
   }
+  return [];
+}
+
 export function pieceDropped(piece: cg.Piece, key: cg.Key) {
   console.log(piece, key);
-  
+}
+
+export function select2(key: cg.Piece) {
+  console.log(key);
 }

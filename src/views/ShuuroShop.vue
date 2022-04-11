@@ -34,7 +34,6 @@ const shuuroStore = useShuuroStore2();
 const userStore = useUser();
 onMounted(() => {
   shuuroStore.updateClientStage("shop");
-  shuuroStore.setWasm(shuuroStore.getColor(userStore.$state.username));
 });
 </script>
 

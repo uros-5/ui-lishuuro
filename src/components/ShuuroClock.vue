@@ -1,7 +1,7 @@
 <template>
   <div :class="`info-wrap${part}`">
     <div class="clock-wrap">
-      <div :id="`clock${part}`" @click="shuuroStore.switchClock()">
+      <div :id="`clock${part}`"> 
         <div class="clock" :class="{ running: isRunning() }">
           <div class="clock-time min">
             {{ min() }}

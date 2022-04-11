@@ -108,6 +108,7 @@ export interface HeadlessState {
     dropNewPiece?: (piece: cg.Piece, key: cg.Key) => void;
     select?: (key: cg.Key) => void; // called when a square is selected
     insert?: (elements: cg.Elements) => void; // when the board DOM has been (re)inserted
+    pocketSelect?: (piece: cg.Piece) => void;
   };
   drawable: Drawable;
   exploding?: cg.Exploding;

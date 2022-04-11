@@ -189,6 +189,7 @@ export function drag(state: HeadlessState, e: cg.MouchEvent): void {
   // the selected piece remains selected which is not how board pieces behave and more importantly is counter intuitive
   if (n === 0) return;
 
+  state.events!.pocketSelect!({role,color});
   // always cancel drop mode if it is active
   if (state.dropmode.active) {
     cancelDropMode(state);

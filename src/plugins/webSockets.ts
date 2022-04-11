@@ -56,9 +56,16 @@ ws.onmessage = function (event) {
     case "live_game_confirmed":
       delete msg["t"];
       shuuroStore.setConfirmed(msg.confirmed);
+    case "pause_confirmed":
+      delete msg["t"];
+      shuuroStore.pauseConfirmed(msg.confirmed);
     case "redirect":
       delete msg["t"];
       shuuroStore.redirect(msg.path);
+      break;
+    case "redirect_deploy":
+      delete msg["t"];
+      shuuroStore.redirectDeploy(msg);
       break;
   }
 };

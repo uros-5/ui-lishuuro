@@ -20,7 +20,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.game_id = s.game_id;
       this.$state.min = s.min;
       this.$state.incr = s.incr;
-      this.$state.side_to_move = s.side_to_move;
+      this.$state.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
       this.$state.last_clock = s.last_clock;
       this.$state.current_stage = s.current_stage;
       this.$state.client_stage = s.current_stage;
@@ -44,33 +44,30 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           : this.$state.credits[1];
       this.$state.player_color = this.getColor(username) as Color;
       this.$state.confirmed_players = [false, false];
+      this.$state.sfen = s.sfen;
+      this.setWasm();
       router.push({ path: `/shuuro/${s.current_stage}/${s.game_id}` });
-      SEND({
-        t: "live_game_hand",
-        color: this.$state.player_color,
-        game_id: this.$state.game_id,
-      });
-      SEND({
-        t: "live_game_confirmed",
-        color: this.$state.player_color,
-        game_id: this.$state.game_id,
-      });
-      if (this.$state.current_stage == "deploy") {
+      let stage = this.$state.current_stage;
+      if (s.current_stage == "shop") {
+        this.shopInfo();
+      } else if (stage == "deploy") {
         this.setDeployCg();
+        this.setDeployWasm(s.sfen);
+      } else if (stage == "fight") {
+        //this.setFightWasm();
       }
     },
 
     // set wasm for all stages
-    setWasm(color: string): void {
+    setWasm(): void {
       // eslint-disable-next-line
       init().then((_exports) => {
-        if (this.credit == 800 || color == "n") {
+        if (!this.$state.shop_wasm) {
           this.$state.shop_wasm = new ShuuroShop();
+        } else if (!this.$state.deploy_wasm) {
           this.$state.deploy_wasm = new ShuuroPosition();
+        } else {
           this.$state.fight_wasm = new ShuuroPosition();
-          //sethand
-          //wasmObject.setHand(reponse.hand);
-          //credit.value = wasmObject.getCredit(color.value);
         }
       });
     },
@@ -93,27 +90,38 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.client_stage = stage;
     },
 
-    // toggle side to move
-    toggleStm(): void {
-      if (this.$state.side_to_move == "black") {
-        this.$state.side_to_move = "white";
-      } else if (this.$state.side_to_move == "white") {
-        this.$state.side_to_move = "black";
-      }
+    // SHOP PARTS
+
+    // get hand and confirmed_players
+    shopInfo(): void {
+      SEND({
+        t: "live_game_hand",
+        color: this.$state.player_color,
+        game_id: this.$state.game_id,
+      });
+      SEND({
+        t: "live_game_confirmed",
+        color: this.$state.player_color,
+        game_id: this.$state.game_id,
+      });
     },
 
-    // SHOP PARTS
+    // get from server confirmed and set
+    setConfirmed(data: [boolean, boolean]) {
+      this.$state.confirmed_players = data;
+      this.activateClock();
+    },
+
     // buying piece
     buy(p: string, color: string) {
-      const new_credit = this.$state.shop_wasm.getCredit(color);
-
-      if (new_credit <= this.$state.credit! && !this.amIConfirmed()) {
+      if (this.canShop()) {
         this.$state.piece_counter = this.$state.shop_wasm.buy(p);
         const new_credit = this.$state.shop_wasm.getCredit(color);
         const counter = this.$state.shop_wasm.get_piece(p);
-        // ws send move to server
         const game_move = `+${p}`;
-        this.$state.shop_history?.push([`${game_move} ${counter}`, counter]);
+        if (new_credit != this.$state.credit) {
+          this.$state.shop_history?.push([`${game_move} ${counter}`, counter]);
+        }
         SEND({
           t: "live_game_buy",
           game_id: this.$state.game_id,
@@ -126,11 +134,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // confirm shopping list
     confirm(username: string) {
-      if (
-        this.$state.am_i_player &&
-        this.$state.current_stage == "shop" &&
-        !this.amIConfirmed()
-      ) {
+      if (this.canShop()) {
         this.$state.shop_wasm.confirm(this.$state.player_color);
         if (this.$state.shop_wasm.isConfirmed(this.$state.player_color)) {
           SEND({
@@ -140,53 +144,63 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           });
           this.clockPause(this.$state.player!);
           this.$state.confirmed_players![this.$state.player!] = true;
-          // ws send send move to server
-          //this.$state.shop_wasm.free();
         }
       }
     },
 
-    // get from server confirmed and set
-    setConfirmed(data: [boolean, boolean]) {
+    // CLOCKS PART
+    pauseConfirmed(data: [boolean, boolean]) {
       this.$state.confirmed_players = data;
-      this.activateClock();
-      if (this.amIConfirmed()) {
-        let ms = this.$state.clock_ms[this.$state.player!];
-        let clock = this.$state.clocks[this.$state.player!];
-        (clock as Clock).pause(true);
-        (clock as Clock).setTime(ms!);
+      let confirmed = this.$state.confirmed_players?.findIndex(
+        (item) => item == true
+      );
+      if (confirmed != -1) {
+        this.clockPause(confirmed);
       }
+    },
+
+    // start both clocks
+    startBoth(elapsed: number) {
+      this.$state.clock_ms[0] -= elapsed;
+      this.$state.clock_ms[1] -= elapsed;
+      this.clock(0).start(this.$state.clock_ms[0]);
+      this.clock(1).start(this.$state.clock_ms[1]);
+    },
+
+    // start game glocks
+    startNormal(elapsed: number) {
+      this.$state.clock_ms[this.$state.side_to_move] -= elapsed;
+      this.clock(this.$state.side_to_move).start(
+        this.$state.clock_ms[this.$state.side_to_move]
+      );
+      let otherClock = this.$state.side_to_move == 0 ? 1 : 0;
+      this.clock(otherClock).setTime(this.$state.clock_ms[otherClock]);
+      this.clockPause(otherClock);
     },
 
     // start clocks
     activateClock(): void {
       this.clock(0).onTick(this.clock(0).renderTime);
       this.clock(1).onTick(this.clock(1).renderTime);
+      let elapsed = this.elapsed();
       if (this.$state.status < 0) {
         if (this.$state.current_stage == "shop") {
           let confirmed = this.$state.confirmed_players?.findIndex(
             (item) => item == true
           );
-          const now = new Date();
-          const converted_date = ServerDate(this.$state.last_clock!);
-          const elapsed = now.getTime() - converted_date.getTime();
-
           let otherClock;
           if (confirmed != -1) {
             this.clock(confirmed!).setTime(this.$state.clock_ms[confirmed!]);
+            this.clockPause(confirmed!);
             this.clock(confirmed!).pause(false);
             otherClock = confirmed == 0 ? 1 : 0;
             this.$state.clock_ms[otherClock] -= elapsed;
             this.clock(otherClock).start(this.$state.clock_ms[otherClock]);
             return;
           }
-          this.$state.clock_ms[0] -= elapsed;
-          this.$state.clock_ms[1] -= elapsed;
-          this.clock(0).start(this.$state.clock_ms[0]);
-          this.clock(1).start(this.$state.clock_ms[1]);
+          this.startBoth(elapsed);
         } else {
-          this.clock(0).setTime(this.$state.clock_ms[0]);
-          this.clock(1).setTime(this.$state.clock_ms[1]);
+          this.startNormal(elapsed);
         }
       }
     },
@@ -196,6 +210,15 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.clock(id).pause(true);
     },
 
+    // elapsed time since last clock
+    elapsed(): number {
+      const now = new Date();
+      const converted_date = ServerDate(this.$state.last_clock!);
+      const elapsed = now.getTime() - converted_date.getTime();
+      return elapsed;
+    },
+
+    // CHESSGROUND PART
     // set deploy chessground
     setDeployCg() {
       const config = this.$state.am_i_player ? liveConfig : anonConfig;
@@ -212,15 +235,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.player! == 1
         ? this.deployCground().toggleOrientation()
         : null;
-      this.$state.deploy_cground.state.pockets = readPockets(
-        "[KRRRk]",
-        this.$state.deploy_cground.state.pocketRoles
-      );
-      let m = new Map().set("K@", ["a1", "a2"]);
-      this.deployCground().state.movable.dests = m;
-      this.$state.deploy_cground.redrawAll();
+      this.deployCground().redrawAll();
       this.deployCground().state.events.dropNewPiece = this.decrementPocket;
-      console.log(this.$state.deploy_cground);
     },
 
     // set fight chessground
@@ -229,23 +245,21 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.fight_cground = Chessground(element!, config) as Api;
     },
 
+    // decrement pocket item number
     decrementPocket(piece: Piece, key: Key) {
-      console.log(piece, key);
       //this.deployCground().state.pockets![piece.color!]?;
-      this.deployCground().state.pockets = readPockets("[qqqRR]", this.deployCground().state.pocketRoles!);
+      this.deployCground().state.pockets = readPockets(
+        "[qqqRR]",
+        this.deployCground().state.pocketRoles!
+      );
+      this.deployCground().redrawAll();
     },
 
     // pause current and start another clock
     switchClock() {
-      let w = this.clock(0);
-      let b = this.clock(1);
-      if (w.running) {
-        w.pause(true);
-        b.start();
-      } else if (b.running) {
-        b.pause(true);
-        w.start();
-      }
+      let otherClock = this.$state.side_to_move == 0 ? 1 : 0;
+      this.clock(otherClock).pause(true);
+      this.clock(this.$state.side_to_move).start();
     },
 
     // redirect player
@@ -255,41 +269,93 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       }
     },
 
+    redirectDeploy(s: any) {
+      router.push({ path: s.path });
+      this.$state.last_clock = s.last_clock;
+      this.$state.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
+      this.clock(this.$state.side_to_move).start();
+      this.$state.current_stage = "deploy";
+      this.setShuuroHand(s.hand, "");
+    },
+
+    setDeployWasm(sfen: string) {
+      init().then((exports) => {
+        this.$state.deploy_wasm = new ShuuroPosition();
+        this.deployWasm().set_sfen(sfen);
+        // find plinths pieces and set cg
+        // set stm
+      });
+    },
+
     // set user hand
     setShuuroHand(hand: string, user: string): void {
       // eslint-disable-next-line
       init().then((_exports) => {
-        this.$state.shop_wasm = new ShuuroShop();
-        (this.$state.shop_wasm as ShuuroShop).set_hand(hand);
-        this.$state.piece_counter = this.$state.shop_wasm.shop_items(
-          this.$state.player_color
-        );
+        if (this.$state.current_stage == "shop") {
+          this.$state.shop_wasm = new ShuuroShop();
+          (this.$state.shop_wasm as ShuuroShop).set_hand(hand);
+          this.$state.piece_counter = this.$state.shop_wasm.shop_items(
+            this.$state.player_color
+          );
+        } else if (this.$state.current_stage == "deploy") {
+          this.$state.deploy_wasm = new ShuuroPosition();
+          this.deployWasm().set_hand(hand);
+          let self = this;
+          setTimeout(function () {
+            self.setDeployCg();
+            self.deployCground().state.pockets = readPockets(
+              `[${hand}]`,
+              self.deployCground().state.pocketRoles!
+            );
+            self.deployCground().state.movable.color =
+              self.$state.player == 0 ? "white" : "black";
+            self.deployCground().state.events!.pocketSelect! =
+              self.pocketSelect;
+            self.deployCground().redrawAll();
+          }, 150);
+        }
       });
+    },
+
+    pocketSelect(piece: Piece) {
+      let ch =
+        piece.color == "white"
+          ? piece.role[0].toUpperCase()
+          : piece.role[0].toLowerCase();
+      let moves = this.deployWasm().place_moves(ch);
+      this.deployCground().state.movable!.dests = moves;
     },
 
     // GETTERS
     clock(id: number): Clock {
       return this.$state.clocks[id] as Clock;
     },
+
     myClock(): Clock {
       return this.$state.clocks[this.$state.player!];
     },
+
     amIConfirmed(): boolean {
       return this.$state.confirmed_players![this.$state.player!];
     },
+
     deployCground(): Api {
       return this.$state.deploy_cground!;
     },
+
     fightCground(): Api {
       return this.$state.fight_cground!;
     },
+
     canConfirm1(): boolean {
       return this.$state.am_i_player! && this.$state.current_stage == "shop";
     },
+
     getColor(username: string): string {
       let index = this.$state.players.findIndex((item) => item == username)!;
       return index == 0 ? "white" : "black";
     },
+
     getHistory(): FenItem[] | undefined {
       switch (this.client_stage) {
         case "shop":
@@ -299,6 +365,24 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         case "fight":
           return this.fight_history;
       }
+    },
+
+    shopWasm(): ShuuroShop {
+      return this.$state.shop_wasm as ShuuroShop;
+    },
+
+    deployWasm(): ShuuroPosition {
+      return this.$state.deploy_wasm as ShuuroPosition;
+    },
+    fightWasm(): ShuuroPosition {
+      return this.$state.fight_wasm as ShuuroPosition;
+    },
+    canShop(): boolean {
+      return (
+        this.$state.am_i_player! &&
+        this.$state.current_stage! == "shop" &&
+        !this.amIConfirmed()
+      );
     },
   },
 });
@@ -319,7 +403,7 @@ function emptyState(): ShuuroStore {
     game_started: "",
     game_id: "",
     rated_game: false,
-    side_to_move: "white",
+    side_to_move: 0,
     player_color: "white",
     current_fen: "",
     flipped_board: false,
@@ -354,7 +438,7 @@ export interface ShuuroStore {
   game_started: string;
   game_id: string;
   rated_game: boolean;
-  side_to_move: Color;
+  side_to_move: ColorN;
   last_clock?: string;
   shop_history?: FenItem[];
   deploy_history?: FenItem[];
@@ -375,7 +459,7 @@ export interface ShuuroStore {
   fight_cground?: Api | any;
   player_color?: Color;
   player?: ColorN;
-
+  sfen?: string;
   confirmed_players?: [boolean, boolean];
 }
 

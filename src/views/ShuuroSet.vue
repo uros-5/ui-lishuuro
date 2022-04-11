@@ -30,12 +30,16 @@ store.updateRowsAndCols(12);
 shuuroStore.updateClientStage("deploy");
 
 onMounted(() => {
-  if (!shuuroStore.$state.deploy_cground || shuuroStore.$state.game_id == "") {
+  if (shuuroStore.$state.game_id == "") {
+	/*
     SEND({
       t: "live_game_start",
       game_id: router.currentRoute.value.params["id"],
       color: "white",
     });
+    */
+  } else {
+    shuuroStore.setDeployCg();
   }
 });
 
