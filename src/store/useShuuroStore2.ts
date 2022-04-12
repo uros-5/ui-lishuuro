@@ -237,6 +237,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         : null;
       this.deployCground().redrawAll();
       this.deployCground().state.events.dropNewPiece = this.decrementPocket;
+      console.log(this.$state.deploy_cground);
     },
 
     // set fight chessground
@@ -248,10 +249,36 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // decrement pocket item number
     decrementPocket(piece: Piece, key: Key) {
       //this.deployCground().state.pockets![piece.color!]?;
+      let p =
+        piece.color == "white"
+          ? piece.role[0].toUpperCase()
+          : piece.role[0].toLowerCase();
+      this.deployWasm().place(p, key);
+      let hand = this.deployWasm().count_hand_pieces();
       this.deployCground().state.pockets = readPockets(
-        "[qqqRR]",
+        `[${hand}]`,
         this.deployCground().state.pocketRoles!
       );
+      this.deployCground().redrawAll();
+    },
+
+    // set pocket
+    setPocket(s: string | undefined) {
+      if (s == undefined) {
+        return;
+      }
+
+      this.deployCground().state.pockets = readPockets(
+        `[${s}]`,
+        this.deployCground().state.pocketRoles!
+      );
+      this.deployCground().redrawAll();
+    },
+
+    // set plinths
+    setPlinths() {
+      let plinths = this.deployWasm().map_plinths();
+      this.deployCground().state.plinths = plinths;
       this.deployCground().redrawAll();
     },
 
@@ -270,18 +297,27 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     redirectDeploy(s: any) {
-      router.push({ path: s.path });
       this.$state.last_clock = s.last_clock;
+      this.$state.sfen = s.sfen;
+      router.push({ path: s.path });
       this.$state.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
       this.clock(this.$state.side_to_move).start();
       this.$state.current_stage = "deploy";
-      this.setShuuroHand(s.hand, "");
+      //this.setShuuroHand(s.hand, "");
     },
 
     setDeployWasm(sfen: string) {
-      init().then((exports) => {
+      init().then((_exports) => {
         this.$state.deploy_wasm = new ShuuroPosition();
+        console.log(sfen);
         this.deployWasm().set_sfen(sfen);
+        let hand = this.deployWasm().count_hand_pieces();
+        this.setPocket(hand);
+        this.setPlinths();
+        this.activateClock();
+        this.deployCground().state.movable.color = this.$state.player_color;
+        this.deployCground().state.events!.pocketSelect! = this.pocketSelect;
+
         // find plinths pieces and set cg
         // set stm
       });
@@ -297,22 +333,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           this.$state.piece_counter = this.$state.shop_wasm.shop_items(
             this.$state.player_color
           );
-        } else if (this.$state.current_stage == "deploy") {
-          this.$state.deploy_wasm = new ShuuroPosition();
-          this.deployWasm().set_hand(hand);
-          let self = this;
-          setTimeout(function () {
-            self.setDeployCg();
-            self.deployCground().state.pockets = readPockets(
-              `[${hand}]`,
-              self.deployCground().state.pocketRoles!
-            );
-            self.deployCground().state.movable.color =
-              self.$state.player == 0 ? "white" : "black";
-            self.deployCground().state.events!.pocketSelect! =
-              self.pocketSelect;
-            self.deployCground().redrawAll();
-          }, 150);
         }
       });
     },
@@ -323,6 +343,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           ? piece.role[0].toUpperCase()
           : piece.role[0].toLowerCase();
       let moves = this.deployWasm().place_moves(ch);
+      console.log(moves);
       this.deployCground().state.movable!.dests = moves;
     },
 
@@ -354,6 +375,13 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     getColor(username: string): string {
       let index = this.$state.players.findIndex((item) => item == username)!;
       return index == 0 ? "white" : "black";
+    },
+
+    getSfen(): string | undefined {
+      if (this.$state.sfen) {
+        return this.$state.sfen.split(" ")[2];
+      }
+      return undefined;
     },
 
     getHistory(): FenItem[] | undefined {

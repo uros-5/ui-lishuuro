@@ -180,8 +180,9 @@ export function render(s: State): void {
       }
     }
   }
-
+  let plinthCounter = 0;
   for (const [k, p] of plinths) {
+    plinthCounter += 1;
     anim = anims.get(k);
     if (!samePieces.has(k)) {
       pMvdset = movedPieces.get(pieceNameOf(p, s.orientation));
@@ -225,7 +226,9 @@ export function render(s: State): void {
             pieceNode.style.zIndex = posZIndex(pos, asWhite);
 
           boardEl.appendChild(pieceNode);
-          s.plinthsPlaced = true;
+          if (plinthCounter == 8) {
+            s.plinthsPlaced = true;
+          }
         }
       }
     }

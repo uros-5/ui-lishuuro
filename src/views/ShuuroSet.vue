@@ -31,7 +31,7 @@ shuuroStore.updateClientStage("deploy");
 
 onMounted(() => {
   if (shuuroStore.$state.game_id == "") {
-	/*
+    /*
     SEND({
       t: "live_game_start",
       game_id: router.currentRoute.value.params["id"],
@@ -39,7 +39,10 @@ onMounted(() => {
     });
     */
   } else {
-    shuuroStore.setDeployCg();
+    if (shuuroStore.$state.sfen) {
+      shuuroStore.setDeployCg();
+      shuuroStore.setDeployWasm(shuuroStore.$state.sfen);
+    }
   }
 });
 
