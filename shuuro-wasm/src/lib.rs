@@ -194,10 +194,6 @@ impl ShuuroPosition {
         list
     }
 
-    pub fn side_to_move(&self) -> String {
-        self.shuuro.side_to_move().to_string()
-    }
-
     #[wasm_bindgen]
     pub fn play(&mut self, from: &str, to: &str) -> String {
         let res = self.shuuro.play(&from, &to);
@@ -223,6 +219,51 @@ impl ShuuroPosition {
     #[wasm_bindgen]
     pub fn side_to_move(&self) -> String {
         self.shuuro.side_to_move().to_string()
+    }
+
+    #[wasm_bindgen]
+    pub fn count_hand_pieces(&self) -> String {
+        let mut sum = String::from("");
+        let pts = [
+            PieceType::King,
+            PieceType::Queen,
+            PieceType::Bishop,
+            PieceType::Rook,
+            PieceType::Knight,
+            PieceType::Pawn,
+        ];
+        for color in Color::iter() {
+            if color != Color::NoColor {
+                for piece_type in pts {
+                    let piece = Piece { piece_type, color };
+                    let counter = self.shuuro.hand(piece);
+                    for _i in 0..counter {
+                        sum.push(piece.to_string().chars().last().unwrap());
+                    }
+                }
+            }
+        }
+        sum
+    }
+
+    #[wasm_bindgen]
+    pub fn map_plinths(&self) -> Map {
+        let list = Map::new();
+        let bb = self.shuuro.player_bb(Color::NoColor);
+        for i in bb.clone() {
+            let example = Example {
+                role: String::from("l-piece"),
+                color: String::from("white"),
+            };
+            let sq = i.to_string();
+
+            list.set(
+                &JsValue::from_str(sq.as_str()),
+                &JsValue::from_serde(&example).unwrap(),
+            );
+        }
+
+        list
     }
 }
 
