@@ -42,6 +42,7 @@ onMounted(() => {
     if (shuuroStore.$state.sfen) {
       shuuroStore.setDeployCg();
       shuuroStore.setDeployWasm(shuuroStore.$state.sfen);
+shuuroStore.updateClientStage("deploy");
     }
   }
 });

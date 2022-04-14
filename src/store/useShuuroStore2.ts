@@ -237,7 +237,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         : null;
       this.deployCground().redrawAll();
       this.deployCground().state.events.dropNewPiece = this.decrementPocket;
-      console.log(this.$state.deploy_cground);
     },
 
     // set fight chessground
@@ -248,18 +247,11 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // decrement pocket item number
     decrementPocket(piece: Piece, key: Key) {
-      //this.deployCground().state.pockets![piece.color!]?;
-      let p =
-        piece.color == "white"
-          ? piece.role[0].toUpperCase()
-          : piece.role[0].toLowerCase();
-      this.deployWasm().place(p, key);
-      let hand = this.deployWasm().count_hand_pieces();
-      this.deployCground().state.pockets = readPockets(
-        `[${hand}]`,
-        this.deployCground().state.pocketRoles!
-      );
-      this.deployCground().redrawAll();
+      // wasmPlace
+      let p = this.shuuroPiece(piece);
+      this.sendPlace(p, key);
+      this.wasmPlace(p, key);
+      this.setTurnColor();
     },
 
     // set pocket
@@ -275,11 +267,26 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.deployCground().redrawAll();
     },
 
+    // set turn color
+    setTurnColor() {
+      let stm = this.deployWasm().side_to_move();
+      this.deployCground().state.turnColor = stm == "w" ? "white" : "black";
+      this.$state.side_to_move = stm == "w" ? 0 : 1;
+      this.switchClock();
+    },
+
     // set plinths
     setPlinths() {
       let plinths = this.deployWasm().map_plinths();
       this.deployCground().state.plinths = plinths;
       this.deployCground().redrawAll();
+    },
+
+    // set pieces
+    setPieces() {
+      let pieces = this.deployWasm().map_pieces();
+      this.deployCground().setPieces(pieces);
+      this.deployCground().state.dom.redraw();
     },
 
     // pause current and start another clock
@@ -309,14 +316,15 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     setDeployWasm(sfen: string) {
       init().then((_exports) => {
         this.$state.deploy_wasm = new ShuuroPosition();
-        console.log(sfen);
         this.deployWasm().set_sfen(sfen);
         let hand = this.deployWasm().count_hand_pieces();
         this.setPocket(hand);
         this.setPlinths();
+        this.setPieces();
         this.activateClock();
         this.deployCground().state.movable.color = this.$state.player_color;
         this.deployCground().state.events!.pocketSelect! = this.pocketSelect;
+        this.setTurnColor();
 
         // find plinths pieces and set cg
         // set stm
@@ -338,13 +346,16 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     pocketSelect(piece: Piece) {
+      if (this.$state.side_to_move != this.$state.player) {
+        return;
+      }
       let ch =
         piece.color == "white"
           ? piece.role[0].toUpperCase()
           : piece.role[0].toLowerCase();
       let moves = this.deployWasm().place_moves(ch);
-      console.log(moves);
       this.deployCground().state.movable!.dests = moves;
+      console.log(moves);
     },
 
     // GETTERS
@@ -370,6 +381,40 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     canConfirm1(): boolean {
       return this.$state.am_i_player! && this.$state.current_stage == "shop";
+    },
+
+    shuuroPiece(piece: Piece): string {
+      let p =
+        this.$state.player! == 0
+          ? piece.role[0].toUpperCase()
+          : piece.role[0].toLowerCase();
+      return p;
+    },
+
+    sendPlace(p: string, key: Key) {
+      let sfen = `${p}@${key}`;
+      SEND({
+        t: "live_game_place",
+        game_id: this.$state.game_id,
+        game_move: sfen,
+      });
+    },
+
+    serverMove(msg: any) {
+      let a = this.deployWasm().server_place(msg.move);
+      console.log(a);
+      this.setPieces();
+      this.switchClock();
+      this.$state.deploy_history!.push([msg.game_move, 0]);
+    },
+
+    wasmPlace(p: string, key: Key) {
+      this.deployWasm().place(p, key);
+      let hand = this.deployWasm().count_hand_pieces();
+      this.deployCground().state.pockets = readPockets(
+        `[${hand}]`,
+        this.deployCground().state.pocketRoles!
+      );
     },
 
     getColor(username: string): string {

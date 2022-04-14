@@ -178,6 +178,22 @@ impl ShuuroPosition {
         current_length > past_length
     }
 
+    #[wasm_bindgen]
+    pub fn server_place(&mut self, game_move: String) -> bool {
+        let m = Move::from_sfen(&game_move.as_str());
+        let past_length = self.shuuro.get_sfen_history().len();
+        if let Some(m) = m {
+            match m {
+                Move::Put { to, piece } => {
+                    self.shuuro.place(piece, to);
+                }
+                _ => (),
+            }
+        }
+        let current_length = self.shuuro.get_sfen_history().len();
+        current_length > past_length
+    }
+
     pub fn place_moves(&mut self, piece: char) -> Map {
         let list = Map::new();
         if let Some(p) = Piece::from_sfen(piece) {
@@ -264,6 +280,45 @@ impl ShuuroPosition {
         }
 
         list
+    }
+
+    #[wasm_bindgen]
+    pub fn map_pieces(&self) -> Map {
+        let list = Map::new();
+        let colors = [Color::White, Color::Black];
+        for i in colors {
+            let bb = self.shuuro.player_bb(i);
+            let color = self.get_color(&i.to_string());
+            for sq in bb.clone() {
+                let piece = self.shuuro.piece_at(sq);
+                if let Some(piece) = piece {
+                    let sq = sq.to_string();
+                    let p = Example {
+                        role: format!(
+                            "{}-piece",
+                            piece.to_string().as_str().to_lowercase().as_str()
+                        ),
+                        color: String::from(color),
+                    };
+
+                    list.set(
+                        &JsValue::from_str(sq.as_str()),
+                        &JsValue::from_serde(&p).unwrap(),
+                    );
+                }
+            }
+        }
+
+        list
+    }
+
+    fn get_color(&self, c: &String) -> &str {
+        if c == "w" {
+            return "white";
+        } else if c == "b" {
+            return "black";
+        }
+        "none"
     }
 }
 
