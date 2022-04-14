@@ -402,14 +402,23 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     serverMove(msg: any) {
       let a = this.deployWasm().server_place(msg.move);
-      console.log(a);
-      this.setPieces();
-      this.switchClock();
-      this.$state.deploy_history!.push([msg.game_move, 0]);
+      if (a) {
+        this.setPieces();
+        this.setTurnColor();
+        this.switchClock();
+        this.updateCgHand();
+        this.$state.deploy_history!.push([msg.game_move, 0]);
+      }
     },
 
     wasmPlace(p: string, key: Key) {
-      this.deployWasm().place(p, key);
+      let placed = this.deployWasm().place(p, key);
+      if (placed) {
+        this.updateCgHand();
+      }
+    },
+
+    updateCgHand() {
       let hand = this.deployWasm().count_hand_pieces();
       this.deployCground().state.pockets = readPockets(
         `[${hand}]`,
