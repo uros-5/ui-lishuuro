@@ -5,10 +5,14 @@ import Chessground from "@/plugins/chessground";
 import router from "@/router";
 import { ServerDate } from "@/plugins/serverDate";
 import { SEND } from "@/plugins/webSockets";
-import { anonConfig, liveConfig } from "@/plugins/chessground/configs";
+import {
+  anonConfig,
+  liveConfig,
+  liveFightConfig,
+} from "@/plugins/chessground/configs";
 import { Api } from "@/plugins/chessground/api";
 import { readPockets } from "@/plugins/chessground/pocket";
-import { Key, Piece } from "@/plugins/chessground/types";
+import { Key, MoveMetadata, Piece } from "@/plugins/chessground/types";
 
 export const useShuuroStore2 = defineStore("shuuro2", {
   state: (): ShuuroStore => {
@@ -54,7 +58,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.setDeployCg();
         this.setDeployWasm(s.sfen);
       } else if (stage == "fight") {
-        //this.setFightWasm();
+        this.setFightCg();
+        this.setFightWasm(s.sfen);
       }
     },
 
@@ -148,6 +153,215 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       }
     },
 
+    // DEPLOY PART
+
+    // set deploy chessground
+    setDeployCg() {
+      const config = this.$state.am_i_player ? liveConfig : anonConfig;
+      const elem = document.querySelector(".chessground12") as HTMLElement;
+      const top = document.querySelector("#pocket0") as HTMLElement;
+      const bot = document.querySelector("#pocket1") as HTMLElement;
+      this.$state.deploy_cground = Chessground(
+        elem,
+        config,
+        800,
+        top,
+        bot
+      ) as Api;
+      this.$state.player! == 1
+        ? this.deployCground().toggleOrientation()
+        : null;
+      this.deployCground().redrawAll();
+      this.deployCground().state.events.dropNewPiece = this.decrementPocket;
+    },
+
+    // decrement pocket item number
+    decrementPocket(piece: Piece, key: Key) {
+      // wasmPlace
+      let p = this.shuuroPiece(piece);
+      this.sendPlace(p, key);
+      this.wasmPlace(p, key);
+      this.setTurnColor();
+    },
+
+    // set pocket
+    setPocket(s: string | undefined) {
+      if (s == undefined) {
+        return;
+      }
+
+      this.deployCground().state.pockets = readPockets(
+        `[${s}]`,
+        this.deployCground().state.pocketRoles!
+      );
+      this.deployCground().redrawAll();
+    },
+
+    // send place move to server
+    sendPlace(p: string, key: Key) {
+      let sfen = `${p}@${key}`;
+      SEND({
+        t: "live_game_place",
+        game_id: this.$state.game_id,
+        game_move: sfen,
+      });
+    },
+
+    // receive move from server and place on board
+    serverMove(msg: any) {
+      let a = this.deployWasm().server_place(msg.move);
+      if (a) {
+        this.setPieces();
+        this.setTurnColor();
+        this.switchClock();
+        this.updateCgHand();
+        this.$state.deploy_history!.push([msg.game_move, 0]);
+        this.$state.sfen = this.deployWasm().generate_sfen();
+      }
+      if (msg.to_fight) {
+        this.$state.current_stage = "fight";
+        this.$state.client_stage = "fight";
+        router.push({ path: `/shuuro/fight/${this.$state.game_id}` });
+      }
+    },
+
+    // deploy_wasm placing piece
+    wasmPlace(p: string, key: Key) {
+      let placed = this.deployWasm().place(p, key);
+      if (placed) {
+        this.updateCgHand();
+        this.$state.sfen = this.deployWasm().generate_sfen();
+      }
+    },
+
+    // updating cgHand after placing
+    updateCgHand() {
+      let hand = this.deployWasm().count_hand_pieces();
+      this.deployCground().state.pockets = readPockets(
+        `[${hand}]`,
+        this.deployCground().state.pocketRoles!
+      );
+    },
+
+    // after shop redirect to deploy
+    redirectDeploy(s: any) {
+      this.$state.last_clock = s.last_clock;
+      this.$state.sfen = s.sfen;
+      router.push({ path: s.path });
+      this.$state.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
+      this.clock(this.$state.side_to_move).start();
+      this.$state.current_stage = "deploy";
+      //this.setShuuroHand(s.hand, "");
+    },
+
+    setDeployWasm(sfen: string) {
+      init().then((_exports) => {
+        this.$state.deploy_wasm = new ShuuroPosition();
+        this.deployWasm().set_sfen(sfen);
+        let hand = this.deployWasm().count_hand_pieces();
+        this.setPocket(hand);
+        this.setPlinths();
+        this.setPieces();
+        this.activateClock();
+        this.deployCground().state.movable.color = this.$state.player_color;
+        this.deployCground().state.events!.pocketSelect! = this.pocketSelect;
+        this.setTurnColor();
+
+        // find plinths pieces and set cg
+        // set stm
+      });
+    },
+
+    // FIGHT PART
+
+    // set fight chessground
+    setFightCg() {
+      const element = document.querySelector(".chessground12") as HTMLElement;
+      const config = this.$state.am_i_player ? liveFightConfig : anonConfig;
+      this.$state.fight_cground = Chessground(element!, config) as Api;
+      this.$state.player! == 1 ? this.fightCground().toggleOrientation() : null;
+      this.fightCground().state.events.select = this.selectSq;
+      this.fightCground().state.movable.events.after = this.movedPiece;
+      this.fightCground().redrawAll();
+    },
+
+    // select square
+    selectSq(key: Key) {
+      if (this.canPlay()) {
+        let moves = this.fightWasm().legal_moves(key);
+        let map = new Map();
+        map.set(key, moves);
+        this.fightCground().state.movable.dests = map;
+      }
+    },
+
+    // after moving
+    movedPiece(orig: Key, dest: Key, _metadata: MoveMetadata) {
+      let played = this.fightWasm().play(orig, dest);
+      console.log(played);
+      this.sendMove(`${orig}_${dest}`);
+    },
+
+    // send move to server
+    sendMove(s: string) {
+      SEND({
+        t: "live_game_play",
+        game_move: s,
+        game_id: this.$state.game_id,
+      });
+    },
+
+    // set turn color
+    setTurnColor() {
+      let stm = "white";
+      if (this.$state.client_stage == "deploy") {
+        stm = this.deployWasm().side_to_move();
+        this.deployCground().state.turnColor = stm == "w" ? "white" : "black";
+      } else if (this.$state.client_stage == "fight") {
+        stm = this.fightWasm().side_to_move();
+        this.fightCground().state.turnColor = stm == "w" ? "white" : "black";
+      }
+      this.$state.side_to_move = stm == "w" ? 0 : 1;
+      this.switchClock();
+    },
+
+    // set plinths
+    setPlinths() {
+      if (this.$state.client_stage == "deploy") {
+        let plinths = this.deployWasm().map_plinths();
+        this.deployCground().state.plinths = plinths;
+        this.deployCground().redrawAll();
+      } else if (this.$state.client_stage == "fight") {
+        let plinths = this.fightWasm().map_plinths();
+        this.fightCground().state.plinths = plinths;
+        this.fightCground().redrawAll();
+      }
+    },
+
+    // set pieces
+    setPieces() {
+      if (this.$state.client_stage == "deploy") {
+        let pieces = this.deployWasm().map_pieces();
+        this.deployCground().setPieces(pieces);
+        this.deployCground().state.dom.redraw();
+      } else if (this.$state.client_stage == "fight") {
+        let pieces = this.fightWasm().map_pieces();
+        this.fightCground().state.pieces = pieces;
+        this.fightCground().state.dom.redraw();
+      }
+    },
+
+    serverMove2(msg: any) {
+      let m = this.fightWasm().server_move(msg.game_move);
+      console.log(m);
+      this.setPieces();
+      this.setTurnColor();
+      this.switchClock();
+      this.$state.fight_history!.push([msg.game_move, 0]);
+      this.$state.sfen = this.fightWasm().generate_sfen();
+      this.fightCground().state.dom.redraw();
+    },
+
     // CLOCKS PART
     pauseConfirmed(data: [boolean, boolean]) {
       this.$state.confirmed_players = data;
@@ -210,90 +424,19 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.clock(id).pause(true);
     },
 
+    // pause current and start another clock
+    switchClock() {
+      let otherClock = this.$state.side_to_move == 0 ? 1 : 0;
+      this.clock(otherClock).pause(true);
+      this.clock(this.$state.side_to_move).start();
+    },
+
     // elapsed time since last clock
     elapsed(): number {
       const now = new Date();
       const converted_date = ServerDate(this.$state.last_clock!);
       const elapsed = now.getTime() - converted_date.getTime();
       return elapsed;
-    },
-
-    // CHESSGROUND PART
-    // set deploy chessground
-    setDeployCg() {
-      const config = this.$state.am_i_player ? liveConfig : anonConfig;
-      const elem = document.querySelector(".chessground12") as HTMLElement;
-      const top = document.querySelector("#pocket0") as HTMLElement;
-      const bot = document.querySelector("#pocket1") as HTMLElement;
-      this.$state.deploy_cground = Chessground(
-        elem,
-        config,
-        800,
-        top,
-        bot
-      ) as Api;
-      this.$state.player! == 1
-        ? this.deployCground().toggleOrientation()
-        : null;
-      this.deployCground().redrawAll();
-      this.deployCground().state.events.dropNewPiece = this.decrementPocket;
-    },
-
-    // set fight chessground
-    setFightCg(element: HTMLElement) {
-      const config = this.$state.am_i_player ? liveConfig : anonConfig;
-      this.$state.fight_cground = Chessground(element!, config) as Api;
-    },
-
-    // decrement pocket item number
-    decrementPocket(piece: Piece, key: Key) {
-      // wasmPlace
-      let p = this.shuuroPiece(piece);
-      this.sendPlace(p, key);
-      this.wasmPlace(p, key);
-      this.setTurnColor();
-    },
-
-    // set pocket
-    setPocket(s: string | undefined) {
-      if (s == undefined) {
-        return;
-      }
-
-      this.deployCground().state.pockets = readPockets(
-        `[${s}]`,
-        this.deployCground().state.pocketRoles!
-      );
-      this.deployCground().redrawAll();
-    },
-
-    // set turn color
-    setTurnColor() {
-      let stm = this.deployWasm().side_to_move();
-      this.deployCground().state.turnColor = stm == "w" ? "white" : "black";
-      this.$state.side_to_move = stm == "w" ? 0 : 1;
-      this.switchClock();
-    },
-
-    // set plinths
-    setPlinths() {
-      let plinths = this.deployWasm().map_plinths();
-      this.deployCground().state.plinths = plinths;
-      this.deployCground().redrawAll();
-    },
-
-    // set pieces
-    setPieces() {
-      let pieces = this.deployWasm().map_pieces();
-      this.deployCground().setPieces(pieces);
-      this.deployCground().state.dom.redraw();
-    },
-
-    // pause current and start another clock
-    switchClock() {
-      let otherClock = this.$state.side_to_move == 0 ? 1 : 0;
-      this.clock(otherClock).pause(true);
-      this.clock(this.$state.side_to_move).start();
     },
 
     // redirect player
@@ -303,31 +446,17 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       }
     },
 
-    redirectDeploy(s: any) {
-      this.$state.last_clock = s.last_clock;
-      this.$state.sfen = s.sfen;
-      router.push({ path: s.path });
-      this.$state.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
-      this.clock(this.$state.side_to_move).start();
-      this.$state.current_stage = "deploy";
-      //this.setShuuroHand(s.hand, "");
-    },
+    dropPiece() {},
 
-    setDeployWasm(sfen: string) {
+    setFightWasm(sfen: string) {
       init().then((_exports) => {
-        this.$state.deploy_wasm = new ShuuroPosition();
-        this.deployWasm().set_sfen(sfen);
-        let hand = this.deployWasm().count_hand_pieces();
-        this.setPocket(hand);
+        this.$state.fight_wasm = new ShuuroPosition();
+        this.fightWasm().set_sfen(sfen);
         this.setPlinths();
         this.setPieces();
         this.activateClock();
-        this.deployCground().state.movable.color = this.$state.player_color;
-        this.deployCground().state.events!.pocketSelect! = this.pocketSelect;
+        this.fightCground().state.movable.color = this.$state.player_color;
         this.setTurnColor();
-
-        // find plinths pieces and set cg
-        // set stm
       });
     },
 
@@ -379,6 +508,13 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       return this.$state.fight_cground!;
     },
 
+    canPlay(): boolean {
+      if (this.$state.side_to_move == this.$state.player) {
+        return true;
+      }
+      return false;
+    },
+
     canConfirm1(): boolean {
       return this.$state.am_i_player! && this.$state.current_stage == "shop";
     },
@@ -389,41 +525,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           ? piece.role[0].toUpperCase()
           : piece.role[0].toLowerCase();
       return p;
-    },
-
-    sendPlace(p: string, key: Key) {
-      let sfen = `${p}@${key}`;
-      SEND({
-        t: "live_game_place",
-        game_id: this.$state.game_id,
-        game_move: sfen,
-      });
-    },
-
-    serverMove(msg: any) {
-      let a = this.deployWasm().server_place(msg.move);
-      if (a) {
-        this.setPieces();
-        this.setTurnColor();
-        this.switchClock();
-        this.updateCgHand();
-        this.$state.deploy_history!.push([msg.game_move, 0]);
-      }
-    },
-
-    wasmPlace(p: string, key: Key) {
-      let placed = this.deployWasm().place(p, key);
-      if (placed) {
-        this.updateCgHand();
-      }
-    },
-
-    updateCgHand() {
-      let hand = this.deployWasm().count_hand_pieces();
-      this.deployCground().state.pockets = readPockets(
-        `[${hand}]`,
-        this.deployCground().state.pocketRoles!
-      );
     },
 
     getColor(username: string): string {
@@ -543,6 +644,8 @@ export interface ShuuroStore {
   player?: ColorN;
   sfen?: string;
   confirmed_players?: [boolean, boolean];
+  boardWasm?: [ShuuroPosition, ShuuroPosition];
+  cgs?: [Api, Api];
 }
 
 export type Stage = "shop" | "deploy" | "fight";

@@ -57,6 +57,10 @@ ws.onmessage = function (event) {
       delete msg["t"];
       shuuroStore.serverMove(msg);
       break;
+    case "live_game_play":
+      delete msg["t"];
+      shuuroStore.serverMove2(msg);
+      break;
     case "live_game_confirmed":
       delete msg["t"];
       shuuroStore.setConfirmed(msg.confirmed);

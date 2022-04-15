@@ -23,7 +23,11 @@ function flipSide(): void {
   let now = shuuroStore.$state.flipped_board;
   shuuroStore.$state.flipped_board = !now;
   if (shuuroStore.current_stage == "deploy") {
-    (shuuroStore.$state.deploy_cground as Api).toggleOrientation();
+    shuuroStore.deployCground().toggleOrientation();
+  }
+  else if (shuuroStore.current_stage == "fight") {
+	shuuroStore.fightCground().toggleOrientation();
+
   }
 }
 

@@ -153,19 +153,31 @@ impl ShuuroPosition {
         }
     }
 
+    // Deploy part
+
+    /// Set hand for pocket.
     #[wasm_bindgen]
     pub fn set_hand(&mut self, s: &str) {
         self.shuuro.set_hand(s);
     }
 
+    /// Set sfen.
     #[wasm_bindgen]
     pub fn set_sfen(&mut self, s: &str) {
         self.shuuro.set_sfen(s);
     }
+
+    /// Get sfen for current position.
+    #[wasm_bindgen]
+    pub fn generate_sfen(&self) -> String {
+        self.shuuro.generate_sfen()
+    }
+
     /*
         #[wasm_bindgen]
         pub fn set_move_history(&mut self, history: Vec<(String, u16)>) {}
     */
+    /// Place piece on board.
     #[wasm_bindgen]
     pub fn place(&mut self, p: char, sq: String) -> bool {
         let past_length = self.shuuro.get_sfen_history().len();
@@ -177,7 +189,7 @@ impl ShuuroPosition {
         let current_length = self.shuuro.get_sfen_history().len();
         current_length > past_length
     }
-
+    /// Get move from server and place.
     #[wasm_bindgen]
     pub fn server_place(&mut self, game_move: String) -> bool {
         let m = Move::from_sfen(&game_move.as_str());
@@ -194,6 +206,32 @@ impl ShuuroPosition {
         current_length > past_length
     }
 
+    /// Get move from server and play
+    #[wasm_bindgen]
+    pub fn server_move(&mut self, game_move: String) -> String {
+        if let Some(m) = Move::from_sfen(&game_move.as_str()) {
+            match m {
+                Move::Normal {
+                    from,
+                    to,
+                    promote: _,
+                } => {
+                    let res = self
+                        .shuuro
+                        .play(&from.to_string().as_str(), &to.to_string().as_str());
+                    let res = match res {
+                        Ok(i) => i.to_string(),
+                        Err(_) => String::from("illegal_move"),
+                    };
+                    return res;
+                }
+                _ => (),
+            }
+        }
+        String::from("")
+    }
+
+    /// Squares where piece can be placed.
     pub fn place_moves(&mut self, piece: char) -> Map {
         let list = Map::new();
         if let Some(p) = Piece::from_sfen(piece) {
@@ -208,33 +246,6 @@ impl ShuuroPosition {
             list.set(&key, &value);
         }
         list
-    }
-
-    #[wasm_bindgen]
-    pub fn play(&mut self, from: &str, to: &str) -> String {
-        let res = self.shuuro.play(&from, &to);
-        match res {
-            Ok(i) => i.to_string(),
-            Err(_) => String::from("illegal_move"),
-        }
-    }
-
-    #[wasm_bindgen]
-    pub fn legal_moves(&self, sq: &str) -> Array {
-        let moves = Array::new();
-        if let Some(square) = Square::from_sfen(&String::from(sq)) {
-            let l_m = self.shuuro.legal_moves(&square);
-            for i in l_m {
-                let value = JsValue::from_str(&i.to_string()[..]);
-                moves.push(&value);
-            }
-        }
-        moves
-    }
-
-    #[wasm_bindgen]
-    pub fn side_to_move(&self) -> String {
-        self.shuuro.side_to_move().to_string()
     }
 
     #[wasm_bindgen]
@@ -260,6 +271,42 @@ impl ShuuroPosition {
             }
         }
         sum
+    }
+
+    // Fight part
+
+    /// Make move on board.
+    #[wasm_bindgen]
+    pub fn play(&mut self, from: &str, to: &str) -> String {
+        let res = self.shuuro.play(&from, &to);
+        match res {
+            Ok(i) => i.to_string(),
+            Err(_) => String::from("illegal_move"),
+        }
+    }
+
+    /// All legal moves for square.
+    #[wasm_bindgen]
+    pub fn legal_moves(&self, sq: &str) -> Array {
+        let moves = Array::new();
+        if let Some(square) = Square::from_sfen(&String::from(sq)) {
+            if let Some(piece) = self.shuuro.piece_at(square) {
+                if piece.color == self.shuuro.side_to_move() {
+                    let l_m = self.shuuro.legal_moves(&square);
+                    for i in l_m {
+                        let value = JsValue::from_str(&i.to_string()[..]);
+                        moves.push(&value);
+                    }
+                }
+            }
+        }
+        moves
+    }
+
+    /// Get side to move.
+    #[wasm_bindgen]
+    pub fn side_to_move(&self) -> String {
+        self.shuuro.side_to_move().to_string()
     }
 
     #[wasm_bindgen]

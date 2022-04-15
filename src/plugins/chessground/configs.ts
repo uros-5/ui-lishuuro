@@ -31,6 +31,24 @@ export const liveConfig: Config = {
   pocketRoles: p,
 };
 
+export const liveFightConfig: Config = {
+  animation: { enabled: true },
+  turnColor: "white",
+  selectable: { enabled: true },
+  drawable: { enabled: true, visible: true },
+  draggable: { enabled: true },
+  movable: {
+    showDests: true,
+    color: "black",
+    free: false,
+  },
+  events: {
+    dropNewPiece: pieceDropped,
+    pocketSelect: select2,
+  },
+  pocketRoles: p,
+};
+
 export function p(color: Color): PieceLetter[] {
   if (color == "white") {
     return ["K", "Q", "R", "B", "N", "P"];

@@ -10,7 +10,7 @@
     >
       <piece
         v-for="(i, index) in pieces"
-	v-if="handType == 'shop' "
+        v-if="handType == 'shop'"
         :key="i"
         :class="`${color} ${i} ${handType}`"
         :data-color="color"
@@ -36,9 +36,9 @@ onMounted(() => {
 });
 
 function divId() {
-	return (props.side == "top") ? "pocket0" : "pocket1";
-
+  return props.side == "top" ? "pocket0" : "pocket1";
 }
+
 
 const props = defineProps<{
   color: string;
