@@ -5,7 +5,7 @@
         v-for="(item, index) in getHistory()"
         v-if="fenItemCheck()"
         :key="index"
-        :fen="item[0]"
+        :fen="fenItem(item)"
         :index="index + 1"
       />
 
@@ -45,6 +45,13 @@ function getHistory(): FenItem[] {
     return shuuroStore.$state.deploy_history!;
   }
   return [];
+}
+
+function fenItem(item: [string, number]): string {
+	if (shuuroStore.$state.client_stage == "shop") {
+		return `${item[0]} ${item[1]}`;
+	}	
+	return "";
 }
 
 function resultMessage(): string {

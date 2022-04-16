@@ -122,10 +122,11 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       if (this.canShop()) {
         this.$state.piece_counter = this.$state.shop_wasm.buy(p);
         const new_credit = this.$state.shop_wasm.getCredit(color);
+        console.log(new_credit);
         const counter = this.$state.shop_wasm.get_piece(p);
         const game_move = `+${p}`;
         if (new_credit != this.$state.credit) {
-          this.$state.shop_history?.push([`${game_move} ${counter}`, counter]);
+          this.$state.shop_history?.push([game_move, counter]);
         }
         SEND({
           t: "live_game_buy",
@@ -298,7 +299,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // after moving
     movedPiece(orig: Key, dest: Key, _metadata: MoveMetadata) {
       let played = this.fightWasm().play(orig, dest);
-      console.log(played);
+      console.log(this.fightWasm().generate_sfen());
       this.sendMove(`${orig}_${dest}`);
     },
 
