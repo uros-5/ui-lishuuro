@@ -55,7 +55,7 @@ ws.onmessage = function (event) {
       break;
     case "live_game_place":
       delete msg["t"];
-      shuuroStore.serverMove(msg);
+      shuuroStore.serverPlace(msg);
       break;
     case "live_game_play":
       delete msg["t"];

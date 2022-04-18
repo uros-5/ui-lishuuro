@@ -13,6 +13,7 @@ import {
 import { Api } from "@/plugins/chessground/api";
 import { readPockets } from "@/plugins/chessground/pocket";
 import { Key, MoveMetadata, Piece } from "@/plugins/chessground/types";
+import { baseMove } from "@/plugins/chessground/board";
 
 export const useShuuroStore2 = defineStore("shuuro2", {
   state: (): ShuuroStore => {
@@ -61,6 +62,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.setFightCg();
         this.setFightWasm(s.sfen);
       }
+      this.playAudio("res");
     },
 
     // set wasm for all stages
@@ -209,7 +211,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     // receive move from server and place on board
-    serverMove(msg: any) {
+    serverPlace(msg: any) {
       let a = this.deployWasm().server_place(msg.move);
       if (a) {
         this.setPieces();
@@ -222,6 +224,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       if (msg.to_fight) {
         this.$state.current_stage = "fight";
         this.$state.client_stage = "fight";
+        this.playAudio("res");
         router.push({ path: `/shuuro/fight/${this.$state.game_id}` });
       }
     },
@@ -232,6 +235,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       if (placed) {
         this.updateCgHand();
         this.$state.sfen = this.deployWasm().generate_sfen();
+        this.clockPause(this.$state.player!);
+        this.playAudio("move");
       }
     },
 
@@ -252,6 +257,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
       this.clock(this.$state.side_to_move).start();
       this.$state.current_stage = "deploy";
+      this.playAudio("res");
       //this.setShuuroHand(s.hand, "");
     },
 
@@ -301,6 +307,10 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       let played = this.fightWasm().play(orig, dest);
       console.log(this.fightWasm().generate_sfen());
       this.sendMove(`${orig}_${dest}`);
+      this.playAudio("move");
+      if (_metadata.captured!) {
+        this.playAudio("capture");
+      }
     },
 
     // send move to server
@@ -353,13 +363,19 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     serverMove2(msg: any) {
+      let beforeCount = this.fightWasm().pieces_count();
       let m = this.fightWasm().server_move(msg.game_move);
-      console.log(m);
-      this.setPieces();
+      let move = msg.game_move.split("_");
+      let newCount = this.fightWasm().pieces_count();
+      this.fightCground().move(move[0], move[1]);
+      //this.setPieces();
       this.setTurnColor();
       this.switchClock();
       this.$state.fight_history!.push([msg.game_move, 0]);
       this.$state.sfen = this.fightWasm().generate_sfen();
+      if (newCount > beforeCount) {
+        this.playAudio("capture");
+      }
       this.fightCground().state.dom.redraw();
     },
 
@@ -425,6 +441,11 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.clock(id).pause(true);
     },
 
+    // start one of clocks
+    clockStart(id: number) {
+      this.clock(id).start();
+    },
+
     // pause current and start another clock
     switchClock() {
       let otherClock = this.$state.side_to_move == 0 ? 1 : 0;
@@ -445,6 +466,12 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       if (path != undefined) {
         router.push({ path: path });
       }
+    },
+
+    // start audio
+    playAudio(sound: string) {
+      let a = new Audio(`../../src/assets/sounds/${sound}.ogg`);
+      a.play();
     },
 
     dropPiece() {},

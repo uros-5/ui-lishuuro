@@ -359,6 +359,14 @@ impl ShuuroPosition {
         list
     }
 
+    /// Get piece count.
+    #[wasm_bindgen]
+    pub fn pieces_count(&self) -> u32 {
+        let mut sum = self.shuuro.player_bb(Color::Black).count();
+        sum += self.shuuro.player_bb(Color::White).count();
+        sum
+    }
+
     fn get_color(&self, c: &String) -> &str {
         if c == "w" {
             return "white";
