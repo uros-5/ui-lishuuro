@@ -366,6 +366,16 @@ impl ShuuroPosition {
         sum += self.shuuro.player_bb(Color::White).count();
         sum
     }
+    /// Get last move.
+    #[wasm_bindgen]
+    pub fn last_move(&self) -> String {
+        self.shuuro.get_sfen_history().last().unwrap().0.clone()
+    }
+    
+    #[wasm_bindgen]
+    pub fn is_check(&self) -> bool {
+        self.shuuro.in_check(self.shuuro.side_to_move())
+    }
 
     fn get_color(&self, c: &String) -> &str {
         if c == "w" {

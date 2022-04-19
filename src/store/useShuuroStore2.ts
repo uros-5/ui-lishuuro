@@ -13,7 +13,7 @@ import {
 import { Api } from "@/plugins/chessground/api";
 import { readPockets } from "@/plugins/chessground/pocket";
 import { Key, MoveMetadata, Piece } from "@/plugins/chessground/types";
-import { baseMove } from "@/plugins/chessground/board";
+import { baseMove, setCheck } from "@/plugins/chessground/board";
 
 export const useShuuroStore2 = defineStore("shuuro2", {
   state: (): ShuuroStore => {
@@ -124,7 +124,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       if (this.canShop()) {
         this.$state.piece_counter = this.$state.shop_wasm.buy(p);
         const new_credit = this.$state.shop_wasm.getCredit(color);
-        console.log(new_credit);
         const counter = this.$state.shop_wasm.get_piece(p);
         const game_move = `+${p}`;
         if (new_credit != this.$state.credit) {
@@ -185,6 +184,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.sendPlace(p, key);
       this.wasmPlace(p, key);
       this.setTurnColor();
+      this.setCheckDeploy(this.$state.current_stage!);
     },
 
     // set pocket
@@ -214,12 +214,15 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     serverPlace(msg: any) {
       let a = this.deployWasm().server_place(msg.move);
       if (a) {
+        let last_move = this.deployWasm().last_move();
         this.setPieces();
         this.setTurnColor();
+        this.setCheckDeploy(this.$state.current_stage!);
         this.switchClock();
         this.updateCgHand();
-        this.$state.deploy_history!.push([msg.game_move, 0]);
+        this.$state.deploy_history!.push([last_move, 0]);
         this.$state.sfen = this.deployWasm().generate_sfen();
+        this.$state.current_index = this.$state.deploy_history!.length - 1;
       }
       if (msg.to_fight) {
         this.$state.current_stage = "fight";
@@ -229,10 +232,24 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       }
     },
 
+    // set check
+    setCheckDeploy(stage: Stage) {
+      let is_check = this.deployWasm().is_check();
+      setCheck(this.deployCground().state, is_check);
+    },
+
+    setCheckFight() {
+      let is_check = this.fightWasm().is_check();
+      setCheck(this.fightCground().state, is_check);
+    },
+
     // deploy_wasm placing piece
     wasmPlace(p: string, key: Key) {
       let placed = this.deployWasm().place(p, key);
       if (placed) {
+        let last_move = this.deployWasm().last_move();
+        this.$state.deploy_history!.push([last_move, 0]);
+        this.updateCurrentIndex("deploy");
         this.updateCgHand();
         this.$state.sfen = this.deployWasm().generate_sfen();
         this.clockPause(this.$state.player!);
@@ -261,6 +278,15 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       //this.setShuuroHand(s.hand, "");
     },
 
+    // last item in history
+    updateCurrentIndex(stage: Stage) {
+      if (stage == "deploy") {
+        this.$state.current_index = this.$state.deploy_history!.length - 1;
+      } else if (stage == "fight") {
+        this.$state.current_index = this.$state.fight_history!.length;
+      }
+    },
+
     setDeployWasm(sfen: string) {
       init().then((_exports) => {
         this.$state.deploy_wasm = new ShuuroPosition();
@@ -273,6 +299,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.deployCground().state.movable.color = this.$state.player_color;
         this.deployCground().state.events!.pocketSelect! = this.pocketSelect;
         this.setTurnColor();
+        this.setCheckDeploy(this.$state.current_stage!);
 
         // find plinths pieces and set cg
         // set stm
@@ -305,7 +332,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // after moving
     movedPiece(orig: Key, dest: Key, _metadata: MoveMetadata) {
       let played = this.fightWasm().play(orig, dest);
-      console.log(this.fightWasm().generate_sfen());
+      this.updateCurrentIndex("fight");
       this.sendMove(`${orig}_${dest}`);
       this.playAudio("move");
       if (_metadata.captured!) {
@@ -366,16 +393,18 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       let beforeCount = this.fightWasm().pieces_count();
       let m = this.fightWasm().server_move(msg.game_move);
       let move = msg.game_move.split("_");
+      let lastMove = this.fightWasm().last_move();
       let newCount = this.fightWasm().pieces_count();
       this.fightCground().move(move[0], move[1]);
-      //this.setPieces();
       this.setTurnColor();
+      this.setCheckFight();
       this.switchClock();
-      this.$state.fight_history!.push([msg.game_move, 0]);
+      this.$state.fight_history!.push([lastMove, 0]);
       this.$state.sfen = this.fightWasm().generate_sfen();
       if (newCount > beforeCount) {
         this.playAudio("capture");
       }
+      this.updateCurrentIndex("fight");
       this.fightCground().state.dom.redraw();
     },
 
@@ -512,7 +541,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           : piece.role[0].toLowerCase();
       let moves = this.deployWasm().place_moves(ch);
       this.deployCground().state.movable!.dests = moves;
-      console.log(moves);
     },
 
     // GETTERS
@@ -555,6 +583,53 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       return p;
     },
 
+    tempDeployWasm(sfen: string) {
+      let temp = new ShuuroPosition();
+      temp.set_sfen(sfen);
+      let pieces = temp.map_pieces();
+      let hand = temp.count_hand_pieces();
+      this.deployCground().state.pieces = pieces;
+      this.deployCground().state.dom.redraw();
+      this.deployCground().state.pockets = readPockets(
+        `[${hand}]`,
+        this.deployCground().state.pocketRoles!
+      );
+      this.deployCground().state.dom.redrawNow();
+
+      if (this.$state.current_index == this.$state.deploy_history!.length - 1) {
+        this.deployCground().state.movable.showDests = true;
+        this.deployCground().state.draggable.enabled = true;
+        this.deployCground().state.movable.color = this.$state.player_color;
+      } else {
+        this.deployCground().state.movable.showDests = false;
+        this.deployCground().state.draggable.enabled = false;
+        this.deployCground().state.movable.color = "none";
+      }
+
+      temp.free();
+    },
+
+    tempFightWasm(sfen: string) {
+      let temp = new ShuuroPosition();
+      temp.set_sfen(sfen);
+      let pieces = temp.map_pieces();
+      this.fightCground().state.pieces = pieces;
+      this.fightCground().state.dom.redraw();
+      this.fightCground().state.dom.redrawNow();
+
+      if (this.$state.current_index == this.$state.fight_history!.length - 1) {
+        this.fightCground().state.movable.showDests = true;
+        this.fightCground().state.draggable.enabled = true;
+        this.fightCground().state.movable.color = this.$state.player_color;
+      } else {
+        this.fightCground().state.movable.showDests = false;
+        this.fightCground().state.draggable.enabled = false;
+        this.fightCground().state.movable.color = "none";
+      }
+
+      temp.free();
+    },
+
     getColor(username: string): string {
       let index = this.$state.players.findIndex((item) => item == username)!;
       return index == 0 ? "white" : "black";
@@ -594,6 +669,9 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.$state.current_stage! == "shop" &&
         !this.amIConfirmed()
       );
+    },
+    currentIndex(): number {
+      return this.$state.current_index!;
     },
   },
 });

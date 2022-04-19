@@ -9,7 +9,7 @@
     :ply="index"
     @click="updateIndex"
   >
-    <san>{{ fen }}</san
+    <san>{{ move }}</san
     ><eval :id="`ply${index!}`" />
   </div>
 </template>
@@ -17,13 +17,23 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { deploySfen, fightSfen } from "@/plugins/fen";
 
-const props = defineProps({ index: Number, fen: String });
+
+const props = defineProps<{ index: number; fen: string; move: string }>();
 const shuuroStore = useShuuroStore2();
 
 function updateIndex(): void {
   shuuroStore.$state.current_index = props.index! - 1;
+  if (shuuroStore.$state.client_stage == "deploy") {
+    let sfen = deploySfen(props.fen);
+    shuuroStore.tempDeployWasm(sfen);
+  } else if (shuuroStore.$state.client_stage == "fight") {
+    let sfen = fightSfen(props.fen);
+    shuuroStore.tempFightWasm(sfen);
+  }
 }
+
 </script>
 
 <style>

@@ -5,7 +5,8 @@
         v-for="(item, index) in getHistory()"
         v-if="fenItemCheck()"
         :key="index"
-        :fen="fenItem(item)"
+        :fen="item[0]"
+        :move="fenItem(item)"
         :index="index + 1"
       />
 
@@ -43,15 +44,23 @@ function getHistory(): FenItem[] {
     }
   } else if (shuuroStore.$state.client_stage == "deploy") {
     return shuuroStore.$state.deploy_history!;
+  } else if (shuuroStore.$state.client_stage == "fight") {
+    return shuuroStore.$state.fight_history!;
   }
   return [];
 }
 
 function fenItem(item: [string, number]): string {
-	if (shuuroStore.$state.client_stage == "shop") {
-		return `${item[0]} ${item[1]}`;
-	}	
-	return "";
+  if (shuuroStore.$state.client_stage == "shop") {
+    return `${item[0]} ${item[1]}`;
+  } else if (shuuroStore.$state.client_stage == "deploy") {
+    let fen = item[0].split("_");
+    return fen[0];
+  } else if (shuuroStore.$state.client_stage == "fight") {
+    let fen = item[0].split(" ");
+    return fen[4];
+  }
+  return "";
 }
 
 function resultMessage(): string {
@@ -65,7 +74,9 @@ function resultMessage(): string {
       return `Checkmate, ${result}`;
     case 2:
       return `${
-        result === "1-0" ? shuuroStore.$state.players[0]: shuuroStore.$state.players[1]
+        result === "1-0"
+          ? shuuroStore.$state.players[0]
+          : shuuroStore.$state.players[1]
       }, resigned`;
     case 3:
       return "Stalemate";
@@ -81,7 +92,8 @@ function resultMessage(): string {
 function fenItemCheck(): boolean {
   return (
     shuuroStore.$state.client_stage == "shop" ||
-    shuuroStore.$state.client_stage == "deploy"
+    shuuroStore.$state.client_stage == "deploy" ||
+    shuuroStore.$state.client_stage == "fight"
   );
 }
 </script>
