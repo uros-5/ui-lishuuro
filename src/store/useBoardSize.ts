@@ -10,11 +10,12 @@ export const useBoardSize = defineStore("boardSize", {
     },
     updateRowsAndCols(n: number): void {
       this.rowsAndCols = n;
-    },    // eslint-disable-next-line
+    }, // eslint-disable-next-line
     resize(_event: Event) {
-      this.updateHeight((document.querySelector("#mainboard")! as HTMLElement).offsetWidth!);
-    },  },
-  getters: {
+      this.updateHeight(
+        (document.querySelector("#mainboard")! as HTMLElement).offsetWidth!
+      );
+    },
     genVars(): string {
       return `--cg-width: ${this.height}px; --cg-height: ${this.height}px;`;
     },
@@ -22,5 +23,5 @@ export const useBoardSize = defineStore("boardSize", {
       const height = this.height;
       return `width: ${height}px; height: ${height}px;`;
     },
-  }
+  },
 });

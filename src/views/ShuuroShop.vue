@@ -10,13 +10,13 @@
       side=""
       :in-center="true"
       :counter="[1, 0, 0, 0, 0, 0, 0]"
-      :color="shuuroStore.getColor(userStore.username)"
+      :color="shuuroStore.getColor(userStore.$state.username)"
       hand-type="shop"
     />
     <p class="local-credit">Credit: {{ shuuroStore.$state.credit }}</p>
     <button
       class="shuuro-confirm"
-      @click="shuuroStore.confirm(userStore.username)"
+      @click="shuuroStore.confirm(userStore.$state.username)"
     >
       Confirm
     </button>

@@ -23,9 +23,5 @@ export const useHomeChat = defineStore("useHomeChat", {
       this.$state.homeChat = this.$state.homeChat;
     },
   },
-  getters: {
-    homeChat(state): ChatMessage[] {
-      return state.homeChat; 
-    }
-  }
+  getters: {},
 });

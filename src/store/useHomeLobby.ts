@@ -45,11 +45,6 @@ export const useHomeLobby = defineStore("useHomeLobby", {
       });
     },
   },
-  getters: {
-    homeLobby(state): LobbyGame[] {
-      return state.homeLobby;
-    }
-  }
 });
 
 function isGameEqual(game1: LobbyGame, game2: LobbyGame): boolean {

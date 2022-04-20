@@ -15,6 +15,14 @@ import { readPockets } from "@/plugins/chessground/pocket";
 import { Key, MoveMetadata, Piece } from "@/plugins/chessground/types";
 import { baseMove, setCheck } from "@/plugins/chessground/board";
 
+let finished = [
+  "Checkmate",
+  "Draw",
+  "RepetitionDraw",
+  "MaterialDraw",
+  "Stalemate",
+];
+
 export const useShuuroStore2 = defineStore("shuuro2", {
   state: (): ShuuroStore => {
     return emptyState();
@@ -406,6 +414,10 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       }
       this.updateCurrentIndex("fight");
       this.fightCground().state.dom.redraw();
+      if (this.gameOver(msg.outcome)) {
+        this.playAudio("res");
+        this.clockPause(this.$state.side_to_move);
+      }
     },
 
     // CLOCKS PART
@@ -541,6 +553,17 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           : piece.role[0].toLowerCase();
       let moves = this.deployWasm().place_moves(ch);
       this.deployCground().state.movable!.dests = moves;
+    },
+
+    // is game over
+
+    gameOver(outcome: string): boolean {
+      for (let i = 0; i < finished.length; i++) {
+        if (outcome.startsWith(finished[i])) {
+          return true;
+        }
+      }
+      return false;
     },
 
     // GETTERS
