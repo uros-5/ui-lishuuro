@@ -1,7 +1,7 @@
 <template>
   <div class="site-buttons">
     <div id="username">
-      <a class="user-link" href="/">{{ store.$state.username }}</a>
+      <a class="user-link" href="/">{{ store.username }}</a>
     </div>
     <a
       v-if="store.$state.reg == false"

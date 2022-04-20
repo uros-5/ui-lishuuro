@@ -9,13 +9,17 @@ export interface LobbyGame {
   color: string;
 }
 
+export interface LobbyGames {
+  homeLobby: LobbyGame[];
+}
+
 export const allowedDuration = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30,
   35, 40, 45, 60, 75, 90,
 ];
 
 export const useHomeLobby = defineStore("useHomeLobby", {
-  state: () => {
+  state: (): LobbyGames => {
     return { homeLobby: [] };
   },
   actions: {
@@ -41,6 +45,11 @@ export const useHomeLobby = defineStore("useHomeLobby", {
       });
     },
   },
+  getters: {
+    homeLobby(state): LobbyGame[] {
+      return state.homeLobby;
+    }
+  }
 });
 
 function isGameEqual(game1: LobbyGame, game2: LobbyGame): boolean {

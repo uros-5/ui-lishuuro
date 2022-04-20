@@ -14,8 +14,8 @@
           </thead>
           <tbody>
             <tr
-              v-for="i in store.$state.homeLobby"
-              :key="i"
+              v-for="i in store.homeLobby"
+              :key="i.time"
               @click="acceptGame(i)"
             >
               <td>

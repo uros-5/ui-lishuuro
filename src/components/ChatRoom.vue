@@ -54,7 +54,7 @@ function onEnter(): void {
     SEND({
       t: props.wsType, //"home_chat_message",
       message: message.value,
-      user: user.$state.username,
+      user: user.username,
       time: "",
     });
     message.value = "";

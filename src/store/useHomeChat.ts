@@ -4,6 +4,7 @@ export interface ChatMessage {
   user: string;
   message: string;
   time: string;
+  t?: string;
 }
 
 export const useHomeChat = defineStore("useHomeChat", {
@@ -22,4 +23,9 @@ export const useHomeChat = defineStore("useHomeChat", {
       this.$state.homeChat = this.$state.homeChat;
     },
   },
+  getters: {
+    homeChat(state): ChatMessage[] {
+      return state.homeChat; 
+    }
+  }
 });

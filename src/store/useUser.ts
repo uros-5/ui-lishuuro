@@ -37,4 +37,9 @@ export const useUser = defineStore("useUser", {
       this.$state.gamesCount = cnt;
     },
   },
+  getters: {
+    username(state): string {
+      return state.username;
+    }
+  }
 });
