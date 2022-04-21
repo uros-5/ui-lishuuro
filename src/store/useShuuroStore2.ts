@@ -203,13 +203,13 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     // set pocket
-    setPocket(s: string | undefined) {
-      if (s == undefined) {
+    setPocket(hand: string | undefined) {
+      if (hand == undefined) {
         return;
       }
 
       this.cgs(1).state.pockets = readPockets(
-        `[${s}]`,
+        `[${hand}]`,
         this.cgs(1).state.pocketRoles!
       );
       this.cgs(1).redrawAll();
@@ -227,7 +227,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // receive move from server and place on board
     serverPlace(msg: any) {
-      let a = this.deployWasm().server_place(msg.move);
+      let a = this.deployWasm().place(msg.move);
       if (a) {
         let last_move = this.deployWasm().last_move();
         this.setPieces();
@@ -260,7 +260,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // deploy_wasm placing piece
     wasmPlace(p: string, key: Key) {
-      let placed = this.deployWasm().place(p, key);
+      let placed = this.deployWasm().place(`${p}@${key}`);
       if (placed) {
         let last_move = this.deployWasm().last_move();
         this.history(1)!.push([last_move, 0]);
@@ -342,7 +342,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // after moving
     movedPiece(orig: Key, dest: Key, _metadata: MoveMetadata) {
-      let played = this.fightWasm().play(orig, dest);
+      let played = this.fightWasm().make_move(`${orig}_${dest}`);
       this.updateCurrentIndex(2);
       this.sendMove(`${orig}_${dest}`);
       this.playAudio("move");
@@ -402,7 +402,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     serverMove2(msg: any) {
       let beforeCount = this.fightWasm().pieces_count();
-      let m = this.fightWasm().server_move(msg.game_move);
+      let m = this.fightWasm().make_move(msg.game_move);
       let move = msg.game_move.split("_");
       let lastMove = this.fightWasm().last_move();
       let newCount = this.fightWasm().pieces_count();
