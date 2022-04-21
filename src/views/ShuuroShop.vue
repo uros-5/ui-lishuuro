@@ -33,7 +33,7 @@ import { dataPrice, pieces } from "@/store/useShuuroStore2";
 const shuuroStore = useShuuroStore2();
 const userStore = useUser();
 onMounted(() => {
-  shuuroStore.updateClientStage("shop");
+  shuuroStore.updateClientStage(0);
 });
 </script>
 

@@ -25,9 +25,9 @@ const shuuroStore = useShuuroStore2();
 const userStore = useUser();
 
 function getHistory(): FenItem[] {
-  if (shuuroStore.$state.client_stage == "shop") {
+  if (shuuroStore.$state.client_stage == 0) {
     if (shuuroStore.$state.am_i_player) {
-      let history = shuuroStore.$state.shop_history!;
+      let history = shuuroStore.history(0)!;
       let color = shuuroStore.getColor(userStore.$state.username);
       return history.filter((item) => {
         let p = item[0][1];
@@ -42,21 +42,21 @@ function getHistory(): FenItem[] {
         }
       });
     }
-  } else if (shuuroStore.$state.client_stage == "deploy") {
-    return shuuroStore.$state.deploy_history!;
-  } else if (shuuroStore.$state.client_stage == "fight") {
-    return shuuroStore.$state.fight_history!;
+  } else if (shuuroStore.$state.client_stage == 1) {
+    return shuuroStore.history(1)!;
+  } else if (shuuroStore.$state.client_stage == 2) {
+    return shuuroStore.history(2)!;
   }
   return [];
 }
 
 function fenItem(item: [string, number]): string {
-  if (shuuroStore.$state.client_stage == "shop") {
+  if (shuuroStore.$state.client_stage == 0) {
     return `${item[0]} ${item[1]}`;
-  } else if (shuuroStore.$state.client_stage == "deploy") {
+  } else if (shuuroStore.$state.client_stage == 1) {
     let fen = item[0].split("_");
     return fen[0];
-  } else if (shuuroStore.$state.client_stage == "fight") {
+  } else if (shuuroStore.$state.client_stage == 2) {
     let fen = item[0].split(" ");
     return fen[4];
   }
@@ -91,9 +91,9 @@ function resultMessage(): string {
 
 function fenItemCheck(): boolean {
   return (
-    shuuroStore.$state.client_stage == "shop" ||
-    shuuroStore.$state.client_stage == "deploy" ||
-    shuuroStore.$state.client_stage == "fight"
+    shuuroStore.$state.client_stage == 0 ||
+    shuuroStore.$state.client_stage == 1 ||
+    shuuroStore.$state.client_stage == 2
   );
 }
 </script>

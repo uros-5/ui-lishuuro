@@ -25,10 +25,10 @@ const shuuroStore = useShuuroStore2();
 
 function updateIndex(): void {
   shuuroStore.$state.current_index = props.index! - 1;
-  if (shuuroStore.$state.client_stage == "deploy") {
+  if (shuuroStore.$state.client_stage == 1) {
     let sfen = deploySfen(props.fen);
     shuuroStore.tempDeployWasm(sfen);
-  } else if (shuuroStore.$state.client_stage == "fight") {
+  } else if (shuuroStore.$state.client_stage == 2) {
     let sfen = fightSfen(props.fen);
     shuuroStore.tempFightWasm(sfen);
   }

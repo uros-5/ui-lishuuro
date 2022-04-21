@@ -3,7 +3,7 @@ import { onMounted } from "vue";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
 
 const shuuroStore = useShuuroStore2();
-shuuroStore.updateClientStage("fight");
+shuuroStore.updateClientStage(2);
 
 onMounted(() => {
   if (shuuroStore.$state.game_id == "") {
@@ -11,7 +11,7 @@ onMounted(() => {
     if (shuuroStore.$state.sfen) {
       shuuroStore.setFightCg();
       shuuroStore.setFightWasm(shuuroStore.$state.sfen);
-      shuuroStore.updateClientStage("fight");
+      shuuroStore.updateClientStage(2);
     }
   }
 });

@@ -9,6 +9,11 @@ export function SEND(msg: any) {
   ws.send(JSON.stringify(msg));
 }
 
+ws.onerror = function (event) {
+  //alert(`${event.target}`);
+  //console.log(event.eventPhase);
+}
+
 ws.onmessage = function (event) {
   const user = useUser();
   const homeChat = useHomeChat();

@@ -23,10 +23,10 @@ const shuuroStore = useShuuroStore2();
 function flipSide(): void {
   let now = shuuroStore.$state.flipped_board;
   shuuroStore.$state.flipped_board = !now;
-  if (shuuroStore.current_stage == "deploy") {
-    shuuroStore.deployCground().toggleOrientation();
-  } else if (shuuroStore.current_stage == "fight") {
-    shuuroStore.fightCground().toggleOrientation();
+  if (shuuroStore.current_stage == 1) {
+    shuuroStore.cgs(1).toggleOrientation();
+  } else if (shuuroStore.current_stage == 2) {
+    shuuroStore.cgs(2).toggleOrientation();
   }
 }
 
@@ -71,40 +71,40 @@ function fastForward(): void {
 }
 
 function wasmFen(fen: string) {
-  if (shuuroStore.$state.current_stage! == "deploy") {
+  if (shuuroStore.$state.current_stage! == 1) {
     shuuroStore.tempDeployWasm(fen);
-  } else if (shuuroStore.$state.current_stage! == "fight") {
+  } else if (shuuroStore.$state.current_stage! == 2) {
     shuuroStore.tempFightWasm(fen);
   }
 }
 
 function currentHistory(): [string, number][] {
-  if (shuuroStore.$state.client_stage == "shop") {
-    return shuuroStore.$state.shop_history!;
-  } else if (shuuroStore.$state.client_stage == "deploy") {
-    return shuuroStore.$state.deploy_history!;
-  } else if (shuuroStore.$state.client_stage == "fight") {
-    return shuuroStore.$state.fight_history!;
+  if (shuuroStore.$state.client_stage == 0) {
+    return shuuroStore.history(0)!;
+  } else if (shuuroStore.$state.client_stage == 1) {
+    return shuuroStore.history(1)!;
+  } else if (shuuroStore.$state.client_stage == 2) {
+    return shuuroStore.history(2)!;
   }
   return [];
 }
 
 function getFen(index: number): string {
   switch (shuuroStore.$state.client_stage!) {
-    case "deploy":
-      return shuuroStore.$state.deploy_history![index][0];
-    case "fight":
-      return shuuroStore.$state.fight_history![index][0];
+    case 1:
+      return shuuroStore.history(1)![index][0];
+    case 2:
+      return shuuroStore.history(2)![index][0];
     default:
       return "";
   }
 }
 
 function fenExist(index: number): boolean {
-  if (shuuroStore.$state.client_stage == "deploy") {
-    return index <= shuuroStore.$state.deploy_history!.length;
-  } else if (shuuroStore.$state.client_stage == "fight") {
-    return index <= shuuroStore.$state.fight_history!.length;
+  if (shuuroStore.$state.client_stage == 1) {
+    return index <= shuuroStore.history(1)!.length;
+  } else if (shuuroStore.$state.client_stage == 2) {
+    return index <= shuuroStore.history(2)!.length;
   }
   return true;
 }

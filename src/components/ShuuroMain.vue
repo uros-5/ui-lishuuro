@@ -68,7 +68,7 @@ function bottomPlayer(): string {
 
 function canPlay2(): boolean {
   if (
-    shuuroStore.$state.current_stage == "deploy" &&
+    shuuroStore.$state.current_stage == 1 &&
     shuuroStore.$state.am_i_player
   ) {
     return true;

@@ -27,7 +27,7 @@ const store = useBoardSize();
 const shuuroStore = useShuuroStore2();
 
 store.updateRowsAndCols(12);
-shuuroStore.updateClientStage("deploy");
+shuuroStore.updateClientStage(1);
 
 onMounted(() => {
   if (shuuroStore.$state.game_id == "") {
@@ -42,7 +42,7 @@ onMounted(() => {
     if (shuuroStore.$state.sfen) {
       shuuroStore.setDeployCg();
       shuuroStore.setDeployWasm(shuuroStore.$state.sfen);
-shuuroStore.updateClientStage("deploy");
+shuuroStore.updateClientStage(1);
     }
   }
 });
