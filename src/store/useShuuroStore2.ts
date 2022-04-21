@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore, mapGetters } from "pinia";
 import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
 import Chessground from "@/plugins/chessground";
@@ -28,6 +28,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     return emptyState();
   },
   actions: {
+
+    // SERVER DATA
 
     // convert server data to store
     fromServer(s: any, username: string) {
@@ -137,10 +139,10 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // buying piece
     buy(p: string, color: string) {
       if (this.canShop()) {
-        this.$state.piece_counter = this.shopWasm2().buy(p);
-        const new_credit = this.shopWasm2().getCredit(color);
-        const counter = this.shopWasm2().get_piece(p);
         const game_move = `+${p}`;
+        this.$state.piece_counter = this.wasm0().buy(game_move);
+        const new_credit = this.wasm0().getCredit(color);
+        const counter = this.wasm0().get_piece(p);
         if (new_credit != this.$state.credit) {
           this.history(0)?.push([game_move, counter]);
         }
@@ -157,8 +159,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // confirm shopping list
     confirm(username: string) {
       if (this.canShop()) {
-        this.shopWasm2().confirm(this.$state.player_color!);
-        if (this.shopWasm2().isConfirmed(this.$state.player_color!)) {
+        this.wasm0().confirm(this.$state.player_color!);
+        if (this.wasm0().isConfirmed(this.$state.player_color!)) {
           SEND({
             t: "live_game_confirm",
             game_id: this.$state.game_id,
@@ -168,6 +170,20 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           this.$state.confirmed_players![this.$state.player!] = true;
         }
       }
+    },
+
+    // set user hand
+    setShuuroHand(hand: string, user: string): void {
+      // eslint-disable-next-line
+      init().then((_exports) => {
+        if (this.$state.current_stage == 0) {
+          this.$state.wasm![0] = new ShuuroShop();
+          (this.wasm0() as ShuuroShop).set_hand(hand);
+          this.$state.piece_counter = this.wasm0().shop_items(
+            this.$state.player_color!
+          );
+        }
+      });
     },
 
     // DEPLOY PART
@@ -196,8 +212,9 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     decrementPocket(piece: Piece, key: Key) {
       // wasmPlace
       let p = this.shuuroPiece(piece);
-      this.sendPlace(p, key);
-      this.wasmPlace(p, key);
+      let gameMove = `${p}@${key}`;
+      this.sendPlace(gameMove);
+      this.wasmPlace(gameMove, false);
       this.setTurnColor();
       this.setCheckDeploy(this.$state.current_stage!);
     },
@@ -216,30 +233,19 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     // send place move to server
-    sendPlace(p: string, key: Key) {
-      let sfen = `${p}@${key}`;
+    sendPlace(gameMove: string) {
       SEND({
         t: "live_game_place",
         game_id: this.$state.game_id,
-        game_move: sfen,
+        game_move: gameMove,
       });
     },
 
     // receive move from server and place on board
     serverPlace(msg: any) {
       router.push({ path: `/shuuro/deploy/${this.$state.game_id}` });
-      let a = this.wasm(1).place(msg.move);
-      if (a) {
-        let last_move = this.wasm(1).last_move();
-        this.setPieces();
-        this.setTurnColor();
-        this.setCheckDeploy(this.$state.current_stage!);
-        this.switchClock();
-        this.updateCgHand();
-        this.history(1)!.push([last_move, 0]);
-        this.$state.sfen = this.wasm(1).generate_sfen();
-        this.$state.current_index = this.history(1).length - 1;
-      }
+      console.log(msg);
+      this.wasmPlace(msg.move, true);
       if (msg.to_fight) {
         this.$state.current_stage = 2;
         this.$state.client_stage = 2;
@@ -249,20 +255,14 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     // set check
-    setCheckDeploy(stage: StageN) {
-      let is_check = this.wasm(1).is_check();
-      setCheck(this.cgs(1).state, is_check);
+    setCheck(check: boolean) {
+      let is_check = check;
+      setCheck(this.cgs(this.cs()).state, is_check);
     },
 
-    setCheckFight() {
-      let is_check = this.wasm(2).is_check();
-      setCheck(this.cgs(2).state, is_check);
-    },
-
-    // deploy_wasm placing piece
-    wasmPlace(p: string, key: Key) {
-      console.log(p);
-      let placed = this.wasm(1).place(`${p}@${key}`);
+    // deploy wasm placing piece
+    wasmPlace(game_move: string, isServer: boolean) {
+      let placed = this.wasm(1).place(game_move);
       if (placed) {
         let last_move = this.wasm(1).last_move();
         this.history(1)!.push([last_move, 0]);
@@ -270,7 +270,13 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.updateCgHand();
         this.$state.sfen = this.wasm(1).generate_sfen();
         this.clockPause(this.$state.player!);
+        this.setCheckDeploy(this.$state.current_stage!);
         this.playAudio("move");
+        if (isServer) {
+          this.setPieces();
+          this.setTurnColor();
+          this.switchClock();
+        }
       }
     },
 
@@ -299,6 +305,34 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     updateCurrentIndex(stage: StageN) {
       this.$state.current_index = this.history(stage)!.length - 1;
     },
+
+    tempDeployWasm(sfen: string) {
+      let temp = new ShuuroPosition();
+      temp.set_sfen(sfen);
+      let pieces = temp.map_pieces();
+      let hand = temp.count_hand_pieces();
+      this.cgs(1).state.pieces = pieces;
+      this.cgs(1).state.dom.redraw();
+      this.cgs(1).state.pockets = readPockets(
+        `[${hand}]`,
+        this.cgs(1).state.pocketRoles!
+      );
+      this.cgs(1).state.dom.redrawNow();
+
+      if (this.$state.current_index == this.history(1)!.length - 1) {
+        this.cgs(1).state.movable.showDests = true;
+        this.cgs(1).state.draggable.enabled = true;
+        this.cgs(1).state.movable.color = this.$state.player_color;
+      } else {
+        this.cgs(1).state.movable.showDests = false;
+        this.cgs(1).state.draggable.enabled = false;
+        this.cgs(1).state.movable.color = "none";
+      }
+
+      temp.free();
+    },
+
+
 
     setDeployWasm(sfen: string) {
       init().then((_exports) => {
@@ -344,13 +378,47 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // after moving
     movedPiece(orig: Key, dest: Key, _metadata: MoveMetadata) {
-      let played = this.wasm(2).make_move(`${orig}_${dest}`);
-      this.updateCurrentIndex(2);
-      this.sendMove(`${orig}_${dest}`);
-      console.log(orig, dest);
+      let gameMove = `${orig}_${dest}`;
+      this.wasmMove(gameMove, false);
+      this.sendMove(gameMove);
       this.playAudio("move");
       if (_metadata.captured!) {
         this.playAudio("capture");
+      }
+    },
+
+    serverMove2(msg: any) {
+      router.push({ path: `/shuuro/fight/${this.$state.game_id}` });
+      this.$state.client_stage = 2;
+      this.wasmMove(msg.game_move, true);
+      if (this.gameOver(msg.outcome)) {
+        this.playAudio("res");
+        this.clockPause(this.$state.side_to_move);
+      }
+    },
+
+    wasmMove(game_move: string, is_server: boolean) {
+      let beforeCount = this.wasm(2).pieces_count();
+      let played = this.wasm(2).make_move(game_move);
+      if (!played.toLowerCase().startsWith("illegal")) {
+        let lastMove = this.wasm(2).last_move();
+        let move = game_move.split("_");
+        let newCount = this.wasm(2).pieces_count();
+        if (is_server) {
+          this.cgs(2).move(move[0] as Key, move[1] as Key);
+          if (newCount > beforeCount) {
+            this.playAudio("capture");
+          }
+          else { 
+            this.playAudio("move");
+          }
+        }
+        this.setTurnColor();
+        this.setCheckFight();
+        this.switchClock();
+        this.history(2)!.push([lastMove, 0]);
+        this.updateCurrentIndex(2);
+        this.cgs(2).state.dom.redraw();
       }
     },
 
@@ -391,28 +459,39 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.cgs(cs).state.dom.redraw();
     },
 
-    serverMove2(msg: any) {
-      router.push({ path: `/shuuro/fight/${this.$state.game_id}` });
-      let beforeCount = this.wasm(2).pieces_count();
-      let m = this.wasm(2).make_move(msg.game_move);
-      let move = msg.game_move.split("_");
-      let lastMove = this.wasm(2).last_move();
-      let newCount = this.wasm(2).pieces_count();
-      this.cgs(2).move(move[0], move[1]);
-      this.setTurnColor();
-      this.setCheckFight();
-      this.switchClock();
-      this.history(2)!.push([lastMove, 0]);
-      this.$state.sfen = this.wasm(2).generate_sfen();
-      if (newCount > beforeCount) {
-        this.playAudio("capture");
-      }
-      this.updateCurrentIndex(2);
+
+
+    tempFightWasm(sfen: string) {
+      let temp = new ShuuroPosition();
+      temp.set_sfen(sfen);
+      let pieces = temp.map_pieces();
+      this.cgs(2).state.pieces = pieces;
       this.cgs(2).state.dom.redraw();
-      if (this.gameOver(msg.outcome)) {
-        this.playAudio("res");
-        this.clockPause(this.$state.side_to_move);
+      this.cgs(2).state.dom.redrawNow();
+
+      if (this.$state.current_index == this.history(2)!.length - 1) {
+        this.cgs(2).state.movable.showDests = true;
+        this.cgs(2).state.draggable.enabled = true;
+        this.cgs(2).state.movable.color = this.$state.player_color;
+      } else {
+        this.cgs(2).state.movable.showDests = false;
+        this.cgs(2).state.draggable.enabled = false;
+        this.cgs(2).state.movable.color = "none";
       }
+
+      temp.free();
+    },
+
+
+    // set check
+    setCheckDeploy(stage: StageN) {
+      let is_check = this.wasm(1).is_check();
+      setCheck(this.cgs(1).state, is_check);
+    },
+
+    setCheckFight() {
+      let is_check = this.wasm(2).is_check();
+      setCheck(this.cgs(2).state, is_check);
     },
 
     // CLOCKS PART
@@ -510,8 +589,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       a.play();
     },
 
-    dropPiece() { },
-
     setFightWasm(sfen: string) {
       init().then((_exports) => {
         this.$state.wasm![2] = new ShuuroPosition();
@@ -521,20 +598,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.activateClock();
         this.cgs(2).state.movable.color = this.$state.player_color;
         this.setTurnColor();
-      });
-    },
-
-    // set user hand
-    setShuuroHand(hand: string, user: string): void {
-      // eslint-disable-next-line
-      init().then((_exports) => {
-        if (this.$state.current_stage == 0) {
-          this.$state.wasm![0] = new ShuuroShop();
-          (this.shopWasm2() as ShuuroShop).set_hand(hand);
-          this.$state.piece_counter = this.shopWasm2().shop_items(
-            this.$state.player_color!
-          );
-        }
       });
     },
 
@@ -552,14 +615,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // is game over
 
-    gameOver(outcome: string): boolean {
-      for (let i = 0; i < finished.length; i++) {
-        if (outcome.startsWith(finished[i])) {
-          return true;
-        }
-      }
-      return false;
-    },
+
 
     // GETTERS
     clock(id: number): Clock {
@@ -593,52 +649,15 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       return p;
     },
 
-    tempDeployWasm(sfen: string) {
-      let temp = new ShuuroPosition();
-      temp.set_sfen(sfen);
-      let pieces = temp.map_pieces();
-      let hand = temp.count_hand_pieces();
-      this.cgs(1).state.pieces = pieces;
-      this.cgs(1).state.dom.redraw();
-      this.cgs(1).state.pockets = readPockets(
-        `[${hand}]`,
-        this.cgs(1).state.pocketRoles!
-      );
-      this.cgs(1).state.dom.redrawNow();
-
-      if (this.$state.current_index == this.history(1)!.length - 1) {
-        this.cgs(1).state.movable.showDests = true;
-        this.cgs(1).state.draggable.enabled = true;
-        this.cgs(1).state.movable.color = this.$state.player_color;
-      } else {
-        this.cgs(1).state.movable.showDests = false;
-        this.cgs(1).state.draggable.enabled = false;
-        this.cgs(1).state.movable.color = "none";
+    gameOver(outcome: string): boolean {
+      for (let i = 0; i < finished.length; i++) {
+        if (outcome.startsWith(finished[i])) {
+          return true;
+        }
       }
-
-      temp.free();
+      return false;
     },
 
-    tempFightWasm(sfen: string) {
-      let temp = new ShuuroPosition();
-      temp.set_sfen(sfen);
-      let pieces = temp.map_pieces();
-      this.cgs(2).state.pieces = pieces;
-      this.cgs(2).state.dom.redraw();
-      this.cgs(2).state.dom.redrawNow();
-
-      if (this.$state.current_index == this.history(2)!.length - 1) {
-        this.cgs(2).state.movable.showDests = true;
-        this.cgs(2).state.draggable.enabled = true;
-        this.cgs(2).state.movable.color = this.$state.player_color;
-      } else {
-        this.cgs(2).state.movable.showDests = false;
-        this.cgs(2).state.draggable.enabled = false;
-        this.cgs(2).state.movable.color = "none";
-      }
-
-      temp.free();
-    },
 
     piece(p: string): string {
       return (this.$state.player! == 0 ? p.toUpperCase() : p.toLowerCase());
@@ -658,18 +677,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     getHistory(): FenItem[] | undefined {
       return this.history(this.client_stage!);
-    },
-
-    shopWasm(): ShuuroShop {
-      return this.shopWasm2() as ShuuroShop;
-    },
-
-    deployWasm(): ShuuroPosition {
-      return this.$state.wasm![1] as ShuuroPosition;
-    },
-
-    fightWasm(): ShuuroPosition {
-      return this.$state.wasm![2] as ShuuroPosition;
     },
 
     canShop(): boolean {
@@ -692,7 +699,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       return this.$state.wasm![index] as ShuuroPosition;
     },
 
-    shopWasm2(): ShuuroShop {
+    wasm0(): ShuuroShop {
       return this.$state.wasm![0] as ShuuroShop;
     },
 

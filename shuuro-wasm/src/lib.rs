@@ -1,7 +1,7 @@
 mod utils;
 
 use itertools::Itertools;
-use js_sys::{Array, Map, Uint8Array};
+use js_sys::{Array, Map, Uint8Array, Uint16Array};
 use serde::{Deserialize, Serialize};
 use shuuro::{self, piece_type::PieceTypeIter, Color, Move, Piece, PieceType, Position};
 use shuuro::{init, square_bb, Square, SQUARE_BB};
@@ -33,17 +33,17 @@ impl ShuuroShop {
         }
     }
     #[wasm_bindgen]
-    pub fn buy(&mut self, s: char) -> Uint8Array {
-        let piece = shuuro::Piece::from_sfen(s);
-        match piece {
-            Some(p) => {
-                let shop_move = Move::Buy { piece: p };
-                self.shuuro.play(shop_move);
-                return self.js_shop_items(&p.color);
+    pub fn buy(&mut self, game_move: String) -> Uint8Array {
+        if let Some(game_move) = Move::from_sfen(game_move.as_str()) {
+            match game_move {
+                Move::Buy { piece } => {
+                    self.shuuro.play(game_move);
+                    return self.js_shop_items(&piece.color);
+                },
+                _ => () 
             }
-            None => (),
         }
-        return Uint8Array::new_with_length(7);
+        Uint8Array::new_with_length(7)
     }
 
     #[wasm_bindgen]
