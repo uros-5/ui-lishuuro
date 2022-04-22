@@ -10,9 +10,13 @@ export function SEND(msg: any) {
 }
 
 ws.onerror = function (event) {
-  //alert(`${event.target}`);
-  //console.log(event.eventPhase);
-}
+  console.log(event);
+};
+
+ws.onopen = function (event) {
+  console.log(event);
+};
+
 
 ws.onmessage = function (event) {
   const user = useUser();

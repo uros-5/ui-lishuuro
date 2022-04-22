@@ -27,10 +27,10 @@ function updateIndex(): void {
   shuuroStore.$state.current_index = props.index! - 1;
   if (shuuroStore.$state.client_stage == 1) {
     let sfen = deploySfen(props.fen);
-    shuuroStore.tempDeployWasm(sfen);
+    shuuroStore.tempWasm(sfen);
   } else if (shuuroStore.$state.client_stage == 2) {
     let sfen = fightSfen(props.fen);
-    shuuroStore.tempFightWasm(sfen);
+    shuuroStore.tempWasm(sfen);
   }
 }
 

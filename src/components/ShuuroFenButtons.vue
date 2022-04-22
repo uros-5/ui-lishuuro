@@ -1,12 +1,9 @@
 <template>
   <div id="btn-controls-top" class="btn-controls">
     <button id="flip" @click="flipSide()">
-      <i class="icon icon-refresh" /></button
-    ><button @click="fastBackward">
-      <i class="icon icon-fast-backward" /></button
-    ><button @click="stepBackward">
-      <i class="icon icon-step-backward" /></button
-    ><button @click="stepForward">
+      <i class="icon icon-refresh" /></button><button @click="fastBackward">
+      <i class="icon icon-fast-backward" /></button><button @click="stepBackward">
+      <i class="icon icon-step-backward" /></button><button @click="stepForward">
       <i class="icon icon-step-forward" />
     </button>
     <button @click="fastForward">
@@ -34,7 +31,6 @@ function fastBackward(): void {
   shuuroStore.$state.current_index = 0;
   if (fenExist(shuuroStore.currentIndex())) {
     let fen = getFen(shuuroStore.currentIndex());
-  console.log(fen);
     wasmFen(fen);
   }
 }
@@ -71,11 +67,7 @@ function fastForward(): void {
 }
 
 function wasmFen(fen: string) {
-  if (shuuroStore.$state.current_stage! == 1) {
-    shuuroStore.tempDeployWasm(fen);
-  } else if (shuuroStore.$state.current_stage! == 2) {
-    shuuroStore.tempFightWasm(fen);
-  }
+  shuuroStore.tempWasm(fen);
 }
 
 function currentHistory(): [string, number][] {
@@ -106,7 +98,8 @@ function fenExist(index: number): boolean {
   } else if (shuuroStore.$state.client_stage == 2) {
     return index <= shuuroStore.history(2)!.length;
   }
-  return true;
+  return false;
 }
 </script>
-<style></style>
+<style>
+</style>
