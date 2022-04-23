@@ -64,7 +64,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.min = s.min;
       this.$state.incr = s.incr;
       this.$state.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
-      this.$state.last_clock = s.last_clock;
+      this.$state.last_clock = ServerDate(s.last_clock).toString();
+      console.log(this.$state.last_clock, ServerDate(this.$state.last_clock));
     },
 
     setStatus(s: any) {
@@ -559,7 +560,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // elapsed time since last clock
     elapsed(): number {
       const now = new Date();
-      const converted_date = ServerDate(this.$state.last_clock!);
+      const converted_date = new Date(this.$state.last_clock!) 
       const elapsed = now.getTime() - converted_date.getTime();
       return elapsed;
     },
@@ -614,6 +615,16 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           console.log("okk");
           this.$state.offeredDraw = true;
         }
+      }
+    },
+
+    gameResign(msg: any, username: string) {
+      if (msg.resign) {
+        this.playAudio("res");
+        this.clockPause(this.$state.side_to_move);
+        this.$state.status = 7;
+        this.$state.result = msg.player;
+        this.scrollToBottom();
       }
     },
 

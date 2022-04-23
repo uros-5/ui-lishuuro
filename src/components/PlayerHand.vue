@@ -1,6 +1,7 @@
 <template>
   <div class="cg-wrap pocket" :style="inCenter ? '' : cgWidth()">
     <div
+      v-if="isHand()"
       :id="divId()"
       :style="`--pocketLength: ${6};
       --files: ${files()};
@@ -93,6 +94,11 @@ function scrollToBottom(): void {
 
 function pocketCss(): string {
   return `pocket ${props.side} usable`;
+}
+
+function isHand(): boolean {
+  let stage = shuuroStore.$state.client_stage!;
+  return stage == 0 || stage == 1; 
 }
 
 function files(): number {

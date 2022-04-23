@@ -86,6 +86,8 @@ function resultMessage(): string {
       return "Draw";
     case 6:
       return "Draw by material";
+    case 7:
+      return `${shuuroStore.$state.result} resigned.`;
     default:
       return "";
   }

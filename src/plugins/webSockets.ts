@@ -77,6 +77,10 @@ ws.onmessage = function (event) {
       delete msg["t"];
       shuuroStore.gameDraw(msg, user.$state.username);
       break;
+    case "live_game_resign":
+      delete msg["t"];
+      shuuroStore.gameResign(msg, user.$state.username);
+      break;
     case "pause_confirmed":
       delete msg["t"];
       shuuroStore.pauseConfirmed(msg.confirmed);

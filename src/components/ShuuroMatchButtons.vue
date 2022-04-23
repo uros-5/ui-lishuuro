@@ -5,7 +5,7 @@
     <button id="draw" @click="draw" v-if="canDR()" title="Draw">
       <i>½</i>
     </button>
-    <button id="resign" v-if="canDR()" title="Resign">
+    <button id="resign" v-if="canDR()" @click="resign" title="Resign">
       <i class="icon icon-flag-o"></i>
     </button>
   </div>
@@ -20,7 +20,17 @@ function canDR(): boolean {
 }
 
 function draw() {
-  SEND({ t: "live_game_draw", game_id: store.$state.game_id });
+  let d = confirm("Are you sure you want to draw?");
+  if (d) {
+    SEND({ t: "live_game_draw", game_id: store.$state.game_id });
+  }
+}
+
+function resign() {
+  let r = confirm("Are you sure you want to resign?");
+  if (r) {
+    SEND({ t: "live_game_resign", game_id: store.$state.game_id });
+  }
 }
 
 const store = useShuuroStore2();
