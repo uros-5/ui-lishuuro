@@ -10,7 +10,7 @@
         :index="index + 1"
       />
 
-      <div id="result">
+      <div id="result" v-if="shuuroStore.$state.status > 0">
         {{ resultMessage() }}
       </div>
     </div>
@@ -71,7 +71,7 @@ function resultMessage(): string {
     case 0:
       return "Game aborted";
     case 1:
-      return `Checkmate, ${result}`;
+      return `Checkmate, ${winner()}`;
     case 2:
       return `${
         result === "1-0"
@@ -81,12 +81,18 @@ function resultMessage(): string {
     case 3:
       return "Stalemate";
     case 4:
-      return "Timeout";
+      return "Draw by repetition";
     case 5:
       return "Draw";
+    case 6:
+      return "Draw by material";
     default:
       return "";
   }
+}
+
+function winner(): string {
+  return shuuroStore.$state.result.endsWith("w") ? "1 - 0" : "0 - 1";
 }
 
 function fenItemCheck(): boolean {

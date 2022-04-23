@@ -18,8 +18,8 @@
     <ShuuroFenPlayer :player="topPlayer()" :online="false" />
     <ShuuroFenButtons />
     <ShuuroFen />
-    <div id="offer-dialog" />
-    <ShuuroAfterButtons />
+    <ShuuroMatchOfferDialog />
+    <ShuuroMatchButtons />
     <ShuuroFenPlayer
       :player="bottomPlayer()"
       :online="true"
@@ -43,8 +43,9 @@ import ShuuroClock from "@/components/ShuuroClock.vue";
 import ShuuroFenPlayer from "@/components/ShuuroFenPlayer.vue";
 import ShuuroFenButtons from "@/components/ShuuroFenButtons.vue";
 import ShuuroFen from "@/components/ShuuroFen.vue";
-import ShuuroAfterButtons from "@/components/ShuuroAfterButtons.vue";
+import ShuuroMatchButtons from "@/components/ShuuroMatchButtons.vue";
 import PlayerHand from "./PlayerHand.vue";
+import ShuuroMatchOfferDialog from "@/components/ShuuroMatchOfferDialog.vue";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { useUser } from "@/store/useUser";
 const shuuroStore = useShuuroStore2();

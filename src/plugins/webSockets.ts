@@ -17,7 +17,6 @@ ws.onopen = function (event) {
   console.log(event);
 };
 
-
 ws.onmessage = function (event) {
   const user = useUser();
   const homeChat = useHomeChat();
@@ -73,6 +72,11 @@ ws.onmessage = function (event) {
     case "live_game_confirmed":
       delete msg["t"];
       shuuroStore.setConfirmed(msg.confirmed);
+      break;
+    case "live_game_draw":
+      delete msg["t"];
+      shuuroStore.gameDraw(msg, user.$state.username);
+      break;
     case "pause_confirmed":
       delete msg["t"];
       shuuroStore.pauseConfirmed(msg.confirmed);

@@ -58,7 +58,7 @@ function cgWidth(): string {
 function piece_counter(): number[] {
   if (props.handType == "shop") {
     // read from shop
-    return shuuroStore.$state.piece_counter!;
+    return shuuroStore.$state.piece_counter! as unknown as number[];
   } else {
     // read from props
     return props.counter.slice().splice(1);

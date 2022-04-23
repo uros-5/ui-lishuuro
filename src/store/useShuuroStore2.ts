@@ -1,4 +1,4 @@
-import { defineStore, mapGetters } from "pinia";
+import { defineStore } from "pinia";
 import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
 import Chessground from "@/plugins/chessground";
@@ -246,9 +246,9 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       }
       if (msg.first_move_error) {
         let self = this;
-        setTimeout( function () {
+        setTimeout(function () {
           self.clockPause(self.$state.side_to_move);
-        },500);
+        }, 500);
       }
     },
 
@@ -365,6 +365,9 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       if (this.gameOver(msg.outcome)) {
         this.playAudio("res");
         this.clockPause(this.$state.side_to_move);
+        this.$state.status = msg.status;
+        this.$state.result = msg.outcome;
+        this.scrollToBottom();
       }
     },
 
@@ -599,7 +602,25 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.cgs(1).state.movable!.dests = moves;
     },
 
-    // is game over
+    gameDraw(msg: any, username: string) {
+      if (msg.draw) {
+        this.playAudio("res");
+        this.clockPause(this.$state.side_to_move);
+        this.$state.status = 5;
+        this.$state.result = "Draw";
+        this.scrollToBottom();
+      } else if (msg.player) {
+        if (this.$state.am_i_player && msg.player != username) {
+          console.log("okk");
+          this.$state.offeredDraw = true;
+        }
+      }
+    },
+
+    scrollToBottom(): void {
+      const container = document.querySelector("#movelist");
+      container!.scrollTop = container!.scrollHeight;
+    },
 
     // GETTERS
     clock(id: number): Clock {
@@ -739,6 +760,7 @@ function emptyState(): ShuuroStore {
     history: [[], [], []],
     wasm: [],
     cgs: [{}, {}, {}],
+    offeredDraw: false,
   };
 }
 
@@ -774,6 +796,7 @@ export interface ShuuroStore {
   wasm?: BoardWasm | [];
   cgs?: Cgs | [any, any, any];
   history?: [FenItem[], FenItem[], FenItem[]];
+  offeredDraw?: boolean;
 }
 
 export type Stage = "shop" | "deploy" | "fight";
