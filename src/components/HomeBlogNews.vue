@@ -5,25 +5,42 @@
       <a class="reflist" href="/"> Latest updated </a>
     </div>
     <div class="posts">
-      <a class="post" href="/">
+      <router-link
+        v-for="post in store.$state.news"
+        :key="post.title"
+        class="post"
+        :to="r(post.title)"
+      >
         <img src="" />
         <span class="text">
-          <strong>News 1</strong>
-          <span>Hello </span>
+          <strong>{{ post.title }}</strong>
+          <span>{{ post.headline }}</span>
         </span>
-        <div class="time">2022.18.01</div>
-      </a>
+        <div class="time">{{ post.date }}</div>
+      </router-link>
     </div>
   </div>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { SEND } from "@/plugins/webSockets";
+import { useNews } from "@/store/useNews";
+import { onMounted } from "vue";
+const store = useNews();
+onMounted(() => {
+  SEND({ t: "home_news" });
+});
+
+function r(title: string): string {
+	
+  return `/news/${title}`;
+}
+</script>
 
 <style>
 .under-lobby {
   grid-area: blog;
   box-shadow: var(--base-shadow);
 }
-
 .posts {
   display: flex;
   flex-direction: column;

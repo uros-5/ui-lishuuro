@@ -28,6 +28,7 @@ function rejectDraw() {
 
 function acceptDraw() {
   SEND({ t: "live_game_draw", game_id: store.$state.game_id });
+  store.$state.offeredDraw = false;
 }
 </script>
 

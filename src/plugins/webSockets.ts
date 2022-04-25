@@ -2,6 +2,7 @@ import { useUser } from "@/store/useUser";
 import { useHomeChat } from "@/store/useHomeChat";
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useNews } from "@/store/useNews";
 
 export const ws = new WebSocket("ws://localhost:8080/ws/");
 
@@ -22,6 +23,7 @@ ws.onmessage = function (event) {
   const homeChat = useHomeChat();
   const homeLobby = useHomeLobby();
   const shuuroStore = useShuuroStore2();
+  const newsStore = useNews();
 
   const msg = JSON.parse(event.data);
   console.log(msg);
@@ -48,6 +50,10 @@ ws.onmessage = function (event) {
     case "home_lobby_remove":
       delete msg["t"];
       homeLobby.removeLobbyGame(msg);
+      break;
+    case "home_news":
+      delete msg["t"];
+      newsStore.setNews(msg.news);
       break;
     case "home_lobby_remove_user":
       delete msg["t"];

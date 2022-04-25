@@ -1,9 +1,12 @@
 <template>
   <div id="btn-controls-top" class="btn-controls">
     <button id="flip" @click="flipSide()">
-      <i class="icon icon-refresh" /></button><button @click="fastBackward">
-      <i class="icon icon-fast-backward" /></button><button @click="stepBackward">
-      <i class="icon icon-step-backward" /></button><button @click="stepForward">
+      <i class="icon icon-refresh" /></button
+    ><button @click="fastBackward">
+      <i class="icon icon-fast-backward" /></button
+    ><button @click="stepBackward">
+      <i class="icon icon-step-backward" /></button
+    ><button @click="stepForward">
       <i class="icon icon-step-forward" />
     </button>
     <button @click="fastForward">
@@ -30,7 +33,8 @@ function flipSide(): void {
 function fastBackward(): void {
   shuuroStore.$state.current_index = 0;
   if (fenExist(shuuroStore.currentIndex())) {
-    let fen = getFen(shuuroStore.currentIndex());
+    let fen = getFen(0);
+    console.log(fen);
     wasmFen(fen);
   }
 }
@@ -84,7 +88,8 @@ function currentHistory(): [string, number][] {
 function getFen(index: number): string {
   switch (shuuroStore.$state.client_stage!) {
     case 1:
-      return shuuroStore.history(1)![index][0];
+      let s = shuuroStore.history(1)![index][0].split("_");
+      return `${s[1]} ${s[2]} ${s[3]}`;
     case 2:
       return shuuroStore.history(2)![index][0];
     default:
@@ -101,5 +106,4 @@ function fenExist(index: number): boolean {
   return false;
 }
 </script>
-<style>
-</style>
+<style></style>
