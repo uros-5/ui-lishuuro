@@ -65,7 +65,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.incr = s.incr;
       this.$state.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
       this.$state.last_clock = ServerDate(s.last_clock).toString();
-      console.log(this.$state.last_clock, ServerDate(this.$state.last_clock));
     },
 
     setStatus(s: any) {
@@ -295,6 +294,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.last_clock = new Date().toString();
       router.push({ path: s.path });
       this.$state.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
+      console.log(this.$state.status);
       this.clock(this.$state.side_to_move).start();
       this.$state.current_stage = 1;
       this.playAudio("res");
@@ -555,6 +555,11 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       let otherClock = this.$state.side_to_move == 0 ? 1 : 0;
       this.clock(otherClock).pause(true);
       this.clock(this.$state.side_to_move).start();
+      if (this.$state.status > 0) {
+        this.clockPause(0);
+        this.clockPause(1);
+      }
+
     },
 
     // elapsed time since last clock

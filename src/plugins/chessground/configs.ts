@@ -49,6 +49,14 @@ export const liveFightConfig: Config = {
   pocketRoles: p,
 };
 
+export const userProfileConfig: Config = {
+  selectable: { enabled: false },
+  drawable: { enabled: false, visible: false },
+  draggable: { enabled: false },
+  movable: { showDests: false, free: false },
+  coordinates: false,
+};
+
 export function p(color: Color): PieceLetter[] {
   if (color == "white") {
     return ["K", "Q", "R", "B", "N", "P"];
