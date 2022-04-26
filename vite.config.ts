@@ -48,4 +48,6 @@ const CUSTOM_ELEMENTS = [
   "variant-name",
   "i-side",
   "icon",
+  "vs-swords",
+  
 ];

@@ -20,6 +20,7 @@
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import ShuuroFenItem from "./ShuuroFenItem.vue";
 import { FenItem } from "@/store/useShuuroStore2";
+import { resultMessage as Rm } from "@/plugins/resultMessage";
 import { useUser } from "@/store/useUser";
 const shuuroStore = useShuuroStore2();
 const userStore = useUser();
@@ -64,37 +65,11 @@ function fenItem(item: [string, number]): string {
 }
 
 function resultMessage(): string {
-  let result = shuuroStore.$state.result;
-  switch (shuuroStore.$state.status) {
-    case -1:
-      return "Playing right now";
-    case 0:
-      return "Game aborted";
-    case 1:
-      return `Checkmate, ${winner()}`;
-    case 2:
-      return `${
-        result === "1-0"
-          ? shuuroStore.$state.players[0]
-          : shuuroStore.$state.players[1]
-      }, resigned`;
-    case 3:
-      return "Stalemate";
-    case 4:
-      return "Draw by repetition";
-    case 5:
-      return "Draw";
-    case 6:
-      return "Draw by material";
-    case 7:
-      return `${shuuroStore.$state.result} resigned.`;
-    default:
-      return "";
-  }
-}
-
-function winner(): string {
-  return shuuroStore.$state.result.endsWith("w") ? "1 - 0" : "0 - 1";
+  return Rm(
+    shuuroStore.$state.result,
+    shuuroStore.$state.status,
+    shuuroStore.$state.players
+  );
 }
 
 function fenItemCheck(): boolean {

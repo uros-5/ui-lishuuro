@@ -1,7 +1,9 @@
 <template>
   <div class="site-buttons">
     <div id="username">
-      <a class="user-link" href="/">{{ store.$state.username }}</a>
+      <router-link class="user-link" :to="`/@/${store.$state.username}`">{{
+        store.$state.username
+      }}</router-link>
     </div>
     <a
       v-if="store.$state.reg == false"
