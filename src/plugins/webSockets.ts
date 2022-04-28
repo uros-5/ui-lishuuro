@@ -3,6 +3,7 @@ import { useHomeChat } from "@/store/useHomeChat";
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { useNews } from "@/store/useNews";
+import { useTvStore } from "@/store/useTvStore";
 
 export const ws = new WebSocket("ws://localhost:8080/ws/");
 
@@ -24,6 +25,7 @@ ws.onmessage = function (event) {
   const homeLobby = useHomeLobby();
   const shuuroStore = useShuuroStore2();
   const newsStore = useNews();
+  const tvStore = useTvStore();
 
   const msg = JSON.parse(event.data);
   console.log(msg);
@@ -87,6 +89,11 @@ ws.onmessage = function (event) {
       delete msg["t"];
       shuuroStore.gameResign(msg, user.$state.username);
       break;
+    case "live_game_sfen":
+      delete msg["t"];
+      tvStore.setProfileGame(msg);
+      break;
+
     case "pause_confirmed":
       delete msg["t"];
       shuuroStore.pauseConfirmed(msg.confirmed);

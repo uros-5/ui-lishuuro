@@ -1,14 +1,14 @@
 <template>
   <tr>
     <router-link
-      :to="`/shuuro/${game.current_stage}/${game.game_id.$oid}`"
+      :to="`/shuuro/${game.current_stage}/${game._id.$oid}`"
       @click="setShuuroStore"
     >
       <td class="board">
         <div class="standard">
           <div
-            :class="`chessground12 mini ${game.game_id.$oid}`"
-            :id="game.game_id.$oid"
+            :class="`chessground12 mini ${game._id.$oid}`"
+            :id="game._id.$oid"
           />
         </div>
       </td>
@@ -58,57 +58,29 @@
   </tr>
 </template>
 <script setup lang="ts">
-import Chessground from "@/plugins/chessground";
 import { resultMessage } from "@/plugins/resultMessage";
 import { timeago } from "@/plugins/timeago";
 import { ShuuroStore, useShuuroStore2 } from "@/store/useShuuroStore2";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { userProfileConfig } from "@/plugins/chessground/configs";
-import init, { ShuuroPosition } from "shuuro-wasm";
-import { Api } from "@/plugins/chessground/api";
-import { setCheck } from "@/plugins/chessground/board";
 import { useUser } from "@/store/useUser";
-
+import { useTvStore } from "@/store/useTvStore";
+import { SEND } from "@/plugins/webSockets";
+const tv = useTvStore();
 onMounted(() => {
-  const elem = document.getElementById(props.game.game_id.$oid) as HTMLElement;
-  const obj = Chessground(elem, userProfileConfig, 500, undefined);
-  tempWasm(obj);
-});
-
-function tempWasm(obj: Api) {
-  init().then((_exports) => {
-    if (props.game.current_stage == "shop") {
+  if (props.game.status <= 0) {
+  	console.log("jeste");
+    SEND({ t: "live_game_sfen", game_id: props.game._id.$oid });
+  } else {
+    let stage = props.game.current_stage;
+    if (stage == "shop") {
       return;
     }
-    let w = new ShuuroPosition();
-    let fen = getFen();
-    w.set_sfen(fen);
-    let check = w.is_check();
-    let pieces = w.map_pieces();
-    let plinths = w.map_plinths();
-    let stm = w.side_to_move();
-    obj.state.turnColor = stm == "w" ? "white" : "black";
-    obj.state.plinths = plinths;
-    obj.state.pieces = pieces;
-    setCheck(obj.state, check);
-    obj.state.dom.redraw();
-    obj.state.dom.redrawNow();
-    w.free();
-  });
-}
-
-function getFen(): string {
-  switch (props.game.current_stage) {
-    case "deploy":
-      let s = props.game.sfen;
-      return `${s[1]} ${s[2]} ${s[3]}`;
-    case "fight":
-      return props.game.sfen;
-    default:
-      return "";
+    let cg = tv.setCg(props.game._id.$oid);
+    let sfen = props.game.sfen;
+    tv.tempWasm(cg, sfen, stage);
   }
-}
+});
 
 const props = defineProps<{ game: ShuuroStore | any }>();
 
@@ -145,7 +117,7 @@ function userColor(p: string): string {
 }
 
 function setShuuroStore() {
-  props.game.game_id = props.game.game_id.$oid;
+  props.game.game_id = props.game._id.$oid;
   useShuuroStore2().fromServer(props.game, useUser().username);
 }
 </script>

@@ -235,7 +235,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // receive move from server and place on board
     serverPlace(msg: any) {
       router.push({ path: `/shuuro/deploy/${this.$state.game_id}` });
-      console.log(msg);
       this.wasmPlace(msg.move, true);
       if (msg.to_fight) {
         this.$state.current_stage = 2;
@@ -294,7 +293,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.last_clock = new Date().toString();
       router.push({ path: s.path });
       this.$state.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
-      console.log(this.$state.status);
       this.clock(this.$state.side_to_move).start();
       this.$state.current_stage = 1;
       this.playAudio("res");
@@ -617,7 +615,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.scrollToBottom();
       } else if (msg.player) {
         if (this.$state.am_i_player && msg.player != username) {
-          console.log("okk");
           this.$state.offeredDraw = true;
         }
       }
