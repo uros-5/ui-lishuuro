@@ -1,7 +1,7 @@
 <template>
   <tr>
     <router-link
-      :to="`/shuuro/${game.current_stage}/${game._id.$oid}`"
+      :to="gameUrl(game._id.$oid, game.current_stage, game.status)"
       @click="setShuuroStore"
     >
       <td class="board">
@@ -67,6 +67,9 @@ import { useUser } from "@/store/useUser";
 import { useTvStore } from "@/store/useTvStore";
 import { SEND } from "@/plugins/webSockets";
 const tv = useTvStore();
+
+const props = defineProps<{ game: ShuuroStore | any }>();
+
 onMounted(() => {
   if (props.game.status <= 0) {
   	console.log("jeste");
@@ -82,7 +85,6 @@ onMounted(() => {
   }
 });
 
-const props = defineProps<{ game: ShuuroStore | any }>();
 
 function res() {
   let w = props.game.white;
@@ -117,9 +119,18 @@ function userColor(p: string): string {
 }
 
 function setShuuroStore() {
-  props.game.game_id = props.game._id.$oid;
-  useShuuroStore2().fromServer(props.game, useUser().username);
+  //props.game.game_id = props.game._id.$oid;
+  //useShuuroStore2().fromServer(props.game, useUser().username);
 }
+
+function gameUrl(id: string, stage: number, status: number): string { 
+  if (status < 0) {
+    return `/shuuro/${tv.$state.profile_game.cs!}/${id}`;
+  }
+
+  return `/shuuro/${stage}/${id}`;
+}
+
 </script>
 <style>
 table#games {

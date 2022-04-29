@@ -27,17 +27,17 @@ const routes: Array<RouteRecordRaw> = [
       ),
     children: [
       {
-        path: "shop/:id",
+        path: "0/:id",
         component: () =>
           import(/* webpackChunkName: "ShuuroShop" */ "@/views/ShuuroShop.vue"),
       },
       {
-        path: "deploy/:id",
+        path: "1/:id",
         component: () =>
           import(/* webpackChunkName: "ShuuroSet" */ "@/views/ShuuroSet.vue"),
       },
       {
-        path: "fight/:id",
+        path: "2/:id",
         component: () =>
           import(/* webpackChunkName: "ShuuroSet" */ "@/views/ShuuroPlay.vue"),
       },

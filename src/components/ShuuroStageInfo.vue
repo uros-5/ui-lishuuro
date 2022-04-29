@@ -18,11 +18,11 @@
       />
     </section>
     <section class="shuuro-navigator">
-      <router-link class="user-link" :to="navRoute('shop')"> Shop </router-link>
-      <router-link class="user-link" :to="navRoute('deploy')">
+      <router-link class="user-link" :to="navRoute('0')"> Shop </router-link>
+      <router-link class="user-link" :to="navRoute('1')">
         Deploy
       </router-link>
-      <router-link class="user-link" :to="navRoute('fight')">
+      <router-link class="user-link" :to="navRoute('2')">
         Fight
       </router-link>
     </section>

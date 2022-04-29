@@ -51,6 +51,7 @@ export const useTvStore = defineStore("tvStore", {
       if (msg.current_stage == "shop") {
         return;
       }
+      this.profile_game.cs = msg.current_stage;
       this.tempWasm(cg, msg.fen, msg.current_stage);
     },
 
@@ -75,6 +76,7 @@ export interface TvGame {
   pieces_set: boolean;
   fen?: string;
   cg?: Api | any;
+  cs?: number;
 }
 
 export interface TvStore {
@@ -84,5 +86,5 @@ export interface TvStore {
 }
 
 export function empty_game(id: string): TvGame {
-  return { game_id: id, pl_set: false, pieces_set: false };
+  return { game_id: id, pl_set: false, pieces_set: false, cs: 0 };
 }

@@ -68,8 +68,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     setStatus(s: any) {
-      this.$state.current_stage = this.stageToN(s.current_stage);
-      this.$state.client_stage = this.stageToN(s.current_stage);
+      this.$state.current_stage = s.current_stage;
+      this.$state.client_stage = s.current_stage;
       this.$state.result = s.result;
       this.$state.status = s.status;
     },
@@ -234,14 +234,14 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // receive move from server and place on board
     serverPlace(msg: any) {
-      router.push({ path: `/shuuro/deploy/${this.$state.game_id}` });
+      router.push({ path: `/shuuro/1/${this.$state.game_id}` });
       this.wasmPlace(msg.move, true);
       if (msg.to_fight) {
         this.$state.current_stage = 2;
         this.$state.client_stage = 2;
         this.$state.last_clock = new Date().toString();
         this.playAudio("res");
-        router.push({ path: `/shuuro/fight/${this.$state.game_id}` });
+        router.push({ path: `/shuuro/2/${this.$state.game_id}` });
       }
       if (msg.first_move_error) {
         let self = this;
@@ -358,7 +358,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     serverMove2(msg: any) {
-      router.push({ path: `/shuuro/fight/${this.$state.game_id}` });
+      router.push({ path: `/shuuro/2/${this.$state.game_id}` });
       this.$state.client_stage = 2;
       this.wasmMove(msg.game_move, true);
       if (this.gameOver(msg.outcome)) {
@@ -459,12 +459,14 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       }
 
       if (cs == 1) {
+        let h = sfen.split(" ")[1];
+        temp.set_hand(h);
         let hand = temp.count_hand_pieces();
         this.cgs(1).state.pockets = readPockets(
           `[${hand}]`,
           this.cgs(1).state.pocketRoles!
         );
-        this.cgs(1).state.dom.redrawNow();
+        this.cgs(1).state.dom.redraw();
       }
 
       temp.free();
@@ -557,13 +559,12 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.clockPause(0);
         this.clockPause(1);
       }
-
     },
 
     // elapsed time since last clock
     elapsed(): number {
       const now = new Date();
-      const converted_date = new Date(this.$state.last_clock!) 
+      const converted_date = new Date(this.$state.last_clock!);
       const elapsed = now.getTime() - converted_date.getTime();
       return elapsed;
     },
