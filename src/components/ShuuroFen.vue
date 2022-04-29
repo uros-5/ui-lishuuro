@@ -10,7 +10,7 @@
         :index="index + 1"
       />
 
-      <div id="result" v-if="shuuroStore.$state.status > 0">
+      <div id="result" v-if="showRes()">
         {{ resultMessage() }}
       </div>
     </div>
@@ -77,6 +77,13 @@ function fenItemCheck(): boolean {
     shuuroStore.$state.client_stage == 0 ||
     shuuroStore.$state.client_stage == 1 ||
     shuuroStore.$state.client_stage == 2
+  );
+}
+
+function showRes(): boolean {
+  return (
+    shuuroStore.$state.status > 0 &&
+    shuuroStore.$state.client_stage == shuuroStore.$state.current_stage
   );
 }
 </script>
