@@ -381,15 +381,23 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       let played = this.wasm(2).make_move(game_move);
       if (!played.toLowerCase().startsWith("illegal")) {
         let lastMove = this.wasm(2).last_move();
+        
         let move = game_move.split("_");
         let newCount = this.wasm(2).pieces_count();
         if (is_server) {
-          this.cgs(2).move(move[0] as Key, move[1] as Key);
+          this.cgs(2).move(move[0] as Key, move[1] as Key); 
           if (newCount > beforeCount) {
             this.playAudio("capture");
           } else {
             this.playAudio("move");
           }
+          if (lastMove.endsWith("*")) {
+            this.setPieces();
+          }
+          
+        }
+        if (lastMove.endsWith("*")) {
+            this.setPieces();
         }
         this.setTurnColor();
         this.setCheckFight();
@@ -442,7 +450,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       let cs = this.cs();
       let temp = new ShuuroPosition();
       temp.set_sfen(sfen);
-      let check = temp.is_check();
+      let check = temp.is_check(); 
       let pieces = temp.map_pieces();
       let stm = temp.side_to_move() as Color;
       stm = stm[0] == "w" ? "white" : "black";

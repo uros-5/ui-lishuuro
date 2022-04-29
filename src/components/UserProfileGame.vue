@@ -108,6 +108,7 @@ function styleRes(): string {
         return "win";
       }
       return "lose";
+    case 7: if (m == props.game.result) { return "lose"; } return "win";
     default:
       return "";
   }
