@@ -72,7 +72,6 @@ const props = defineProps<{ game: ShuuroStore | any }>();
 
 onMounted(() => {
   if (props.game.status <= 0) {
-  	console.log("jeste");
     SEND({ t: "live_game_sfen", game_id: props.game._id.$oid });
   } else {
     let stage = props.game.current_stage;

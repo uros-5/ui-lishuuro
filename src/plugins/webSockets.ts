@@ -65,6 +65,10 @@ ws.onmessage = function (event) {
       msg["game_info"]["game_id"] = msg["game_id"];
       shuuroStore.fromServer(msg["game_info"], user.$state.username);
       break;
+    case "live_game_spectators_count":
+      delete msg["t"];
+      shuuroStore.updateWatchCount(msg);
+      break;
     case "live_game_hand":
       delete msg["t"];
       shuuroStore.setShuuroHand(msg.hand, user.$state.username);

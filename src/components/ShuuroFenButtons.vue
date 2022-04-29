@@ -34,7 +34,6 @@ function fastBackward(): void {
   shuuroStore.$state.current_index = 0;
   if (fenExist(shuuroStore.currentIndex())) {
     let fen = getFen(0);
-    console.log(fen);
     wasmFen(fen);
   }
 }

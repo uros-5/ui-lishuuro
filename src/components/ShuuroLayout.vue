@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import router from "@/router";
 import ShuuroLeftSide from "@/components/ShuuroLeftSide.vue";
 import ShuuroMain from "@/components/ShuuroMain.vue";
@@ -32,8 +32,13 @@ onMounted(() => {
     //fetchData();
   }
 });
-const zoomValue = ref("100");
 
+onUnmounted(() => {
+  const id = shuuroStore.$state.game_id; 
+  const obj = { t: "live_game_remove_spectator", "game_id": id };
+  SEND(obj);
+});
+const zoomValue = ref("100");
 </script>
 
 <style>

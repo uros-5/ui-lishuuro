@@ -50,7 +50,6 @@ let games = ref([]);
 onMounted(() => {
   GET(`games/${username}`).then((value) => {
     games.value = value.data.games.reverse();
-    console.log(value.data);
   });
 });
 </script>

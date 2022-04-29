@@ -113,6 +113,12 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.client_stage = stage;
     },
 
+    updateWatchCount(msg: any): void {
+      if (msg.game_id == this.$state.game_id) {
+        this.$state.watchCount = msg.count;
+      }
+    },
+
     // SHOP PARTS
 
     // get hand and confirmed_players
@@ -759,6 +765,7 @@ function emptyState(): ShuuroStore {
     game_id: "",
     rated_game: false,
     side_to_move: 0,
+    watchCount: 0,
     player_color: "white",
     current_fen: "",
     flipped_board: false,
@@ -793,6 +800,7 @@ export interface ShuuroStore {
   game_id: string;
   rated_game: boolean;
   side_to_move: ColorN;
+  watchCount: number;
   last_clock?: string;
   fight_move_history?: string[];
   current_fen?: string;
