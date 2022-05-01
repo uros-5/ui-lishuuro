@@ -150,6 +150,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         const counter = this.wasm0().get_piece(p);
         if (new_credit != this.$state.credit) {
           this.history(0)?.push([game_move, counter]);
+          this.scrollToBottom();
         }
         SEND({
           t: "live_game_buy",
@@ -187,6 +188,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           this.$state.piece_counter = this.wasm0().shop_items(
             this.$state.player_color!
           );
+          let h = this.wasm0().history();
+          this.$state.history![0] = h;
         }
       });
     },
@@ -270,16 +273,17 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.clockPause(this.$state.side_to_move!);
         let last_move = this.wasm(1).last_move();
         this.history(1)!.push([last_move, 0]);
+        this.scrollToBottom();
         this.updateCurrentIndex(1);
         this.updateCgHand();
         this.$state.sfen = this.wasm(1).generate_sfen();
-        this.setCheckDeploy(this.$state.current_stage!);
         this.playAudio("move");
         if (isServer) {
           this.setPieces();
           this.setTurnColor();
           this.switchClock();
         }
+        this.setCheckDeploy(this.$state.current_stage!);
       }
     },
 
@@ -381,11 +385,11 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       let played = this.wasm(2).make_move(game_move);
       if (!played.toLowerCase().startsWith("illegal")) {
         let lastMove = this.wasm(2).last_move();
-        
+
         let move = game_move.split("_");
         let newCount = this.wasm(2).pieces_count();
         if (is_server) {
-          this.cgs(2).move(move[0] as Key, move[1] as Key); 
+          this.cgs(2).move(move[0] as Key, move[1] as Key);
           if (newCount > beforeCount) {
             this.playAudio("capture");
           } else {
@@ -394,15 +398,15 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           if (lastMove.endsWith("*")) {
             this.setPieces();
           }
-          
         }
         if (lastMove.endsWith("*")) {
-            this.setPieces();
+          this.setPieces();
         }
         this.setTurnColor();
         this.setCheckFight();
         this.switchClock();
         this.history(2)!.push([lastMove, 0]);
+        this.scrollToBottom();
         this.updateCurrentIndex(2);
         this.cgs(2).state.dom.redraw();
       }
@@ -450,7 +454,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       let cs = this.cs();
       let temp = new ShuuroPosition();
       temp.set_sfen(sfen);
-      let check = temp.is_check(); 
+      let check = temp.is_check();
       let pieces = temp.map_pieces();
       let stm = temp.side_to_move() as Color;
       stm = stm[0] == "w" ? "white" : "black";

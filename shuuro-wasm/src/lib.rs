@@ -1,7 +1,7 @@
 mod utils;
 
 use itertools::Itertools;
-use js_sys::{Array, Map, Uint8Array, Uint16Array};
+use js_sys::{Array, Map, Uint16Array, Uint8Array};
 use serde::{Deserialize, Serialize};
 use shuuro::{self, piece_type::PieceTypeIter, Color, Move, Piece, PieceType, Position};
 use shuuro::{init, square_bb, Square, SQUARE_BB};
@@ -39,8 +39,8 @@ impl ShuuroShop {
                 Move::Buy { piece } => {
                     self.shuuro.play(game_move);
                     return self.js_shop_items(&piece.color);
-                },
-                _ => () 
+                }
+                _ => (),
             }
         }
         Uint8Array::new_with_length(7)
@@ -135,6 +135,19 @@ impl ShuuroShop {
     #[wasm_bindgen]
     pub fn set_hand(&mut self, hand: &str) {
         self.shuuro.set_hand(&hand);
+    }
+
+    #[wasm_bindgen]
+    pub fn history(&self) -> Array {
+        let ar = Array::new();
+        let history = self.shuuro.get_sfen_history(&Color::NoColor);
+        for m in history {
+            let t = Array::new();
+            t.push(&JsValue::from_str(m.0.as_str()));
+            t.push(&JsValue::from(m.1));
+            ar.push(&JsValue::from(t));
+        }
+        ar
     }
 }
 
