@@ -28,6 +28,7 @@ onMounted(() => {
         game_id: id,
         color: "white",
       });
+      SEND({"t": "live_chat_full", game_id: id});
     }
     //fetchData();
   }

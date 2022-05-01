@@ -3,7 +3,7 @@
     <div class="player-data">
       <i-side id="player0" class="icon" :class="cssOnline()" />
       <player>
-        <a class="user-link m-ul" href="/"><player-title />{{ player }}</a
+        <router-link class="user-link m-ul" :to="`/@/${player}`"><player-title />{{ player }}</router-link
         ><rating />
       </player>
     </div>

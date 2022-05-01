@@ -18,6 +18,22 @@ function cssVariable(): string {
 <template>
   <Header />
   <div id="main-wrap" :style="cssVariable()">
-    <router-view />
+    <router-view v-slot="{ Component }">
+      <transition name="list">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </template>
+
+<style>
+.list-enter-active,
+.list-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+}
+</style>

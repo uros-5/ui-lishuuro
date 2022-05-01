@@ -27,9 +27,9 @@
             </div>
           </div>
           <table id="games">
-            <tbody>
-              <UserProfileGame v-for="g in games" :game="g" />
-            </tbody>
+              <tbody>
+                <UserProfileGame v-for="g in games" key="game" :game="g" />
+              </tbody>
           </table>
         </div>
       </div>
@@ -153,4 +153,5 @@ div.filter-tabs div.sub-ratings {
   padding: 0.7em 2vmin 0.7em 0.4em;
   opacity: 0.7;
 }
+
 </style>

@@ -36,11 +36,22 @@ ws.onmessage = function (event) {
     case "active_games_count":
       user.updateGamesCount(msg.cnt);
       break;
-    case "home_chat_message":
-      homeChat.sendMessage(msg);
+    case "live_chat_message":
+      if (msg.id == "home") {
+        homeChat.sendMessage(msg);
+      }
+      else {
+        homeChat.addGameMessageChat(msg);
+      }
       break;
-    case "home_chat_full":
-      homeChat.setHomeChat(msg.lines);
+    case "live_chat_full":
+      if (msg.id == "home") {
+        homeChat.setHomeChat(msg.lines);
+      }
+      else {
+        homeChat.setGameChat(msg.lines);
+
+      }
       break;
     case "home_lobby_full":
       homeLobby.setHomeLobby(msg.lobbyGames);

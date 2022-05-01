@@ -52,10 +52,11 @@ const user = useUser();
 function onEnter(): void {
   if (message.value.length > 0 && message.value.length < 80) {
     SEND({
-      t: props.wsType, //"home_chat_message",
+      t: "live_chat_message", 
       message: message.value,
       user: user.$state.username,
       time: "",
+      id: props.wsType 
     });
     message.value = "";
   }
@@ -74,6 +75,13 @@ function toDisableInput() {
     return true;
   }
   return false;
+}
+
+function id_msg(): string {
+    if (props.wsType == "home_chat_message") {
+        return "home";
+    }
+    return props.wsType;
 }
 
 let toggle = (): void => {
