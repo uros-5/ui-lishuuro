@@ -20,7 +20,7 @@
             }}{{ game.rated_game }} SHUURO
           </div>
           <div>
-            {{ timeago(game.last_clock!) }}
+            {{ ldate() }}
           </div>
         </div>
         <div class="info-middle">
@@ -66,6 +66,7 @@ import { useRoute } from "vue-router";
 import { useUser } from "@/store/useUser";
 import { useTvStore } from "@/store/useTvStore";
 import { SEND } from "@/plugins/webSockets";
+import {ServerDate} from "@/plugins/serverDate";
 const tv = useTvStore();
 
 const props = defineProps<{ game: ShuuroStore | any }>();
@@ -84,6 +85,11 @@ onMounted(() => {
   }
 });
 
+function ldate() {
+	let ld = ServerDate(props.game.last_clock);
+	return timeago(ld.toString());
+
+}
 
 function res() {
   let w = props.game.white;
