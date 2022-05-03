@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import Header from "@/components/Header.vue";
+import Connection from "@/components/Connection.vue";
 
 const route = useRoute();
 
@@ -24,6 +25,8 @@ function cssVariable(): string {
       </transition>
     </router-view>
   </div>
+  <Connection />
+  
 </template>
 
 <style>

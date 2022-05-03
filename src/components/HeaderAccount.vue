@@ -16,16 +16,13 @@
 </template>
 <script setup lang="ts">
 import { onMounted } from "vue";
-import { ws } from "@/plugins/webSockets";
 import { useUser } from "@/store/useUser";
+import { ws } from "@/plugins/webSockets";
 const store = useUser();
 
 onMounted(function () {
   store.checkCookie();
-  /* eslint-disable */
-  ws.addEventListener("open", function (_) {
-    store.checkCookie();
-  });
+  //ws.open;
 });
 </script>
 <style></style>

@@ -1,9 +1,9 @@
 <template>
   <div class="player-data">
     <i-side class="icon" :class="cssColor()" /><player>
-      <a class="user-link" href="/@/u"
+      <router-link class="user-link" :to="`/@/${player}`"
         ><player-title class="player-now" />{{ player }}<span
-      /></a>
+      /></router-link>
     </player>
   </div>
 </template>

@@ -8,6 +8,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import router from "@/router";
+import { useRoute } from "vue-router";
 import ShuuroLeftSide from "@/components/ShuuroLeftSide.vue";
 import ShuuroMain from "@/components/ShuuroMain.vue";
 import { ShuuroStore, useShuuroStore2 } from "@/store/useShuuroStore2";
@@ -18,7 +19,7 @@ import { SEND, ws } from "@/plugins/webSockets";
 const shuuroStore = useShuuroStore2();
 const userStore = useUser();
 onMounted(() => {
-  const id = router.currentRoute.value.params["id"];
+  const id = useRoute().params["id"];
   if (id == "" || id == undefined) {
     router.push("/");
   } else {

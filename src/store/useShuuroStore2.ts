@@ -43,8 +43,9 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       if (stage == 0) {
         this.shopInfo();
       } else if (stage == 1) {
-        this.setDeployCg();
-        this.setDeployWasm(s.sfen);
+        let self = this;
+          self.setDeployCg();
+          self.setDeployWasm(s.sfen);
       } else if (stage == 2) {
         this.setFightCg();
         this.setFightWasm(s.sfen);
@@ -199,7 +200,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // set deploy chessground
     setDeployCg() {
       const config = this.$state.am_i_player ? liveConfig : anonConfig;
-      const elem = document.querySelector(".chessground12") as HTMLElement;
+      const elem = document.querySelector("#chessground12") as HTMLElement;
       const top = document.querySelector("#pocket0") as HTMLElement;
       const bot = document.querySelector("#pocket1") as HTMLElement;
       this.$state.cgs![1] = Chessground(elem, config, 800, top, bot);
@@ -337,7 +338,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // set fight chessground
     setFightCg() {
-      const element = document.querySelector(".chessground12") as HTMLElement;
+      const element = document.querySelector("#chessground12") as HTMLElement;
       const config = this.$state.am_i_player ? liveFightConfig : anonConfig;
       this.$state.cgs![2]! = Chessground(element!, config) as Api;
       this.$state.player! == 1 ? this.cgs(2).toggleOrientation() : null;
@@ -373,7 +374,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.wasmMove(msg.game_move, true);
       if (this.gameOver(msg.outcome)) {
         this.playAudio("res");
-        this.clockPause(this.$state.side_to_move);
+        this.clockPause(this.$state.side_to_move, false);
         this.$state.status = msg.status;
         this.$state.result = msg.outcome;
         this.scrollToBottom();
@@ -559,8 +560,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     // pause one of clocks
-    clockPause(id: number) {
-      this.clock(id).pause(true);
+    clockPause(id: number, incr = true) {
+      this.clock(id).pause(incr);
     },
 
     // start one of clocks
@@ -574,8 +575,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.clock(otherClock).pause(true);
       this.clock(this.$state.side_to_move).start();
       if (this.$state.status > 0) {
-        this.clockPause(0);
-        this.clockPause(1);
+        this.clockPause(0, false);
+        this.clockPause(1, false);
       }
     },
 

@@ -20,7 +20,7 @@ onMounted(() => {
 <style scoped></style>
 
 <template>
-  <div class="chessground12" />
+  <div id="chessground12" class="chessground12" />
 </template>
 
 

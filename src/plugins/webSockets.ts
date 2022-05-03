@@ -4,22 +4,48 @@ import { useHomeLobby } from "@/store/useHomeLobby";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { useNews } from "@/store/useNews";
 import { useTvStore } from "@/store/useTvStore";
+import Sockette from "sockette";
 
-export const ws = new WebSocket("ws://localhost:8080/ws/");
+export const ws = new Sockette("ws://localhost:8080/ws/", {
+  timeout: 1200,
+  maxAttempts: 15,
+  onopen: (e) => {
+    onopen(e);
+  },
+  onmessage: (e) => {
+    onmessage(e);
+  },
+  onreconnect: (e) => {
+    onreconnect(e);
+  },
+  onmaximum: (e) => console.log("Stop Attempting!", e),
+  onclose: (e) => console.log("Closed!", e),
+  onerror: (e) => console.log("Error:", e),
+});
 
 export function SEND(msg: any) {
+  try {
+
   ws.send(JSON.stringify(msg));
+  }
+  catch (error) {
+    
+  }
 }
 
-ws.onerror = function (event) {
-  console.log(event);
-};
+function onopen(event: any) {
+  console.log(SEND);
+  const store = useUser();
+  store.checkCookie();
+  store.onOpen();
+}
 
-ws.onopen = function (event) {
-  console.log(event);
-};
+function onreconnect(event: any) {
+  const store = useUser();
+  store.onReconnect();
+}
 
-ws.onmessage = function (event) {
+function onmessage(event: any) {
   const user = useUser();
   const homeChat = useHomeChat();
   const homeLobby = useHomeLobby();
@@ -39,18 +65,15 @@ ws.onmessage = function (event) {
     case "live_chat_message":
       if (msg.id == "home") {
         homeChat.sendMessage(msg);
-      }
-      else {
+      } else {
         homeChat.addGameMessageChat(msg);
       }
       break;
     case "live_chat_full":
       if (msg.id == "home") {
         homeChat.setHomeChat(msg.lines);
-      }
-      else {
+      } else {
         homeChat.setGameChat(msg.lines);
-
       }
       break;
     case "home_lobby_full":
@@ -63,6 +86,11 @@ ws.onmessage = function (event) {
     case "home_lobby_remove":
       delete msg["t"];
       homeLobby.removeLobbyGame(msg);
+      break;
+    case "live_restart":
+      delete msg["t"];
+      user.$state.conMsg = "Server will restart";
+      user.onReconnect();
       break;
     case "home_news":
       delete msg["t"];
@@ -108,10 +136,10 @@ ws.onmessage = function (event) {
       delete msg["t"];
       tvStore.setProfileGame(msg);
       break;
-
     case "pause_confirmed":
       delete msg["t"];
       shuuroStore.pauseConfirmed(msg.confirmed);
+      break;
     case "redirect":
       delete msg["t"];
       shuuroStore.redirect(msg.path);
@@ -121,4 +149,4 @@ ws.onmessage = function (event) {
       shuuroStore.redirectDeploy(msg);
       break;
   }
-};
+}

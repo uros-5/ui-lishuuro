@@ -1,5 +1,5 @@
 <template>
-  <div class="chessground12" />
+  <div id="chessground12" class="chessground12" />
   <!--
   <div class="cg-wrap cg-512 orientation-white shuuro-board manipulable">
     <cg-container :style="setStyle()">

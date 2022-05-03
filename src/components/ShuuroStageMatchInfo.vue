@@ -2,7 +2,8 @@
   <div class="info0 icon" data-icon="S">
     <div class="info2">
       <div class="tc">
-        {{ Math.floor(minute / 60000) }}+{{ Math.floor(sec / 1000) }} • {{ ratedGame() }}•
+        {{ Math.floor(minute / 60000) }}+{{ Math.floor(sec / 1000) }} •
+        {{ ratedGame() }}•
         <a class="user-link" target="_blank" href="/">{{ variant }}</a>
       </div>
       <info-date timestamp="">

@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "axios": "^0.25.0",
+    "sockette": "^2.0.6",
     "vue": "^3.2.25",
     "vue-cookie-next": "^1.3.0",
     "vue3-cookies": "^1.0.6"

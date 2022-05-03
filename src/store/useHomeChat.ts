@@ -8,11 +8,16 @@ export interface ChatMessage {
   id: string;
 }
 
+export interface HomeChatStore {
+  homeChat: ChatMessage[];
+  gameChat: ChatMessage[];
+}
+
 export const useHomeChat = defineStore("useHomeChat", {
-  state: () => {
+  state: (): HomeChatStore => {
     return {
-      homeChat: [{ time: "00:50", user: "user1", message: "This is message" }],
-      gameChat: [{ time: "00:50", user: "user1", message: "This is message" }]
+      homeChat: [],
+      gameChat: [],
     };
   },
   actions: {
