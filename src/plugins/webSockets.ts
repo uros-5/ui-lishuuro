@@ -23,13 +23,13 @@ export const ws = new Sockette("ws://localhost:8080/ws/", {
   onerror: (e) => console.log("Error:", e),
 });
 
+let unsendMessages: any[] = [];
+
 export function SEND(msg: any) {
   try {
-
-  ws.send(JSON.stringify(msg));
-  }
-  catch (error) {
-    
+    ws.send(JSON.stringify(msg));
+  } catch (error) {
+    unsendMessages.push(msg);
   }
 }
 
@@ -38,6 +38,9 @@ function onopen(event: any) {
   const store = useUser();
   store.checkCookie();
   store.onOpen();
+  unsendMessages.forEach((value) => {
+    SEND(value);
+  });
 }
 
 function onreconnect(event: any) {

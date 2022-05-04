@@ -24,11 +24,12 @@ onMounted(() => {
     router.push("/");
   } else {
     if (shuuroStore.$state.game_id == "") {
-      SEND({
+    let obj = {
         t: "live_game_start",
         game_id: id,
         color: "white",
-      });
+      };
+      SEND(obj);
       SEND({"t": "live_chat_full", game_id: id});
     }
     //fetchData();
@@ -39,6 +40,7 @@ onUnmounted(() => {
   const id = shuuroStore.$state.game_id; 
   const obj = { t: "live_game_remove_spectator", "game_id": id };
   SEND(obj);
+  shuuroStore.$state.game_id = "";
 });
 const zoomValue = ref("100");
 </script>

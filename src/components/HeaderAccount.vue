@@ -12,17 +12,17 @@
       title="Login with Lichess"
       >Log in</a
     >
+    <HeaderSettings />
   </div>
 </template>
 <script setup lang="ts">
+import HeaderSettings from './HeaderSettings.vue';
 import { onMounted } from "vue";
 import { useUser } from "@/store/useUser";
-import { ws } from "@/plugins/webSockets";
 const store = useUser();
 
 onMounted(function () {
   store.checkCookie();
-  //ws.open;
 });
 </script>
 <style></style>

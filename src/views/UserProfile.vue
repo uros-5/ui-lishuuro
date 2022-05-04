@@ -49,7 +49,7 @@ let games = ref([]);
 
 onMounted(() => {
   GET(`games/${username}`).then((value) => {
-    games.value = value.data.games.reverse();
+    games.value = value.data.games;
   });
 });
 </script>

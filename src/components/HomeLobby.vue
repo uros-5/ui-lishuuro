@@ -24,7 +24,7 @@
               <td><player-title />{{ i.username }}</td>
               <td>//</td>
               <td>{{ i.time }} + {{ i.incr }}</td>
-              <td class="icon" data-icon="Q">
+              <td class="icon" data-icon="M">
                 <variant-name> {{ i.variant }}</variant-name>
               </td>
             </tr>
@@ -35,7 +35,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ws } from "@/plugins/webSockets";
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { onMounted } from "vue";
 import { LobbyGame } from "@/store/useHomeLobby";

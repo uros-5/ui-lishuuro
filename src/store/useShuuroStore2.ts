@@ -44,8 +44,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.shopInfo();
       } else if (stage == 1) {
         let self = this;
-          self.setDeployCg();
-          self.setDeployWasm(s.sfen);
+        self.setDeployCg();
+        self.setDeployWasm(s.sfen);
       } else if (stage == 2) {
         this.setFightCg();
         this.setFightWasm(s.sfen);
@@ -535,7 +535,9 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // start clocks
     activateClock(): void {
       this.clock(0).onTick(this.clock(0).renderTime);
+      this.clock(0).onFlag(this.flagNotif);
       this.clock(1).onTick(this.clock(1).renderTime);
+      this.clock(1).onFlag(this.flagNotif);
       let elapsed = this.elapsed();
       if (this.$state.status < 0) {
         if (this.$state.current_stage == 0) {
@@ -557,6 +559,11 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           this.startNormal(elapsed);
         }
       }
+    },
+
+    // flag notification
+    flagNotif() {
+      console.log("ok lost on time");
     },
 
     // pause one of clocks
@@ -630,6 +637,10 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       if (msg.draw) {
         this.playAudio("res");
         this.clockPause(this.$state.side_to_move);
+        if (this.$state.current_stage == 0) {
+          this.clockPause(0);
+          this.clockPause(1);
+        }
         this.$state.status = 5;
         this.$state.result = "Draw";
         this.scrollToBottom();
