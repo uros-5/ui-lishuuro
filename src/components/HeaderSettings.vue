@@ -5,7 +5,7 @@
     </button>
     <div id="settings" style="display: flex" v-if="show">
       <div id="settings-main" v-if="clicked == ''" style="display: flex">
-        <div id="settings-buttons">
+        <div id="settings-buttons" v-if="user.$state.reg">
           <button id="btn-logout">Log out</button>
         </div>
         <div id="settings-buttons">

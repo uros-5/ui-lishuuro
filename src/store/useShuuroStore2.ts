@@ -73,6 +73,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.client_stage = s.current_stage;
       this.$state.result = s.result;
       this.$state.status = s.status;
+      this.$state.ratings = s.ratings;
     },
 
     setClocks(s: any) {
@@ -843,6 +844,7 @@ export interface ShuuroStore {
   cgs?: Cgs | [any, any, any];
   history?: [FenItem[], FenItem[], FenItem[]];
   offeredDraw?: boolean;
+  ratings: any;
 }
 
 export type Stage = "shop" | "deploy" | "fight";

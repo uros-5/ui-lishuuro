@@ -2,7 +2,7 @@
   <div class="player-data">
     <i-side class="icon" :class="cssColor()" /><player>
       <router-link class="user-link" :to="`/@/${player}`"
-        ><player-title class="player-now" />{{ player }}<span
+        ><player-title class="player-now" />{{ player }} ({{ rating }})<span
       /></router-link>
     </player>
   </div>
@@ -12,6 +12,7 @@
 import { defineProps } from "vue";
 const props = defineProps<{
   player: string;
+  rating: number;
   color: string;
 }>();
 function cssColor(): string {
