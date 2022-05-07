@@ -14,6 +14,7 @@ import { Api } from "@/plugins/chessground/api";
 import { readPockets } from "@/plugins/chessground/pocket";
 import { Key, MoveMetadata, Piece } from "@/plugins/chessground/types";
 import { baseMove, setCheck } from "@/plugins/chessground/board";
+import { Config } from "@/plugins/chessground/config";
 
 let finished = [
   "Checkmate",
@@ -200,7 +201,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // set deploy chessground
     setDeployCg() {
-      const config = this.$state.am_i_player ? liveConfig : anonConfig;
+      const config = this.getConfig();
       const elem = document.querySelector("#chessground12") as HTMLElement;
       const top = document.querySelector("#pocket0") as HTMLElement;
       const bot = document.querySelector("#pocket1") as HTMLElement;
@@ -212,6 +213,9 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // decrement pocket item number
     decrementPocket(piece: Piece, key: Key) {
+      if (!this.canPlay()) {
+        return;
+      }
       // wasmPlace
       let p = this.shuuroPiece(piece);
       let gameMove = `${p}@${key}`;
@@ -340,7 +344,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // set fight chessground
     setFightCg() {
       const element = document.querySelector("#chessground12") as HTMLElement;
-      const config = this.$state.am_i_player ? liveFightConfig : anonConfig;
+      const config = this.getConfig();
       this.$state.cgs![2]! = Chessground(element!, config) as Api;
       this.$state.player! == 1 ? this.cgs(2).toggleOrientation() : null;
       this.cgs(2).state.events.select = this.selectSq;
@@ -623,9 +627,10 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     pocketSelect(piece: Piece) {
-      if (this.$state.side_to_move != this.$state.player) {
+      if (!this.canPlay()) {
         return;
       }
+
       let ch =
         piece.color == "white"
           ? piece.role[0].toUpperCase()
@@ -681,10 +686,21 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     canPlay(): boolean {
-      if (this.$state.side_to_move == this.$state.player) {
+      if (
+        this.$state.side_to_move == this.$state.player &&
+        this.$state.status < 1
+      ) {
         return true;
       }
       return false;
+    },
+
+    getConfig(): Config {
+      const config =
+        this.$state.am_i_player && this.$state.status < 1
+          ? liveConfig
+          : anonConfig;
+      return config;
     },
 
     canConfirm1(): boolean {
@@ -807,6 +823,7 @@ function emptyState(): ShuuroStore {
     wasm: [],
     cgs: [{}, {}, {}],
     offeredDraw: false,
+    ratings: undefined,
   };
 }
 

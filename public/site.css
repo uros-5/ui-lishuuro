@@ -2054,68 +2054,7 @@ div#ctable-container {
   appearance: none;
 }
 
-/* tournaments */
-.tour-spotlight {
-  display: flex;
-  flex-flow: row nowrap;
-  flex: 0 0 auto;
-  padding: 0.3em;
-  opacity: 0.8;
-  transition: all 150ms;
-  color: var(--font-color);
-  align-items: center;
-  white-space: nowrap;
-  overflow: hidden;
-  background: linear-gradient(
-    to bottom,
-    var(--blue-active),
-    var(--blue-passive) 100%
-  );
-  box-shadow: var(--base-shadow);
-}
-.tour-spotlight:last-child {
-  margin-bottom: 1em;
-}
-.tour-spotlight:hover {
-  opacity: 1;
-}
 
-.tour-spotlight i.icon::before {
-  color: #fff;
-  font-size: 50px;
-  margin: 0 5px 0 0;
-  text-shadow: 1px 1px 2px #1b78d0;
-}
-.tour-spotlight .name {
-  margin-top: 1px;
-  line-height: 13px;
-  display: block;
-}
-.tour-spotlight .headline {
-  display: block;
-  font-size: 0.85em;
-  margin-bottom: -3px;
-}
-.tour-spotlight .more {
-  font-size: 0.85em;
-}
-a#zen-button {
-  display: none;
-}
-.shield-trophy {
-  display: block;
-  width: 67px;
-  height: 80px;
-  background: url(images/trophy/shield-gold.png) no-repeat;
-  background-size: contain;
-  font-family: "pychess";
-  font-size: 40px;
-  line-height: 70px;
-  text-align: center;
-  color: #333 !important;
-  text-shadow: 0 0 6px #fff;
-  filter: drop-shadow(0 0 10px #d59020);
-}
 input:invalid {
   border: 1px solid red;
 }

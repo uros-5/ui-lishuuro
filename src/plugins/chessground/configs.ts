@@ -7,11 +7,12 @@ const dests = new Map();
 dests.set("a4", ["a6", "a7"]);
 
 export const anonConfig: Config = {
-  movable: { free: false },
+  movable: { free: false, showDests: false },
   draggable: { enabled: false },
+  drawable: { enabled: true, visible: true },
   premovable: { enabled: false },
   predroppable: { enabled: false },
-  pocketRoles: p,
+  pocketRoles: p
 };
 export const liveConfig: Config = {
   animation: { enabled: true },
