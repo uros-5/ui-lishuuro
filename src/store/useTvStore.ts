@@ -2,8 +2,11 @@ import Chessground from "@/plugins/chessground";
 import { Api } from "@/plugins/chessground/api";
 import { setCheck } from "@/plugins/chessground/board";
 import { userProfileConfig } from "@/plugins/chessground/configs";
+import { Role } from "@/plugins/chessground/types";
 import { defineStore } from "pinia";
 import init, { ShuuroPosition } from "shuuro-wasm";
+import { Color } from "./useShuuroStore2";
+import { Key, MoveMetadata, Piece } from "@/plugins/chessground/types";
 
 export const useTvStore = defineStore("tvStore", {
   state: (): TvStore => {
@@ -14,6 +17,11 @@ export const useTvStore = defineStore("tvStore", {
     };
   },
   actions: {
+    // set games from server
+    setGames(games: TvGame[]) {
+      this.$state.games = games;
+    },
+
     // creating new cg
     setCg(id: string): Api {
       const elem = document.getElementById(id) as HTMLElement;
@@ -67,14 +75,67 @@ export const useTvStore = defineStore("tvStore", {
           return "";
       }
     },
+
+    // set tv game
+    setTvGame(id: string) {
+      let game = this.game(id);
+      console.log(`${id}_tv`);
+      let cg = this.setCg(id + "_tv");
+      let wasm = this.tempWasm(cg, game.fen, "");
+      game.cg = cg;
+      game.pl_set = true;
+      game.pieces_set = true;
+    },
+
+    // from server update
+    tvGameUpdate(msg: any) {
+      if (msg.t.endsWith("place")) {
+        this.tvPlace(msg);
+      } else if (msg.t.endsWith("play")) {
+        this.tvMove(msg);
+      }
+    },
+
+    // placing
+    tvPlace(msg: any) {
+      let game = this.game(msg.game_id);
+      let cg = game.cg as Api;
+      let place = msg.move.split("@");
+      let piece = place[0];
+      let sq = place[1];
+      let color: Color = piece == piece.toUpperCase() ? "white" : "black";
+
+      let pieceObj = {
+        role: `${piece.toLowerCase()}-piece` as Role,
+        color: color,
+      };
+      cg.newPiece(pieceObj, sq);
+      console.log(pieceObj, sq);
+      console.log(this.game(msg.game_id));
+    },
+
+    // move
+    tvMove(msg: any) {
+      let move = msg.game_move.split("_");
+      let game = this.game(msg.game_id);
+      game.cg.move(move[0] as Key, move[1] as Key);
+    },
+
+    // GETTERS
+    game(id: string): TvGame {
+      return this.$state.games.find((item) => item.game_id == id) as TvGame;
+    },
   },
 });
 
 export interface TvGame {
+  b: string;
+  w: string;
+  fen: string;
+  stage: number;
   game_id: string;
-  pl_set: boolean;
-  pieces_set: boolean;
-  fen?: string;
+  pl_set?: boolean;
+  pieces_set?: boolean;
   cg?: Api | any;
   cs?: number;
 }
@@ -86,5 +147,14 @@ export interface TvStore {
 }
 
 export function empty_game(id: string): TvGame {
-  return { game_id: id, pl_set: false, pieces_set: false, cs: 0 };
+  return {
+    game_id: id,
+    stage: 1,
+    b: "",
+    w: "",
+    fen: "",
+    pl_set: false,
+    pieces_set: false,
+    cs: 0,
+  };
 }

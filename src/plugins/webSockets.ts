@@ -82,6 +82,14 @@ function onmessage(event: any) {
     case "home_lobby_full":
       homeLobby.setHomeLobby(msg.lobbyGames);
       break;
+    case "live_tv":
+      if (msg.games) {
+        tvStore.setGames(msg.games);
+      }
+      break;
+    case "tv_game_update":
+      tvStore.tvGameUpdate(msg.g);
+      break;
     case "home_lobby_add":
       delete msg["t"];
       homeLobby.addGameToLobby(msg);
