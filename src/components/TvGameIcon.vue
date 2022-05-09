@@ -4,7 +4,7 @@
         </div>
 </template>
 
-<style>
+<style scoped>
 .icon {
         font-size: 1.2em;
 }
