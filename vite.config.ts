@@ -49,5 +49,6 @@ const CUSTOM_ELEMENTS = [
   "i-side",
   "icon",
   "vs-swords",
+  "back"
   
 ];

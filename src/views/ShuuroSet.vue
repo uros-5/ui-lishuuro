@@ -8,18 +8,18 @@
   </div>
 --></template>
 <script setup lang="ts">
-import Chessground from "@/plugins/chessground";
-import { anonConfig, liveConfig } from "@/plugins/chessground/configs";
+import Chessground from "chessground12";
+import { anonConfig, liveConfig } from "chessground12/configs";
 import {
   readPockets,
   renderPocketsInitial,
-} from "@/plugins/chessground/pocket";
+} from "chessground12/pocket";
 import { useBoardSize } from "@/store/useBoardSize";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { onMounted } from "vue";
-import { defaults } from "@/plugins/chessground/state";
-import { Api } from "@/plugins/chessground/api";
-import { renderWrap } from "@/plugins/chessground/wrap";
+import { defaults } from "chessground12/state";
+import { Api } from "chessground12/api";
+import { renderWrap } from "chessground12/wrap";
 import router from "@/router";
 import { SEND } from "@/plugins/webSockets";
 

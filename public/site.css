@@ -1,4 +1,3 @@
-@import "hamburger.css";
 :root {
   --main-margin: 0;
   --main-max-width: 1300px;
@@ -1285,6 +1284,9 @@ table#seeks {
   display: flex;
   flex-flow: column;
   margin: 0 1em 0 1em;
+}
+@media (max-width:799px) and (orientation: portrait) {
+  #seekbuttons { display: none; border: 1px solid green;}
 }
 #seekbuttons > button {
   color: var(--button-text);

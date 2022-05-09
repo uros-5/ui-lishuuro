@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
-import Chessground from "@/plugins/chessground";
+import { Chessground } from "chessground12";
 import router from "@/router";
 import { ServerDate } from "@/plugins/serverDate";
 import { SEND } from "@/plugins/webSockets";
@@ -9,12 +9,12 @@ import {
   anonConfig,
   liveConfig,
   liveFightConfig,
-} from "@/plugins/chessground/configs";
-import { Api } from "@/plugins/chessground/api";
-import { readPockets } from "@/plugins/chessground/pocket";
-import { Key, MoveMetadata, Piece } from "@/plugins/chessground/types";
-import { baseMove, setCheck } from "@/plugins/chessground/board";
-import { Config } from "@/plugins/chessground/config";
+} from "chessground12/configs";
+import { Api } from "chessground12/api";
+import { readPockets } from "chessground12/pocket";
+import { Key, MoveMetadata, Piece } from "chessground12/types";
+import { baseMove, setCheck } from "chessground12/board";
+import { Config } from "chessground12/config";
 
 let finished = [
   "Checkmate",

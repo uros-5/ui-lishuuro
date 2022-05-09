@@ -1,10 +1,9 @@
 mod utils;
 
-use itertools::Itertools;
-use js_sys::{Array, Map, Uint16Array, Uint8Array};
+use js_sys::{Array, Map, Uint8Array};
 use serde::{Deserialize, Serialize};
 use shuuro::{self, piece_type::PieceTypeIter, Color, Move, Piece, PieceType, Position};
-use shuuro::{init, square_bb, Square, SQUARE_BB};
+use shuuro::{init, Square};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsValue;
 
@@ -176,7 +175,7 @@ impl ShuuroPosition {
     /// Set sfen.
     #[wasm_bindgen]
     pub fn set_sfen(&mut self, s: &str) {
-        self.shuuro.set_sfen(s);
+        if let Err(_e) = self.shuuro.set_sfen(s) {}
     }
 
     /// Get sfen for current position.
