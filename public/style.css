@@ -40,37 +40,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.icon-Chennis:before {
-  content: "\1f3be";
-  color: #9d67ae;
-}
-.icon-Chak:before {
-  content: "\1f42c";
-  color: #9d67ad;
-}
 
-.icon-berserk:before {
-  content: "\2963";
-}
-.icon-ASEAN:before {
-  content: "\267b";
-  color: #98812d;
-}
-.icon-discord:before {
-  content: "\1f3ae";
-}
-.icon-ToriShogi:before {
-  content: "\1f426";
-}
-.icon-ordamirror:before {
-  content: "\25e9";
-}
-.icon-empire:before {
-  content: "\265a";
-}
-.icon-shinobi:before {
-  content: "\1f422";
-}
 .icon-adjust:before {
   content: "\61";
 }
@@ -140,9 +110,7 @@
 .icon-bell-o:before {
   content: "\77";
 }
-.icon-trophy:before {
-  content: "\78";
-}
+
 .icon-paper-plane:before {
   content: "\79";
 }
@@ -236,90 +204,6 @@
 .icon-crown:before {
   content: "\35";
 }
-.icon-minixiangqi:before {
-  content: "\37";
-}
-.icon-shako:before {
-  content: "\39";
-}
-.icon-cambodian:before {
-  content: "\21";
-}
-.icon-crossedswords:before {
-  content: "\22";
-}
-.icon-at:before {
-  content: "\23";
-}
-.icon-shouse:before {
-  content: "\24";
-}
-.icon-crazyhouse960:before {
-  content: "\25";
-}
-.icon-capahouse:before {
-  content: "\26";
-}
-.icon-capahouse960:before {
-  content: "\27";
-}
-.icon-grand:before {
-  content: "\28";
-}
-.icon-grandhouse:before {
-  content: "\2a";
-}
-.icon-zh:before {
-  content: "\2b";
-}
-.icon-caparandom:before {
-  content: "\2c";
-}
-.icon-shogun:before {
-  content: "\2d";
-}
-.icon-bullhorn:before {
-  content: "\2e";
-}
-.icon-phone:before {
-  content: "\2f";
-}
-.icon-unlock:before {
-  content: "\3b";
-}
-.icon-unlock-alt:before {
-  content: "\3c";
-}
-.icon-exchange:before {
-  content: "\3e";
-}
-.icon-check:before {
-  content: "\3f";
-}
-.icon-kyotoshogi:before {
-  content: "\29";
-}
-.icon-janggi:before {
-  content: "\3d";
-}
-.icon-makruk:before {
-  content: "\51";
-}
-.icon-minishogi:before {
-  content: "\36";
-}
-.icon-sittuyin:before {
-  content: "\3a";
-}
-.icon-makpong:before {
-  content: "\4f";
-}
-.icon-orda:before {
-  content: "\52";
-}
-.icon-globe:before {
-  content: "\40";
-}
 .icon-left:before {
   content: "\5b";
 }
@@ -329,46 +213,7 @@
 .icon-heart:before {
   content: "\5e";
 }
-.icon-synochess:before {
-  content: "\5f";
-}
-.icon-hoppelpoppel:before {
-  content: "\60";
-}
-.icon-manchu:before {
-  content: "\7b";
-}
-.icon-xiangqi:before {
-  content: "\7c";
-}
-.icon-dobutsu:before {
-  content: "\38";
-}
-.icon-seirawan960:before {
-  content: "\7d";
-}
-.icon-atomic:before {
-  content: "\7e";
-}
-.icon-atomic960:before {
-  content: "\5c";
-}
-.icon-Gorogoro:before {
-  content: "\1f431";
-  color: #3771c8;
-}
-.icon-mic:before {
-  content: "\e91e";
-}
-.icon-book:before {
-  content: "\e91f";
-}
-.icon-fire:before {
-  content: "\e9a9";
-}
-.icon-target:before {
-  content: "\e9b3";
-}
+
 .icon-play:before {
   content: "\ea1c";
 }
