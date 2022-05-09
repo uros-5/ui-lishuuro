@@ -18,10 +18,9 @@
 import HomeHamburgerIcon from "@/components/HomeHamburgerIcon.vue";
 import HeaderAccount from "@/components/HeaderAccount.vue";
 let nav = [
-  { url: "/tv", text: "Tv" },
-  { url: "/", text: "Current games" },
+  { url: "/tv", text: "Current games" },
   { url: "/", text: "Tournaments" },
-  { url: "/shuuro/shop/2", text: "Players" },
+  { url: "/players", text: "Players" },
 ];
 </script>
 <style>

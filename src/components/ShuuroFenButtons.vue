@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { Api } from "@/plugins/chessground/api";
+import { Api } from "chessground12/api";
 import { useShuuroStore2 } from "../store/useShuuroStore2";
 const shuuroStore = useShuuroStore2();
 
