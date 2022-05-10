@@ -7,6 +7,7 @@ import { defineStore } from "pinia";
 import init, { ShuuroPosition } from "shuuro-wasm";
 import { Color } from "./useShuuroStore2";
 import { Key, MoveMetadata, Piece } from "chessground12/types";
+import wa from "@/assets/test2/shuuro_wasm_bg.wasm?url";
 
 export const useTvStore = defineStore("tvStore", {
   state: (): TvStore => {
@@ -31,7 +32,7 @@ export const useTvStore = defineStore("tvStore", {
 
     // using wasm for setting plinths and pieces
     tempWasm(cg: Api, sfen: string, stage: string) {
-      init().then((_exports) => {
+      init(wa).then((_exports) => {
         let w = new ShuuroPosition();
         let fen = sfen; //this.getFen(sfen, stage);
         w.set_sfen(fen);

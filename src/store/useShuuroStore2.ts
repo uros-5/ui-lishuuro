@@ -15,6 +15,7 @@ import { readPockets } from "chessground12/pocket";
 import { Key, MoveMetadata, Piece } from "chessground12/types";
 import { baseMove, setCheck } from "chessground12/board";
 import { Config } from "chessground12/config";
+import wa from "@/assets/test2/shuuro_wasm_bg.wasm?url";
 
 let finished = [
   "Checkmate",
@@ -149,7 +150,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       if (this.canShop()) {
         const game_move = `+${p}`;
         this.$state.piece_counter = this.wasm0().buy(game_move);
-        const new_credit = this.wasm0().getCredit(color);
+        const new_credit = this.wasm0().get_credit(color);
         const counter = this.wasm0().get_piece(p);
         if (new_credit != this.$state.credit) {
           this.history(0)?.push([game_move, counter]);
@@ -169,7 +170,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     confirm(username: string) {
       if (this.canShop()) {
         this.wasm0().confirm(this.$state.player_color!);
-        if (this.wasm0().isConfirmed(this.$state.player_color!)) {
+        if (this.wasm0().is_confirmed(this.$state.player_color!)) {
           SEND({
             t: "live_game_confirm",
             game_id: this.$state.game_id,
@@ -184,7 +185,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // set user hand
     setShuuroHand(hand: string, user: string): void {
       // eslint-disable-next-line
-      init().then((_exports) => {
+      init(wa).then((_exports) => {
+        console.log(_exports);
         if (this.$state.current_stage == 0) {
           this.$state.wasm![0] = new ShuuroShop();
           (this.wasm0() as ShuuroShop).set_hand(hand);
@@ -321,7 +323,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     setDeployWasm(sfen: string) {
-      init().then((_exports) => {
+      init(wa).then((_exports) => {
         this.$state.wasm![1] = new ShuuroPosition();
         this.wasm(1).set_sfen(sfen);
         let hand = this.wasm(1).count_hand_pieces();
@@ -614,7 +616,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     setFightWasm(sfen: string) {
-      init().then((_exports) => {
+      init(wa).then((_exports) => {
         this.$state.wasm![2] = new ShuuroPosition();
         this.wasm(2).set_sfen(sfen);
         this.setPlinths();
