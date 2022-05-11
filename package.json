@@ -17,6 +17,7 @@
   "dependencies": {
     "axios": "^0.25.0",
     "chessground12": "^0.1.1",
+    "path": "^0.12.7",
     "shuuro-wasm": "^0.1.4",
     "sockette": "^2.0.6",
     "vue": "^3.2.33",
@@ -24,6 +25,7 @@
     "vue3-cookies": "^1.0.6"
   },
   "devDependencies": {
+    "@types/node": "^17.0.32",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",
     "@vitejs/plugin-vue": "^2.3.2",

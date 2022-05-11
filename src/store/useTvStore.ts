@@ -32,7 +32,7 @@ export const useTvStore = defineStore("tvStore", {
 
     // using wasm for setting plinths and pieces
     tempWasm(cg: Api, sfen: string, stage: string) {
-      init(wa).then((_exports) => {
+      init().then((_exports) => {
         let w = new ShuuroPosition();
         let fen = sfen; //this.getFen(sfen, stage);
         w.set_sfen(fen);

@@ -27,6 +27,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: { exclude: ["shuuro-wasm"] },
 });
 
 const CUSTOM_ELEMENTS = [
@@ -49,6 +50,5 @@ const CUSTOM_ELEMENTS = [
   "i-side",
   "icon",
   "vs-swords",
-  "back"
-  
+  "back",
 ];

@@ -185,8 +185,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // set user hand
     setShuuroHand(hand: string, user: string): void {
       // eslint-disable-next-line
-      init(wa).then((_exports) => {
-        console.log(_exports);
+      init().then((_exports) => {
         if (this.$state.current_stage == 0) {
           this.$state.wasm![0] = new ShuuroShop();
           (this.wasm0() as ShuuroShop).set_hand(hand);
@@ -323,7 +322,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     setDeployWasm(sfen: string) {
-      init(wa).then((_exports) => {
+      init().then((_exports) => {
         this.$state.wasm![1] = new ShuuroPosition();
         this.wasm(1).set_sfen(sfen);
         let hand = this.wasm(1).count_hand_pieces();
@@ -616,7 +615,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     setFightWasm(sfen: string) {
-      init(wa).then((_exports) => {
+      init().then((_exports) => {
         this.$state.wasm![2] = new ShuuroPosition();
         this.wasm(2).set_sfen(sfen);
         this.setPlinths();
@@ -664,9 +663,19 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.playAudio("res");
         this.clockPause(this.$state.side_to_move);
         this.$state.status = 7;
-        this.$state.result = msg.player;
+        this.$state.result = this.getColorm(msg.player);
         this.scrollToBottom();
       }
+    },
+
+    gameLot(msg: any, username: string) {
+        if (msg.status == 8) {
+            this.playAudio("res");
+            this.clockPause(this.$state.side_to_move, false);
+            this.$state.status = 8;
+            this.$state.result = msg.result;
+            this.scrollToBottom();
+        }
     },
 
     scrollToBottom(): void {

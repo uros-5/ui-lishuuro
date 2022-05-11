@@ -143,6 +143,10 @@ function onmessage(event: any) {
       delete msg["t"];
       shuuroStore.gameResign(msg, user.$state.username);
       break;
+    case "live_game_lot":
+        delete msg["t"];
+        shuuroStore.gameLot(msg, user.$state.username);
+        break;
     case "live_game_sfen":
       delete msg["t"];
       tvStore.setProfileGame(msg);
