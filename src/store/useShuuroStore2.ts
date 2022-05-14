@@ -252,6 +252,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     serverPlace(msg: any) {
       router.push({ path: `/shuuro/1/${this.$state.game_id}` });
       this.wasmPlace(msg.move, true);
+      this.setClocks2(msg.clocks);
       if (msg.to_fight) {
         this.$state.current_stage = 2;
         this.$state.client_stage = 2;
@@ -378,6 +379,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       router.push({ path: `/shuuro/2/${this.$state.game_id}` });
       this.$state.client_stage = 2;
       this.wasmMove(msg.game_move, true);
+      this.setClocks2(msg.clocks);
       if (this.gameOver(msg.outcome)) {
         this.playAudio("res");
         this.clockPause(this.$state.side_to_move, false);
@@ -598,6 +600,12 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.clockPause(0, false);
         this.clockPause(1, false);
       }
+    },
+
+    // set both clocks from place/move
+    setClocks2(clocks: [number, number]) {
+      this.clock(0).duration = clocks[0];
+      this.clock(1).duration = clocks[0];
     },
 
     // elapsed time since last clock

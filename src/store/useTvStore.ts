@@ -97,11 +97,11 @@ export const useTvStore = defineStore("tvStore", {
       } else if (msg.t.endsWith("redirect_deploy")) {
         let game = this.newGame(msg);
         this.$state.games.push(game);
-      } else if (msg.t == "live_game_end") {
+      } else if (ENDED.includes(msg.t)) {
         let self = this;
         setTimeout(function () {
           self.removeGame(msg.game_id);
-        }, 150);
+        }, 350);
       }
     },
 
@@ -218,3 +218,5 @@ export function empty_game(id: string): TvGame {
     cs: 0,
   };
 }
+
+const ENDED = ["live_game_end", "live_game_resign", "live_game_lot", "live_game_draw"];
