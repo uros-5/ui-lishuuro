@@ -565,6 +565,12 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           this.startNormal(elapsed);
         }
       }
+      
+      // game is finished
+      else {
+        this.clock(0).setTime(this.$state.clock_ms[0]);
+        this.clock(1).setTime(this.$state.clock_ms[1]);
+      }
     },
 
     // flag notification
@@ -575,6 +581,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // pause one of clocks
     clockPause(id: number, incr = true) {
       this.clock(id).pause(incr);
+      this.$state.clock_ms[id] = this.clock(id).duration;
     },
 
     // start one of clocks
@@ -663,7 +670,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.playAudio("res");
         this.clockPause(this.$state.side_to_move);
         this.$state.status = 7;
-        this.$state.result = this.getColorm(msg.player);
+        this.$state.result = this.getColor(msg.player);
         this.scrollToBottom();
       }
     },

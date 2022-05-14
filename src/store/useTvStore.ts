@@ -54,17 +54,17 @@ export const useTvStore = defineStore("tvStore", {
     // from server set profileGame
     setProfileGame(msg: any) {
       this.profile_game.game_id = msg.game_id;
-      this.profile_game.fen = msg.fen;
+      this.profile_game.sfen = msg.sfen;
       let cg = this.setCg(msg.game_id as string);
       this.profile_game.cg = cg;
       if (msg.current_stage == "shop") {
         return;
       }
       this.profile_game.cs = msg.current_stage;
-      this.tempWasm(cg, msg.fen, msg.current_stage);
+      this.tempWasm(cg, msg.sfen, msg.current_stage);
     },
 
-    // get fen for wasm
+    // get sfen for wasm
     getFen(sfen: string, current_stage: string): string {
       switch (current_stage) {
         case "deploy":
@@ -82,7 +82,7 @@ export const useTvStore = defineStore("tvStore", {
       let game = this.game(id);
       console.log(`${id}_tv`);
       let cg = this.setCg(id + "_tv");
-      let wasm = this.tempWasm(cg, game.fen, "");
+      let wasm = this.tempWasm(cg, game.sfen, "");
       game.cg = cg;
       game.pl_set = true;
       game.pieces_set = true;
@@ -94,7 +94,34 @@ export const useTvStore = defineStore("tvStore", {
         this.tvPlace(msg);
       } else if (msg.t.endsWith("play")) {
         this.tvMove(msg);
+      } else if (msg.t.endsWith("redirect_deploy")) {
+        let game = this.newGame(msg);
+        this.$state.games.push(game);
+      } else if (msg.t == "live_game_end") {
+        let self = this;
+        setTimeout(function () {
+          self.removeGame(msg.game_id);
+        }, 150);
       }
+    },
+
+    // create new game when deploy is ready
+    newGame(msg: any): TvGame {
+      let path = msg.path.split("/1/")[1];
+      let game = empty_game(path);
+      game.w = msg.w;
+      game.b = msg.b;
+      game.sfen = msg.sfen;
+      game.stage = 1;
+      return game;
+    },
+
+    // remove game from store
+    removeGame(id: string) {
+      this.$state.games = this.$state.games.filter(
+        (item) => item.game_id != id
+      );
+      console.log(id, this.$state.games);
     },
 
     // placing
@@ -111,8 +138,6 @@ export const useTvStore = defineStore("tvStore", {
         color: color,
       };
       cg.newPiece(pieceObj, sq);
-      console.log(pieceObj, sq);
-      console.log(this.game(msg.game_id));
     },
 
     // move
@@ -120,11 +145,45 @@ export const useTvStore = defineStore("tvStore", {
       let move = msg.game_move.split("_");
       let game = this.game(msg.game_id);
       game.cg.move(move[0] as Key, move[1] as Key);
+      if (this.isPromotion(game.cg, msg)) {
+        let color = move[1].endsWith("2") ? "white" : "black";
+        let pieceObj = {
+          role: "q-piece" as Role,
+          color: color,
+        };
+        let cg = game.cg as Api;
+        let pieces = cg.state.pieces;
+        pieces.delete(move[1]);
+        pieces.set(move[1], pieceObj as Piece);
+        (game.cg as Api).state.dom.redraw();
+      }
+    },
+
+    // is promotion
+    isPromotion(game: Api, msg: any): boolean {
+      let move = msg.game_move.split("_");
+      let piece = game.state.pieces.get(move[1] as Key);
+      if (!this.isPawn(piece)) return false;
+      let rank = this.getRank(piece!.color);
+      if (move[0].endsWith(`${rank[0]}`))
+        if (move[1].endsWith(`${rank[1]}`)) return true;
+      return false;
     },
 
     // GETTERS
     game(id: string): TvGame {
       return this.$state.games.find((item) => item.game_id == id) as TvGame;
+    },
+
+    // not a piece
+    isPawn(piece: Piece | undefined): boolean {
+      if (piece == undefined || piece.role != "p-piece") return false;
+      return true;
+    },
+
+    // get ranks
+    getRank(color: Color | "none"): [number, number] {
+      return color == "white" ? [11, 12] : [2, 1];
     },
   },
 });
@@ -132,7 +191,7 @@ export const useTvStore = defineStore("tvStore", {
 export interface TvGame {
   b: string;
   w: string;
-  fen: string;
+  sfen: string;
   stage: number;
   game_id: string;
   pl_set?: boolean;
@@ -153,7 +212,7 @@ export function empty_game(id: string): TvGame {
     stage: 1,
     b: "",
     w: "",
-    fen: "",
+    sfen: "",
     pl_set: false,
     pieces_set: false,
     cs: 0,

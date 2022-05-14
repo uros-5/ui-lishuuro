@@ -90,17 +90,19 @@ function getFen(index: number): string {
       let s = shuuroStore.history(1)![index][0].split("_");
       return `${s[1]} ${s[2]} ${s[3]}`;
     case 2:
-      return shuuroStore.history(2)![index][0];
+      let st = shuuroStore.history(2)![index][0];
+      return st != undefined ? st : ""; 
     default:
       return "";
   }
 }
 
 function fenExist(index: number): boolean {
+  if (index < 0) return false
   if (shuuroStore.$state.client_stage == 1) {
     return index <= shuuroStore.history(1)!.length;
   } else if (shuuroStore.$state.client_stage == 2) {
-    return index <= shuuroStore.history(2)!.length;
+    return index < shuuroStore.history(2)!.length;
   }
   return false;
 }

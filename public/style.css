@@ -210,6 +210,9 @@
 .icon-right:before {
   content: "\5d";
 }
+.icon-check:before {
+  content: "\3f";
+}
 .icon-heart:before {
   content: "\5e";
 }
