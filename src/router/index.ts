@@ -49,7 +49,7 @@ const routes: Array<RouteRecordRaw> = [
   },
 ];
 
-//console.log(process);
+//
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

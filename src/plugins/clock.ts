@@ -115,6 +115,7 @@ export class Clock {
       }
       this.timeout = setTimeout(timer, this.granularity);
       this.tickCallbacks.forEach(function (callback) {
+        // @ts-ignore
         callback.call(this, diff);
       }, this);
     };

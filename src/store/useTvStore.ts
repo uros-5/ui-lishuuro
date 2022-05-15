@@ -7,7 +7,6 @@ import { defineStore } from "pinia";
 import init, { ShuuroPosition } from "shuuro-wasm";
 import { Color } from "./useShuuroStore2";
 import { Key, MoveMetadata, Piece } from "chessground12/types";
-import wa from "@/assets/test2/shuuro_wasm_bg.wasm?url";
 
 export const useTvStore = defineStore("tvStore", {
   state: (): TvStore => {
@@ -80,7 +79,7 @@ export const useTvStore = defineStore("tvStore", {
     // set tv game
     setTvGame(id: string) {
       let game = this.game(id);
-      console.log(`${id}_tv`);
+      
       let cg = this.setCg(id + "_tv");
       let wasm = this.tempWasm(cg, game.sfen, "");
       game.cg = cg;
@@ -121,7 +120,7 @@ export const useTvStore = defineStore("tvStore", {
       this.$state.games = this.$state.games.filter(
         (item) => item.game_id != id
       );
-      console.log(id, this.$state.games);
+      
     },
 
     // placing

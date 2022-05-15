@@ -18,9 +18,9 @@ export const ws = new Sockette("ws://localhost:8080/ws/", {
   onreconnect: (e) => {
     onreconnect(e);
   },
-  onmaximum: (e) => console.log("Stop Attempting!", e),
-  onclose: (e) => console.log("Closed!", e),
-  onerror: (e) => console.log("Error:", e),
+  onmaximum: (e) => {},
+  onclose: (e) => {},
+  onerror: (e) => {},
 });
 
 let unsendMessages: any[] = [];
@@ -34,7 +34,7 @@ export function SEND(msg: any) {
 }
 
 function onopen(event: any) {
-  console.log(SEND);
+  
   const store = useUser();
   store.checkCookie();
   store.onOpen();
@@ -57,7 +57,7 @@ function onmessage(event: any) {
   const tvStore = useTvStore();
 
   const msg = JSON.parse(event.data);
-  console.log(msg);
+  
   switch (msg.t) {
     case "active_players_count":
       user.updatePlCount(msg.cnt);

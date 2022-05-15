@@ -1,8 +1,7 @@
 <template>
   <aside class="sidebar-second">
     <div id="seekbuttons">
-    	Special thanks to:
-      <a href="https://www.pychess.org" class="lobby-button">PyChess</a>
+      <a href="https://www.youtube.com/watch?v=EcpZwJY8XT4" class="lobby-button">Introduction</a>
       <a href="https://www.lichess.org" class="lobby-button">Lichess</a>
     </div>
   </aside>

@@ -15,7 +15,6 @@ import { readPockets } from "chessground12/pocket";
 import { Key, MoveMetadata, Piece } from "chessground12/types";
 import { baseMove, setCheck } from "chessground12/board";
 import { Config } from "chessground12/config";
-import wa from "@/assets/test2/shuuro_wasm_bg.wasm?url";
 
 let finished = [
   "Checkmate",
@@ -577,7 +576,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // flag notification
     flagNotif() {
-      console.log("ok lost on time");
+      
     },
 
     // pause one of clocks

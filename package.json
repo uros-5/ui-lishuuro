@@ -9,7 +9,7 @@
     "rsw build": "rsw build",
     "build": "vue-tsc --noEmit && vite build",
     "fe:build": "rsw && npm run build",
-    "preview": "vite preview",
+    "preview": "vite preview --host",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "format": "prettier .  --write",
     "lint:script": "eslint --ext .ts,vue --ignore-path .gitignore . --fix"
