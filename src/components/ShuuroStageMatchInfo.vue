@@ -1,5 +1,5 @@
 <template>
-  <div class="info0 icon" data-icon="S">
+  <div class="info0 icon" data-icon="M">
     <div class="info2">
       <div class="tc">
         {{ Math.floor(minute / 60000) }}+{{ Math.floor(sec / 1000) }} •

@@ -9,7 +9,7 @@
     :ply="index"
     @click="updateIndex"
   >
-    <san>{{ move }}</san
+    <san>{{ m() }}</san
     ><eval :id="`ply${index!}`" />
   </div>
 </template>

@@ -7,6 +7,7 @@ const route = useRoute();
 
 function cssVariable(): string {
   let c;
+  if (route == undefined) return "";
   if (route.fullPath.startsWith("/shuuro")) {
     c = "auto";
   } else {

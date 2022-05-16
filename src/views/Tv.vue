@@ -1,11 +1,11 @@
 <template>
-  <div style="grid-area: main;">
+  <div style="grid-area: main">
     <aside class="sidebar-first">
       <div></div>
     </aside>
     <main class="games">
       <div class="grid-container" id="games">
-        <mini-game v-for="i in store.$state.games">
+        <mini-game :key="i.game_id" v-for="i in store.$state.games">
           <TvGame :w="i.w" :b="i.b" :id="i.game_id" />
         </mini-game>
       </div>
@@ -41,7 +41,10 @@ onUnmounted(() => {
   --auto-grid-min-size: 24rem;
   justify-content: center;
   overflow-x: hidden;
-  grid-template-columns: repeat(auto-fill, minmax(var(--auto-grid-min-size), 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--auto-grid-min-size), 1fr)
+  );
   grid-gap: 0.3rem;
 }
 

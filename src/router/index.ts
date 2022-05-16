@@ -21,7 +21,11 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/tv",
-    component: () => import (/* webpackChunkName: "Tv" */ "@/views/Tv.vue"),
+    component: () => import(/* webpackChunkName: "Tv" */ "@/views/Tv.vue"),
+  },
+  {
+    path: "/players",
+    component: () => import(/* webpackChunkName: "Players" */ "@/views/Players.vue"),
   },
   {
     path: "/shuuro/",
