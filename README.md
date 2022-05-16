@@ -5,6 +5,7 @@
 Frontend is created using:
 - **Vue 3(TypeScript)**  - components and views
 - **Chessground12** - 12x12 Chessboard for moving pieces
+- **ShuuroWasm** - Generating moves for board
 - **Pinia** - managing state in app
 - **Sockette** - handling WebSocket messages 
 
