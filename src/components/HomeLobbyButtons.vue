@@ -2,7 +2,7 @@
   <aside class="sidebar-second">
     <div id="seekbuttons">
       <a target="blank" href="https://www.youtube.com/watch?v=EcpZwJY8XT4" class="lobby-button">Introduction</a>
-      <a target="blank" href="https://www.lichess.org" class="lobby-button">Lichess</a>
+      <!-- <a target="blank" href="https://www.lichess.org" class="lobby-button">Lichess</a> -->
     </div>
   </aside>
 </template>
