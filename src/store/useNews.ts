@@ -2,11 +2,12 @@ import { defineStore } from "pinia";
 
 export const useNews = defineStore("useNews", {
   state: (): NewsStore => {
-    return { news: [] };
+    return { news: [], finished: false };
   },
   actions: {
     setNews(news: NewsItem[]) {
       this.$state.news = news;
+      this.$state.finished = true;
     },
     exist(title: string): NewsItem | undefined {
       let item = this.$state.news.find((item) => item.title == title);
@@ -17,6 +18,7 @@ export const useNews = defineStore("useNews", {
 
 export interface NewsStore {
   news: NewsItem[];
+  finished: boolean;
 }
 
 export interface NewsItem {

@@ -27,7 +27,8 @@ import { useNews } from "@/store/useNews";
 import { onMounted } from "vue";
 const store = useNews();
 onMounted(() => {
-  SEND({ t: "home_news" });
+  if (!store.$state.finished)
+    SEND({ t: "home_news" });
 });
 
 function r(title: string): string {

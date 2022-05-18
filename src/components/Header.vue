@@ -14,13 +14,13 @@
     <HeaderAccount />
   </header>
 </template>
+
 <script setup lang="ts">
 import HomeHamburgerIcon from "@/components/HomeHamburgerIcon.vue";
 import HeaderAccount from "@/components/HeaderAccount.vue";
 let nav = [
   { url: "/tv", text: "Current games" },
   { url: "/tournaments", text: "Tournaments" },
-  { url: "/players", text: "Players" },
 ];
 </script>
 <style>

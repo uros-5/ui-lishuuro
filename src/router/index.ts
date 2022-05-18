@@ -33,6 +33,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "Tournaments" */ "@/views/Tournaments.vue"),
   },
+
   {
     path: "/shuuro/",
     component: () =>
@@ -56,6 +57,11 @@ const routes: Array<RouteRecordRaw> = [
           import(/* webpackChunkName: "ShuuroSet" */ "@/views/ShuuroPlay.vue"),
       },
     ],
+  },
+  {
+    path: '/:pathMatch(.*)',
+    component: () =>
+      import(/* webpackChunkName: "PageNotFound" */ "@/views/PageNotFound.vue"),
   },
 ];
 

@@ -25,7 +25,7 @@
     <input
       id="chat-entry"
       v-model="message"
-      maxlength="140"
+      maxlength="50"
       type="text"
       name="entry"
       autocomplete="off"
@@ -39,7 +39,6 @@
 <script setup lang="ts">
 import { ref, defineProps } from "vue";
 import { useCookies } from "vue3-cookies";
-import { ws } from "@/plugins/webSockets";
 import { useUser } from "@/store/useUser";
 import { SEND } from "@/plugins/webSockets";
 
@@ -77,12 +76,6 @@ function toDisableInput() {
   return false;
 }
 
-function id_msg(): string {
-    if (props.wsType == "home_chat_message") {
-        return "home";
-    }
-    return props.wsType;
-}
 
 let toggle = (): void => {
   hiddenChat.value = !hiddenChat.value;
