@@ -1,6 +1,6 @@
 export function backend(): string {
     let prod = import.meta.env.PROD;
-    return (prod ? "https://lishuuro.org/" : "http://localhost:8080/");
+    return (prod ? "https://lishuuro.org:8000/" : "http://localhost:8080/");
 }
 
 export function wsUrl(): string {
