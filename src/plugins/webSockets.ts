@@ -5,8 +5,9 @@ import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { useNews } from "@/store/useNews";
 import { useTvStore } from "@/store/useTvStore";
 import Sockette from "sockette";
+import { backend, wsUrl } from "./getBackend";
 
-export const ws = new Sockette("ws://localhost:8080/ws/", {
+export const ws = new Sockette(wsUrl(), {
   timeout: 1200,
   maxAttempts: 15,
   onopen: (e) => {

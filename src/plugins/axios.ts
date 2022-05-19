@@ -1,5 +1,7 @@
 import axios from "axios";
-const path = "http://localhost:8080/";
+import { backend } from "./getBackend";
+
+const path = `${backend()}`;
 axios.defaults.withCredentials = true;
 
 /* eslint-disable */

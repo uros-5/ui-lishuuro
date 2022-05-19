@@ -8,7 +8,7 @@
     <a
       v-if="store.$state.reg == false"
       class="login nav-link"
-      href="http://localhost:8080/login"
+      :href="loginUrl"
       title="Login with Lichess"
       >Log in</a
     >
@@ -19,7 +19,10 @@
 import HeaderSettings from './HeaderSettings.vue';
 import { onMounted } from "vue";
 import { useUser } from "@/store/useUser";
+import { backend } from "@/plugins/getBackend";
+
 const store = useUser();
+const loginUrl = `${backend()}login`;
 
 onMounted(function () {
   store.checkCookie();
