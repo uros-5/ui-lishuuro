@@ -8,8 +8,11 @@ const route = useRoute();
 function cssVariable(): string {
   let c;
   if (route == undefined) return "";
-  if (route.fullPath.startsWith("/shuuro")) {
-    c = "auto";
+  else if (route.fullPath.startsWith("/shuuro/0")) {
+    c = "1300px";
+  }
+  else if (route.fullPath.startsWith("/shuuro")) {
+    return "";
   } else {
     c = "1300px";
   }

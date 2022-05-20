@@ -3,10 +3,10 @@
     <div class="site-title-nav">
       <HomeHamburgerIcon />
       <div class="topnav">
-        <router-link to="/" class="nav-link active home">
+        <router-link @click="user.toggleHeader" to="/" class="nav-link active home">
           lishuuro
         </router-link>
-        <router-link v-for="i in nav" :key="i" :to="i.url" class="nav-link">
+        <router-link @click="user.toggleHeader" v-for="i in nav" :key="i" :to="i.url" class="nav-link">
           {{ i.text }}
         </router-link>
       </div>
@@ -18,6 +18,9 @@
 <script setup lang="ts">
 import HomeHamburgerIcon from "@/components/HomeHamburgerIcon.vue";
 import HeaderAccount from "@/components/HeaderAccount.vue";
+import { useUser } from "@/store/useUser";
+
+const user = useUser();
 let nav = [
   { url: "/tv", text: "Current games" },
   { url: "/tournaments", text: "Tournaments" },

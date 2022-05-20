@@ -72,6 +72,13 @@ export const useUser = defineStore("useUser", {
       return "dark";
     },
 
+    toggleHeader() {
+      document
+        .querySelectorAll(".topnav a")
+        .forEach((t) => t.classList.toggle("navbar-show")),
+        document.querySelector(".hamburger")?.classList.toggle("is-active");
+    },
+
     setTheme(theme: string) {
       cookie.set("theme", theme);
       document.querySelector("html")?.setAttribute("data-theme", theme);

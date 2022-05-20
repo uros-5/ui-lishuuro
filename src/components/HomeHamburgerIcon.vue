@@ -1,5 +1,5 @@
 <template>
-	<div class="hamburger hamburger--vortex" @click="toggle">
+	<div class="hamburger hamburger--vortex" @click="user.toggleHeader">
 		<div class="hamburger-box">
 			<div class="hamburger-inner" />
 		</div>
@@ -7,12 +7,8 @@
 </template>
 
 <script setup lang="ts">
-function toggle(): void {
-	document
-		.querySelectorAll(".topnav a")
-		.forEach((t) => t.classList.toggle("navbar-show")),
-		document.querySelector(".hamburger")?.classList.toggle("is-active");
-}
+import { useUser } from "@/store/useUser";
+const user = useUser();
 </script>
 
 
