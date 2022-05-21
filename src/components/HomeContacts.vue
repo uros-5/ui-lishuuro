@@ -1,12 +1,17 @@
 <template>
   <div class="under-left">
-    <a class="reflist" href="https://discord.com">Discord</a>
-    <a class="reflist" href="https://github.com/uros-5/achess-ui"
+    <a target="_blank" class="reflist" href="https://discord.com">Discord</a>
+    <a
+      target="_blank"
+      class="reflist"
+      href="https://github.com/uros-5/ui-lishuuro"
       >Github</a
     >
-    <a class="reflist" href="https://www.buymeacoffee.com/dashboard">Donate</a
-    ><a class="reflist" href="/faq">FAQ</a>
-    <a class="reflist" href="/about">About</a>
+    <a target="_blank" class="reflist" href="https://www.buymeacoffee.com/uros5"
+      >Donate</a
+    >
+    <router-link class="reflist" to="/faq">FAQ</router-link>
+    <router-link class="reflist" to="/about">About</router-link>
   </div>
 </template>
 <script setup lang="ts"></script>
