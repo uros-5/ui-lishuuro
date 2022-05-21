@@ -8,6 +8,7 @@ export default defineConfig({
   define: {
     "process.env": process.env,
   },
+  assetsInclude: ["**/*.ogg"],
   plugins: [
     vue({
       template: {

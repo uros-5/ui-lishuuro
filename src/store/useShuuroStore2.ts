@@ -5,11 +5,7 @@ import { Chessground } from "chessground12";
 import router from "@/router";
 import { ServerDate } from "@/plugins/serverDate";
 import { SEND } from "@/plugins/webSockets";
-import {
-  anonConfig,
-  liveConfig,
-  liveFightConfig,
-} from "chessground12/configs";
+import { anonConfig, liveConfig, liveFightConfig } from "chessground12/configs";
 import { Api } from "chessground12/api";
 import { readPockets } from "chessground12/pocket";
 import { Key, MoveMetadata, Piece } from "chessground12/types";
@@ -566,7 +562,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           this.startNormal(elapsed);
         }
       }
-      
+
       // game is finished
       else {
         this.clock(0).setTime(this.$state.clock_ms[0]);
@@ -575,9 +571,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     // flag notification
-    flagNotif() {
-      
-    },
+    flagNotif() {},
 
     // pause one of clocks
     clockPause(id: number, incr = true) {
@@ -683,13 +677,13 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     gameLot(msg: any, username: string) {
-        if (msg.status == 8) {
-            this.playAudio("res");
-            this.clockPause(this.$state.side_to_move, false);
-            this.$state.status = 8;
-            this.$state.result = msg.result;
-            this.scrollToBottom();
-        }
+      if (msg.status == 8) {
+        this.playAudio("res");
+        this.clockPause(this.$state.side_to_move, false);
+        this.$state.status = 8;
+        this.$state.result = msg.result;
+        this.scrollToBottom();
+      }
     },
 
     scrollToBottom(): void {
