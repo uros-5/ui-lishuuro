@@ -15,7 +15,7 @@
         <li v-for="i in messages" :key="i.time" class="message">
           <div class="time">{{ i.time }}</div>
           <span class="user">
-            <a href="/">{{ i.user }}</a>
+            <router-link :to="`/@/${i.user}`" >{{ i.user }}</router-link>
           </span>
           <span>{{ i.message }}</span>
         </li>
