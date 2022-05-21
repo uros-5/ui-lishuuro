@@ -42,9 +42,6 @@ function player(index: number): string {
 
 function rating(username: string): number {
   let r = shuuroStore.$state.ratings;
-  if (r != undefined) {
-    return Math.floor(r[username][0]);
-  }
   return 1500;
 }
 </script>

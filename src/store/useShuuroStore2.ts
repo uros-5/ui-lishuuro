@@ -12,6 +12,11 @@ import { Key, MoveMetadata, Piece } from "chessground12/types";
 import { baseMove, setCheck } from "chessground12/board";
 import { Config } from "chessground12/config";
 
+import captureUrl from "@/assets/sounds/capture.ogg";
+import low_timeUrl from "@/assets/sounds/low_time.ogg";
+import resUrl  from "@/assets/sounds/res.ogg";
+import moveUrl  from "@/assets/sounds/move.ogg";
+
 let finished = [
   "Checkmate",
   "Draw",
@@ -618,7 +623,19 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // start audio
     playAudio(sound: string) {
-      let a = new Audio(`../../src/assets/sounds/${sound}.ogg`);
+      let audio;
+      switch(sound) {
+        case "res":
+          audio = resUrl;
+          break;
+        case "move":
+          audio = moveUrl;
+          break;
+        case "capture":
+          audio = captureUrl;
+          break;
+      }
+      let a = new Audio(audio);
       a.play();
     },
 
