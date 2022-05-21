@@ -15,9 +15,12 @@ import { ShuuroStore, useShuuroStore2 } from "@/store/useShuuroStore2";
 import { useUser } from "@/store/useUser";
 import { Clock } from "@/plugins/clock";
 import { SEND, ws } from "@/plugins/webSockets";
+import { useHomeChat } from "@/store/useHomeChat";
 
 const shuuroStore = useShuuroStore2();
 const userStore = useUser();
+const homeChat = useHomeChat();
+
 onMounted(() => {
   const id = useRoute().params["id"];
   if (id == "" || id == undefined) {
@@ -41,6 +44,7 @@ onUnmounted(() => {
   const obj = { t: "live_game_remove_spectator", "game_id": id };
   SEND(obj);
   shuuroStore.$state.game_id = "";
+  homeChat.$state.gameChat = [];
 });
 const zoomValue = ref("100");
 </script>
