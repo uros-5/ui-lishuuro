@@ -26,7 +26,7 @@
         <div class="info-middle">
           <div class="versus">
             <player>
-              <router-link class="user-link" :to="`/@/${props.game.white}`"
+              <router-link  :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.white}`"
                 ><player-title> </player-title
                 >{{ props.game.white }}</router-link
               >
@@ -35,7 +35,7 @@
             </player>
             <vs-swords class="icon" data-icon='"'></vs-swords>
             <player>
-              <router-link class="user-link" :to="`/@/${props.game.black}`"
+              <router-link :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.black}`"
                 ><player-title> </player-title
                 >{{ props.game.black }}</router-link
               >
