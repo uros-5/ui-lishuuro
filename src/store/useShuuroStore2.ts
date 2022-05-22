@@ -5,17 +5,16 @@ import { Chessground } from "chessground12";
 import router from "@/router";
 import { ServerDate } from "@/plugins/serverDate";
 import { SEND } from "@/plugins/webSockets";
-import { anonConfig, liveConfig, liveFightConfig } from "chessground12/configs";
+import { anonConfig, liveConfig } from "chessground12/configs";
 import { Api } from "chessground12/api";
 import { readPockets } from "chessground12/pocket";
 import { Key, MoveMetadata, Piece } from "chessground12/types";
-import { baseMove, setCheck } from "chessground12/board";
+import { setCheck } from "chessground12/board";
 import { Config } from "chessground12/config";
 
 import captureUrl from "@/assets/sounds/capture.ogg";
-import low_timeUrl from "@/assets/sounds/low_time.ogg";
-import resUrl  from "@/assets/sounds/res.ogg";
-import moveUrl  from "@/assets/sounds/move.ogg";
+import resUrl from "@/assets/sounds/res.ogg";
+import moveUrl from "@/assets/sounds/move.ogg";
 
 let finished = [
   "Checkmate",
@@ -40,14 +39,15 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.setClocks(s);
       this.setPlayer(username);
       this.setBoardData(s, username);
-      router.push({ path: `/shuuro/${s.current_stage}/${s.game_id}` });
+      // redirect
+      this.setRedirect();
+
       let stage = this.$state.current_stage;
       if (stage == 0) {
         this.shopInfo();
       } else if (stage == 1) {
-        let self = this;
-        self.setDeployCg();
-        self.setDeployWasm(s.sfen);
+        this.setDeployCg();
+        this.setDeployWasm(s.sfen);
       } else if (stage == 2) {
         this.setFightCg();
         this.setFightWasm(s.sfen);
@@ -110,6 +110,26 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       } else {
         this.am_i_player = false;
       }
+    },
+
+    setRedirect() {
+      let r = router.currentRoute;
+      if (this.$state.status > 0) {
+        let fullPath = r.value.fullPath;
+        if (fullPath.startsWith("/shuuro/0")) {
+          this.$state.current_stage = 0;
+          this.updateClientStage(0);
+        }
+        else if(fullPath.startsWith("/shuuro/1")) {
+          this.$state.current_stage = 1;
+          this.updateClientStage(1);
+        }
+        else if(fullPath.startsWith("/shuuro/2")) {
+          this.$state.current_stage = 2;
+          this.updateClientStage(2);
+        }
+      }
+      router.push({ path: `/shuuro/${this.$state.current_stage}/${this.$state.game_id}` });
     },
 
     // new stage for game
@@ -624,7 +644,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // start audio
     playAudio(sound: string) {
       let audio;
-      switch(sound) {
+      switch (sound) {
         case "res":
           audio = resUrl;
           break;
