@@ -1,5 +1,5 @@
 <template>
-  <div id="chessground12" class="chessground12" />
+  <div id="chessground12" class="chessground12" :about="settings.getBoard()" />
   <!--
   <div class="cg-wrap cg-512 orientation-white shuuro-board manipulable">
     <cg-container :style="setStyle()">
@@ -22,9 +22,11 @@ import { Api } from "chessground12/api";
 import { renderWrap } from "chessground12/wrap";
 import router from "@/router";
 import { SEND } from "@/plugins/webSockets";
+import {useHeaderSettings} from "@/store/headerSettings";
 
 const store = useBoardSize();
 const shuuroStore = useShuuroStore2();
+const settings = useHeaderSettings();
 
 store.updateRowsAndCols(12);
 shuuroStore.updateClientStage(1);
@@ -60,6 +62,11 @@ function setStyle(): string {
 .chessground12 cg-board {
   background-image: url("@/assets/board/12x12brown.svg");
 }
+
+
+
+
+
 /*
 .shuuro-board cg-board {
   background-image: url("@/assets/board/12x12brown.svg");

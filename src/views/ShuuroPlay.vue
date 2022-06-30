@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useHeaderSettings } from "@/store/headerSettings";
 
 const shuuroStore = useShuuroStore2();
+const settings = useHeaderSettings();
 shuuroStore.updateClientStage(2);
 
 onMounted(() => {
@@ -20,9 +22,8 @@ onMounted(() => {
 <style scoped></style>
 
 <template>
-  <div id="chessground12" class="chessground12" />
+  <div id="chessground12" :about="settings.getBoard()"  />
 </template>
-
 
 <style>
 .chessground12 {

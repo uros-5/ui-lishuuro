@@ -9,6 +9,7 @@
           <div
             :class="`chessground12 mini ${game._id.$oid}`"
             :id="game._id.$oid"
+	    :about="settings.getBoard()"
           />
         </div>
       </td>
@@ -67,7 +68,9 @@ import { useUser } from "@/store/useUser";
 import { useTvStore } from "@/store/useTvStore";
 import { SEND } from "@/plugins/webSockets";
 import {ServerDate} from "@/plugins/serverDate";
+import {useHeaderSettings} from "@/store/headerSettings";
 const tv = useTvStore();
+const settings = useHeaderSettings();
 
 const props = defineProps<{ game: ShuuroStore | any }>();
 

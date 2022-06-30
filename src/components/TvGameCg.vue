@@ -1,29 +1,31 @@
 <template>
-    <div :class="`chessground12 mini ${id}`" :id="`${id}_tv`" style="width: auto;" />
+  <div
+    :class="`mini ${id}`"
+    :about="settings.getBoard()"
+    :id="`${id}_tv`"
+    style="width: auto; padding-bottom:100%;"
+  />
 </template>
 
 <script setup lang="ts">
-import { useTvStore } from '@/store/useTvStore';
-import { onMounted } from 'vue';
-
+import { useHeaderSettings } from "@/store/headerSettings";
+import { useTvStore } from "@/store/useTvStore";
+import { onMounted } from "vue";
 
 const props = defineProps<{ id: string }>();
 const store = useTvStore();
+const settings = useHeaderSettings();
 
-onMounted( () => {
-    store.setTvGame(props.id);
+onMounted(() => {
+  store.setTvGame(props.id);
 });
-
 </script>
 
 <style>
-
 .chessground12 {
   padding-bottom: 100%;
 }
 .chessground12 cg-board {
   background-image: url("@/assets/board/12x12brown.svg");
 }
-
-
 </style>
