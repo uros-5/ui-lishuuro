@@ -22,7 +22,7 @@ onMounted(() => {
 <style scoped></style>
 
 <template>
-  <div id="chessground12" :about="settings.getBoard()"  />
+  <div id="chessground12" class="chessground12" :about="settings.getBoard()"  />
 </template>
 
 <style>
