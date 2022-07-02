@@ -17,7 +17,7 @@
           <p></p>
         </div>
 
-          <p v-text="props.text"></p>
+	<div v-html="props.text"></div> 
       </div>
     </main>
 </template>
@@ -52,6 +52,7 @@ onMounted(() => {
         props.value.headline = item.headline;
         props.value.date = item.date;
         props.value.title = item.title;
+	props.value.user = item.user;
       }
     });
   } else {
