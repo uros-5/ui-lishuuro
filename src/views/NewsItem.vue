@@ -1,25 +1,27 @@
 <template>
-    <main class="page-menu">
-      <aside></aside>
-      <div class="news">
-        <h1 align="center">{{ props.title }}</h1>
-        <div class="meta-headline">
-          <div class="meta">
-            <span class="text"> {{ props.date }}</span>
-            <span class="text">
-              <router-link :to="`/@/${props.user}`"> @{{ props.user }} </router-link></span
-            >
-            <span class="text"> {{ props.category }} </span>
-          </div>
-          <div class="headline">
-            {{ props.headline }}
-          </div>
-          <p></p>
+  <main class="page-menu">
+    <aside></aside>
+    <div class="news">
+      <h1 align="center">{{ props.title }}</h1>
+      <div class="meta-headline">
+        <div class="meta">
+          <span class="text"> {{ props.date }}</span>
+          <span class="text">
+            <router-link :to="`/@/${props.user}`">
+              @{{ props.user }}
+            </router-link></span
+          >
+          <span class="text"> {{ props.category }} </span>
         </div>
-
-	<div v-html="props.text"></div> 
+        <div class="headline">
+          {{ props.headline }}
+        </div>
+        <p></p>
       </div>
-    </main>
+
+      <div v-html="props.text"></div>
+    </div>
+  </main>
 </template>
 
 <script setup lang="ts">
@@ -52,13 +54,18 @@ onMounted(() => {
         props.value.headline = item.headline;
         props.value.date = item.date;
         props.value.title = item.title;
-	props.value.user = item.user;
+        props.value.user = item.user;
       }
     });
   } else {
     props.value = item;
   }
+  scrollToTop();
 });
+
+function scrollToTop() {
+  window.scroll({ top: 0, behavior: "smooth" });
+}
 </script>
 
 <style></style>
