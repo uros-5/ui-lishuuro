@@ -1,6 +1,6 @@
 <template>
   <div class="under-right">
-    <router-link to="/">
+    <router-link to="/players">
       <span id="u_cnt">{{ store.$state.plCount }} players</span>
     </router-link>
     <router-link to="/">

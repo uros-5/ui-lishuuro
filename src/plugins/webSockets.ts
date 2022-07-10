@@ -35,7 +35,6 @@ export function SEND(msg: any) {
 }
 
 function onopen(event: any) {
-  
   const store = useUser();
   store.checkCookie();
   store.onOpen();
@@ -58,7 +57,7 @@ function onmessage(event: any) {
   const tvStore = useTvStore();
 
   const msg = JSON.parse(event.data);
-  
+
   switch (msg.t) {
     case "active_players_count":
       user.updatePlCount(msg.cnt);
@@ -82,6 +81,9 @@ function onmessage(event: any) {
       break;
     case "home_lobby_full":
       homeLobby.setHomeLobby(msg.lobbyGames);
+      break;
+    case "active_players_full":
+      homeLobby.setActivePlayers(msg.players);
       break;
     case "live_tv":
       if (msg.games) {
@@ -145,9 +147,9 @@ function onmessage(event: any) {
       shuuroStore.gameResign(msg, user.$state.username);
       break;
     case "live_game_lot":
-        delete msg["t"];
-        shuuroStore.gameLot(msg, user.$state.username);
-        break;
+      delete msg["t"];
+      shuuroStore.gameLot(msg, user.$state.username);
+      break;
     case "live_game_sfen":
       delete msg["t"];
       tvStore.setProfileGame(msg);

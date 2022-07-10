@@ -33,7 +33,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "Tournaments" */ "@/views/Tournaments.vue"),
   },
-
+  {
+    path: "/players",
+    component: () =>
+      import(/* webpackChunkName: "Players" */ "@/views/Players.vue"),
+  },
   {
     path: "/shuuro/",
     component: () =>
@@ -59,7 +63,7 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: '/:pathMatch(.*)',
+    path: "/:pathMatch(.*)",
     component: () =>
       import(/* webpackChunkName: "PageNotFound" */ "@/views/PageNotFound.vue"),
   },

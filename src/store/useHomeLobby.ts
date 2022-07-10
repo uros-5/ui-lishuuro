@@ -11,6 +11,7 @@ export interface LobbyGame {
 
 export interface LobbyGames {
   homeLobby: LobbyGame[];
+  activePlayers: string[];
 }
 
 export const allowedDuration = [
@@ -20,11 +21,14 @@ export const allowedDuration = [
 
 export const useHomeLobby = defineStore("useHomeLobby", {
   state: (): LobbyGames => {
-    return { homeLobby: [] };
+    return { homeLobby: [], activePlayers: [] };
   },
   actions: {
     setHomeLobby(homeLobby: []): void {
       this.$state.homeLobby = homeLobby;
+    },
+    setActivePlayers(activePlayers: []): void {
+      this.$state.activePlayers = activePlayers;
     },
     addGameToLobby(game: LobbyGame): void {
       this.$state.homeLobby.push(game);
