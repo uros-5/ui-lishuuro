@@ -1,5 +1,5 @@
 <template>
-  <div class="cg-wrap pocket" :style="inCenter ? '' : cgWidth()">
+  <div class="cg-wrap pocket" :data-piece="hs.getPiece()" :style="inCenter ? '' : cgWidth()">
     <div
       v-if="isHand()"
       :id="divId()"
@@ -8,6 +8,8 @@
       --ranks: ${files()};
       ${cgWidth()}`"
       :class="pocketCss()"
+      
+      
     >
       <piece
         v-for="(i, index) in pieces"
@@ -29,7 +31,9 @@ import { onMounted, defineProps } from "vue";
 import { useBoardSize } from "@/store/useBoardSize";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { pieces, dataMax } from "@/store/useShuuroStore2";
+import { useHeaderSettings } from "@/store/headerSettings";
 const boardSize = useBoardSize();
+const hs = useHeaderSettings();
 
 onMounted(() => {
   let element = document.querySelector("#mainboard") as HTMLElement;

@@ -1,7 +1,8 @@
 <template>
   <div
     :class="`mini ${id}`"
-    :about="settings.getBoard()"
+    :data-board="settings.getBoard()"
+    :data-piece="settings.getPiece()"
     :id="`${id}_tv`"
     style="width: auto; padding-bottom:100%;"
   />

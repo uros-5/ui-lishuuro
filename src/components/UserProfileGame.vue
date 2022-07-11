@@ -9,7 +9,8 @@
           <div
             :class="`chessground12 mini ${game._id.$oid}`"
             :id="game._id.$oid"
-	    :about="settings.getBoard()"
+      	    :data-board="settings.getBoard()"
+            :data-piece="settings.getPiece()"
           />
         </div>
       </td>

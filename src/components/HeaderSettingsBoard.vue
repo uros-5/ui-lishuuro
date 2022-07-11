@@ -8,9 +8,10 @@ settings.$subscribe((_mutation, _state) => {
   localStorage.setItem("zoom", `${settings.$state.zoom}`);
 });
 
-function selected(img: number): string {
-  if (`board-${img}` == settings.getBoard()) {
-    return " selected-board";
+function selected(t: string, img: number): string {
+  let f = t == "board" ? settings.getBoard : settings.getPiece;
+  if (`${t}-${img}` == f()) {
+    return ` selected-${t}`;
   }
   return "";
 }
@@ -33,8 +34,18 @@ function selected(img: number): string {
         v-for="i in [0, 1, 2]"
         class="board board 1 standard12x12 board"
         :for="`board${i}`"
-        :class="`board-${i}${selected(i)}`"
+        :class="`board-${i}${selected('board',i)}`"
         @click="settings.setBoardImg(i)"
+      >
+      </label>
+    </div>
+    <div id="allpieces">
+      <label
+        v-for="i in [0, 1, 2]"
+        class=""
+        :for="`piece${i}`"
+        :class="`piece-${i}${selected('piece',i)}`"
+        @click="settings.setPieceImg(i)"
       >
       </label>
     </div>
@@ -42,14 +53,15 @@ function selected(img: number): string {
 </template>
 
 <style>
-div #allboards {
+div #allboards, div #allpieces {
   display: grid;
   grid-template-areas: "brown blue green";
   grid-template-columns: repeat(3, auto);
   grid-gap: 0.5em;
 }
 
-#allboards label {
+#allboards label,
+#allpieces label {
   background-size: 90%;
   background-position: center;
   background-repeat: no-repeat;
@@ -58,22 +70,35 @@ div #allboards {
   padding: 30px;
 }
 
+
 .board-0,
-div[about$="0"] cg-board {
+div[data-board$="0"] cg-board {
   background-image: url("@/assets/board/12x12brown.svg") !important;
 }
 
 .board-1,
-div[about$="1"] cg-board {
+div[data-board$="1"] cg-board {
   background-image: url("@/assets/board/12x12blue.svg") !important;
 }
 
 .board-2,
-div[about$="2"] cg-board {
+div[data-board$="2"] cg-board {
   background-image: url("@/assets/board/12x12green.svg") !important;
 }
 
-.selected-board {
+.piece-0 {
+  background-image: url("@/../public/assets/pieces/merida/wN.svg");
+}
+
+.piece-1 {
+  background-image: url("@/../public/assets/pieces/kaneo/wN.svg");
+}
+
+.piece-2 {
+  background-image: url("@/../public/assets/pieces/maestro/wN.svg");
+}
+
+.selected-board, .selected-piece {
   background-color: var(--green-hover);
 }
 </style>

@@ -19,16 +19,19 @@ onMounted(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>
 
 <template>
-  <div id="chessground12" class="chessground12" :about="settings.getBoard()"  />
+  <div id="chessground12" class="chessground12" :data-board="settings.getBoard()" :data-piece="settings.getPiece()" />
+
 </template>
 
 <style>
 .chessground12 {
   padding-bottom: 100%;
 }
+
 .chessground12 cg-board {
   background-image: url("@/assets/board/12x12brown.svg");
 }

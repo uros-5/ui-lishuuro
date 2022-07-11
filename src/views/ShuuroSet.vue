@@ -1,5 +1,5 @@
 <template>
-  <div id="chessground12" class="chessground12" :about="settings.getBoard()" />
+  <div id="chessground12" class="chessground12" :data-board="settings.getBoard()" :data-piece="settings.getPiece()" />
   <!--
   <div class="cg-wrap cg-512 orientation-white shuuro-board manipulable">
     <cg-container :style="setStyle()">

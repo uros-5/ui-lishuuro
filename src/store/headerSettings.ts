@@ -34,11 +34,20 @@ export const useHeaderSettings = defineStore("headerSettings", {
         this.$state.board = `${image}`;
       }
     },
+    setPieceImg(image: number) {
+      if ([0,1,2].includes(image)) {
+        localStorage.setItem("piece", `${image}`);
+        this.$state.piece = `${image}`;
+      }
+    },
     getTheme(): string {
       return this.$state.theme;
     },
     getBoard(): string {
       return `board-${this.$state.board}`;
+    },
+    getPiece(): string {
+      return `piece-${this.$state.piece}`;
     },
     zoom() {
       document
@@ -53,6 +62,7 @@ interface HeaderSettings {
   clicked: Clicked;
   theme: string;
   board: string;
+  piece: string;
   zoom: string;
 }
 type Clicked = "" | "background" | "board";
@@ -64,5 +74,7 @@ function hs(): HeaderSettings {
   board = board == null ? "0" : board;
   let zoom = localStorage.getItem("zoom");
   zoom = zoom == null ? "100" : zoom;
-  return { show: false, clicked: "", board: board, theme: theme, zoom: zoom };
+  let piece = localStorage.getItem("piece");
+  piece = piece == null ? "0" : piece;
+  return { show: false, clicked: "", board: board, piece: piece, theme: theme, zoom: zoom };
 }
