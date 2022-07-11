@@ -10,7 +10,7 @@
         <tr>
           <td v-for="i in store.$state.activePlayers" class="player-data">
             <i-side class="online icon icon-online">
-              <router-link class="user-link" :to="`/${i}`">
+		    <router-link class="user-link" :to="`/@/${i}`">
                 <player-title></player-title>
                 {{ i }}
               </router-link>
