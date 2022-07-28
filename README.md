@@ -1,4 +1,4 @@
-# UI for [lishuuro.org](https://www.lishuuro.org)
+# UI for [lishuuro.org](https://lishuuro.org)
 
 <img src="index.png" alt="Lishuuro homepage" title="Lishuuro comes with light and dark theme, this screenshot shows both." />
 
