@@ -114,7 +114,7 @@ function onmessage(event: any) {
       delete msg["t"];
       homeLobby.removeLobbyGameByUser(msg.username);
       break;
-    case "live_game_start":
+    case "live_game_start": 
       msg["game_info"]["game_id"] = msg["game_id"];
       shuuroStore.fromServer(msg["game_info"], user.$state.username);
       break;

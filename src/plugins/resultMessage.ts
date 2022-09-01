@@ -37,7 +37,7 @@ export function winner(result: string): string {
 
 export function resignedWinner(result: string, players: [string, string]): string {
     if (result == "") { return "" }
-    return result.endsWith("w") ? players[0] : players[1];
+    return result.startsWith("w") ? players[0] : players[1];
 }
 
 export function isDraw(result: string): string {

@@ -57,17 +57,17 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     setHistory(s: any) {
-      this.$state.history![0] = s.shop_history;
-      this.$state.history![1] = s.deploy_history;
-      this.$state.history![2] = s.fight_history;
+      this.$state.history![0] = s.history[0];
+      this.$state.history![1] = s.history[1];
+      this.$state.history![2] = s.history[2];
     },
 
     setTime(s: any) {
       this.$state.game_id = s.game_id;
-      this.$state.min = s.min;
-      this.$state.incr = s.incr;
-      this.$state.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
-      this.$state.last_clock = ServerDate(s.last_clock).toString();
+      this.$state.min = s.min / 60000;
+      this.$state.incr = s.incr / 1000;
+      this.$state.side_to_move = s.side_to_move;
+      this.$state.last_clock = new Date(s.tc.last_click).toString();
     },
 
     setStatus(s: any) {
@@ -75,17 +75,17 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.client_stage = s.current_stage;
       this.$state.result = s.result;
       this.$state.status = s.status;
-      this.$state.ratings = s.ratings;
+      //this.$state.ratings = s.ratings;
     },
 
     setClocks(s: any) {
-      this.$state.players = [s.white, s.black];
+      this.$state.players = s.players;
       this.$state.clocks = [
         new Clock(s.min / 60000, s.incr / 1000, 0, "1"),
         new Clock(s.min / 60000, s.incr / 1000, 0, "0"),
       ];
-      this.$state.credits = [s.white_credit, s.black_credit];
-      this.$state.clock_ms = [s.white_clock, s.black_clock];
+      this.$state.credits = [...s.credits as [number, number]];
+      this.$state.clock_ms = [...s.tc.clocks as [number, number]];
     },
 
     setBoardData(s: any, username: string) {
@@ -149,12 +149,12 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     shopInfo(): void {
       SEND({
         t: "live_game_hand",
-        color: this.$state.player_color,
+        //color: this.$state.player_color,
         game_id: this.$state.game_id,
       });
       SEND({
         t: "live_game_confirmed",
-        color: this.$state.player_color,
+        //color: this.$state.player_color,
         game_id: this.$state.game_id,
       });
     },
@@ -173,6 +173,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         const new_credit = this.wasm0().get_credit(color);
         const counter = this.wasm0().get_piece(p);
         if (new_credit != this.$state.credit) {
+          this.clockPause(this.$state.player!, true);
+          this.clockStart(this.$state.player!);
           this.history(0)?.push([game_move, counter]);
           this.scrollToBottom();
         }
@@ -214,6 +216,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           );
           let h = this.wasm0().history();
           this.$state.history![0] = h;
+          this.$state.credit = (this.wasm0() as ShuuroShop).get_credit(this.$state.player_color!);
         }
       });
     },
@@ -574,6 +577,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           );
           let otherClock;
           if (confirmed != -1) {
+            
             this.clock(confirmed!).setTime(this.$state.clock_ms[confirmed!]);
             this.clockPause(confirmed!);
             this.clock(confirmed!).pause(false);
@@ -623,7 +627,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // set both clocks from place/move
     setClocks2(clocks: [number, number]) {
       this.clock(0).duration = clocks[0];
-      this.clock(1).duration = clocks[0];
+      this.clock(1).duration = clocks[1];
     },
 
     // elapsed time since last clock
@@ -706,9 +710,10 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     gameResign(msg: any, username: string) {
       if (msg.resign) {
         this.playAudio("res");
-        this.clockPause(this.$state.side_to_move);
+        this.clockPause(0);
+        this.clockPause(1);
         this.$state.status = 7;
-        this.$state.result = this.getColor(msg.player);
+        this.$state.result = this.getColor(username);
         this.scrollToBottom();
       }
     },
