@@ -20,8 +20,8 @@ export const ws = new Sockette(wsUrl(), {
     onreconnect(e);
   },
   onmaximum: (e) => {},
-  onclose: (e) => {},
-  onerror: (e) => {},
+  onclose: (e) => { },
+  onerror: (e) => { },
 });
 
 let unsendMessages: any[] = [];

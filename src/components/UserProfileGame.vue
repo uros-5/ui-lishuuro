@@ -1,14 +1,14 @@
 <template>
   <tr>
     <router-link
-      :to="gameUrl(game._id.$oid, game.current_stage, game.status)"
+      :to="gameUrl(game._id, game.current_stage, game.status)"
       @click="setShuuroStore"
     >
       <td class="board">
         <div class="standard">
           <div
-            :class="`chessground12 mini ${game._id.$oid}`"
-            :id="game._id.$oid"
+            :class="`chessground12 mini ${game._id}`"
+            :id="game._id"
       	    :data-board="settings.getBoard()"
             :data-piece="settings.getPiece()"
           />
@@ -28,18 +28,18 @@
         <div class="info-middle">
           <div class="versus">
             <player>
-              <router-link  :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.white}`"
+              <router-link  :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.players[0]}`"
                 ><player-title> </player-title
-                >{{ props.game.white }}</router-link
+                >{{ props.game.players[0] }}</router-link
               >
               <br />
               1500?
             </player>
             <vs-swords class="icon" data-icon='"'></vs-swords>
             <player>
-              <router-link :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.black}`"
+              <router-link :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.players[1]}`"
                 ><player-title> </player-title
-                >{{ props.game.black }}</router-link
+                >{{ props.game.players[1] }}</router-link
               >
               <br />
               1500?
@@ -77,13 +77,13 @@ const props = defineProps<{ game: ShuuroStore | any }>();
 
 onMounted(() => {
   if (props.game.status <= 0) {
-    SEND({ t: "live_game_sfen", game_id: props.game._id.$oid });
+    SEND({ t: "live_game_sfen", game_id: props.game._id });
   } else {
     let stage = props.game.current_stage;
     if (stage == "shop") {
       return;
     }
-    let cg = tv.setCg(props.game._id.$oid);
+    let cg = tv.setCg(props.game._id);
     let sfen = props.game.sfen;
     tv.tempWasm(cg, sfen, stage);
   }
@@ -102,11 +102,20 @@ function res() {
 }
 
 function sumMoves(): number {
+  let shop = sumShop();
   return (
-    props.game.shop_history.length +
-    props.game.deploy_history.length +
-    props.game.fight_history.length
+    shop+
+    props.game.history[1].length +
+    props.game.history[2].length
   );
+}
+
+function sumShop(): number {
+  if (props.game.history[1].length > 0) {
+    let count = props.game.history[1][0][0].split("_")[2].length + 1;
+    return count; 
+  }
+  return 0;
 }
 
 function styleRes(): string {
