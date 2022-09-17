@@ -9,7 +9,7 @@
           <div
             :class="`chessground12 mini ${game._id}`"
             :id="game._id"
-      	    :data-board="settings.getBoard()"
+            :data-board="settings.getBoard()"
             :data-piece="settings.getPiece()"
           />
         </div>
@@ -28,7 +28,10 @@
         <div class="info-middle">
           <div class="versus">
             <player>
-              <router-link  :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.players[0]}`"
+              <router-link
+                :key="useRoute().fullPath"
+                class="user-link"
+                :to="`/@/${props.game.players[0]}`"
                 ><player-title> </player-title
                 >{{ props.game.players[0] }}</router-link
               >
@@ -37,7 +40,10 @@
             </player>
             <vs-swords class="icon" data-icon='"'></vs-swords>
             <player>
-              <router-link :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.players[1]}`"
+              <router-link
+                :key="useRoute().fullPath"
+                class="user-link"
+                :to="`/@/${props.game.players[1]}`"
                 ><player-title> </player-title
                 >{{ props.game.players[1] }}</router-link
               >
@@ -68,8 +74,8 @@ import { useRoute } from "vue-router";
 import { useUser } from "@/store/useUser";
 import { useTvStore } from "@/store/useTvStore";
 import { SEND } from "@/plugins/webSockets";
-import {ServerDate} from "@/plugins/serverDate";
-import {useHeaderSettings} from "@/store/headerSettings";
+import { ServerDate } from "@/plugins/serverDate";
+import { useHeaderSettings } from "@/store/headerSettings";
 const tv = useTvStore();
 const settings = useHeaderSettings();
 
@@ -90,30 +96,27 @@ onMounted(() => {
 });
 
 function ldate() {
-	let ld = ServerDate(props.game.last_clock);
-	return timeago(ld.toString());
-
+  let ld = ServerDate(props.game.last_clock);
+  return timeago(ld.toString());
 }
 
 function res() {
-  let w = props.game.white;
-  let b = props.game.black;
-  return resultMessage(props.game.result, props.game.status, [w, b]);
+  return resultMessage(
+    props.game.result,
+    props.game.status,
+    props.game.players
+  );
 }
 
 function sumMoves(): number {
   let shop = sumShop();
-  return (
-    shop+
-    props.game.history[1].length +
-    props.game.history[2].length
-  );
+  return shop + props.game.history[1].length + props.game.history[2].length;
 }
 
 function sumShop(): number {
   if (props.game.history[1].length > 0) {
     let count = props.game.history[1][0][0].split("_")[2].length + 1;
-    return count; 
+    return count;
   }
   return 0;
 }
@@ -127,15 +130,23 @@ function styleRes(): string {
         return "win";
       }
       return "lose";
-    case 7: if (m == props.game.result) { return "lose"; } return "win";
-    case 8: if (m == props.game.result) { return "lose"; } return "win";
+    case 7:
+      if (m == props.game.result) {
+        return "lose";
+      }
+      return "win";
+    case 8:
+      if (m == props.game.result) {
+        return "lose";
+      }
+      return "win";
     default:
       return "";
   }
 }
 
 function userColor(p: string): string {
-  return props.game.white == p ? "w" : "b";
+  return props.game.players[0] == p ? "w" : "b";
 }
 
 function setShuuroStore() {
@@ -143,14 +154,13 @@ function setShuuroStore() {
   //useShuuroStore2().fromServer(props.game, useUser().username);
 }
 
-function gameUrl(id: string, stage: number, status: number): string { 
+function gameUrl(id: string, stage: number, status: number): string {
   if (status < 0) {
     return `/shuuro/${tv.$state.profile_game.cs!}/${id}`;
   }
 
   return `/shuuro/${stage}/${id}`;
 }
-
 </script>
 <style>
 table#games {

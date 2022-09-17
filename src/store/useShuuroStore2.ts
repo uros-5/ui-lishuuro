@@ -84,8 +84,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         new Clock(s.min / 60000, s.incr / 1000, 0, "1"),
         new Clock(s.min / 60000, s.incr / 1000, 0, "0"),
       ];
-      this.$state.credits = [...s.credits as [number, number]];
-      this.$state.clock_ms = [...s.tc.clocks as [number, number]];
+      this.$state.credits = [...(s.credits as [number, number])];
+      this.$state.clock_ms = [...(s.tc.clocks as [number, number])];
     },
 
     setBoardData(s: any, username: string) {
@@ -119,17 +119,17 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         if (fullPath.startsWith("/shuuro/0")) {
           this.$state.current_stage = 0;
           this.updateClientStage(0);
-        }
-        else if(fullPath.startsWith("/shuuro/1")) {
+        } else if (fullPath.startsWith("/shuuro/1")) {
           this.$state.current_stage = 1;
           this.updateClientStage(1);
-        }
-        else if(fullPath.startsWith("/shuuro/2")) {
+        } else if (fullPath.startsWith("/shuuro/2")) {
           this.$state.current_stage = 2;
           this.updateClientStage(2);
         }
       }
-      router.push({ path: `/shuuro/${this.$state.current_stage}/${this.$state.game_id}` });
+      router.push({
+        path: `/shuuro/${this.$state.current_stage}/${this.$state.game_id}`,
+      });
     },
 
     // new stage for game
@@ -216,7 +216,9 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           );
           let h = this.wasm0().history();
           this.$state.history![0] = h;
-          this.$state.credit = (this.wasm0() as ShuuroShop).get_credit(this.$state.player_color!);
+          this.$state.credit = (this.wasm0() as ShuuroShop).get_credit(
+            this.$state.player_color!
+          );
         }
       });
     },
@@ -577,7 +579,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           );
           let otherClock;
           if (confirmed != -1) {
-            
             this.clock(confirmed!).setTime(this.$state.clock_ms[confirmed!]);
             this.clockPause(confirmed!);
             this.clock(confirmed!).pause(false);

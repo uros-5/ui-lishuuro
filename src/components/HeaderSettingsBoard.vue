@@ -34,7 +34,7 @@ function selected(t: string, img: number): string {
         v-for="i in [0, 1, 2]"
         class="board board 1 standard12x12 board"
         :for="`board${i}`"
-        :class="`board-${i}${selected('board',i)}`"
+        :class="`board-${i}${selected('board', i)}`"
         @click="settings.setBoardImg(i)"
       >
       </label>
@@ -44,7 +44,7 @@ function selected(t: string, img: number): string {
         v-for="i in [0, 1, 2]"
         class=""
         :for="`piece${i}`"
-        :class="`piece-${i}${selected('piece',i)}`"
+        :class="`piece-${i}${selected('piece', i)}`"
         @click="settings.setPieceImg(i)"
       >
       </label>
@@ -53,7 +53,8 @@ function selected(t: string, img: number): string {
 </template>
 
 <style>
-div #allboards, div #allpieces {
+div #allboards,
+div #allpieces {
   display: grid;
   grid-template-areas: "brown blue green";
   grid-template-columns: repeat(3, auto);
@@ -69,7 +70,6 @@ div #allboards, div #allpieces {
   cursor: pointer;
   padding: 30px;
 }
-
 
 .board-0,
 div[data-board$="0"] cg-board {
@@ -98,7 +98,8 @@ div[data-board$="2"] cg-board {
   background-image: url("@/../public/assets/pieces/maestro/wN.svg");
 }
 
-.selected-board, .selected-piece {
+.selected-board,
+.selected-piece {
   background-color: var(--green-hover);
 }
 </style>

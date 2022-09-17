@@ -1,5 +1,9 @@
 <template>
-  <div class="cg-wrap pocket" :data-piece="hs.getPiece()" :style="inCenter ? '' : cgWidth()">
+  <div
+    class="cg-wrap pocket"
+    :data-piece="hs.getPiece()"
+    :style="inCenter ? '' : cgWidth()"
+  >
     <div
       v-if="isHand()"
       :id="divId()"
@@ -8,8 +12,6 @@
       --ranks: ${files()};
       ${cgWidth()}`"
       :class="pocketCss()"
-      
-      
     >
       <piece
         v-for="(i, index) in pieces"
@@ -43,7 +45,6 @@ onMounted(() => {
 function divId() {
   return props.side == "top" ? "pocket0" : "pocket1";
 }
-
 
 const props = defineProps<{
   color: string;
@@ -102,7 +103,7 @@ function pocketCss(): string {
 
 function isHand(): boolean {
   let stage = shuuroStore.$state.client_stage!;
-  return stage == 0 || stage == 1; 
+  return stage == 0 || stage == 1;
 }
 
 function files(): number {

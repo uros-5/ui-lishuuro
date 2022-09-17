@@ -84,9 +84,4 @@ export const useUser = defineStore("useUser", {
       document.querySelector("html")?.setAttribute("data-theme", theme);
     },
   },
-  getters: {
-    username(state): string {
-      return state.username;
-    },
-  },
 });

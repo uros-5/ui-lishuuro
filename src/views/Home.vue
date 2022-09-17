@@ -17,7 +17,6 @@ import HomeVariants from "@/components/HomeVariants.vue";
 import HomeBlogNews from "@/components/HomeBlogNews.vue";
 import HomeSpectators from "@/components/HomeSpectators.vue";
 import HomeLobbyButtons from "@/components/HomeLobbyButtons.vue";
-
 </script>
 <style>
 :root {

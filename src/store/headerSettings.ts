@@ -35,7 +35,7 @@ export const useHeaderSettings = defineStore("headerSettings", {
       }
     },
     setPieceImg(image: number) {
-      if ([0,1,2].includes(image)) {
+      if ([0, 1, 2].includes(image)) {
         localStorage.setItem("piece", `${image}`);
         this.$state.piece = `${image}`;
       }
@@ -76,5 +76,12 @@ function hs(): HeaderSettings {
   zoom = zoom == null ? "100" : zoom;
   let piece = localStorage.getItem("piece");
   piece = piece == null ? "0" : piece;
-  return { show: false, clicked: "", board: board, piece: piece, theme: theme, zoom: zoom };
+  return {
+    show: false,
+    clicked: "",
+    board: board,
+    piece: piece,
+    theme: theme,
+    zoom: zoom,
+  };
 }

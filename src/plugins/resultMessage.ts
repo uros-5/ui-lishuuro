@@ -25,7 +25,7 @@ export function resultMessage(
     case 7:
       return `${resignedWinner(result, players)} resigned.`;
     case 8:
-        return `Timeout, ${resignedWinner(result, players)} ${isDraw(result)}`;
+      return `Timeout, ${resignedWinner(result, players)} ${isDraw(result)}`;
     default:
       return "";
   }
@@ -35,11 +35,16 @@ export function winner(result: string): string {
   return result.endsWith("w") ? "1 - 0" : "0 - 1";
 }
 
-export function resignedWinner(result: string, players: [string, string]): string {
-    if (result == "") { return "" }
-    return result.startsWith("w") ? players[0] : players[1];
+export function resignedWinner(
+  result: string,
+  players: [string, string]
+): string {
+  if (result == "") {
+    return "";
+  }
+  return result.startsWith("w") ? players[0] : players[1];
 }
 
 export function isDraw(result: string): string {
-    return result == "" ? "draw" : "lost.";
+  return result == "" ? "draw" : "lost.";
 }

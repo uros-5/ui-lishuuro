@@ -15,7 +15,7 @@
         <li v-for="i in messages" :key="i.time" class="message">
           <div class="time">{{ i.time }}</div>
           <span class="user">
-            <router-link :to="`/@/${i.user}`" >{{ i.user }}</router-link>
+            <router-link :to="`/@/${i.user}`">{{ i.user }}</router-link>
           </span>
           <span>{{ i.message }}</span>
         </li>
@@ -51,11 +51,11 @@ const user = useUser();
 function onEnter(): void {
   if (message.value.length > 0 && message.value.length < 80) {
     SEND({
-      t: "live_chat_message", 
+      t: "live_chat_message",
       message: message.value,
       user: user.$state.username,
       time: "",
-      id: props.wsType 
+      id: props.wsType,
     });
     message.value = "";
   }
@@ -75,7 +75,6 @@ function toDisableInput() {
   }
   return false;
 }
-
 
 let toggle = (): void => {
   hiddenChat.value = !hiddenChat.value;

@@ -20,8 +20,8 @@ export const ws = new Sockette(wsUrl(), {
     onreconnect(e);
   },
   onmaximum: (e) => {},
-  onclose: (e) => { },
-  onerror: (e) => { },
+  onclose: (e) => {},
+  onerror: (e) => {},
 });
 
 let unsendMessages: any[] = [];
@@ -114,7 +114,7 @@ function onmessage(event: any) {
       delete msg["t"];
       homeLobby.removeLobbyGameByUser(msg.username);
       break;
-    case "live_game_start": 
+    case "live_game_start":
       msg["game_info"]["game_id"] = msg["game_id"];
       shuuroStore.fromServer(msg["game_info"], user.$state.username);
       break;

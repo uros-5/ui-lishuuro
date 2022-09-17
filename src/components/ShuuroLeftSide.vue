@@ -1,7 +1,10 @@
 <template>
   <aside class="sidebar-first">
     <ShuuroStageInfo />
-    <ChatRoom :messages="chatStore.$state.gameChat" :ws-type="store.$state.game_id" />
+    <ChatRoom
+      :messages="chatStore.$state.gameChat"
+      :ws-type="store.$state.game_id"
+    />
     <ShuuroSpectators />
   </aside>
 </template>

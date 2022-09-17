@@ -4,7 +4,7 @@
     :data-board="settings.getBoard()"
     :data-piece="settings.getPiece()"
     :id="`${id}_tv`"
-    style="width: auto; padding-bottom:100%;"
+    style="width: auto; padding-bottom: 100%"
   />
 </template>
 

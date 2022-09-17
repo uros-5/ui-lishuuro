@@ -1,6 +1,6 @@
 <template>
   <section class="tournaments-view">
-      <h1>There is no available tournaments at the moment.</h1>
+    <h1>There is no available tournaments at the moment.</h1>
   </section>
 </template>
 
@@ -19,5 +19,4 @@
 .tournaments-view h1 {
   border: 1px solid var(--hover-green);
 }
-
 </style>

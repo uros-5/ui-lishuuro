@@ -19,12 +19,15 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <template>
-  <div id="chessground12" class="chessground12" :data-board="settings.getBoard()" :data-piece="settings.getPiece()" />
-
+  <div
+    id="chessground12"
+    class="chessground12"
+    :data-board="settings.getBoard()"
+    :data-piece="settings.getPiece()"
+  />
 </template>
 
 <style>

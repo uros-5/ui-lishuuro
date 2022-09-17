@@ -1,6 +1,11 @@
 <template>
   <div id="spotlights">
-    <a v-for="i in tours" :key="i.variant" class="tour-spotlight" :href="i.href">
+    <a
+      v-for="i in tours"
+      :key="i.variant"
+      class="tour-spotlight"
+      :href="i.href"
+    >
       <i class="icon" data-icon="0" />
       <span class="content">
         <span class="name"> {{ i.name }} </span>

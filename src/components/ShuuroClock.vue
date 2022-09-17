@@ -1,7 +1,7 @@
 <template>
   <div :class="`info-wrap${part}`">
     <div class="clock-wrap">
-      <div :id="`clock${part}`"> 
+      <div :id="`clock${part}`">
         <div class="clock" :class="{ running: isRunning() }">
           <div class="clock-time min">
             {{ min() }}
@@ -31,18 +31,18 @@ const props = defineProps<{
 const shuuroStore = useShuuroStore2();
 
 function min(): string {
-  let id = (props.color == "white") ? 0 : 1; 
+  let id = props.color == "white" ? 0 : 1;
   return shuuroStore.$state.clocks[id].currentMin;
-  }
+}
 
 function sec(): string {
-  let id = (props.color == "white") ? 0 : 1; 
+  let id = props.color == "white" ? 0 : 1;
   let result = shuuroStore.$state.clocks[id].currentSec;
   return result;
-  }
+}
 
 function isRunning(): boolean {
-  let id = (props.color == "white") ? 0 : 1; 
+  let id = props.color == "white" ? 0 : 1;
   return shuuroStore.$state.clocks[id].running;
 }
 </script>

@@ -19,7 +19,6 @@ import { defineProps } from "vue";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { deploySfen, fightSfen } from "@/plugins/fen";
 
-
 const props = defineProps<{ index: number; fen: string; move: string }>();
 const shuuroStore = useShuuroStore2();
 
@@ -40,7 +39,6 @@ function m(): string {
   }
   return props.move;
 }
-
 </script>
 
 <style>

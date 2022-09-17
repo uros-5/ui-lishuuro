@@ -15,6 +15,10 @@
           <button id="btn-board" @click="store.clicked = 'board'">
             Board Settings
           </button>
+          <HeaderSettingsSaveAll
+            v-if="user.username == 'iiiurosiii'"
+            :username="user.username"
+          />
         </div>
       </div>
       <div id="settings-sub" style="display: flex">
@@ -39,6 +43,7 @@ import HeaderSettingsTheme from "./HeaderSettingsTheme.vue";
 import { useHeaderSettings } from "@/store/headerSettings";
 import HeaderSettingsBoard from "./HeaderSettingsBoard.vue";
 import HeaderSettingsButton from "./HeaderSettingsButton.vue";
+import HeaderSettingsSaveAll from "./HeaderSettingsSaveAll.vue";
 const user = useUser();
 const store = useHeaderSettings();
 

@@ -94,5 +94,4 @@ onMounted(() => {
   transition: opacity 0.25s ease, background-color 0.15s linear,
     transform 0.2s ease;
 }
-
 </style>

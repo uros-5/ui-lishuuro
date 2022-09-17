@@ -10,8 +10,7 @@ function cssVariable(): string {
   if (route == undefined) return "";
   else if (route.fullPath.startsWith("/shuuro/0")) {
     c = "1300px";
-  }
-  else if (route.fullPath.startsWith("/shuuro")) {
+  } else if (route.fullPath.startsWith("/shuuro")) {
     return "";
   } else {
     c = "1300px";
@@ -30,7 +29,6 @@ function cssVariable(): string {
     </router-view>
   </div>
   <Connection />
-  
 </template>
 
 <style>

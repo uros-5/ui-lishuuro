@@ -18,7 +18,9 @@
               </router-link>
             </div>
             <div class="sub-ratings">
-              <router-link class="" :to="`/@/${username()}`"> Rated </router-link>
+              <router-link class="" :to="`/@/${username()}`">
+                Rated
+              </router-link>
             </div>
             <div class="sub-ratings">
               <router-link class="" :to="`/@/${username()}`">
@@ -65,7 +67,6 @@ watch(route, (newRoute, _oldRoute) => {
   if (!username) return;
   newGames(newRoute.params.username as string);
 });
-
 </script>
 
 <style>

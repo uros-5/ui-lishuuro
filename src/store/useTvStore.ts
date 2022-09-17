@@ -79,7 +79,7 @@ export const useTvStore = defineStore("tvStore", {
     // set tv game
     setTvGame(id: string) {
       let game = this.game(id);
-      
+
       let cg = this.setCg(id + "_tv");
       let wasm = this.tempWasm(cg, game.sfen, "");
       game.cg = cg;
@@ -120,7 +120,6 @@ export const useTvStore = defineStore("tvStore", {
       this.$state.games = this.$state.games.filter(
         (item) => item.game_id != id
       );
-      
     },
 
     // placing
@@ -218,4 +217,9 @@ export function empty_game(id: string): TvGame {
   };
 }
 
-const ENDED = ["live_game_end", "live_game_resign", "live_game_lot", "live_game_draw"];
+const ENDED = [
+  "live_game_end",
+  "live_game_resign",
+  "live_game_lot",
+  "live_game_draw",
+];

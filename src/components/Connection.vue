@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { useUser } from '@/store/useUser';
+import { useUser } from "@/store/useUser";
 const user = useUser();
 </script>
 

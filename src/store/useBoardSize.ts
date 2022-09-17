@@ -14,11 +14,8 @@ export const useBoardSize = defineStore("boardSize", {
     resize(_event: Event) {
       let board = document.querySelector("#mainboard")! as HTMLElement;
       if (board != null) {
-this.updateHeight(
-        board.offsetWidth!
-      );
+        this.updateHeight(board.offsetWidth!);
       }
-      
     },
     genVars(): string {
       return `--cg-width: ${this.height}px; --cg-height: ${this.height}px;`;

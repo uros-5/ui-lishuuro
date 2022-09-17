@@ -27,12 +27,10 @@ import { useNews } from "@/store/useNews";
 import { onMounted } from "vue";
 const store = useNews();
 onMounted(() => {
-  if (!store.$state.finished)
-    SEND({ t: "home_news" });
+  if (!store.$state.finished) SEND({ t: "home_news" });
 });
 
 function r(title: string): string {
-	
   return `/news/${title}`;
 }
 </script>
