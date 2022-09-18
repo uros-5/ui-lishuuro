@@ -720,10 +720,11 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     gameLot(msg: any, username: string) {
-      if (msg.status == 8) {
+      if (msg.status == 8 || msg.status == 5) {
         this.playAudio("res");
-        this.clockPause(this.$state.side_to_move, false);
-        this.$state.status = 8;
+        this.clockPause(0,false);
+        this.clockPause(1,false);
+        this.$state.status = msg.status;
         this.$state.result = msg.result;
         this.scrollToBottom();
       }
