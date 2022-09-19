@@ -7,7 +7,7 @@ import { useTvStore } from "@/store/useTvStore";
 import Sockette from "sockette";
 import { backend, wsUrl } from "./getBackend";
 
-export const ws = new Sockette(wsUrl(), {
+const ws = new Sockette(wsUrl(), {
   timeout: 1200,
   maxAttempts: 15,
   onopen: (e) => {
@@ -36,8 +36,8 @@ export function SEND(msg: any) {
 
 function onopen(event: any) {
   const store = useUser();
-  store.checkCookie();
   store.onOpen();
+  store.checkCookie();
   unsendMessages.forEach((value) => {
     SEND(value);
   });

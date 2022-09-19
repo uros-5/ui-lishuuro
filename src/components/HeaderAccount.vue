@@ -25,7 +25,6 @@ const store = useUser();
 const loginUrl = `${backend()}login`;
 
 onMounted(function () {
-  store.checkCookie();
 });
 </script>
 <style></style>
