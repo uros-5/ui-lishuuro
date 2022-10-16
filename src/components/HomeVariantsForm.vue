@@ -65,7 +65,7 @@
 </template>
 <script setup lang="ts">
 import { allowedDuration } from "@/store/useHomeLobby";
-import { SEND, ws } from "@/plugins/webSockets";
+import { SEND } from "@/plugins/webSockets";
 import { useUser } from "@/store/useUser";
 import { ref } from "vue";
 

@@ -14,7 +14,7 @@ import ShuuroMain from "@/components/ShuuroMain.vue";
 import { ShuuroStore, useShuuroStore2 } from "@/store/useShuuroStore2";
 import { useUser } from "@/store/useUser";
 import { Clock } from "@/plugins/clock";
-import { SEND, ws } from "@/plugins/webSockets";
+import { SEND } from "@/plugins/webSockets";
 import { useHomeChat } from "@/store/useHomeChat";
 
 const shuuroStore = useShuuroStore2();
