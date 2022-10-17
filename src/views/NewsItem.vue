@@ -2,7 +2,7 @@
   <main class="page-menu">
     <aside></aside>
     <div class="news">
-      <h1 align="center">{{ props.title }}</h1>
+      <h1 class="center">{{ props.title }}</h1>
       <div class="meta-headline">
         <div class="meta">
           <span class="text"> {{ props.date }}</span>
@@ -33,7 +33,7 @@ import { useRoute } from "vue-router";
 
 const newsStore = useNews();
 const props: Ref<NewsItem> = ref({
-  _id: { $oid: "" },
+  _id: "",
   user: "",
   category: "",
   title: "",

@@ -38,7 +38,7 @@
               <br />
               1500?
             </player>
-            <vs-swords class="icon" data-icon='"'></vs-swords>
+            <vs-swords class="icon" :data-icon='sword'></vs-swords>
             <player>
               <router-link
                 :key="useRoute().fullPath"
@@ -78,6 +78,7 @@ import { ServerDate } from "@/plugins/serverDate";
 import { useHeaderSettings } from "@/store/headerSettings";
 const tv = useTvStore();
 const settings = useHeaderSettings();
+const sword = '"';
 
 const props = defineProps<{ game: ShuuroStore | any }>();
 
@@ -96,8 +97,8 @@ onMounted(() => {
 });
 
 function ldate() {
-  let ld = ServerDate(props.game.last_clock);
-  return timeago(ld.toString());
+  let ld = ServerDate(props.game.tc.last_click);
+  return timeago(new Date(props.game.tc.last_click).toString());
 }
 
 function res() {

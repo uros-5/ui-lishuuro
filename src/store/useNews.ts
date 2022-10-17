@@ -9,8 +9,8 @@ export const useNews = defineStore("useNews", {
       this.$state.news = news;
       this.$state.finished = true;
     },
-    exist(title: string): NewsItem | undefined {
-      let item = this.$state.news.find((item) => item.title == title);
+    exist(id: string): NewsItem | undefined {
+      let item = this.$state.news.find((item) => item._id == id);
       return item;
     },
   },
@@ -22,7 +22,7 @@ export interface NewsStore {
 }
 
 export interface NewsItem {
-  _id: { $oid: string };
+  _id: string;
   title: string;
   user: string;
   date: string;

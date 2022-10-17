@@ -485,6 +485,9 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // temp wasm
     tempWasm(sfen: string) {
+      if (sfen == undefined) {
+        return ;
+      }
       let cs = this.cs();
       let temp = new ShuuroPosition();
       temp.set_sfen(sfen);
