@@ -30,6 +30,7 @@ import { ref, Ref } from "vue";
 import { NewsItem, useNews } from "@/store/useNews";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 
 const newsStore = useNews();
 const props: Ref<NewsItem> = ref({
@@ -55,6 +56,7 @@ onMounted(() => {
         props.value.date = item.date;
         props.value.title = item.title;
         props.value.user = item.user;
+        updateHeadTitle(item.title);
       }
     });
   } else {

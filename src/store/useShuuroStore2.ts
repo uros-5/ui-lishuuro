@@ -15,6 +15,7 @@ import { Config } from "chessground12/config";
 import captureUrl from "@/assets/sounds/capture.ogg";
 import resUrl from "@/assets/sounds/res.ogg";
 import moveUrl from "@/assets/sounds/move.ogg";
+import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 
 let finished = [
   "Checkmate",
@@ -54,6 +55,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       }
       this.updateCurrentIndex(this.cs());
       this.playAudio("res");
+      this.updateHeadTitle();
     },
 
     setHistory(s: any) {
@@ -110,6 +112,11 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       } else {
         this.am_i_player = false;
       }
+    },
+
+    updateHeadTitle() {
+      let players = this.$state.players;
+      updateHeadTitle(`${players[0]} vs ${players[1]}`)
     },
 
     setRedirect() {

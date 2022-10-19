@@ -17,6 +17,13 @@ import HomeVariants from "@/components/HomeVariants.vue";
 import HomeBlogNews from "@/components/HomeBlogNews.vue";
 import HomeSpectators from "@/components/HomeSpectators.vue";
 import HomeLobbyButtons from "@/components/HomeLobbyButtons.vue";
+import { onMounted } from "vue";
+import { updateHeadTitle } from "@/plugins/updateHeadTitle";
+
+onMounted(() => {
+ updateHeadTitle("Home") 
+})
+
 </script>
 <style>
 :root {

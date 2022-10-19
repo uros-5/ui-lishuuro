@@ -45,6 +45,7 @@ import UserProfileGame from "@/components/UserProfileGame.vue";
 import { onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import GET from "@/plugins/axios";
+import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 const route = useRoute();
 let games = ref([]);
 
@@ -60,6 +61,8 @@ function newGames(id: string) {
 
 onMounted(() => {
   newGames(username());
+  updateHeadTitle(username());
+
 });
 
 watch(route, (newRoute, _oldRoute) => {

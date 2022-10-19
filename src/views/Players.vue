@@ -23,6 +23,7 @@
 </template>
 
 <script setup lang="ts">
+import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 import { SEND } from "@/plugins/webSockets";
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { onMounted } from "vue";
@@ -31,6 +32,7 @@ const store = useHomeLobby();
 
 onMounted(() => {
   SEND({ t: "active_players_full" });
+  updateHeadTitle("Active players")
 });
 </script>
 

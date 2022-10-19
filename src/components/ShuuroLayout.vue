@@ -46,6 +46,7 @@ onUnmounted(() => {
   shuuroStore.$state.game_id = "";
   homeChat.$state.gameChat = [];
 });
+
 const zoomValue = ref("100");
 </script>
 

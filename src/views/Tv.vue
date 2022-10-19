@@ -18,11 +18,13 @@ import { onMounted, onUnmounted } from "vue";
 import { SEND } from "@/plugins/webSockets";
 import { useTvStore } from "@/store/useTvStore";
 import TvGame from "@/components/TvGame.vue";
+import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 
 const store = useTvStore();
 
 onMounted(() => {
   SEND({ t: "live_tv" });
+  updateHeadTitle("Live games");
 });
 
 onUnmounted(() => {
