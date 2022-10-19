@@ -1,4 +1,5 @@
 import GET from "@/plugins/axios";
+import { getProd } from "@/plugins/getBackend";
 import { defineStore } from "pinia";
 import { useCookies } from "vue3-cookies";
 
@@ -38,8 +39,11 @@ export const useUser = defineStore("useUser", {
     setUser(username: string, reg: boolean) {
       this.$state.username = username;
       this.$state.reg = reg;
-      cookie.set("username", username, 365, "", "", false, "");
-      cookie.set("reg", reg.toString(), 365, "", "", false, "");
+      const prod = getProd();
+      const d = new Date();
+      d.setTime(d.getTime() + (60*60*24*365));
+      cookie.set("username", username, d.toUTCString(), "", "", prod, "Lax");
+      cookie.set("reg", reg.toString(), d.toUTCString(), "", "", prod, "Lax");
     },
 
     updatePlCount(cnt: number): void {

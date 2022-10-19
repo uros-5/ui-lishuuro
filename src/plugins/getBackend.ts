@@ -1,3 +1,7 @@
+export function getProd(): boolean {
+  return Boolean(import.meta.env.PROD);
+}
+
 export function backend(): string {
   let prod = import.meta.env.PROD;
   return prod ? "https://lishuuro.org/w/" : "http://localhost:8080/";
