@@ -5,7 +5,7 @@
         {{ minute }} + {{ sec }} • {{ ratedGame() }}•
         <a class="user-link" target="_blank" href="/">{{ variant }}</a>
       </div>
-      <info-date timestamp="">
+      <info-date timestamp="" :title="toolTipDate()">
         {{ gameDate() }}
       </info-date>
     </div>
@@ -42,5 +42,14 @@ function gameDate(): string {
     return timeago(store.$state.last_clock!);
   }
 }
+
+function toolTipDate(): string {
+  const d = store.$state.last_clock;
+  if (d) {
+    return store.$state.last_clock!.toString();
+  }
+  return ""; 
+}
+
 </script>
 <style></style>

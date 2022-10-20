@@ -21,6 +21,8 @@ export class Clock {
   byoyomiPeriod: number;
   hurry: boolean;
   ticks: boolean[];
+  hurryCallback: (() => void);
+
   public currentMin: Ref<string> | string;
   public currentSec: Ref<string> | string;
 
@@ -60,6 +62,7 @@ export class Clock {
     ];
     this.currentMin = ref("");
     this.currentSec = ref("");
+    this.hurryCallback = () => {};
 
     this.renderTime(this.duration);
   }
@@ -73,8 +76,9 @@ export class Clock {
 
     const timer = () => {
       const diff = this.duration - (Date.now() - this.startTime);
-      if (diff <= HURRY && !this.hurry && !this.byoyomi) {
+      if (diff <= HURRY && !this.hurry) {
         this.hurry = true;
+        this.hurryCallback();
       }
 
       if (this.byoyomi && this.byoyomiPeriod === 0) {
@@ -136,6 +140,12 @@ export class Clock {
       this.flagCallback = callback;
     }
     return this;
+  }
+
+  onHurryCallback(callback: () => void) {
+    if (typeof callback === "function") {
+      this.hurryCallback = callback;
+    }
   }
 
   onByoyomi(callback: () => void) {

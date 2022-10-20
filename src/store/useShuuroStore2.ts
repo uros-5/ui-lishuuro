@@ -15,6 +15,7 @@ import { Config } from "chessground12/config";
 import captureUrl from "@/assets/sounds/capture.ogg";
 import resUrl from "@/assets/sounds/res.ogg";
 import moveUrl from "@/assets/sounds/move.ogg";
+import lowTimeUrl from "@/assets/sounds/low_time.ogg";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 
 let finished = [
@@ -431,7 +432,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         let newCount = this.wasm(2).pieces_count();
         if (is_server) {
           this.cgs(2).move(move[0] as Key, move[1] as Key);
-          if (newCount > beforeCount) {
+          if (newCount != beforeCount) {
             this.playAudio("capture");
           } else {
             this.playAudio("move");
@@ -579,8 +580,10 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     activateClock(): void {
       this.clock(0).onTick(this.clock(0).renderTime);
       this.clock(0).onFlag(this.flagNotif);
+      this.clock(0).onHurryCallback(this.lowTimeNotif);
       this.clock(1).onTick(this.clock(1).renderTime);
       this.clock(1).onFlag(this.flagNotif);
+      this.clock(1).onHurryCallback(this.lowTimeNotif);
       let elapsed = this.elapsed();
       if (this.$state.status < 0) {
         if (this.$state.current_stage == 0) {
@@ -612,6 +615,11 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // flag notification
     flagNotif() {},
+
+    // low time notification
+    lowTimeNotif() {
+      this.playAudio('low_time');
+    },
 
     // pause one of clocks
     clockPause(id: number, incr = true) {
@@ -668,6 +676,9 @@ export const useShuuroStore2 = defineStore("shuuro2", {
           break;
         case "capture":
           audio = captureUrl;
+          break;
+        case "low_time":
+          audio = lowTimeUrl;
           break;
       }
       let a = new Audio(audio);
