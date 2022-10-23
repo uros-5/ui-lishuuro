@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
-import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
+import init, { ShuuroShop, ShuuroPosition } from "@/plugins/shuuro-wasm";
 import { Clock } from "@/plugins/clock";
 import { Chessground } from "chessground12";
 import router from "@/router";
 import { ServerDate } from "@/plugins/serverDate";
 import { SEND } from "@/plugins/webSockets";
-import { anonConfig, liveConfig } from "chessground12/configs";
+import { anonConfig, liveConfig, p2 } from "chessground12/configs";
 import { Api } from "chessground12/api";
 import { readPockets } from "chessground12/pocket";
 import { Key, MoveMetadata, Piece } from "chessground12/types";
@@ -55,7 +55,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         this.setFightWasm(s.sfen);
       }
       this.updateCurrentIndex(this.cs());
-      this.playAudio("res");
+      this.playLive();
       this.updateHeadTitle();
     },
 
@@ -78,6 +78,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.client_stage = s.current_stage;
       this.$state.result = s.result;
       this.$state.status = s.status;
+      this.$state.variant = s.variant;
       //this.$state.ratings = s.ratings;
     },
 
@@ -117,7 +118,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     updateHeadTitle() {
       let players = this.$state.players;
-      updateHeadTitle(`${players[0]} vs ${players[1]}`)
+      updateHeadTitle(`${players[0]} vs ${players[1]}`);
     },
 
     setRedirect() {
@@ -152,6 +153,25 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     // SHOP PARTS
+
+    changeVariant(): void {
+      let variant = this.getVariant();
+      if (variant == "shuuro12") {
+        this.$state.variant = "shuuro12";
+        return;
+      }
+      switch (this.$state.current_stage) {
+        case 0:
+          (this.wasm0() as ShuuroShop).change_variant(variant);
+          break;
+        case 1:
+          this.wasm(1).change_variant();
+          break;
+        case 2:
+          this.wasm(2).change_variant();
+          break;
+      }
+    },
 
     // get hand and confirmed_players
     shopInfo(): void {
@@ -218,6 +238,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       init().then((_exports) => {
         if (this.$state.current_stage == 0) {
           this.$state.wasm![0] = new ShuuroShop();
+          this.changeVariant();
           (this.wasm0() as ShuuroShop).set_hand(hand);
           this.$state.piece_counter = this.wasm0().shop_items(
             this.$state.player_color!
@@ -236,6 +257,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // set deploy chessground
     setDeployCg() {
       const config = this.getConfig();
+      this.changePocketRoles(config);
       const elem = document.querySelector("#chessground12") as HTMLElement;
       const top = document.querySelector("#pocket0") as HTMLElement;
       const bot = document.querySelector("#pocket1") as HTMLElement;
@@ -243,6 +265,13 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       this.$state.player! == 1 ? this.cgs(1).toggleOrientation() : null;
       this.cgs(1).redrawAll();
       this.cgs(1).state.events.dropNewPiece = this.decrementPocket;
+    },
+
+    // change pocket roles
+    changePocketRoles(config: Config) {
+      if (this.getVariant() != "shuuro12") {
+        config.pocketRoles = p2;
+      }
     },
 
     // decrement pocket item number
@@ -296,7 +325,10 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       if (msg.first_move_error) {
         let self = this;
         setTimeout(function () {
+          self.playAudio("res");
           self.clockPause(self.$state.side_to_move);
+          self.$state.result = self.stmS();
+          self.$state.status = 1;
         }, 500);
       }
     },
@@ -358,6 +390,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     setDeployWasm(sfen: string) {
       init().then((_exports) => {
         this.$state.wasm![1] = new ShuuroPosition();
+        this.changeVariant();
         this.wasm(1).set_sfen(sfen);
         let hand = this.wasm(1).count_hand_pieces();
         this.setPocket(hand);
@@ -494,7 +527,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     // temp wasm
     tempWasm(sfen: string) {
       if (sfen == undefined) {
-        return ;
+        return;
       }
       let cs = this.cs();
       let temp = new ShuuroPosition();
@@ -618,7 +651,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     // low time notification
     lowTimeNotif() {
-      this.playAudio('low_time');
+      this.playAudio("low_time");
     },
 
     // pause one of clocks
@@ -685,9 +718,17 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       a.play();
     },
 
+    // play sound on live only
+    playLive() {
+      if (this.$state.status <= 0) {
+        this.playAudio("res");
+      }
+    },
+
     setFightWasm(sfen: string) {
       init().then((_exports) => {
         this.$state.wasm![2] = new ShuuroPosition();
+        this.changeVariant();
         this.wasm(2).set_sfen(sfen);
         this.setPlinths();
         this.setPieces();
@@ -743,8 +784,8 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     gameLot(msg: any, username: string) {
       if (msg.status == 8 || msg.status == 5) {
         this.playAudio("res");
-        this.clockPause(0,false);
-        this.clockPause(1,false);
+        this.clockPause(0, false);
+        this.clockPause(1, false);
         this.$state.status = msg.status;
         this.$state.result = msg.result;
         this.scrollToBottom();
@@ -828,6 +869,47 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       return this.history(this.client_stage!);
     },
 
+    getVariant(): string {
+      return this.$state.variant;
+    },
+
+    dataMax(): Uint8Array {
+      const data = new Uint8Array([1, 3, 6, 9, 9, 18, 0]);
+      if (this.$state.variant == "shuuro12fairy") {
+        data[2] = 3;
+        data[3] = 3;
+        return data;
+      }
+      return data;
+    },
+
+    dataPrice(): Uint8Array {
+      const data = new Uint8Array([0, 110, 70, 40, 40, 10, 0]);
+      if (this.$state.variant == "shuuro12fairy") {
+        data[2] = 130;
+        data[3] = 130;
+        return data;
+      }
+      return data;
+    },
+
+    pieces(): string[] {
+      const pieces = [
+        "k-piece",
+        "q-piece",
+        "r-piece",
+        "b-piece",
+        "n-piece",
+        "p-piece",
+      ];
+      if (this.$state.variant == "shuuro12fairy") {
+        pieces[2] = "c-piece";
+        pieces[3] = "a-piece";
+        return pieces;
+      }
+      return pieces;
+    },
+
     canShop(): boolean {
       return (
         this.$state.am_i_player! &&
@@ -854,6 +936,10 @@ export const useShuuroStore2 = defineStore("shuuro2", {
 
     cgs(index: StageN): Api {
       return this.$state.cgs![index] as Api;
+    },
+
+    stmS(): string {
+      return this.$state.side_to_move == 0 ? "w" : "b";
     },
 
     stageToN(stage: Stage): StageN {
@@ -885,6 +971,7 @@ function emptyState(): ShuuroStore {
     confirmed_players: [false, false],
     current_stage: 0,
     result: "",
+    variant: "",
     status: -2,
     game_started: "",
     game_id: "",
@@ -921,6 +1008,7 @@ export interface ShuuroStore {
   credits: [number, number];
   current_stage: StageN;
   result: string;
+  variant: string;
   status: number;
   game_started: string;
   game_id: string;
@@ -970,13 +1058,3 @@ export type Color = "white" | "black";
 export type ColorN = 0 | 1;
 
 export const defaultCounter = new Uint8Array([1, 0, 0, 0, 0, 0, 0]);
-export const dataMax = new Uint8Array([1, 3, 6, 9, 9, 18, 0]);
-export const dataPrice = new Uint8Array([0, 110, 70, 40, 40, 10, 0]);
-export const pieces = [
-  "k-piece",
-  "q-piece",
-  "r-piece",
-  "b-piece",
-  "n-piece",
-  "p-piece",
-];

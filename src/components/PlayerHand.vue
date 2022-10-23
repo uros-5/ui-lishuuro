@@ -14,14 +14,14 @@
       :class="pocketCss()"
     >
       <piece
-        v-for="(i, index) in pieces"
+        v-for="(i, index) in store.pieces()"
         v-if="handType == 'shop'"
         :key="i"
         :class="`${color} ${i} ${handType}`"
         :data-color="color"
         :data-role="i"
         :data-nb="dataNb(index)"
-        :data-max="dataMax[index]"
+        :data-max="store.dataMax()[index]"
         @click="increment(index, i[0])"
       />
     </div>
@@ -32,8 +32,8 @@
 import { onMounted, defineProps } from "vue";
 import { useBoardSize } from "@/store/useBoardSize";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
-import { pieces, dataMax } from "@/store/useShuuroStore2";
 import { useHeaderSettings } from "@/store/headerSettings";
+
 const boardSize = useBoardSize();
 const hs = useHeaderSettings();
 
@@ -54,7 +54,7 @@ const props = defineProps<{
   side: string;
 }>();
 
-const shuuroStore = useShuuroStore2();
+const store = useShuuroStore2();
 window.addEventListener("resize", boardSize.resize, true);
 
 function cgWidth(): string {
@@ -64,7 +64,7 @@ function cgWidth(): string {
 function piece_counter(): number[] {
   if (props.handType == "shop") {
     // read from shop
-    return shuuroStore.$state.piece_counter! as unknown as number[];
+    return store.$state.piece_counter! as unknown as number[];
   } else {
     // read from props
     return props.counter.slice().splice(1);
@@ -81,13 +81,13 @@ function dataNb(index: number): number | string {
 }
 
 function increment(_index: number, p: string): void {
-  if (props.handType == "shop" && shuuroStore.$state.am_i_player == true) {
+  if (props.handType == "shop" && store.$state.am_i_player == true) {
     if (props.color == "white") {
       p = p.toUpperCase();
     } else {
       p = p.toLowerCase();
     }
-    shuuroStore.buy(p, props.color);
+    store.buy(p, props.color);
     scrollToBottom();
   }
 }
@@ -102,7 +102,7 @@ function pocketCss(): string {
 }
 
 function isHand(): boolean {
-  let stage = shuuroStore.$state.client_stage!;
+  let stage = store.$state.client_stage!;
   return stage == 0 || stage == 1;
 }
 

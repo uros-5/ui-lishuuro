@@ -62,7 +62,6 @@ function newGames(id: string) {
 onMounted(() => {
   newGames(username());
   updateHeadTitle(username());
-
 });
 
 watch(route, (newRoute, _oldRoute) => {

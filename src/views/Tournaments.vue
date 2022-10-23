@@ -5,13 +5,12 @@
 </template>
 
 <script setup lang="ts">
-import { updateHeadTitle } from '@/plugins/updateHeadTitle';
-import { onMounted } from 'vue';
+import { updateHeadTitle } from "@/plugins/updateHeadTitle";
+import { onMounted } from "vue";
 
 onMounted(() => {
   updateHeadTitle("Tournaments");
-})
-
+});
 </script>
 
 <style>

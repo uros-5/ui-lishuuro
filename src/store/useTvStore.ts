@@ -4,7 +4,7 @@ import { setCheck } from "chessground12/board";
 import { userProfileConfig } from "chessground12/configs";
 import { Role } from "chessground12/types";
 import { defineStore } from "pinia";
-import init, { ShuuroPosition } from "shuuro-wasm";
+import init, { ShuuroPosition } from "@/plugins/shuuro-wasm";
 import { Color } from "./useShuuroStore2";
 import { Key, MoveMetadata, Piece } from "chessground12/types";
 
@@ -56,7 +56,7 @@ export const useTvStore = defineStore("tvStore", {
       this.profile_game.sfen = msg.sfen;
       let cg = this.setCg(msg.game_id as string);
       this.profile_game.cg = cg;
-      if (msg.current_stage == "shop") {
+      if (msg.current_stage == 0) {
         return;
       }
       this.profile_game.cs = msg.current_stage;

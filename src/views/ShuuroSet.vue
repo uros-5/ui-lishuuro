@@ -15,7 +15,10 @@
 <script setup lang="ts">
 import Chessground from "chessground12";
 import { anonConfig, liveConfig } from "chessground12/configs";
-import { readPockets, renderPocketsInitial } from "chessground12/pocket";
+import {
+  readPockets,
+  renderPocketsInitial,
+} from "chessground12/pocket";
 import { useBoardSize } from "@/store/useBoardSize";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { onMounted } from "vue";

@@ -6,6 +6,9 @@
         <select id="variant" v-model="variant" name="variant">
           <optgroup label="ShuuroVariant">
             <option value="shuuro12" title="Shuuro, unmodified.">SHUURO</option>
+            <option value="shuuro12fairy" title="Shuuro, with fairy pieces.">
+              SHUURO FAIRY
+            </option>
           </optgroup>
         </select>
       </div>

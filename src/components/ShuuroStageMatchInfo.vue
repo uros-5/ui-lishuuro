@@ -3,7 +3,7 @@
     <div class="info2">
       <div class="tc">
         {{ minute }} + {{ sec }} • {{ ratedGame() }}•
-        <a class="user-link" target="_blank" href="/">{{ variant }}</a>
+        <a class="user-link" target="_blank" href="/">{{ variantTitle() }}</a>
       </div>
       <info-date timestamp="" :title="toolTipDate()">
         {{ gameDate() }}
@@ -27,6 +27,10 @@ const props = defineProps<{
   rated: boolean;
 }>();
 
+function variantTitle(): string {
+  return props.variant == "shuuro12" ? "Shuuro" : "Shuuro Fairy";
+}
+
 function ratedGame(): string {
   if (props.rated) {
     return "Rated";
@@ -48,8 +52,7 @@ function toolTipDate(): string {
   if (d) {
     return store.$state.last_clock!.toString();
   }
-  return ""; 
+  return "";
 }
-
 </script>
 <style></style>

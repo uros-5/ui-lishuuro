@@ -21,7 +21,7 @@ export class Clock {
   byoyomiPeriod: number;
   hurry: boolean;
   ticks: boolean[];
-  hurryCallback: (() => void);
+  hurryCallback: () => void;
 
   public currentMin: Ref<string> | string;
   public currentSec: Ref<string> | string;

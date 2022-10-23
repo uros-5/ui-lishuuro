@@ -1,9 +1,9 @@
 <template>
   <div class="shuuro-shop">
     <div class="shop-table">
-      <p v-for="(i, index) in pieces">
+      <p v-for="(i, index) in shuuroStore.pieces()">
         <span class="local-piece">{{ i[0] }}</span>
-        <span class="local-price"> {{ dataPrice[index] }} </span>
+        <span class="local-price"> {{ shuuroStore.dataPrice()[index] }} </span>
       </p>
     </div>
     <PlayerHand
@@ -28,10 +28,10 @@ import PlayerHand from "@/components/PlayerHand.vue";
 import { onMounted } from "vue";
 import { useShuuroStore2 } from "@/store/useShuuroStore2";
 import { useUser } from "@/store/useUser";
-import { dataPrice, pieces } from "@/store/useShuuroStore2";
 
 const shuuroStore = useShuuroStore2();
 const userStore = useUser();
+
 onMounted(() => {
   shuuroStore.updateClientStage(0);
 });

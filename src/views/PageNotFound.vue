@@ -3,11 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted} from "vue";
+import { onMounted } from "vue";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 
-onMounted( () => {
+onMounted(() => {
   updateHeadTitle("Page not found");
-})
-
+});
 </script>

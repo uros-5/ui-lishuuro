@@ -13,7 +13,7 @@
     <ol id="lobbychat-messages">
       <div v-if="hiddenChat" id="messages">
         <li v-for="i in messages" :key="i.time" class="message">
-          <div class="time">{{ i.time }}</div>
+          <div class="time">{{ fmtTime(i.time) }}</div>
           <span class="user">
             <router-link :to="`/@/${i.user}`">{{ i.user }}</router-link>
           </span>
@@ -42,7 +42,8 @@ import { useCookies } from "vue3-cookies";
 import { useUser } from "@/store/useUser";
 import { SEND } from "@/plugins/webSockets";
 
-const props = defineProps<{ messages: ChatMessage[]; wsType: string }>();
+const props =
+  defineProps<{ messages: ChatMessage[]; wsType: string; finished: number }>();
 const message = ref("");
 const hiddenChat = ref(true);
 const cookie = useCookies().cookies;
@@ -62,7 +63,9 @@ function onEnter(): void {
 }
 
 function setPlaceholder(): string {
-  if (user.$state.reg == false) {
+  if (props.finished > -1) {
+    return "Chat disabled for old games";
+  } else if (user.$state.reg == false) {
     return "Sign in to chat";
   } else {
     return "Please be nice in the chat!";
@@ -70,10 +73,22 @@ function setPlaceholder(): string {
 }
 
 function toDisableInput() {
+  if (props.finished > -1) {
+    return true;
+  }
   if (cookie.get("reg") == undefined || cookie.get("reg") == "false") {
     return true;
   }
   return false;
+}
+
+function fmtTime(time: string): string {
+  let d = new Date(time);
+  let hours: number | string = d.getHours();
+  hours = hours.toString().length == 1 ? `0${hours}` : `${hours}`;
+  let minutes: number | string = d.getMinutes();
+  minutes = minutes.toString().length == 1 ? `0${minutes}` : `${minutes}`;
+  return `${hours}:${minutes}`;
 }
 
 let toggle = (): void => {

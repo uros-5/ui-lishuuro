@@ -19,7 +19,7 @@
         <div class="info2">
           <div class="tc">
             {{ Math.floor(game.min / 60000) }}+{{ Math.floor(game.incr / 1000)
-            }}{{ game.rated_game }} SHUURO
+            }}{{ game.rated_game }} {{ variantTitle() }}
           </div>
           <div>
             {{ ldate() }}
@@ -38,7 +38,7 @@
               <br />
               1500?
             </player>
-            <vs-swords class="icon" :data-icon='sword'></vs-swords>
+            <vs-swords class="icon" :data-icon="sword"></vs-swords>
             <player>
               <router-link
                 :key="useRoute().fullPath"
@@ -159,8 +159,13 @@ function gameUrl(id: string, stage: number, status: number): string {
   if (status < 0) {
     return `/shuuro/${tv.$state.profile_game.cs!}/${id}`;
   }
-
   return `/shuuro/${stage}/${id}`;
+}
+
+function variantTitle(): string {
+  return (props.game as ShuuroStore).variant == "shuuro12"
+    ? "SHUURO"
+    : "SHUURO FAIRY";
 }
 </script>
 <style>

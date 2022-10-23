@@ -21,9 +21,8 @@ import { onMounted } from "vue";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 
 onMounted(() => {
- updateHeadTitle("Home") 
-})
-
+  updateHeadTitle("Home");
+});
 </script>
 <style>
 :root {

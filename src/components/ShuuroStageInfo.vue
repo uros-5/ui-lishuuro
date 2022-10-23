@@ -2,7 +2,7 @@
   <div class="game-info">
     <section>
       <ShuuroStageMatchInfo
-        variant="Shuuro"
+        :variant="shuuroStore.getVariant()"
         :minute="shuuroStore.$state.min"
         :sec="shuuroStore.$state.incr"
         :rated="shuuroStore.$state.rated_game"

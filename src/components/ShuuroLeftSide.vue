@@ -4,6 +4,7 @@
     <ChatRoom
       :messages="chatStore.$state.gameChat"
       :ws-type="store.$state.game_id"
+      :finished="store.$state.status"
     />
     <ShuuroSpectators />
   </aside>

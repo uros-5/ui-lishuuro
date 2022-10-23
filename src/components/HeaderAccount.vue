@@ -24,7 +24,6 @@ import { backend } from "@/plugins/getBackend";
 const store = useUser();
 const loginUrl = `${backend()}login`;
 
-onMounted(function () {
-});
+onMounted(function () {});
 </script>
 <style></style>

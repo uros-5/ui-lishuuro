@@ -12,7 +12,7 @@ const store = useUser();
 
 onMounted(() => {
   store.updateAnonCookie();
-  updateHeadTitle(`Logged as ${store.$state.username}`)
+  updateHeadTitle(`Logged as ${store.$state.username}`);
   router.push("/");
 });
 </script>

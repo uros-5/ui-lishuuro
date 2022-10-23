@@ -41,7 +41,7 @@ export const useUser = defineStore("useUser", {
       this.$state.reg = reg;
       const prod = getProd();
       const d = new Date();
-      d.setTime(d.getTime() + (60*60*24*365));
+      d.setTime(d.getTime() + 60 * 60 * 24 * 365);
       cookie.set("username", username, d.toUTCString(), "", "", prod, "Lax");
       cookie.set("reg", reg.toString(), d.toUTCString(), "", "", prod, "Lax");
     },
