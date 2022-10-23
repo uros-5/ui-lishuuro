@@ -198,6 +198,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       if (this.canShop()) {
         const game_move = `+${p}`;
         this.$state.piece_counter = this.wasm0().buy(game_move);
+        this.$state.piece_counter[0] = 0;
         const new_credit = this.wasm0().get_credit(color);
         const counter = this.wasm0().get_piece(p);
         if (new_credit != this.$state.credit) {
