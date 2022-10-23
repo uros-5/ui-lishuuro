@@ -4,7 +4,7 @@ import { setCheck } from "chessground12/board";
 import { userProfileConfig } from "chessground12/configs";
 import { Role } from "chessground12/types";
 import { defineStore } from "pinia";
-import init, { ShuuroPosition } from "@/plugins/shuuro-wasm";
+import init, { ShuuroPosition } from "shuuro-wasm";
 import { Color } from "./useShuuroStore2";
 import { Key, MoveMetadata, Piece } from "chessground12/types";
 

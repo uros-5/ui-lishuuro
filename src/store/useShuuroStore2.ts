@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import init, { ShuuroShop, ShuuroPosition } from "@/plugins/shuuro-wasm";
+import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
 import { Chessground } from "chessground12";
 import router from "@/router";
