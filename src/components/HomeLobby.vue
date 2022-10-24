@@ -25,8 +25,8 @@
                 <td><player-title />{{ i.username }}</td>
                 <td>//</td>
                 <td>{{ i.time }} + {{ i.incr }}</td>
-                <td class="icon" data-icon="M">
-                  <variant-name> {{ i.variant }}</variant-name>
+                <td class="icon" :data-icon="dataIcon(i.variant)">
+                  <variant-name> &nbsp; {{ i.variant }}</variant-name>
                 </td>
               </tr>
             </transition-group>
@@ -54,6 +54,10 @@ function iconColor(color: string): string {
     return `icon-adjust`;
   }
   return `icon-${color}`;
+}
+
+function dataIcon(variant: string): string {
+  return variant == "shuuro12" ? "M" : "P";
 }
 
 onMounted(() => {
