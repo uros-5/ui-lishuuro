@@ -41,6 +41,9 @@ function onopen(event: any) {
   unsendMessages.forEach((value) => {
     SEND(value);
   });
+  setInterval(() => {
+	  SEND("");
+  },40*1000);
 }
 
 function onreconnect(event: any) {
