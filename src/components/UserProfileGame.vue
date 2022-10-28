@@ -4,7 +4,7 @@
       :to="gameUrl(game._id, game.current_stage, game.status)"
       @click="setShuuroStore"
     >
-      <td class="board">
+      <td class="board invisible">
         <div class="standard">
           <div
             :class="`chessground12 mini ${game._id}`"
@@ -15,16 +15,19 @@
         </div>
       </td>
       <td class="games-info">
-        <div class="info0 games icon"></div>
-        <div class="info2">
-          <div class="tc">
-            {{ Math.floor(game.min / 60000) }}+{{ Math.floor(game.incr / 1000)
-            }}{{ game.rated_game }} {{ variantTitle() }}
-          </div>
-          <div>
-            {{ ldate() }}
+        <div class="info0 games icon" :data-icon="dataIcon()">
+          <div class="info2">
+            <div class="tc">
+              {{ Math.floor(game.min / 60000) }}+{{
+                Math.floor(game.incr / 1000)
+              }}{{ game.rated_game }} {{ variantTitle() }}
+            </div>
+            <div>
+              {{ ldate() }}
+            </div>
           </div>
         </div>
+
         <div class="info-middle">
           <div class="versus">
             <player>
@@ -167,7 +170,12 @@ function variantTitle(): string {
     ? "SHUURO"
     : "SHUURO FAIRY";
 }
+
+function dataIcon(): string {
+  return variantTitle() == "SHUURO" ? "M" : "P";
+}
 </script>
+
 <style>
 table#games {
   width: 100%;
@@ -221,5 +229,24 @@ div.info-middle {
 
 .cg-wrap.mini {
   width: 256px;
+}
+
+#games tr {
+  border: 1px solid var(--bg-color1);
+  background-color: var(--bg-color2);
+}
+
+#games tbody tr:hover {
+  width: 100%;
+  background-color: var(--game-hover);
+  cursor: pointer;
+}
+</style>
+
+<style scoped>
+@media (max-width: 799px) {
+  .invisible {
+    display: none;
+  }
 }
 </style>
