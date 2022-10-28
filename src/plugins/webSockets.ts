@@ -147,7 +147,7 @@ function onmessage(event: any) {
       break;
     case "live_game_resign":
       delete msg["t"];
-      shuuroStore.gameResign(msg, user.$state.username);
+      shuuroStore.gameResign(msg, msg.player);
       break;
     case "live_game_lot":
       delete msg["t"];
