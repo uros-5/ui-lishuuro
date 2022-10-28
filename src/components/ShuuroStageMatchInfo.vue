@@ -1,5 +1,5 @@
 <template>
-  <div class="info0 icon" data-icon="M">
+  <div class="info0 icon" :data-icon="gameIcon()">
     <div class="info2">
       <div class="tc">
         {{ minute }} + {{ sec }} • {{ ratedGame() }}•
@@ -54,5 +54,10 @@ function toolTipDate(): string {
   }
   return "";
 }
+
+function gameIcon(): string {
+  return variantTitle() == "Shuuro" ? "M" : "P";
+}
+
 </script>
 <style></style>

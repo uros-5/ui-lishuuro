@@ -153,7 +153,6 @@ export const useShuuroStore2 = defineStore("shuuro2", {
     },
 
     // SHOP PARTS
-
     changeVariant(): void {
       let variant = this.getVariant();
       if (variant == "shuuro12") {
@@ -170,6 +169,13 @@ export const useShuuroStore2 = defineStore("shuuro2", {
         case 2:
           this.wasm(2).change_variant();
           break;
+      }
+    },
+
+    changeTempVariant(pos: ShuuroPosition) {
+      let variant = this.getVariant();
+      if (variant != "shuuro12") {
+        pos.change_variant();
       }
     },
 
@@ -532,6 +538,7 @@ export const useShuuroStore2 = defineStore("shuuro2", {
       }
       let cs = this.cs();
       let temp = new ShuuroPosition();
+      this.changeTempVariant(temp);
       temp.set_sfen(sfen);
       let check = temp.is_check();
       let pieces = temp.map_pieces();
