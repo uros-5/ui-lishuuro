@@ -6,6 +6,7 @@ import { useNews } from "@/store/useNews";
 import { useTvStore } from "@/store/useTvStore";
 import Sockette from "sockette";
 import { backend, wsUrl } from "./getBackend";
+import { liveChatMessage } from "./webSocketTypes";
 
 const ws = new Sockette(wsUrl(), {
   timeout: 1200,
