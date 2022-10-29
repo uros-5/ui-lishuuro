@@ -42,8 +42,8 @@ function onopen(event: any) {
     SEND(value);
   });
   setInterval(() => {
-	  SEND("");
-  },40*1000);
+    SEND("");
+  }, 40 * 1000);
 }
 
 function onreconnect(event: any) {

@@ -7,10 +7,11 @@
     <div
       v-if="isHand()"
       :id="divId()"
-      :style="`--pocketLength: ${6};
-      --files: ${files()};
-      --ranks: ${files()};
-      ${cgWidth()}`"
+      style="flex-wrap: wrap"
+      :style="`--pocketLength: ${pocketLength()};
+    --files: ${files()};
+    --ranks: ${files()};
+    ${cgWidth()}`"
       :class="pocketCss()"
     >
       <piece
@@ -107,7 +108,14 @@ function isHand(): boolean {
 }
 
 function files(): number {
-  return props.handType == "shop" ? 8 : 10;
+  let r = props.handType == "shop" ? 8 : 10;
+  return props.handType == "pocket" && store.getVariant() == "shuuro12fairy"
+    ? 12
+    : r;
+}
+
+function pocketLength(): number {
+  return store.getVariant() == "shuuro12" ? 6 : 8;
 }
 </script>
 

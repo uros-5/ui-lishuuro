@@ -1,6 +1,6 @@
 {
   "name": "lishuuro",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "dev": "vite",
     "devHost": "vite --host",
@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "axios": "^0.25.0",
-    "chessground12": "^0.1.2",
+    "chessground12": "^0.1.3",
     "path": "^0.12.7",
-    "shuuro-wasm": "^0.1.6",
+    "shuuro-wasm": "^0.1.8",
     "sockette": "^2.0.6",
     "vue": "^3.2.33",
     "vue-cookie-next": "^1.3.0",

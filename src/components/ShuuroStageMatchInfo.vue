@@ -58,6 +58,5 @@ function toolTipDate(): string {
 function gameIcon(): string {
   return variantTitle() == "Shuuro" ? "M" : "P";
 }
-
 </script>
 <style></style>
