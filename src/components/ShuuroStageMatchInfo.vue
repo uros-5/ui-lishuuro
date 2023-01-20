@@ -14,10 +14,10 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 import { timeago } from "@/plugins/timeago";
-import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useShuuroStore } from "@/store/useShuuroStore";
 import { ServerDate } from "@/plugins/serverDate";
 
-const store = useShuuroStore2();
+const store = useShuuroStore();
 
 const props = defineProps<{
   variant: string;

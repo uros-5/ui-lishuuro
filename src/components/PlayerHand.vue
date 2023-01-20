@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import { onMounted, defineProps } from "vue";
 import { useBoardSize } from "@/store/useBoardSize";
-import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useShuuroStore } from "@/store/useShuuroStore";
 import { useHeaderSettings } from "@/store/headerSettings";
 
 const boardSize = useBoardSize();
@@ -55,7 +55,7 @@ const props = defineProps<{
   side: string;
 }>();
 
-const store = useShuuroStore2();
+const store = useShuuroStore();
 window.addEventListener("resize", boardSize.resize, true);
 
 function cgWidth(): string {

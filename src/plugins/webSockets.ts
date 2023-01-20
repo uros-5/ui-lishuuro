@@ -1,7 +1,7 @@
 import { useUser } from "@/store/useUser";
 import { useHomeChat } from "@/store/useHomeChat";
 import { useHomeLobby } from "@/store/useHomeLobby";
-import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useShuuroStore } from "@/store/useShuuroStore";
 import { useNews } from "@/store/useNews";
 import { useTvStore } from "@/store/useTvStore";
 import Sockette from "sockette";
@@ -56,7 +56,7 @@ function onmessage(event: any) {
   const user = useUser();
   const homeChat = useHomeChat();
   const homeLobby = useHomeLobby();
-  const shuuroStore = useShuuroStore2();
+  const shuuroStore = useShuuroStore();
   const newsStore = useNews();
   const tvStore = useTvStore();
 

@@ -16,11 +16,11 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
-import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useShuuroStore } from "@/store/useShuuroStore";
 import { deploySfen, fightSfen } from "@/plugins/fen";
 
 const props = defineProps<{ index: number; fen: string; move: string }>();
-const shuuroStore = useShuuroStore2();
+const shuuroStore = useShuuroStore();
 
 function updateIndex(): void {
   shuuroStore.$state.current_index = props.index! - 1;

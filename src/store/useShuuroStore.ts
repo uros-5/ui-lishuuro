@@ -26,7 +26,7 @@ let finished = [
   "Stalemate",
 ];
 
-export const useShuuroStore2 = defineStore("shuuro2", {
+export const useShuuroStore = defineStore("shuuro2", {
   state: (): ShuuroStore => {
     return emptyState();
   },

@@ -11,13 +11,13 @@ import router from "@/router";
 import { useRoute } from "vue-router";
 import ShuuroLeftSide from "@/components/ShuuroLeftSide.vue";
 import ShuuroMain from "@/components/ShuuroMain.vue";
-import { ShuuroStore, useShuuroStore2 } from "@/store/useShuuroStore2";
+import { ShuuroStore, useShuuroStore } from "@/store/useShuuroStore";
 import { useUser } from "@/store/useUser";
 import { Clock } from "@/plugins/clock";
 import { SEND } from "@/plugins/webSockets";
 import { useHomeChat } from "@/store/useHomeChat";
 
-const shuuroStore = useShuuroStore2();
+const shuuroStore = useShuuroStore();
 const userStore = useUser();
 const homeChat = useHomeChat();
 

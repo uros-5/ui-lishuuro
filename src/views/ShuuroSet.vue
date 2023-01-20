@@ -17,7 +17,7 @@ import Chessground from "chessground12";
 import { anonConfig, liveConfig } from "chessground12/configs";
 import { readPockets, renderPocketsInitial } from "chessground12/pocket";
 import { useBoardSize } from "@/store/useBoardSize";
-import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useShuuroStore } from "@/store/useShuuroStore";
 import { onMounted } from "vue";
 import { defaults } from "chessground12/state";
 import { Api } from "chessground12/api";
@@ -27,7 +27,7 @@ import { SEND } from "@/plugins/webSockets";
 import { useHeaderSettings } from "@/store/headerSettings";
 
 const store = useBoardSize();
-const shuuroStore = useShuuroStore2();
+const shuuroStore = useShuuroStore();
 const settings = useHeaderSettings();
 
 store.updateRowsAndCols(12);

@@ -11,9 +11,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useShuuroStore } from "@/store/useShuuroStore";
 
-const store = useShuuroStore2();
+const store = useShuuroStore();
 
 function fmtCount(): string {
   let count = store.$state.watchCount!;

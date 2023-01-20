@@ -27,10 +27,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useShuuroStore } from "@/store/useShuuroStore";
 import ShuuroLeftSideUsername from "./ShuuroLeftSideUsername.vue";
 import ShuuroStageMatchInfo from "@/components/ShuuroStageMatchInfo.vue";
-const shuuroStore = useShuuroStore2();
+const shuuroStore = useShuuroStore();
 
 function navRoute(stage: string): string {
   return `/shuuro/${stage}/${shuuroStore.$state.game_id}`;

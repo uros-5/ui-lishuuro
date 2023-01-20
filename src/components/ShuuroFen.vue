@@ -17,12 +17,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useShuuroStore } from "@/store/useShuuroStore";
 import ShuuroFenItem from "./ShuuroFenItem.vue";
-import { FenItem } from "@/store/useShuuroStore2";
+import { FenItem } from "@/store/useShuuroStore";
 import { resultMessage as Rm } from "@/plugins/resultMessage";
 import { useUser } from "@/store/useUser";
-const shuuroStore = useShuuroStore2();
+const shuuroStore = useShuuroStore();
 const userStore = useUser();
 
 function getHistory(): FenItem[] {

@@ -5,7 +5,7 @@ import { userProfileConfig } from "chessground12/configs";
 import { Role } from "chessground12/types";
 import { defineStore } from "pinia";
 import init, { ShuuroPosition } from "shuuro-wasm";
-import { Color } from "./useShuuroStore2";
+import { Color } from "./useShuuroStore";
 import { Key, MoveMetadata, Piece } from "chessground12/types";
 
 export const useTvStore = defineStore("tvStore", {

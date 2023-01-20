@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { resultMessage } from "@/plugins/resultMessage";
 import { timeago } from "@/plugins/timeago";
-import { ShuuroStore, useShuuroStore2 } from "@/store/useShuuroStore2";
+import { ShuuroStore, useShuuroStore } from "@/store/useShuuroStore";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useUser } from "@/store/useUser";
@@ -155,7 +155,7 @@ function userColor(p: string): string {
 
 function setShuuroStore() {
   //props.game.game_id = props.game._id.$oid;
-  //useShuuroStore2().fromServer(props.game, useUser().username);
+  //useShuuroStore().fromServer(props.game, useUser().username);
 }
 
 function gameUrl(id: string, stage: number, status: number): string {

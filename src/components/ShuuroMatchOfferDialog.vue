@@ -13,10 +13,10 @@
 </template>
 
 <script setup lang="ts">
-import { useShuuroStore2 } from "../store/useShuuroStore2";
+import { useShuuroStore } from "../store/useShuuroStore";
 import { SEND } from "@/plugins/webSockets";
 
-const store = useShuuroStore2();
+const store = useShuuroStore();
 
 function canDraw() {
   return store.$state.am_i_player && store.$state.offeredDraw!;

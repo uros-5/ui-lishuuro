@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
-import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useShuuroStore } from "@/store/useShuuroStore";
 import { useHeaderSettings } from "@/store/headerSettings";
 
-const shuuroStore = useShuuroStore2();
+const shuuroStore = useShuuroStore();
 const settings = useHeaderSettings();
 shuuroStore.updateClientStage(2);
 

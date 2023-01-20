@@ -17,8 +17,8 @@
 
 <script setup lang="ts">
 import { Api } from "chessground12/api";
-import { useShuuroStore2 } from "../store/useShuuroStore2";
-const shuuroStore = useShuuroStore2();
+import { useShuuroStore } from "../store/useShuuroStore";
+const shuuroStore = useShuuroStore();
 
 function flipSide(): void {
   let now = shuuroStore.$state.flipped_board;

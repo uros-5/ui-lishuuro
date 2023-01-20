@@ -46,9 +46,9 @@ import ShuuroFen from "@/components/ShuuroFen.vue";
 import ShuuroMatchButtons from "@/components/ShuuroMatchButtons.vue";
 import PlayerHand from "./PlayerHand.vue";
 import ShuuroMatchOfferDialog from "@/components/ShuuroMatchOfferDialog.vue";
-import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useShuuroStore } from "@/store/useShuuroStore";
 import { useUser } from "@/store/useUser";
-const shuuroStore = useShuuroStore2();
+const shuuroStore = useShuuroStore();
 const userStore = useUser();
 
 function topPlayer(): string {

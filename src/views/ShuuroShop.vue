@@ -26,10 +26,10 @@
 <script setup lang="ts">
 import PlayerHand from "@/components/PlayerHand.vue";
 import { onMounted } from "vue";
-import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useShuuroStore } from "@/store/useShuuroStore";
 import { useUser } from "@/store/useUser";
 
-const shuuroStore = useShuuroStore2();
+const shuuroStore = useShuuroStore();
 const userStore = useUser();
 
 onMounted(() => {

@@ -21,14 +21,14 @@
 </template>
 <script setup lang="ts">
 import { defineProps } from "vue";
-import { useShuuroStore2 } from "@/store/useShuuroStore2";
+import { useShuuroStore } from "@/store/useShuuroStore";
 
 const props = defineProps<{
   color: string;
   part: string;
 }>();
 
-const shuuroStore = useShuuroStore2();
+const shuuroStore = useShuuroStore();
 
 function min(): string {
   let id = props.color == "white" ? 0 : 1;
