@@ -1,35 +1,33 @@
-import { defineConfig } from "vite";
-import path from "path";
-import vue from "@vitejs/plugin-vue";
-import ViteRsw from "vite-plugin-rsw";
+import { fileURLToPath, URL } from 'node:url'
+
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    
   define: {
     "process.env": process.env,
   },
   assetsInclude: ["**/*.ogg"],
-  plugins: [
-    vue({
+    
+  plugins: [vue(
+    {
       template: {
         compilerOptions: {
           isCustomElement: (tag) => CUSTOM_ELEMENTS.includes(tag),
         },
       },
-    }),
-    //ViteRsw(),
-
-    /*ViteRsw({
-		crates: [{name: "shuuro-wasm", unwatch: [ '../src/**' ],}],
-	}),*/
-  ],
+    }
+  )],
+  optimizeDeps: { exclude: ["shuuro-wasm"] },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-  optimizeDeps: { exclude: ["shuuro-wasm"] },
-});
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  }
+})
+
 
 const CUSTOM_ELEMENTS = [
   "info-date",
