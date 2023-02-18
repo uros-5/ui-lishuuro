@@ -19,11 +19,12 @@
     "sockette": "^2.0.6",
     "vue": "^3.2.45",
     "vue-cookie-next": "^1.3.0",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue3-cookies": "^1.0.6"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
-    "@types/node": "^18.11.12",
+    "@types/node": "^18.13.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",
