@@ -1,21 +1,21 @@
 import { defineStore } from "pinia";
-import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
+import init, { ShuuroShop, ShuuroPosition } from "@/plugins/shuuro-wasm";
 import { Clock } from "@/plugins/clock";
-import { Chessground } from "chessground12";
+import Chessground from "@/plugins/chessground12";
 import router from "@/router";
 import { SEND } from "@/plugins/webSockets";
-import { anonConfig, liveConfig, p2 } from "chessground12/configs";
-import { readPockets } from "chessground12/pocket";
-import type { Key, MoveMetadata, Piece } from "chessground12/types";
-import { setCheck } from "chessground12/board";
-import type { Config } from "chessground12/config";
+import { anonConfig, liveConfig, p2 } from "@/plugins/chessground12/configs";
+import { readPockets } from "@/plugins/chessground12/pocket";
+import type { Key, MoveMetadata, Piece } from "@/plugins/chessground12/types";
+import { setCheck } from "@/plugins/chessground12/board";
+import type { Config } from "@/plugins/chessground12/config";
 
 import captureUrl from "@/assets/sounds/capture.ogg";
 import resUrl from "@/assets/sounds/res.ogg";
 import moveUrl from "@/assets/sounds/move.ogg";
 import lowTimeUrl from "@/assets/sounds/low_time.ogg";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
-import type { Api } from "chessground12/api";
+import type { Api } from "@/plugins/chessground12/api";
 
 const finished = [
   "Checkmate",
@@ -60,9 +60,9 @@ export const useShuuroStore = defineStore("shuuro2", {
 
     // set history for all stages
     setHistory(s: any) {
-      this.history![0] = s.history[0];
-      this.history![1] = s.history[1];
-      this.history![2] = s.history[2];
+      this.history[0] = s.history[0];
+      this.history[1] = s.history[1];
+      this.history[2] = s.history[2];
     },
 
     // calculate correct time
@@ -170,10 +170,10 @@ export const useShuuroStore = defineStore("shuuro2", {
           (this.wasm0() as ShuuroShop).change_variant(variant);
           break;
         case 1:
-          this.wasm(1).change_variant();
+          this.wasm(1).change_variant("shuuroFairy");
           break;
         case 2:
-          this.wasm(2).change_variant();
+          this.wasm(2).change_variant("shuuroFairy");
           break;
       }
     },
@@ -182,7 +182,7 @@ export const useShuuroStore = defineStore("shuuro2", {
     changeTempVariant(pos: ShuuroPosition) {
       const variant = this.getVariant();
       if (variant != "shuuro12") {
-        pos.change_variant();
+        pos.change_variant("shuuroFairy");
       }
     },
 
@@ -217,7 +217,7 @@ export const useShuuroStore = defineStore("shuuro2", {
         if (new_credit != this.credit) {
           this.clockPause(this.player!, true);
           this.clockStart(this.player!);
-          this.history(0)?.push([game_move, counter]);
+          this.history[0]?.push([game_move, counter]);
           this.scrollToBottom();
         }
         SEND({
@@ -225,7 +225,7 @@ export const useShuuroStore = defineStore("shuuro2", {
           game_id: this.game_id,
           game_move: game_move,
         });
-        this.current_index = this.history(0)?.length! - 1;
+        this.current_index = this.myHistory(0)?.length! - 1;
         this.credit! = new_credit;
       }
     },
@@ -257,8 +257,8 @@ export const useShuuroStore = defineStore("shuuro2", {
           this.piece_counter = this.wasm0().shop_items(
             this.player_color!
           );
-          const h = this.wasm0().history();
-          this.history![0] = h;
+          const h:[string, number][]  = this.wasm0().history();
+          this.history[0] = h;
           this.credit = (this.wasm0() as ShuuroShop).get_credit(
             this.player_color!
           );
@@ -359,7 +359,7 @@ export const useShuuroStore = defineStore("shuuro2", {
       if (placed) {
         this.clockPause(this.side_to_move!);
         const last_move = this.wasm(1).last_move();
-        this.history(1)!.push([last_move, 0]);
+        this.history[1].push(last_move);
         this.scrollToBottom();
         this.updateCurrentIndex(1);
         this.updateCgHand();
@@ -398,7 +398,7 @@ export const useShuuroStore = defineStore("shuuro2", {
 
     // last item in history
     updateCurrentIndex(stage: StageN) {
-      this.current_index = this.history(stage)!.length - 1;
+      this.current_index = this.myHistory(stage)!.length - 1;
     },
 
     // set cg data and create new ShuuroPosition
@@ -428,7 +428,6 @@ export const useShuuroStore = defineStore("shuuro2", {
     setFightCg() {
       const element = document.querySelector("#chessground12") as HTMLElement;
       const config = this.getConfig();
-      console.log(config);
       this.enablePremove(config);
       this.cgs![2]! = Chessground(element!, config) as Api;
       this.player! == 1 ? this.cgs(2).toggleOrientation() : null;
@@ -440,11 +439,13 @@ export const useShuuroStore = defineStore("shuuro2", {
     // select square
     selectSq(key: Key) {
       if (this.canPlay()) {
-        const moves = this.wasm(2).legal_moves(key);
-        const map = new Map();
-        map.set(key, moves);
-        this.cgs(2).state.movable.dests = map;
       }
+    },
+
+    // find legal moves for current player in stage 2
+    legal_moves() {
+        const moves = this.wasm(2).legal_moves(this.player_color![0] as string);
+        this.cgs(2).state.movable.dests = moves;
     },
 
     // after moving
@@ -497,10 +498,11 @@ export const useShuuroStore = defineStore("shuuro2", {
         this.setTurnColor();
         this.setCheckFight();
         this.switchClock();
-        this.history(2)!.push([lastMove, 0]);
+        this.history[2].push(lastMove);
         this.scrollToBottom();
         this.updateCurrentIndex(2);
         this.cgs(2).state.dom.redraw();
+        this.legal_moves();
         this.playPremove();
       } else {
       }
@@ -562,7 +564,7 @@ export const useShuuroStore = defineStore("shuuro2", {
       this.cgs(cs).state.dom.redraw();
       this.cgs(cs).state.dom.redrawNow();
 
-      if (this.current_index == this.history(cs)!.length - 1) {
+      if (this.current_index == this.myHistory(cs)!.length - 1) {
         this.cgs(cs).state.movable.showDests = true;
         this.cgs(cs).state.draggable.enabled = true;
         this.cgs(cs).state.movable.color = this.player_color;
@@ -758,6 +760,7 @@ export const useShuuroStore = defineStore("shuuro2", {
         this.cgs(2).state.movable.color = this.player_color;
         this.setTurnColor();
         this.setCheckFight();
+        this.legal_moves();
       });
     },
 
@@ -840,10 +843,6 @@ export const useShuuroStore = defineStore("shuuro2", {
 
     playPremove() {
       if (this.premoveData.active && this.canPlay()) {
-        const moves = this.wasm(2).legal_moves(this.premoveData.orig);
-        const map = new Map();
-        map.set(this.premoveData.orig, moves);
-        this.cgs(2).state.movable.dests = map;
         this.cgs(2).playPremove();
         this.premoveData.active = false;
       }
@@ -917,10 +916,6 @@ export const useShuuroStore = defineStore("shuuro2", {
       return undefined;
     },
 
-    getHistory(): FenItem[] | undefined {
-      return this.history(this.client_stage!);
-    },
-
     getVariant(): string {
       return this.variant;
     },
@@ -970,9 +965,36 @@ export const useShuuroStore = defineStore("shuuro2", {
       return this.current_index!;
     },
 
-    history(index: StageN): FenItem[] {
+    myHistory(index: StageN): string[] | [string, number][] {
       return this.history![index];
     },
+
+     getHistory(): string[] {
+      if (this.client_stage == 0) {
+        if (this.am_i_player) {
+          let history = this.myHistory(0);
+          let color = this.player_color!;
+          return history.filter((item: [string, number]) => {
+            let p = item[0][1];
+            if (color == "white") {
+              if (p == p.toUpperCase()) {
+                return item[0];
+              }
+            } else if (color == "black") {
+              if (p == p.toLowerCase()) {
+                return item[0];
+              }
+            }
+          });
+        }
+      } else if (this.client_stage == 1) {
+        return this.myHistory(1) as string[];
+      } else if (this.client_stage == 2) {
+        return this.myHistory(2) as string[];
+      }
+      return [];
+    },
+    
 
     wasm(index: StageN): ShuuroPosition {
       return this.wasm![index] as ShuuroPosition;
@@ -1080,7 +1102,7 @@ export interface ShuuroStore {
   confirmed_players?: [boolean, boolean];
   wasm?: BoardWasm | [];
   cgs?: Cgs | [any, any, any];
-  history?: [FenItem[], FenItem[], FenItem[]];
+  history: [[string, number][], string[], string[]];
   offeredDraw?: boolean;
   ratings: any;
   premoveData: { orig: string; dest: string; active: boolean };
@@ -1088,7 +1110,7 @@ export interface ShuuroStore {
 
 export type Stage = "shop" | "deploy" | "fight";
 export type StageN = 0 | 1 | 2;
-export type FenItem = [string, number];
+export type FenItem = string;
 
 export interface ShopItem {
   piece: string;
@@ -1107,4 +1129,4 @@ export type Cgs = [Api, Api, Api];
 export type Color = "white" | "black";
 export type ColorN = 0 | 1;
 
-export const defaultCounter = new Uint8Array([1, 0, 0, 0, 0, 0, 0]);
+export const defaultCounter = new Uint8Array([1, 0, 0, 0, 0, 0, 0, 0]);

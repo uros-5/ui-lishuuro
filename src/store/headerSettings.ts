@@ -29,7 +29,7 @@ export const useHeaderSettings = defineStore("headerSettings", {
       localStorage.setItem("theme", theme);
     },
     setBoardImg(image: number) {
-      if ([0, 1, 2].includes(image)) {
+      if ([0, 1, 2, 3, 4, 5].includes(image)) {
         localStorage.setItem("board", `${image}`);
         this.board = `${image}`;
       }

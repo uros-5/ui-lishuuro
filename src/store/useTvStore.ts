@@ -1,12 +1,12 @@
-import { Chessground } from "chessground12";
-import type { Api } from "chessground12/api";
-import { setCheck } from "chessground12/board";
-import { userProfileConfig } from "chessground12/configs";
-import type { Role } from "chessground12/types";
+import Chessground  from "@/plugins/chessground12";
+import type { Api } from "@/plugins/chessground12/api";
+import { setCheck } from "@/plugins/chessground12/board";
+import { userProfileConfig } from "@/plugins/chessground12/configs";
+import type { Role } from "@/plugins/chessground12/types";
 import { defineStore } from "pinia";
-import init, { ShuuroPosition } from "shuuro-wasm";
+import init, { ShuuroPosition } from "@/plugins/shuuro-wasm";
 import type { Color } from "./useShuuroStore";
-import type { Key, Piece } from "chessground12/types";
+import type { Key, Piece } from "@/plugins/chessground12/types";
 
 export const useTvStore = defineStore("tvStore", {
   state: (): TvStore => {
@@ -53,14 +53,14 @@ export const useTvStore = defineStore("tvStore", {
     // from server set profileGame
     setProfileGame(msg: any) {
       this.profile_game.game_id = msg.game_id;
-      this.profile_game.sfen = msg.sfen;
+      this.profile_game.sfen = msg.fen;
       const cg = this.setCg(msg.game_id as string);
       this.profile_game.cg = cg;
       if (msg.current_stage == 0) {
         return;
       }
       this.profile_game.cs = msg.current_stage;
-      this.tempWasm(cg, msg.sfen, msg.current_stage);
+      this.tempWasm(cg, msg.fen, msg.current_stage);
     },
 
     // get sfen for wasm

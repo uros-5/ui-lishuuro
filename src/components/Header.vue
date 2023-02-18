@@ -13,7 +13,7 @@
         <router-link
           @click="user.toggleHeader"
           v-for="i in nav"
-          :key="i"
+          v-bin:key="i"
           :to="i.url"
           class="nav-link"
         >

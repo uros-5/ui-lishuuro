@@ -1,7 +1,7 @@
 <template>
   <div class="seeks">
     <div id="seeks-table">
-      <div id="seeks-wrapper">
+      <div id="seeks-wrapper" class="lobby-background">
         <table id="seeks">
           <thead>
             <tr>
@@ -93,5 +93,16 @@ onMounted(() => {
 .lobby-t-leave-active {
   transition: opacity 0.25s ease, background-color 0.15s linear,
     transform 0.2s ease;
+}
+
+.lobby-background {
+  box-shadow: var(--base-shadow);
+  background-position: center;
+  background-image: url('@/assets/home/seek-bg2.svg');
+  background-color: var(--bg-seek);
+  background-blend-mode: overlay;
+  background-size: 100% 100%;
+  width: 100%;
+  height: 100%;
 }
 </style>

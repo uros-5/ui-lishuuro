@@ -3,14 +3,9 @@
     {{ Math.floor(index! / 2 + 1) }}
   </div>
 
-  <div
-    class="move"
-    :class="{active: shuuroStore.current_index == index!-1}"
-    :ply="index"
-    @click="updateIndex"
-  >
-    <san>{{ m() }}</san
-    ><eval :id="`ply${index!}`" />
+  <div class="move" :class="{ active: shuuroStore.current_index == index! - 1 }" :ply="index" @click="updateIndex">
+    <san>{{ m() }}</san>
+    <eval :id="`ply${index!}`" />
   </div>
 </template>
 
@@ -23,7 +18,7 @@ const props = defineProps<{ index: number; fen: string; move: string }>();
 const shuuroStore = useShuuroStore();
 
 function updateIndex(): void {
-  shuuroStore.current_index = props.index! - 1;
+  shuuroStore.current_index = props.index - 1;
   if (shuuroStore.client_stage == 1) {
     let sfen = deploySfen(props.fen);
     shuuroStore.tempWasm(sfen);

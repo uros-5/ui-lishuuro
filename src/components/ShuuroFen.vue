@@ -1,8 +1,8 @@
 <template>
   <div class="movelist-block">
     <div id="movelist">
-      <ShuuroFenItem v-for="(item, index) in getHistory()" v-if="fenItemCheck()" :key="index" :fen="item[0]"
-        :move="fenItem(item)" :index="index + 1" />
+      <ShuuroFenItem v-for="(item, index) in shuuroStore.getHistory()" v-if="fenItemCheck()" :key="index"
+        :fen="fenItem(item)" :move="moveItem(item)" :index="index + 1" />
 
       <div id="result" v-if="showRes()">
         {{ resultMessage() }}
@@ -13,46 +13,24 @@
 <script setup lang="ts">
 import { useShuuroStore } from "@/store/useShuuroStore";
 import ShuuroFenItem from "./ShuuroFenItem.vue";
-import type { FenItem } from "@/store/useShuuroStore";
 import { resultMessage as Rm } from "@/plugins/resultMessage";
-import { useUser } from "@/store/useUser";
 const shuuroStore = useShuuroStore();
-const userStore = useUser();
 
-function getHistory(): FenItem[] {
+function fenItem(item: string): string {
   if (shuuroStore.client_stage == 0) {
-    if (shuuroStore.am_i_player) {
-      let history = shuuroStore.history(0)!;
-      let color = shuuroStore.getColor(userStore.username);
-      return history.filter((item) => {
-        let p = item[0][1];
-        if (color == "white") {
-          if (p == p.toUpperCase()) {
-            return item;
-          }
-        } else if (color == "black") {
-          if (p == p.toLowerCase()) {
-            return item;
-          }
-        }
-      });
-    }
-  } else if (shuuroStore.client_stage == 1) {
-    return shuuroStore.history(1)!;
-  } else if (shuuroStore.client_stage == 2) {
-    return shuuroStore.history(2)!;
+    return item[0];
   }
-  return [];
+  return item;
 }
 
-function fenItem(item: [string, number]): string {
+function moveItem(item: string): string {
   if (shuuroStore.client_stage == 0) {
-    return `${item[0]} ${item[1]}`;
+    return item[0];
   } else if (shuuroStore.client_stage == 1) {
-    let fen = item[0].split("_");
+    let fen = item.split("_");
     return fen[0];
   } else if (shuuroStore.client_stage == 2) {
-    let fen = item[0].split(" ");
+    let fen = item.split(" ");
     return fen[4];
   }
   return "";

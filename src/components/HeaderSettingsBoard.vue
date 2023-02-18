@@ -22,7 +22,7 @@ function selected(t: string, img: number): string {
     <input v-model="settings.currentZoom" id="zoom" class="slider" name="zoom" type="range" min="0" max="100"
       step="1.15625" />
     <div id="allboards">
-      <label v-for="i in [0, 1, 2]" v-bind:key="i" class="board board 1 standard12x12 board" :for="`board${i}`"
+      <label v-for="i in [0, 1, 2, 3, 4, 5]" v-bind:key="i" class="board board 1 standard12x12 board" :for="`board${i}`"
         :class="`board-${i}${selected('board', i)}`" @click="settings.setBoardImg(i)">
       </label>
     </div>
@@ -66,6 +66,21 @@ div[data-board$="1"] cg-board {
 .board-2,
 div[data-board$="2"] cg-board {
   background-image: url("@/assets/board/12x12green.svg") !important;
+}
+
+.board-3,
+div[data-board$="3"] cg-board {
+  background-image: url("@/assets/board/12x12gray.svg") !important;
+}
+
+.board-4,
+div[data-board$="4"] cg-board {
+  background-image: url("@/assets/board/12x12brown_sand.svg") !important;
+}
+
+.board-5,
+div[data-board$="5"] cg-board {
+  background-image: url("@/assets/board/12x12brown_yellow.svg") !important;
 }
 
 .piece-0 {
