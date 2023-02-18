@@ -2,9 +2,9 @@
   <aside class="sidebar-first">
     <ShuuroStageInfo />
     <ChatRoom
-      :messages="chatStore.$state.gameChat"
-      :ws-type="store.$state.game_id"
-      :finished="store.$state.status"
+      :messages="chatStore.gameChat"
+      :ws-type="store.game_id"
+      :finished="store.status"
     />
     <ShuuroSpectators />
   </aside>

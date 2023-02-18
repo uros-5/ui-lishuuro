@@ -47,31 +47,22 @@ import ShuuroMatchButtons from "@/components/ShuuroMatchButtons.vue";
 import PlayerHand from "./PlayerHand.vue";
 import ShuuroMatchOfferDialog from "@/components/ShuuroMatchOfferDialog.vue";
 import { useShuuroStore } from "@/store/useShuuroStore";
-import { useUser } from "@/store/useUser";
 const shuuroStore = useShuuroStore();
-const userStore = useUser();
 
 function topPlayer(): string {
-  if (shuuroStore.$state.flipped_board) {
-    return shuuroStore.$state.players[0];
+  if (shuuroStore.flipped_board) {
+    return shuuroStore.players[0];
   } else {
-    return shuuroStore.$state.players[1];
+    return shuuroStore.players[1];
   }
 }
 
 function bottomPlayer(): string {
-  if (shuuroStore.$state.flipped_board) {
-    return shuuroStore.$state.players[1];
+  if (shuuroStore.flipped_board) {
+    return shuuroStore.players[1];
   } else {
-    return shuuroStore.$state.players[0];
+    return shuuroStore.players[0];
   }
-}
-
-function canPlay2(): boolean {
-  if (shuuroStore.$state.current_stage == 1 && shuuroStore.$state.am_i_player) {
-    return true;
-  }
-  return false;
 }
 </script>
 <style>

@@ -65,7 +65,7 @@ function cgWidth(): string {
 function piece_counter(): number[] {
   if (props.handType == "shop") {
     // read from shop
-    return store.$state.piece_counter! as unknown as number[];
+    return store.piece_counter! as unknown as number[];
   } else {
     // read from props
     return props.counter.slice().splice(1);
@@ -82,7 +82,7 @@ function dataNb(index: number): number | string {
 }
 
 function increment(_index: number, p: string): void {
-  if (props.handType == "shop" && store.$state.am_i_player == true) {
+  if (props.handType == "shop" && store.am_i_player == true) {
     if (props.color == "white") {
       p = p.toUpperCase();
     } else {
@@ -103,7 +103,7 @@ function pocketCss(): string {
 }
 
 function isHand(): boolean {
-  let stage = store.$state.client_stage!;
+  let stage = store.client_stage!;
   return stage == 0 || stage == 1;
 }
 

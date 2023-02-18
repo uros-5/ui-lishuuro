@@ -12,7 +12,7 @@ export const useBoardSize = defineStore("boardSize", {
       this.rowsAndCols = n;
     }, // eslint-disable-next-line
     resize(_event: Event) {
-      let board = document.querySelector("#mainboard")! as HTMLElement;
+      const board = document.querySelector("#mainboard")! as HTMLElement;
       if (board != null) {
         this.updateHeight(board.offsetWidth!);
       }

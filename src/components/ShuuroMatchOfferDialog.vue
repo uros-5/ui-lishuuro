@@ -19,16 +19,16 @@ import { SEND } from "@/plugins/webSockets";
 const store = useShuuroStore();
 
 function canDraw() {
-  return store.$state.am_i_player && store.$state.offeredDraw!;
+  return store.am_i_player && store.offeredDraw!;
 }
 
 function rejectDraw() {
-  store.$state.offeredDraw = false;
+  store.offeredDraw = false;
 }
 
 function acceptDraw() {
-  SEND({ t: "live_game_draw", game_id: store.$state.game_id });
-  store.$state.offeredDraw = false;
+  SEND({ t: "live_game_draw", game_id: store.game_id });
+  store.offeredDraw = false;
 }
 </script>
 

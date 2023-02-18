@@ -71,10 +71,9 @@
 <script setup lang="ts">
 import { resultMessage } from "@/plugins/resultMessage";
 import { timeago } from "@/plugins/timeago";
-import { ShuuroStore, useShuuroStore } from "@/store/useShuuroStore";
+import type { ShuuroStore } from "@/store/useShuuroStore";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { useUser } from "@/store/useUser";
 import { useTvStore } from "@/store/useTvStore";
 import { SEND } from "@/plugins/webSockets";
 import { ServerDate } from "@/plugins/serverDate";
@@ -160,7 +159,7 @@ function setShuuroStore() {
 
 function gameUrl(id: string, stage: number, status: number): string {
   if (status < 0) {
-    return `/shuuro/${tv.$state.profile_game.cs!}/${id}`;
+    return `/shuuro/${tv.profile_game.cs!}/${id}`;
   }
   return `/shuuro/${stage}/${id}`;
 }
@@ -220,9 +219,11 @@ div.info-middle {
   align-items: center;
   justify-content: center;
 }
+
 .chessground12 {
   padding-bottom: 100%;
 }
+
 .chessground12 cg-board {
   background-image: url("@/assets/board/12x12brown.svg");
 }

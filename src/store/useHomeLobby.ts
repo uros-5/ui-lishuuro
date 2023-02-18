@@ -25,23 +25,23 @@ export const useHomeLobby = defineStore("useHomeLobby", {
   },
   actions: {
     setHomeLobby(homeLobby: []): void {
-      this.$state.homeLobby = homeLobby;
+      this.homeLobby = homeLobby;
     },
     setActivePlayers(activePlayers: []): void {
-      this.$state.activePlayers = activePlayers;
+      this.activePlayers = activePlayers;
     },
     addGameToLobby(game: LobbyGame): void {
-      this.$state.homeLobby.push(game);
+      this.homeLobby.push(game);
     },
     removeLobbyGame(game: LobbyGame): void {
-      this.$state.homeLobby = this.$state.homeLobby.filter((item) => {
+      this.homeLobby = this.homeLobby.filter((item) => {
         if (!isGameEqual(item, game)) {
           return item;
         }
       });
     },
     removeLobbyGameByUser(user: string): void {
-      this.$state.homeLobby = this.$state.homeLobby.filter((item) => {
+      this.homeLobby = this.homeLobby.filter((item) => {
         const game = item as LobbyGame;
         if (game.username != user) {
           return item;

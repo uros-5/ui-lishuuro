@@ -1,11 +1,11 @@
 <template>
   <div v-if="index! % 2 == 1" class="move counter">
-    {{ Math.floor((index! /2) +1) }}
+    {{ Math.floor(index! / 2 + 1) }}
   </div>
 
   <div
     class="move"
-    :class="{active: shuuroStore.$state.current_index == index!-1}"
+    :class="{active: shuuroStore.current_index == index!-1}"
     :ply="index"
     @click="updateIndex"
   >
@@ -23,18 +23,18 @@ const props = defineProps<{ index: number; fen: string; move: string }>();
 const shuuroStore = useShuuroStore();
 
 function updateIndex(): void {
-  shuuroStore.$state.current_index = props.index! - 1;
-  if (shuuroStore.$state.client_stage == 1) {
+  shuuroStore.current_index = props.index! - 1;
+  if (shuuroStore.client_stage == 1) {
     let sfen = deploySfen(props.fen);
     shuuroStore.tempWasm(sfen);
-  } else if (shuuroStore.$state.client_stage == 2) {
+  } else if (shuuroStore.client_stage == 2) {
     let sfen = fightSfen(props.fen);
     shuuroStore.tempWasm(sfen);
   }
 }
 
 function m(): string {
-  if (shuuroStore.$state.client_stage == 2) {
+  if (shuuroStore.client_stage == 2) {
     return props.move.split("_")[1];
   }
   return props.move;

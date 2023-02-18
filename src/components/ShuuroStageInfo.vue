@@ -3,9 +3,9 @@
     <section>
       <ShuuroStageMatchInfo
         :variant="shuuroStore.getVariant()"
-        :minute="shuuroStore.$state.min"
-        :sec="shuuroStore.$state.incr"
-        :rated="shuuroStore.$state.rated_game"
+        :minute="shuuroStore.min"
+        :sec="shuuroStore.incr"
+        :rated="shuuroStore.rated_game"
         date="*"
       />
       <ShuuroLeftSideUsername
@@ -33,15 +33,15 @@ import ShuuroStageMatchInfo from "@/components/ShuuroStageMatchInfo.vue";
 const shuuroStore = useShuuroStore();
 
 function navRoute(stage: string): string {
-  return `/shuuro/${stage}/${shuuroStore.$state.game_id}`;
+  return `/shuuro/${stage}/${shuuroStore.game_id}`;
 }
 
 function player(index: number): string {
-  return shuuroStore.$state.players[index];
+  return shuuroStore.players[index];
 }
 
 function rating(username: string): number {
-  let r = shuuroStore.$state.ratings;
+  let r = shuuroStore.ratings;
   return 1500;
 }
 </script>

@@ -6,11 +6,11 @@ export const useNews = defineStore("useNews", {
   },
   actions: {
     setNews(news: NewsItem[]) {
-      this.$state.news = news;
-      this.$state.finished = true;
+      this.news = news;
+      this.finished = true;
     },
     exist(id: string): NewsItem | undefined {
-      let item = this.$state.news.find((item) => item._id == id);
+      const item = this.news.find((item) => item._id == id);
       return item;
     },
   },

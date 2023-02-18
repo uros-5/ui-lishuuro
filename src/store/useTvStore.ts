@@ -1,12 +1,12 @@
 import { Chessground } from "chessground12";
-import { Api } from "chessground12/api";
+import type { Api } from "chessground12/api";
 import { setCheck } from "chessground12/board";
 import { userProfileConfig } from "chessground12/configs";
-import { Role } from "chessground12/types";
+import type { Role } from "chessground12/types";
 import { defineStore } from "pinia";
 import init, { ShuuroPosition } from "shuuro-wasm";
-import { Color } from "./useShuuroStore";
-import { Key, MoveMetadata, Piece } from "chessground12/types";
+import type { Color } from "./useShuuroStore";
+import type { Key, Piece } from "chessground12/types";
 
 export const useTvStore = defineStore("tvStore", {
   state: (): TvStore => {
@@ -19,7 +19,7 @@ export const useTvStore = defineStore("tvStore", {
   actions: {
     // set games from server
     setGames(games: TvGame[]) {
-      this.$state.games = games;
+      this.games = games;
     },
 
     // creating new cg
@@ -32,13 +32,13 @@ export const useTvStore = defineStore("tvStore", {
     // using wasm for setting plinths and pieces
     tempWasm(cg: Api, sfen: string, stage: string) {
       init().then((_exports) => {
-        let w = new ShuuroPosition();
-        let fen = sfen; //this.getFen(sfen, stage);
+        const w = new ShuuroPosition();
+        const fen = sfen; //this.getFen(sfen, stage);
         w.set_sfen(fen);
-        let check = w.is_check();
-        let pieces = w.map_pieces();
-        let plinths = w.map_plinths();
-        let stm = w.side_to_move();
+        const check = w.is_check();
+        const pieces = w.map_pieces();
+        const plinths = w.map_plinths();
+        const stm = w.side_to_move();
         cg.state.turnColor = stm == "w" ? "white" : "black";
         cg.state.plinths = plinths;
         cg.state.pieces = pieces;
@@ -54,7 +54,7 @@ export const useTvStore = defineStore("tvStore", {
     setProfileGame(msg: any) {
       this.profile_game.game_id = msg.game_id;
       this.profile_game.sfen = msg.sfen;
-      let cg = this.setCg(msg.game_id as string);
+      const cg = this.setCg(msg.game_id as string);
       this.profile_game.cg = cg;
       if (msg.current_stage == 0) {
         return;
@@ -67,7 +67,7 @@ export const useTvStore = defineStore("tvStore", {
     getFen(sfen: string, current_stage: string): string {
       switch (current_stage) {
         case "deploy":
-          let s = sfen.split("_");
+          const s = sfen.split("_");
           return `${s[1]} ${s[2]} ${s[3]}`;
         case "fight":
           return sfen;
@@ -78,10 +78,10 @@ export const useTvStore = defineStore("tvStore", {
 
     // set tv game
     setTvGame(id: string) {
-      let game = this.game(id);
+      const game = this.game(id);
 
-      let cg = this.setCg(id + "_tv");
-      let wasm = this.tempWasm(cg, game.sfen, "");
+      const cg = this.setCg(id + "_tv");
+      const wasm = this.tempWasm(cg, game.sfen, "");
       game.cg = cg;
       game.pl_set = true;
       game.pieces_set = true;
@@ -94,10 +94,10 @@ export const useTvStore = defineStore("tvStore", {
       } else if (msg.t.endsWith("play")) {
         this.tvMove(msg);
       } else if (msg.t.endsWith("redirect_deploy")) {
-        let game = this.newGame(msg);
-        this.$state.games.push(game);
+        const game = this.newGame(msg);
+        this.games.push(game);
       } else if (ENDED.includes(msg.t)) {
-        let self = this;
+        const self = this;
         setTimeout(function () {
           self.removeGame(msg.game_id);
         }, 350);
@@ -106,8 +106,8 @@ export const useTvStore = defineStore("tvStore", {
 
     // create new game when deploy is ready
     newGame(msg: any): TvGame {
-      let path = msg.path.split("/1/")[1];
-      let game = empty_game(path);
+      const path = msg.path.split("/1/")[1];
+      const game = empty_game(path);
       game.w = msg.w;
       game.b = msg.b;
       game.sfen = msg.sfen;
@@ -117,21 +117,21 @@ export const useTvStore = defineStore("tvStore", {
 
     // remove game from store
     removeGame(id: string) {
-      this.$state.games = this.$state.games.filter(
+      this.games = this.games.filter(
         (item) => item.game_id != id
       );
     },
 
     // placing
     tvPlace(msg: any) {
-      let game = this.game(msg.game_id);
-      let cg = game.cg as Api;
-      let place = msg.move.split("@");
-      let piece = place[0];
-      let sq = place[1];
-      let color: Color = piece == piece.toUpperCase() ? "white" : "black";
+      const game = this.game(msg.game_id);
+      const cg = game.cg as Api;
+      const place = msg.move.split("@");
+      const piece = place[0];
+      const sq = place[1];
+      const color: Color = piece == piece.toUpperCase() ? "white" : "black";
 
-      let pieceObj = {
+      const pieceObj = {
         role: `${piece.toLowerCase()}-piece` as Role,
         color: color,
       };
@@ -140,17 +140,17 @@ export const useTvStore = defineStore("tvStore", {
 
     // move
     tvMove(msg: any) {
-      let move = msg.game_move.split("_");
-      let game = this.game(msg.game_id);
+      const move = msg.game_move.split("_");
+      const game = this.game(msg.game_id);
       game.cg.move(move[0] as Key, move[1] as Key);
       if (this.isPromotion(game.cg, msg)) {
-        let color = move[1].endsWith("2") ? "white" : "black";
-        let pieceObj = {
+        const color = move[1].endsWith("2") ? "white" : "black";
+        const pieceObj = {
           role: "q-piece" as Role,
           color: color,
         };
-        let cg = game.cg as Api;
-        let pieces = cg.state.pieces;
+        const cg = game.cg as Api;
+        const pieces = cg.state.pieces;
         pieces.delete(move[1]);
         pieces.set(move[1], pieceObj as Piece);
         (game.cg as Api).state.dom.redraw();
@@ -159,10 +159,10 @@ export const useTvStore = defineStore("tvStore", {
 
     // is promotion
     isPromotion(game: Api, msg: any): boolean {
-      let move = msg.game_move.split("_");
-      let piece = game.state.pieces.get(move[1] as Key);
+      const move = msg.game_move.split("_");
+      const piece = game.state.pieces.get(move[1] as Key);
       if (!this.isPawn(piece)) return false;
-      let rank = this.getRank(piece!.color);
+      const rank = this.getRank(piece!.color);
       if (move[0].endsWith(`${rank[0]}`))
         if (move[1].endsWith(`${rank[1]}`)) return true;
       return false;
@@ -170,7 +170,7 @@ export const useTvStore = defineStore("tvStore", {
 
     // GETTERS
     game(id: string): TvGame {
-      return this.$state.games.find((item) => item.game_id == id) as TvGame;
+      return this.games.find((item) => item.game_id == id) as TvGame;
     },
 
     // not a piece

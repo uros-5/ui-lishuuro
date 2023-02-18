@@ -5,8 +5,7 @@ import { useShuuroStore } from "@/store/useShuuroStore";
 import { useNews } from "@/store/useNews";
 import { useTvStore } from "@/store/useTvStore";
 import Sockette from "sockette";
-import { backend, wsUrl } from "./getBackend";
-import { liveChatMessage } from "./webSocketTypes";
+import {  wsUrl } from "./getBackend";
 
 const ws = new Sockette(wsUrl(), {
   timeout: 1200,
@@ -25,7 +24,7 @@ const ws = new Sockette(wsUrl(), {
   onerror: (e) => {},
 });
 
-let unsendMessages: any[] = [];
+const unsendMessages: any[] = [];
 
 export function SEND(msg: any) {
   try {
@@ -107,7 +106,7 @@ function onmessage(event: any) {
       break;
     case "live_restart":
       delete msg["t"];
-      user.$state.conMsg = "Server will restart";
+      user.conMsg = "Server will restart";
       user.onReconnect();
       break;
     case "home_news":
@@ -120,7 +119,7 @@ function onmessage(event: any) {
       break;
     case "live_game_start":
       msg["game_info"]["game_id"] = msg["game_id"];
-      shuuroStore.fromServer(msg["game_info"], user.$state.username);
+      shuuroStore.fromServer(msg["game_info"], user.username);
       break;
     case "live_game_spectators_count":
       delete msg["t"];
@@ -128,7 +127,7 @@ function onmessage(event: any) {
       break;
     case "live_game_hand":
       delete msg["t"];
-      shuuroStore.setShuuroHand(msg.hand, user.$state.username);
+      shuuroStore.setShuuroHand(msg.hand, user.username);
       break;
     case "live_game_place":
       delete msg["t"];
@@ -144,7 +143,7 @@ function onmessage(event: any) {
       break;
     case "live_game_draw":
       delete msg["t"];
-      shuuroStore.gameDraw(msg, user.$state.username);
+      shuuroStore.gameDraw(msg, user.username);
       break;
     case "live_game_resign":
       delete msg["t"];
@@ -152,7 +151,7 @@ function onmessage(event: any) {
       break;
     case "live_game_lot":
       delete msg["t"];
-      shuuroStore.gameLot(msg, user.$state.username);
+      shuuroStore.gameLot(msg, user.username);
       break;
     case "live_game_sfen":
       delete msg["t"];

@@ -87,7 +87,7 @@ function createGame() {
     incr: incrementDuration[incr.value],
     variant: variant.value,
     color: color.value,
-    username: userStore.$state.username,
+    username: userStore.username,
   };
   SEND(game);
 }

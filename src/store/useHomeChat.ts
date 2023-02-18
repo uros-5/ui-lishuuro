@@ -22,18 +22,17 @@ export const useHomeChat = defineStore("useHomeChat", {
   },
   actions: {
     setHomeChat(homeChat: []) {
-      this.$state.homeChat = homeChat;
+      this.homeChat = homeChat;
     },
     setGameChat(gameChat: []) {
-      this.$state.gameChat = gameChat;
+      this.gameChat = gameChat;
     },
     addGameMessageChat(msg: ChatMessage) {
       delete msg["t"];
-      this.$state.gameChat.push(msg);
+      this.gameChat.push(msg);
     },
     sendMessage(message: ChatMessage) {
-      this.$state.homeChat.push(message);
-      this.$state.homeChat = this.$state.homeChat;
+      this.homeChat.push(message);
     },
   },
   getters: {},

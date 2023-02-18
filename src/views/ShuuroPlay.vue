@@ -8,11 +8,11 @@ const settings = useHeaderSettings();
 shuuroStore.updateClientStage(2);
 
 onMounted(() => {
-  if (shuuroStore.$state.game_id == "") {
+  if (shuuroStore.game_id == "") {
   } else {
-    if (shuuroStore.$state.sfen) {
+    if (shuuroStore.sfen) {
       shuuroStore.setFightCg();
-      shuuroStore.setFightWasm(shuuroStore.$state.sfen);
+      shuuroStore.setFightWasm(shuuroStore.sfen);
       shuuroStore.updateClientStage(2);
     }
   }

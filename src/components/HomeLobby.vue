@@ -14,11 +14,7 @@
           </thead>
           <tbody>
             <transition-group name="lobby-t">
-              <tr
-                v-for="i in store.$state.homeLobby"
-                :key="i.time"
-                @click="acceptGame(i)"
-              >
+              <tr v-for="i in store.homeLobby" :key="i.time" @click="acceptGame(i)">
                 <td>
                   <i-side class="icon" :class="iconColor(i.color)" />
                 </td>
@@ -39,7 +35,7 @@
 <script setup lang="ts">
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { onMounted } from "vue";
-import { LobbyGame } from "@/store/useHomeLobby";
+import type { LobbyGame } from "@/store/useHomeLobby";
 import { SEND } from "@/plugins/webSockets";
 
 const store = useHomeLobby();

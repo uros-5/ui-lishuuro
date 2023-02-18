@@ -16,20 +16,20 @@ import { useShuuroStore } from "@/store/useShuuroStore";
 import { SEND } from "@/plugins/webSockets";
 
 function canDR(): boolean {
-  return store.$state.status < 0 && store.$state.am_i_player!;
+  return store.status < 0 && store.am_i_player!;
 }
 
 function draw() {
   let d = confirm("Are you sure you want to draw?");
   if (d) {
-    SEND({ t: "live_game_draw", game_id: store.$state.game_id });
+    SEND({ t: "live_game_draw", game_id: store.game_id });
   }
 }
 
 function resign() {
   let r = confirm("Are you sure you want to resign?");
   if (r) {
-    SEND({ t: "live_game_resign", game_id: store.$state.game_id });
+    SEND({ t: "live_game_resign", game_id: store.game_id });
   }
 }
 

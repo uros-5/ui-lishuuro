@@ -25,8 +25,8 @@ export const useUser = defineStore("useUser", {
         this.updateAnonCookie();
       } else {
         this.updateAnonCookie();
-        this.$state.username = cookie.get("username");
-        this.$state.reg = JSON.parse(cookie.get("reg"));
+        this.username = cookie.get("username");
+        this.reg = JSON.parse(cookie.get("reg"));
       }
     },
 
@@ -37,8 +37,8 @@ export const useUser = defineStore("useUser", {
     },
 
     setUser(username: string, reg: boolean) {
-      this.$state.username = username;
-      this.$state.reg = reg;
+      this.username = username;
+      this.reg = reg;
       const prod = getProd();
       const d = new Date();
       d.setTime(d.getTime() + 60 * 60 * 24 * 365);
@@ -47,25 +47,25 @@ export const useUser = defineStore("useUser", {
     },
 
     updatePlCount(cnt: number): void {
-      this.$state.plCount = cnt;
+      this.plCount = cnt;
     },
 
     updateGamesCount(cnt: number): void {
-      this.$state.gamesCount = cnt;
+      this.gamesCount = cnt;
     },
 
     onReconnect() {
-      this.$state.con = false;
+      this.con = false;
       document.body.classList.add("offline");
       document.body.classList.remove("online");
       document.body.classList.add("reconnected");
     },
 
     onOpen() {
-      this.$state.con = true;
+      this.con = true;
       document.body.classList.add("online");
       document.body.classList.remove("offline");
-      this.$state.conMsg = "Reconnecting";
+      this.conMsg = "Reconnecting";
     },
 
     getTheme(): string {

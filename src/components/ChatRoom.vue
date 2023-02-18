@@ -42,8 +42,11 @@ import { useCookies } from "vue3-cookies";
 import { useUser } from "@/store/useUser";
 import { SEND } from "@/plugins/webSockets";
 
-const props =
-  defineProps<{ messages: ChatMessage[]; wsType: string; finished: number }>();
+const props = defineProps<{
+  messages: ChatMessage[];
+  wsType: string;
+  finished: number;
+}>();
 const message = ref("");
 const hiddenChat = ref(true);
 const cookie = useCookies().cookies;
@@ -54,7 +57,7 @@ function onEnter(): void {
     SEND({
       t: "live_chat_message",
       message: message.value,
-      user: user.$state.username,
+      user: user.username,
       time: "",
       id: props.wsType,
     });
@@ -65,7 +68,7 @@ function onEnter(): void {
 function setPlaceholder(): string {
   if (props.finished > -1) {
     return "Chat disabled for old games";
-  } else if (user.$state.reg == false) {
+  } else if (user.reg == false) {
     return "Sign in to chat";
   } else {
     return "Please be nice in the chat!";

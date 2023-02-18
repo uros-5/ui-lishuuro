@@ -6,7 +6,7 @@
     </div>
     <div class="posts">
       <router-link
-        v-for="post in store.$state.news"
+        v-for="post in store.news"
         :key="post.title"
         class="post"
         :to="r(post.title)"
@@ -27,7 +27,7 @@ import { useNews } from "@/store/useNews";
 import { onMounted } from "vue";
 const store = useNews();
 onMounted(() => {
-  if (!store.$state.finished) SEND({ t: "home_news" });
+  if (!store.finished) SEND({ t: "home_news" });
 });
 
 function r(title: string): string {

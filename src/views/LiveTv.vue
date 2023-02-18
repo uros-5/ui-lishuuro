@@ -5,7 +5,7 @@
     </aside>
     <main class="games">
       <div class="grid-container" id="games">
-        <mini-game :key="i.game_id" v-for="i in store.$state.games">
+        <mini-game :key="i.game_id" v-for="i in store.games">
           <TvGame :w="i.w" :b="i.b" :id="i.game_id" />
         </mini-game>
       </div>

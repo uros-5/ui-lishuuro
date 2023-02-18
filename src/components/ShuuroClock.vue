@@ -10,7 +10,7 @@
           <div class="clock-time sec">
             {{ sec() }}
           </div>
-          <div class="clock-time byo">+{{ shuuroStore.$state.incr }}s</div>
+          <div class="clock-time byo">+{{ shuuroStore.incr }}s</div>
         </div>
       </div>
       <div id="more-time" />
@@ -32,18 +32,18 @@ const shuuroStore = useShuuroStore();
 
 function min(): string {
   let id = props.color == "white" ? 0 : 1;
-  return shuuroStore.$state.clocks[id].currentMin;
+  return shuuroStore.clocks[id].currentMin;
 }
 
 function sec(): string {
   let id = props.color == "white" ? 0 : 1;
-  let result = shuuroStore.$state.clocks[id].currentSec;
+  let result = shuuroStore.clocks[id].currentSec;
   return result;
 }
 
 function isRunning(): boolean {
   let id = props.color == "white" ? 0 : 1;
-  return shuuroStore.$state.clocks[id].running;
+  return shuuroStore.clocks[id].running;
 }
 </script>
 <style></style>
