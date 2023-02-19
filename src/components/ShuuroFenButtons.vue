@@ -39,7 +39,7 @@ function stepBackward(): void {
     shuuroStore.current_index! -= 1;
     if (fenExist(shuuroStore.currentIndex())) {
       let fen = getFen(shuuroStore.currentIndex());
-      console.log(fen);
+      
       wasmFen(fen);
     }
   }

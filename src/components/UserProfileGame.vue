@@ -1,17 +1,10 @@
 <template>
   <tr>
-    <router-link
-      :to="gameUrl(game._id, game.current_stage, game.status)"
-      @click="setShuuroStore"
-    >
+    <router-link :to="gameUrl(game._id, game.current_stage, game.status)" @click="setShuuroStore">
       <td class="board invisible">
         <div class="standard">
-          <div
-            :class="`chessground12 mini ${game._id}`"
-            :id="game._id"
-            :data-board="settings.getBoard()"
-            :data-piece="settings.getPiece()"
-          />
+          <div :class="`chessground12 mini ${game._id}`" :id="game._id" :data-board="settings.getBoard()"
+            :data-piece="settings.getPiece()" />
         </div>
       </td>
       <td class="games-info">
@@ -31,25 +24,15 @@
         <div class="info-middle">
           <div class="versus">
             <player>
-              <router-link
-                :key="useRoute().fullPath"
-                class="user-link"
-                :to="`/@/${props.game.players[0]}`"
-                ><player-title> </player-title
-                >{{ props.game.players[0] }}</router-link
-              >
+              <router-link :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.players[0]}`"><player-title>
+                </player-title>{{ props.game.players[0] }}</router-link>
               <br />
               1500?
             </player>
             <vs-swords class="icon" :data-icon="sword"></vs-swords>
             <player>
-              <router-link
-                :key="useRoute().fullPath"
-                class="user-link"
-                :to="`/@/${props.game.players[1]}`"
-                ><player-title> </player-title
-                >{{ props.game.players[1] }}</router-link
-              >
+              <router-link :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.players[1]}`"><player-title>
+                </player-title>{{ props.game.players[1] }}</router-link>
               <br />
               1500?
             </player>
@@ -118,7 +101,7 @@ function sumMoves(): number {
 
 function sumShop(): number {
   if (props.game.history[1].length > 0) {
-    let count = props.game.history[1][0][0].split("_")[2].length + 1;
+    let count = props.game.history[1][0].split("_")[2].length + 1;
     return count;
   }
   return 0;

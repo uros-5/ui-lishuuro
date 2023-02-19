@@ -5,13 +5,8 @@
     </selection>
     <div class="material material-top black standard disabled" />
     <div class="pocket-top">
-      <PlayerHand
-        :in-center="false"
-        side="top"
-        :counter="[0, 0, 0, 0, 0, 0, 0]"
-        :color="shuuroStore.getColor(topPlayer())"
-        hand-type="pocket"
-      />
+      <PlayerHand :in-center="false" side="top" :counter="[0, 0, 0, 0, 0, 0, 0, 0]"
+        :color="shuuroStore.getColor(topPlayer())" hand-type="pocket" />
     </div>
     <ShuuroClock :color="shuuroStore.getColor(topPlayer())" part="0" />
     <div id="expiration-top" />
@@ -20,21 +15,12 @@
     <ShuuroFen />
     <ShuuroMatchOfferDialog />
     <ShuuroMatchButtons />
-    <ShuuroFenPlayer
-      :player="bottomPlayer()"
-      :online="true"
-      style="grid-area: user-bot"
-    />
+    <ShuuroFenPlayer :player="bottomPlayer()" :online="true" style="grid-area: user-bot" />
     <div id="expiration-bottom" />
     <ShuuroClock :color="shuuroStore.getColor(bottomPlayer())" part="1" />
     <div class="pocket-bot">
-      <PlayerHand
-        side="bottom"
-        :in-center="false"
-        :counter="[0, 0, 0, 0, 0, 0, 0]"
-        :color="shuuroStore.getColor(bottomPlayer())"
-        hand-type="pocket"
-      />
+      <PlayerHand side="bottom" :in-center="false" :counter="[0, 0, 0, 0, 0, 0, 0, 0]"
+        :color="shuuroStore.getColor(bottomPlayer())" hand-type="pocket" />
     </div>
   </div>
 </template>
@@ -68,14 +54,8 @@ function bottomPlayer(): string {
 <style>
 .round-app {
   grid-template-columns:
-    minmax(
-      calc(70vmin * var(--board-scale)),
-      calc(
-        100vh * var(--board-scale) -
-          calc(var(--site-header-height) + var(--site-header-margin)) - 3rem
-      )
-    )
-    minmax(240px, 400px);
+    minmax(calc(70vmin * var(--board-scale)),
+      calc(100vh * var(--board-scale) - calc(var(--site-header-height) + var(--site-header-margin)) - 3rem)) minmax(240px, 400px);
   grid-template-rows: min-content auto auto min-content auto auto auto auto auto auto auto min-content auto auto min-content;
   grid-template-areas: "board ." "board mat-top" "board pocket-top" "board clock-top" "board expi-top" "board user-top" "board move-controls" "board moves" "board offer" "board game-controls" "board user-bot" "board expi-bot" "board clock-bot" "board pocket-bot" "board mat-bot" "board .";
 }
