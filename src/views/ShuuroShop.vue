@@ -6,18 +6,10 @@
         <span class="local-price"> {{ shuuroStore.dataPrice()[index] }} </span>
       </p>
     </div>
-    <PlayerHand
-      side=""
-      :in-center="true"
-      :counter="[1, 0, 0, 0, 0, 0, 0]"
-      :color="shuuroStore.getColor(userStore.username)"
-      hand-type="shop"
-    />
+    <PlayerHand side="" :in-center="true" :counter="[1, 0, 0, 0, 0, 0, 0, 0]"
+      :color="shuuroStore.getColor(userStore.username)" hand-type="shop" />
     <p class="local-credit">Credit: {{ shuuroStore.credit }}</p>
-    <button
-      class="shuuro-confirm"
-      @click="shuuroStore.confirm(userStore.username)"
-    >
+    <button class="shuuro-confirm" @click="shuuroStore.confirm(userStore.username)">
       Confirm
     </button>
   </div>

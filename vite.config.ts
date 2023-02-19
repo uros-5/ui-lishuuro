@@ -48,4 +48,5 @@ const CUSTOM_ELEMENTS = [
   "icon",
   "vs-swords",
   "back",
+  "mini-game"
 ];

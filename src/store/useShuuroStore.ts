@@ -25,7 +25,7 @@ const finished = [
   "Stalemate",
 ];
 
-export const useShuuroStore = defineStore("shuuro2", {
+export const useShuuroStore = defineStore("shuuroStore", {
   state: (): ShuuroStore => {
     return emptyState();
   },
@@ -167,12 +167,15 @@ export const useShuuroStore = defineStore("shuuro2", {
       }
       switch (this.current_stage) {
         case 0:
-          (this.wasm0() as ShuuroShop).change_variant(variant);
+          this.variant = "shuuroFairy";
+          (this.wasm0() as ShuuroShop).change_variant("shuuroFairy");
           break;
         case 1:
+          this.variant = "shuuroFairy";
           this.wasm(1).change_variant("shuuroFairy");
           break;
         case 2:
+          this.variant = "shuuroFairy";
           this.wasm(2).change_variant("shuuroFairy");
           break;
       }
@@ -211,6 +214,7 @@ export const useShuuroStore = defineStore("shuuro2", {
       if (this.canShop()) {
         const game_move = `+${p}`;
         this.piece_counter = this.wasm0().buy(game_move);
+        
         this.piece_counter[0] = 1;
         const new_credit = this.wasm0().get_credit(color);
         const counter = this.wasm0().get_piece(p);
@@ -253,11 +257,12 @@ export const useShuuroStore = defineStore("shuuro2", {
         if (this.current_stage == 0) {
           this.wasm![0] = new ShuuroShop();
           this.changeVariant();
+          
           (this.wasm0() as ShuuroShop).set_hand(hand);
           this.piece_counter = this.wasm0().shop_items(
             this.player_color!
           );
-          const h:[string, number][]  = this.wasm0().history();
+          const h: [string, number][] = this.wasm0().history();
           this.history[0] = h;
           this.credit = (this.wasm0() as ShuuroShop).get_credit(
             this.player_color!
@@ -338,7 +343,7 @@ export const useShuuroStore = defineStore("shuuro2", {
       }
       if (msg.first_move_error) {
         const self = this;
-        setTimeout(function () {
+        setTimeout(function() {
           self.playAudio("res");
           self.clockPause(self.side_to_move);
           self.result = self.stmS();
@@ -444,8 +449,8 @@ export const useShuuroStore = defineStore("shuuro2", {
 
     // find legal moves for current player in stage 2
     legal_moves() {
-        const moves = this.wasm(2).legal_moves(this.player_color![0] as string);
-        this.cgs(2).state.movable.dests = moves;
+      const moves = this.wasm(2).legal_moves(this.player_color![0] as string);
+      this.cgs(2).state.movable.dests = moves;
     },
 
     // after moving
@@ -670,7 +675,7 @@ export const useShuuroStore = defineStore("shuuro2", {
     },
 
     // flag notification
-    flagNotif() {},
+    flagNotif() { },
 
     // low time notification
     lowTimeNotif() {
@@ -827,7 +832,7 @@ export const useShuuroStore = defineStore("shuuro2", {
     enablePremove(config: Config) {
       if (this.am_i_player && this.status < 1) {
         config.premovable = {
-          events: { set: (orig, dest) => {}, unset: () => {} },
+          events: { set: (orig, dest) => { }, unset: () => { } },
         };
         config.premovable.enabled = true;
         config.premovable!.events!.set = (orig, dest, metadata) => {
@@ -921,7 +926,7 @@ export const useShuuroStore = defineStore("shuuro2", {
     },
 
     dataMax(): Uint8Array {
-      const data = new Uint8Array([1, 3, 6, 9, 9, 18, 3, 3]);
+      const data = new Uint8Array([1, 3, 6, 9, 9, 18, 3, 3, 4]);
       if (this.variant == "shuuro12") {
         return data.slice(0, 6);
       }
@@ -929,7 +934,7 @@ export const useShuuroStore = defineStore("shuuro2", {
     },
 
     dataPrice(): Uint8Array {
-      const data = new Uint8Array([0, 110, 70, 40, 40, 10, 130, 130]);
+      const data = new Uint8Array([0, 110, 70, 40, 40, 10, 130, 130, 70]);
       if (this.variant == "shuuro12") {
         return data.slice(0, 6);
       }
@@ -946,6 +951,7 @@ export const useShuuroStore = defineStore("shuuro2", {
         "p-piece",
         "c-piece",
         "a-piece",
+        "g-piece"
       ];
       if (this.variant == "shuuro12") {
         return pieces.slice(0, 6);
@@ -969,23 +975,25 @@ export const useShuuroStore = defineStore("shuuro2", {
       return this.history![index];
     },
 
-     getHistory(): string[] {
+    getHistory(): string[] {
       if (this.client_stage == 0) {
         if (this.am_i_player) {
-          let history = this.myHistory(0);
+          let history = this.myHistory(0) as [string, number][];
           let color = this.player_color!;
-          return history.filter((item: [string, number]) => {
-            let p = item[0][1];
+          let newest: string[] = [];
+          history.forEach((value) => {
+            let p = value[0][1];
             if (color == "white") {
               if (p == p.toUpperCase()) {
-                return item[0];
+                newest.push(value[0]);
               }
             } else if (color == "black") {
               if (p == p.toLowerCase()) {
-                return item[0];
+                newest.push(value[0]);
               }
             }
           });
+          return newest;
         }
       } else if (this.client_stage == 1) {
         return this.myHistory(1) as string[];
@@ -994,7 +1002,7 @@ export const useShuuroStore = defineStore("shuuro2", {
       }
       return [];
     },
-    
+
 
     wasm(index: StageN): ShuuroPosition {
       return this.wasm![index] as ShuuroPosition;

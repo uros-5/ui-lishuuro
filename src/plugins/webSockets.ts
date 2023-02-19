@@ -119,6 +119,7 @@ function onmessage(event: any) {
       break;
     case "live_game_start":
       msg["game_info"]["game_id"] = msg["game_id"];
+      shuuroStore.$reset()
       shuuroStore.fromServer(msg["game_info"], user.username);
       break;
     case "live_game_spectators_count":
