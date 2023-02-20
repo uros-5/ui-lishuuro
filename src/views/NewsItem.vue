@@ -9,8 +9,7 @@
           <span class="text">
             <router-link :to="`/@/${props.user}`">
               @{{ props.user }}
-            </router-link></span
-          >
+            </router-link></span>
           <span class="text"> {{ props.category }} </span>
         </div>
         <div class="headline">
@@ -26,8 +25,8 @@
 
 <script setup lang="ts">
 import GET from "@/plugins/axios";
-import { ref, Ref } from "vue";
-import { NewsItem, useNews } from "@/store/useNews";
+import { ref, type Ref } from "vue";
+import { type NewsItem, useNews } from "@/store/useNews";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";

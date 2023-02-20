@@ -1,27 +1,8 @@
 <template>
   <div class="player-social">
     <div class="btn-rack">
-      <a class="icon icon-tv" href="" title="Watch games"></a>
-      <a
-        class="icon icon-crossedswords"
-        href=""
-        title="Challenge to a game"
-      ></a>
-      <a class="icon icon-cloud-upload" href="/paste" title="Import game"></a>
-      <a
-        class="icon icon-download"
-        href=""
-        download="someone.pgn"
-        title="Export games"
-      ></a>
-      <a
-        class="icon icon-at"
-        v-if="props.reg"
-        :href="`https://lichess.org/@/${props.username}`"
-        rel="noopener"
-        target="_blank"
-        title="Lichess profile"
-      ></a>
+      <a class="icon icon-at" :href="`https://lichess.org/@/${props.username}`" rel="noopener" target="_blank"
+        title="Lichess profile"></a>
     </div>
   </div>
 </template>
@@ -44,6 +25,7 @@ const props = defineProps<{ username: string; reg: boolean }>();
   border-radius: 3px;
   margin: 1em;
 }
+
 .btn-rack a {
   justify-content: center;
   padding: 0 0.6em;
@@ -53,9 +35,11 @@ const props = defineProps<{ username: string; reg: boolean }>();
   border-right: 1px solid var(--border-color);
   color: var(--font-color);
 }
+
 [class*=" icon-"]::before {
   line-height: 2rem;
 }
+
 .i-at,
 .i-tv,
 .i-dl,
@@ -64,5 +48,9 @@ const props = defineProps<{ username: string; reg: boolean }>();
   padding: 0px 4px 0px 4px;
   color: #505050;
   text-decoration: none;
+}
+
+.icon-at::before {
+  content: "\23";
 }
 </style>

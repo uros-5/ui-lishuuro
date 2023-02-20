@@ -17,6 +17,9 @@ coverage
 /cypress/videos/
 /cypress/screenshots/
 
+#/src/plugins/chessground12
+/src/plugins/shuuro-wasm
+
 # Editor directories and files
 *.suo
 *.ntvs*

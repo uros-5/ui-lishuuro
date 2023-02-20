@@ -1,12 +1,12 @@
-import Chessground  from "@/plugins/chessground12";
-import type { Api } from "@/plugins/chessground12/api";
-import { setCheck } from "@/plugins/chessground12/board";
-import { userProfileConfig } from "@/plugins/chessground12/configs";
-import type { Role } from "@/plugins/chessground12/types";
+import {Chessground}  from "chessground12";
+import type { Api } from "chessground12/api";
+import { setCheck } from "chessground12/board";
+import { userProfileConfig } from "chessground12/configs";
+import type { Role } from "chessground12/types";
 import { defineStore } from "pinia";
-import init, { ShuuroPosition } from "@/plugins/shuuro-wasm";
+import init, { ShuuroPosition } from "shuuro-wasm";
 import type { Color } from "./useShuuroStore";
-import type { Key, Piece } from "@/plugins/chessground12/types";
+import type { Key, Piece } from "chessground12/types";
 
 export const useTvStore = defineStore("tvStore", {
   state: (): TvStore => {

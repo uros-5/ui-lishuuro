@@ -29,17 +29,21 @@ function flipSide(): void {
 function fastBackward(): void {
   shuuroStore.current_index = 0;
   if (fenExist(shuuroStore.currentIndex())) {
-    let fen = getFen(0);
+    let placement_index = shuuroStore.myHistory(1).length - 1;
+    let fen = shuuroStore.client_stage == 1 ? getFen(0) : getFen(placement_index, 1);
     wasmFen(fen);
+    shuuroStore.current_index = -1;
   }
 }
 
 function stepBackward(): void {
-  if (shuuroStore.currentIndex() > 0) {
+  if (shuuroStore.currentIndex() == 0) {
+    fastBackward();
+  }
+  else if (shuuroStore.currentIndex() > 0) {
     shuuroStore.current_index! -= 1;
     if (fenExist(shuuroStore.currentIndex())) {
       let fen = getFen(shuuroStore.currentIndex());
-      
       wasmFen(fen);
     }
   }
@@ -70,8 +74,9 @@ function wasmFen(fen: string) {
   shuuroStore.tempWasm(fen);
 }
 
-function getFen(index: number): string {
-  switch (shuuroStore.client_stage!) {
+function getFen(index: number, stage?: number): string {
+  let client_stage = stage ? stage : shuuroStore.client_stage!;
+  switch (client_stage) {
     case 1:
       let s = (shuuroStore.myHistory(1)[index] as string).split("_");
       return `${s[1]} ${s[2]} ${s[3]}`;

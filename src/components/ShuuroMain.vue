@@ -10,12 +10,12 @@
     </div>
     <ShuuroClock :color="shuuroStore.getColor(topPlayer())" part="0" />
     <div id="expiration-top" />
-    <ShuuroFenPlayer :player="topPlayer()" :online="false" />
+    <ShuuroFenPlayer :player_username="topPlayer()" :online="false" />
     <ShuuroFenButtons />
     <ShuuroFen />
     <ShuuroMatchOfferDialog />
     <ShuuroMatchButtons />
-    <ShuuroFenPlayer :player="bottomPlayer()" :online="true" style="grid-area: user-bot" />
+    <ShuuroFenPlayer :player_username="bottomPlayer()" :online="true" style="grid-area: user-bot" />
     <div id="expiration-bottom" />
     <ShuuroClock :color="shuuroStore.getColor(bottomPlayer())" part="1" />
     <div class="pocket-bot">

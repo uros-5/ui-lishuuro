@@ -1,23 +1,10 @@
 <template>
   <div class="game-info">
     <section>
-      <ShuuroStageMatchInfo
-        :variant="shuuroStore.getVariant()"
-        :minute="shuuroStore.min"
-        :sec="shuuroStore.incr"
-        :rated="shuuroStore.rated_game"
-        date="*"
-      />
-      <ShuuroLeftSideUsername
-        :player="player(0)"
-        :rating="rating(player(0))"
-        color="white"
-      />
-      <ShuuroLeftSideUsername
-        :player="player(1)"
-        :rating="rating(player(1))"
-        color="black"
-      />
+      <ShuuroStageMatchInfo :variant="shuuroStore.getVariant()" :minute="shuuroStore.min" :sec="shuuroStore.incr"
+        :rated="shuuroStore.rated_game" date="*" />
+      <ShuuroLeftSideUsername :player_username="player(0)" :rating="rating(player(0))" color="white" />
+      <ShuuroLeftSideUsername :player_username="player(1)" :rating="rating(player(1))" color="black" />
     </section>
     <section class="shuuro-navigator">
       <router-link class="user-link" :to="navRoute('0')"> Shop </router-link>

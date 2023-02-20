@@ -156,7 +156,6 @@ function onmessage(event: any) {
       break;
     case "live_game_sfen":
       delete msg["t"];
-      console.log(msg)
       tvStore.setProfileGame(msg);
       break;
     case "pause_confirmed":

@@ -3,7 +3,7 @@
     <div class="info2">
       <div class="tc">
         {{ minute }} + {{ sec }} • {{ ratedGame() }}•
-        <a class="user-link" target="_blank" href="/">{{ variantTitle() }}</a>
+        <router-link class="user-link" to="/">{{ variantTitle() }}</router-link>
       </div>
       <info-date timestamp="" :title="toolTipDate()">
         {{ gameDate() }}

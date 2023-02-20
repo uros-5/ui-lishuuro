@@ -1,21 +1,21 @@
 import { defineStore } from "pinia";
-import init, { ShuuroShop, ShuuroPosition } from "@/plugins/shuuro-wasm";
+import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
-import Chessground from "@/plugins/chessground12";
+import {Chessground} from "chessground12";
 import router from "@/router";
 import { SEND } from "@/plugins/webSockets";
-import { anonConfig, liveConfig, p2 } from "@/plugins/chessground12/configs";
-import { readPockets } from "@/plugins/chessground12/pocket";
-import type { Key, MoveMetadata, Piece } from "@/plugins/chessground12/types";
-import { setCheck } from "@/plugins/chessground12/board";
-import type { Config } from "@/plugins/chessground12/config";
+import { anonConfig, liveConfig, p2 } from "chessground12/configs";
+import { readPockets } from "chessground12/pocket";
+import type { Key, MoveMetadata, Piece } from "chessground12/types";
+import { setCheck } from "chessground12/board";
+import type { Config } from "chessground12/config";
 
 import captureUrl from "@/assets/sounds/capture.ogg";
 import resUrl from "@/assets/sounds/res.ogg";
 import moveUrl from "@/assets/sounds/move.ogg";
 import lowTimeUrl from "@/assets/sounds/low_time.ogg";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
-import type { Api } from "@/plugins/chessground12/api";
+import type { Api } from "chessground12/api";
 
 const finished = [
   "Checkmate",
@@ -556,12 +556,12 @@ export const useShuuroStore = defineStore("shuuroStore", {
         return;
       }
       const cs = this.cs();
-      const temp = new ShuuroPosition();
-      this.changeTempVariant(temp);
-      temp.set_sfen(sfen);
-      const check = temp.is_check();
-      const pieces = temp.map_pieces();
-      let stm = temp.side_to_move() as Color;
+      const tempWasm = new ShuuroPosition();
+      this.changeTempVariant(tempWasm);
+      tempWasm.set_sfen(sfen);
+      const check = tempWasm.is_check();
+      const pieces = tempWasm.map_pieces();
+      let stm = tempWasm.side_to_move() as Color;
       stm = stm[0] == "w" ? "white" : "black";
       this.cgs(cs).state.turnColor = stm;
       this.cgs(cs).state.pieces = pieces;
@@ -583,8 +583,8 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
       if (cs == 1) {
         const h = sfen.split(" ")[1];
-        temp.set_hand(h);
-        const hand = temp.count_hand_pieces();
+        tempWasm.set_hand(h);
+        const hand = tempWasm.count_hand_pieces();
         this.cgs(1).state.pockets = readPockets(
           `[${hand}]`,
           this.cgs(1).state.pocketRoles!
@@ -592,7 +592,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
         this.cgs(1).state.dom.redraw();
       }
 
-      temp.free();
+      tempWasm.free();
     },
 
     // set check
