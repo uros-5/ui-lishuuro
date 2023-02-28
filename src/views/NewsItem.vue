@@ -33,7 +33,7 @@ import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 
 const newsStore = useNews();
 const props: Ref<NewsItem> = ref({
-  _id: "",
+  _id: '',
   user: "",
   category: "",
   title: "",

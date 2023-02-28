@@ -5,63 +5,33 @@
         <label for="variant">Variant</label>
         <select id="variant" v-model="variant" name="variant">
           <optgroup label="ShuuroVariant">
-            <option value="shuuro12" title="Shuuro, unmodified.">SHUURO</option>
-            <option value="shuuro12fairy" title="Shuuro, with fairy pieces.">
+            <option value="shuuro" title="Shuuro, unmodified.">SHUURO</option>
+            <option value="shuuroFairy" title="Shuuro, with fairy pieces.">
               SHUURO FAIRY
             </option>
+            <option value="standard" title="Standard chess with plinths">STANDARD</option>
           </optgroup>
         </select>
       </div>
       <label for="min">&nbsp; Minutes per side:</label>
       <span id="minutes">{{ allowedDuration[time] }}</span>
-      <input
-        id="min"
-        v-model.number="time"
-        class="slider"
-        name="min"
-        type="range"
-        min="0"
-        max="27"
-      />
+      <input id="min" v-model.number="time" class="slider" name="min" type="range" min="0" max="27" />
       <label id="incrementlabel" for="inc">&nbsp;Increment in seconds:</label>
       <span id="increment">{{ incrementDuration[incr] }}</span>
-      <input
-        id="inc"
-        v-model.number="incr"
-        class="slider"
-        name="inc"
-        type="range"
-        min="0"
-        max="28"
-      />
+      <input id="inc" v-model.number="incr" class="slider" name="inc" type="range" min="0" max="28" />
       <div id="color-button-group" style="display: block">
-        <button
-          class="icon icon-black"
-          type="button"
-          title="Black"
-          @click="
-            color = 'black';
-            createGame();
-          "
-        />
-        <button
-          class="icon icon-adjust"
-          type="button"
-          title="Random"
-          @click="
-            color = 'random';
-            createGame();
-          "
-        />
-        <button
-          class="icon icon-white"
-          type="button"
-          title="White"
-          @click="
-            color = 'white';
-            createGame();
-          "
-        />
+        <button class="icon icon-black" type="button" title="Black" @click="
+          color = 'black';
+        createGame();
+                    " />
+        <button class="icon icon-adjust" type="button" title="Random" @click="
+          color = 'random';
+        createGame();
+                    " />
+        <button class="icon icon-white" type="button" title="White" @click="
+          color = 'white';
+        createGame();
+                    " />
       </div>
     </div>
   </form>

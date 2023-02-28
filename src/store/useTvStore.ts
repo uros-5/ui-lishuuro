@@ -1,12 +1,12 @@
-import {Chessground}  from "chessground12";
-import type { Api } from "chessground12/api";
-import { setCheck } from "chessground12/board";
-import { userProfileConfig } from "chessground12/configs";
-import type { Role } from "chessground12/types";
+import Chessground  from "@/plugins/chessground12";
+import type { Api } from "@/plugins/chessground12/api";
+import { setCheck } from "@/plugins/chessground12/board";
+import { userProfileConfig } from "@/plugins/chessground12/configs";
+import { dimensions, Geometry, type Role } from "@/plugins/chessground12/types";
 import { defineStore } from "pinia";
-import init, { ShuuroPosition } from "shuuro-wasm";
+import init, { ShuuroPosition } from "@/plugins/shuuro-wasm";
 import type { Color } from "./useShuuroStore";
-import type { Key, Piece } from "chessground12/types";
+import type { Key, Piece } from "@/plugins/chessground12/types";
 
 export const useTvStore = defineStore("tvStore", {
   state: (): TvStore => {
@@ -23,16 +23,21 @@ export const useTvStore = defineStore("tvStore", {
     },
 
     // creating new cg
-    setCg(id: string): Api {
+    setCg(id: string, variant: string): Api {
       const elem = document.getElementById(id) as HTMLElement;
       const cg = Chessground(elem, userProfileConfig, 500, undefined);
+      if (variant == "standard") {
+        cg.state.variant = "standard";
+        cg.state.dimensions = dimensions[1];
+        cg.state.geometry = Geometry.dim8x8;
+      }
       return cg;
     },
 
     // using wasm for setting plinths and pieces
-    tempWasm(cg: Api, sfen: string, stage: string) {
+    tempWasm(cg: Api, sfen: string, stage: string, variant: string) {
       init().then((_exports) => {
-        const w = new ShuuroPosition();
+        const w = new ShuuroPosition(variant);
         const fen = sfen; //this.getFen(sfen, stage);
         w.set_sfen(fen);
         const check = w.is_check();

@@ -28,7 +28,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  SEND({ t: "live_game_remove_spectator", game_id: "tv" });
+  SEND({ t: "live_game_remove_spectator", game_id: "tv", variant: "shuuro" });
   store.setGames([]);
 });
 </script>

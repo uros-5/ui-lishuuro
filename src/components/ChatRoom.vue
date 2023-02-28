@@ -46,6 +46,7 @@ const props = defineProps<{
   messages: ChatMessage[];
   wsType: string;
   finished: number;
+  variant: string;
 }>();
 const message = ref("");
 const hiddenChat = ref(true);
@@ -60,6 +61,7 @@ function onEnter(): void {
       user: user.username,
       time: "",
       id: props.wsType,
+      variant: "shuuro",
     });
     message.value = "";
   }

@@ -44,6 +44,7 @@ export const useHeaderSettings = defineStore("headerSettings", {
       return this.theme;
     },
     getBoard(): string {
+      console.log(this.board);
       return `board-${this.board}`;
     },
     getPiece(): string {

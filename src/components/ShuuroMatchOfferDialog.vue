@@ -27,7 +27,7 @@ function rejectDraw() {
 }
 
 function acceptDraw() {
-  SEND({ t: "live_game_draw", game_id: store.game_id });
+  SEND({ t: "live_game_draw", game_id: store.game_id, variant: store.getVariant() });
   store.offeredDraw = false;
 }
 </script>

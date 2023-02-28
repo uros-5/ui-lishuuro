@@ -2,7 +2,7 @@
   <tr>
     <router-link :to="gameUrl(game._id, game.current_stage, game.status)" @click="setShuuroStore">
       <td class="board invisible">
-        <div class="standard">
+        <div class="standard" :class="`${isStandard()}`">
           <div :class="`chessground12 mini ${game._id}`" :id="game._id" :data-board="settings.getBoard()"
             :data-piece="settings.getPiece()" />
         </div>
@@ -67,17 +67,25 @@ const sword = '"';
 
 const props = defineProps<{ game: ShuuroStore | any }>();
 
+function isStandard(): string {
+  if (props.game.variant == 'standard') {
+    console.log('hellllll', props.game.variant);
+    return "standard8";
+  }
+  else { return ""; }
+}
+
 onMounted(() => {
   if (props.game.status <= 0) {
-    SEND({ t: "live_game_sfen", game_id: props.game._id });
+    SEND({ t: "live_game_sfen", game_id: props.game._id, variant: props.game.variant! });
   } else {
     let stage = props.game.current_stage;
     if (stage == "shop") {
       return;
     }
-    let cg = tv.setCg(props.game._id);
+    let cg = tv.setCg(props.game._id, props.game.variant);
     let sfen = props.game.sfen;
-    tv.tempWasm(cg, sfen, stage);
+    tv.tempWasm(cg, sfen, stage, props.game.variant);
   }
 });
 
@@ -148,13 +156,16 @@ function gameUrl(id: string, stage: number, status: number): string {
 }
 
 function variantTitle(): string {
-  return (props.game as ShuuroStore).variant == "shuuro12"
-    ? "SHUURO"
-    : "SHUURO FAIRY";
+  switch ((props.game as ShuuroStore).variant) {
+    case "shuuro":
+      return "SHUURO";
+    case "shuuroFairy":
+      return "SHUURO FAIRY"; case "standard": return "STANDARD"; default: return "SHUURO"
+  }
 }
 
 function dataIcon(): string {
-  return variantTitle() == "SHUURO" ? "M" : "P";
+  return variantTitle() == "SHUURO" || "STANDARD" ? "M" : "P";
 }
 </script>
 

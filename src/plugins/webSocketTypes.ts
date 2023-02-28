@@ -3,6 +3,7 @@ export interface liveChatMessage {
   user: string;
   time: string;
   message: string;
+  variant: String;
 }
 
 export interface liveChatFull {

@@ -21,17 +21,20 @@ const zoomValue = ref("100");
 
 onMounted(() => {
   const id = useRoute().params["id"];
+  const variant = useRoute().params["variant"];
   if (id == "" || id == undefined) {
     router.push("/");
   } else {
     if (shuuroStore.game_id == "") {
+
       let obj = {
         t: "live_game_start",
         game_id: id,
         color: "white",
+        variant: variant
       };
       SEND(obj);
-      SEND({ t: "live_chat_full", game_id: id });
+      SEND({ t: "live_chat_full", game_id: id, variant: "shuuro" });
     }
     //fetchData();
   }
@@ -39,7 +42,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   const id = shuuroStore.game_id;
-  const obj = { t: "live_game_remove_spectator", game_id: id };
+  const obj = { t: "live_game_remove_spectator", game_id: id, variant: "shuuro" };
   SEND(obj);
   shuuroStore.game_id = "";
   homeChat.gameChat = [];

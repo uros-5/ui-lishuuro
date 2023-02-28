@@ -53,38 +53,69 @@ div #allpieces {
   padding: 30px;
 }
 
+.piece-0 {
+  background-image: url("@/../public/assets/pieces/merida/wN.svg");
+}
+
+.standard8 .board-0,
+.standard8 div[data-board$="0"] cg-board {
+  background-image: url("@/assets/board/8x8brown.svg");
+}
+
+.standard8 .board-1,
+.standard8 div[data-board$="1"] cg-board {
+  background-image: url("@/assets/board/8x8blue.svg");
+}
+
+.standard8 .board-2,
+.standard8 div[data-board$="2"] cg-board {
+  background-image: url("@/assets/board/8x8green.svg");
+}
+
+.standard8 .board-3,
+.standard8 div[data-board$="3"] cg-board {
+  background-image: url("@/assets/board/8x8gray.svg");
+}
+
+.standard8 .board-4,
+.standard8 div[data-board$="4"] cg-board {
+  background-image: url("@/assets/board/8x8brown_sand.svg");
+}
+
+.standard8 .board-5,
+.standard8 div[data-board$="5"] cg-board {
+  background-image: url("@/assets/board/8x8brown_yellow.svg");
+}
+
+
 .board-0,
 div[data-board$="0"] cg-board {
-  background-image: url("@/assets/board/12x12brown.svg") !important;
+  background-image: url("@/assets/board/12x12brown.svg");
 }
 
 .board-1,
 div[data-board$="1"] cg-board {
-  background-image: url("@/assets/board/12x12blue.svg") !important;
+  background-image: url("@/assets/board/12x12blue.svg");
 }
 
 .board-2,
 div[data-board$="2"] cg-board {
-  background-image: url("@/assets/board/12x12green.svg") !important;
+  background-image: url("@/assets/board/12x12green.svg");
 }
 
 .board-3,
 div[data-board$="3"] cg-board {
-  background-image: url("@/assets/board/12x12gray.svg") !important;
+  background-image: url("@/assets/board/12x12gray.svg");
 }
 
 .board-4,
 div[data-board$="4"] cg-board {
-  background-image: url("@/assets/board/12x12brown_sand.svg") !important;
+  background-image: url("@/assets/board/12x12brown_sand.svg");
 }
 
 .board-5,
 div[data-board$="5"] cg-board {
-  background-image: url("@/assets/board/12x12brown_yellow.svg") !important;
-}
-
-.piece-0 {
-  background-image: url("@/../public/assets/pieces/merida/wN.svg");
+  background-image: url("@/assets/board/12x12brown_yellow.svg");
 }
 
 .piece-1 {

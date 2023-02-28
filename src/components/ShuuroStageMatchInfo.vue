@@ -27,7 +27,18 @@ const props = defineProps<{
 }>();
 
 function variantTitle(): string {
-  return props.variant == "shuuro12" ? "Shuuro" : "Shuuro Fairy";
+  switch (props.variant) {
+    case "shuuro":
+      return "Shuuro";
+    case "shuuroFairy":
+      return "Shuuro Fairy";
+    case "standard":
+      return "Standard";
+    case "standardFairy":
+      return "Standard Fairy";
+    default: return "";
+
+  }
 }
 
 function ratedGame(): string {
@@ -55,7 +66,8 @@ function toolTipDate(): string {
 }
 
 function gameIcon(): string {
-  return variantTitle() == "Shuuro" ? "M" : "P";
+  console.log(variantTitle());
+  return variantTitle() == "Shuuro" || variantTitle() == "Standard" ? "M" : "P";
 }
 </script>
 <style></style>

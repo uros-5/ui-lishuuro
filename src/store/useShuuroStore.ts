@@ -1,21 +1,21 @@
 import { defineStore } from "pinia";
-import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
+import init, { ShuuroShop, ShuuroPosition } from "@/plugins/shuuro-wasm";
 import { Clock } from "@/plugins/clock";
-import {Chessground} from "chessground12";
+import  Chessground from "@/plugins/chessground12";
 import router from "@/router";
 import { SEND } from "@/plugins/webSockets";
-import { anonConfig, liveConfig, p2 } from "chessground12/configs";
-import { readPockets } from "chessground12/pocket";
-import type { Key, MoveMetadata, Piece } from "chessground12/types";
-import { setCheck } from "chessground12/board";
-import type { Config } from "chessground12/config";
+import { anonConfig, liveConfig, p2 } from "@/plugins/chessground12/configs";
+import { readPockets } from "@/plugins/chessground12/pocket";
+import { dimensions, Geometry, type Key, type MoveMetadata, type Piece } from "@/plugins/chessground12/types";
+import { setCheck } from "@/plugins/chessground12/board";
+import type { Config } from "@/plugins/chessground12/config";
 
 import captureUrl from "@/assets/sounds/capture.ogg";
 import resUrl from "@/assets/sounds/res.ogg";
 import moveUrl from "@/assets/sounds/move.ogg";
 import lowTimeUrl from "@/assets/sounds/low_time.ogg";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
-import type { Api } from "chessground12/api";
+import type { Api } from "@/plugins/chessground12/api";
 
 const finished = [
   "Checkmate",
@@ -34,6 +34,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // convert server data to store
     fromServer(s: any, username: string) {
+
       this.setTime(s);
       this.setStatus(s);
       this.setHistory(s);
@@ -161,22 +162,22 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // SHOP PARTS
     changeVariant(): void {
       const variant = this.getVariant();
-      if (variant == "shuuro12") {
-        this.variant = "shuuro12";
+      if (variant == "shuuro") {
+        this.variant = "shuuro";
         return;
+      }
+      else if (variant == "standard") {
+        this.variant = "standard";
       }
       switch (this.current_stage) {
         case 0:
-          this.variant = "shuuroFairy";
-          (this.wasm0() as ShuuroShop).change_variant("shuuroFairy");
+          (this.wasm0() as ShuuroShop).change_variant(this.variant);
           break;
         case 1:
-          this.variant = "shuuroFairy";
-          this.wasm(1).change_variant("shuuroFairy");
+          this.wasm(1).change_variant(this.variant);
           break;
         case 2:
-          this.variant = "shuuroFairy";
-          this.wasm(2).change_variant("shuuroFairy");
+          this.wasm(2).change_variant(this.variant);
           break;
       }
     },
@@ -184,23 +185,15 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // change variant if necessary
     changeTempVariant(pos: ShuuroPosition) {
       const variant = this.getVariant();
-      if (variant != "shuuro12") {
+      if (variant != "shuuro") {
         pos.change_variant("shuuroFairy");
       }
     },
 
     // get hand and confirmed_players
     shopInfo(): void {
-      SEND({
-        t: "live_game_hand",
-        //color: this.player_color,
-        game_id: this.game_id,
-      });
-      SEND({
-        t: "live_game_confirmed",
-        //color: this.player_color,
-        game_id: this.game_id,
-      });
+      this.SEND("live_game_hand")
+      this.SEND("live_game_confirmed")
     },
 
     // get from server confirmed and set
@@ -214,7 +207,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       if (this.canShop()) {
         const game_move = `+${p}`;
         this.piece_counter = this.wasm0().buy(game_move);
-        
+
         this.piece_counter[0] = 1;
         const new_credit = this.wasm0().get_credit(color);
         const counter = this.wasm0().get_piece(p);
@@ -224,11 +217,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
           this.history[0]?.push([game_move, counter]);
           this.scrollToBottom();
         }
-        SEND({
-          t: "live_game_buy",
-          game_id: this.game_id,
-          game_move: game_move,
-        });
+        this.SEND("live_game_buy", game_move)
         this.current_index = this.myHistory(0)?.length! - 1;
         this.credit! = new_credit;
       }
@@ -239,11 +228,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       if (this.canShop()) {
         this.wasm0().confirm(this.player_color!);
         if (this.wasm0().is_confirmed(this.player_color!)) {
-          SEND({
-            t: "live_game_confirm",
-            game_id: this.game_id,
-            game_move: "cc",
-          });
+          this.SEND("live_game_confirm", "cc")
           this.clockPause(this.player!);
           this.confirmed_players![this.player!] = true;
         }
@@ -257,7 +242,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
         if (this.current_stage == 0) {
           this.wasm![0] = new ShuuroShop();
           this.changeVariant();
-          
+
           (this.wasm0() as ShuuroShop).set_hand(hand);
           this.piece_counter = this.wasm0().shop_items(
             this.player_color!
@@ -282,14 +267,24 @@ export const useShuuroStore = defineStore("shuuroStore", {
       const bot = document.querySelector("#pocket1") as HTMLElement;
       this.cgs![1] = Chessground(elem, config, 800, top, bot);
       this.player! == 1 ? this.cgs(1).toggleOrientation() : null;
+      this.changeDimension();
       this.cgs(1).redrawAll();
       this.cgs(1).state.events.dropNewPiece = this.decrementPocket;
     },
 
     // change pocket roles
     changePocketRoles(config: Config) {
-      if (this.getVariant() != "shuuro12") {
+      if (this.getVariant().endsWith("Fairy")) {
         config.pocketRoles = p2;
+      }
+    },
+
+    // change dimensions
+    changeDimension() {
+      if (this.variant == "standard") {
+        this.cgs(this.current_stage).state.variant = "standard";
+      this.cgs(this.current_stage).state.dimensions = dimensions[1];
+      this.cgs(this.current_stage).state.geometry = Geometry.dim8x8;
       }
     },
 
@@ -322,11 +317,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // send place move to server
     sendPlace(gameMove: string) {
-      SEND({
-        t: "live_game_place",
-        game_id: this.game_id,
-        game_move: gameMove,
-      });
+      this.SEND(  "live_game_place", gameMove);
     },
 
     // receive move from server and place on board
@@ -409,11 +400,12 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // set cg data and create new ShuuroPosition
     setDeployWasm(sfen: string) {
       init().then((_exports) => {
-        this.wasm![1] = new ShuuroPosition();
+        this.wasm![1] = new ShuuroPosition(this.variant);
         this.changeVariant();
         this.wasm(1).set_sfen(sfen);
         const hand = this.wasm(1).count_hand_pieces();
         this.setPocket(hand);
+        this.changeDimension();
         this.setPlinths();
         this.setPieces();
         this.activateClock();
@@ -515,11 +507,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // send move to server
     sendMove(s: string) {
-      SEND({
-        t: "live_game_play",
-        game_move: s,
-        game_id: this.game_id,
-      });
+      this.SEND(  "live_game_play", s)
     },
 
     // set turn color
@@ -534,6 +522,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // set plinths
     setPlinths() {
+      this.changeDimension();
       const cs = this.cs();
       const plinths = this.wasm(cs).map_plinths();
       this.cgs(cs).state.plinths = plinths;
@@ -556,7 +545,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
         return;
       }
       const cs = this.cs();
-      const tempWasm = new ShuuroPosition();
+      const tempWasm = new ShuuroPosition(this.variant);
       this.changeTempVariant(tempWasm);
       tempWasm.set_sfen(sfen);
       const check = tempWasm.is_check();
@@ -756,9 +745,10 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // change cg and create new ShuuroPosition for fight
     setFightWasm(sfen: string) {
       init().then((_exports) => {
-        this.wasm![2] = new ShuuroPosition();
+        this.wasm![2] = new ShuuroPosition(this.variant);
         this.changeVariant();
         this.wasm(2).set_sfen(sfen);
+        this.changeDimension();
         this.setPlinths();
         this.setPieces();
         this.activateClock();
@@ -927,7 +917,10 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     dataMax(): Uint8Array {
       const data = new Uint8Array([1, 3, 6, 9, 9, 18, 3, 3, 4]);
-      if (this.variant == "shuuro12") {
+      if (this.variant == "shuuro" || this.variant == "standard") {
+        if(this.variant == "standard") {
+          data[5] = 12;
+        }
         return data.slice(0, 6);
       }
       return data;
@@ -935,7 +928,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     dataPrice(): Uint8Array {
       const data = new Uint8Array([0, 110, 70, 40, 40, 10, 130, 130, 70]);
-      if (this.variant == "shuuro12") {
+      if (this.variant == "shuuro" || this.variant == "standard") {
         return data.slice(0, 6);
       }
       return data;
@@ -953,7 +946,8 @@ export const useShuuroStore = defineStore("shuuroStore", {
         "a-piece",
         "g-piece"
       ];
-      if (this.variant == "shuuro12") {
+
+      if (this.variant == "shuuro" || this.variant == "standard") {
         return pieces.slice(0, 6);
       }
       return pieces;
@@ -1034,6 +1028,11 @@ export const useShuuroStore = defineStore("shuuroStore", {
     cs(): StageN {
       return this.client_stage!;
     },
+
+    SEND(t: string, game_move?: string) {
+      let msg = { game_id: this.game_id, variant: this.variant, t, game_move };
+      SEND(msg)
+    }
   },
 });
 

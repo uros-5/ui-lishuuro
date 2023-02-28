@@ -53,7 +53,7 @@ function iconColor(color: string): string {
 }
 
 function dataIcon(variant: string): string {
-  return variant == "shuuro12" ? "M" : "P";
+  return variant == "shuuro" || variant == "standard" ? "M" : "P";
 }
 
 onMounted(() => {

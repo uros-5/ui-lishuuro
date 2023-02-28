@@ -22,12 +22,8 @@ onMounted(() => {
 <style scoped></style>
 
 <template>
-  <div
-    id="chessground12"
-    class="chessground12"
-    :data-board="settings.getBoard()"
-    :data-piece="settings.getPiece()"
-  />
+  <div id="chessground12" class="chessground12" :class="{ 'standard8': shuuroStore.variant == 'standard' }"
+    :data-board="settings.getBoard()" :data-piece="settings.getPiece()" />
 </template>
 
 <style>
@@ -37,5 +33,9 @@ onMounted(() => {
 
 .chessground12 cg-board {
   background-image: url("@/assets/board/12x12brown.svg");
+}
+
+.chessground12 .standard8 cg-board {
+  background-image: url("@/assets/board/8x8brown.svg");
 }
 </style>

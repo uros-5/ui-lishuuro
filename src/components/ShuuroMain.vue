@@ -1,6 +1,6 @@
 <template>
   <div class="round-app standard">
-    <selection id="mainboard" class="standard">
+    <selection id="mainboard" class="standard" :class="{'standard8': shuuroStore.variant == 'standard'}">
       <router-view />
     </selection>
     <div class="material material-top black standard disabled" />

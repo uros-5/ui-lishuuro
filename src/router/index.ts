@@ -41,7 +41,7 @@ const routes: Array<RouteRecordRaw> = [
       ),
   },
   {
-    path: "/shuuro/",
+    path: "/:variant/",
     component: () =>
       import(
         /* webpackChunkName: "ShuuroLayout" */ "@/components/ShuuroLayout.vue"

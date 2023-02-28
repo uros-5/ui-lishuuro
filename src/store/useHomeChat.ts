@@ -6,6 +6,7 @@ export interface ChatMessage {
   time: string;
   t?: string;
   id: string;
+  variant: string;
 }
 
 export interface HomeChatStore {

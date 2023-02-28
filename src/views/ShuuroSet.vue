@@ -1,17 +1,13 @@
 <template>
-  <div
-    id="chessground12"
-    class="chessground12"
-    :data-board="settings.getBoard()"
-    :data-piece="settings.getPiece()"
-  />
+  <div id="chessground12" class="chessground12" :class="{ 'standard8': shuuroStore.variant == 'standard' }"
+    :data-board="settings.getBoard()" :data-piece="settings.getPiece()" />
   <!--
-        <div class="cg-wrap cg-512 orientation-white shuuro-board manipulable">
-          <cg-container :style="setStyle()">
-            <cg-board> </cg-board>
-          </cg-container>
-        </div>
-      -->
+          <div class="cg-wrap cg-512 orientation-white shuuro-board manipulable">
+            <cg-container :style="setStyle()">
+              <cg-board> </cg-board>
+            </cg-container>
+          </div>
+        -->
 </template>
 <script setup lang="ts">
 import { useBoardSize } from "@/store/useBoardSize";
@@ -52,6 +48,10 @@ onMounted(() => {
 
 .chessground12 cg-board {
   background-image: url("@/assets/board/12x12brown.svg");
+}
+
+.chessground12.standard8 cg-board {
+  background-image: url("@/assets/board/8x8brown.svg");
 }
 
 /*
