@@ -2,13 +2,7 @@
   <div id="roundchat" class="roundchat chat">
     <div class="chatroom">
       Chat room
-      <input
-        id="checkbox"
-        title="Toggle the chat"
-        name="checkbox"
-        type="checkbox"
-        @click="toggle"
-      />
+      <input id="checkbox" title="Toggle the chat" name="checkbox" type="checkbox" @click="toggle" />
     </div>
     <ol id="lobbychat-messages">
       <div v-if="hiddenChat" id="messages">
@@ -22,17 +16,8 @@
       </div>
     </ol>
 
-    <input
-      id="chat-entry"
-      v-model="message"
-      maxlength="50"
-      type="text"
-      name="entry"
-      autocomplete="off"
-      :placeholder="setPlaceholder()"
-      :disabled="toDisableInput()"
-      @keyup.enter="onEnter"
-    />
+    <input id="chat-entry" v-model="message" maxlength="50" type="text" name="entry" autocomplete="off"
+      :placeholder="setPlaceholder()" :disabled="toDisableInput()" @keyup.enter="onEnter" />
   </div>
 </template>
 
@@ -54,7 +39,7 @@ const cookie = useCookies().cookies;
 const user = useUser();
 
 function onEnter(): void {
-  if (message.value.length > 0 && message.value.length < 80) {
+  if (message.value.length > 0 && message.value.length < 50) {
     SEND({
       t: "live_chat_message",
       message: message.value,

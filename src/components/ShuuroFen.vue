@@ -18,14 +18,14 @@ const shuuroStore = useShuuroStore();
 
 function fenItem(item: string): string {
   if (shuuroStore.client_stage == 0) {
-    return item[0];
+    return `+${item[0]}`;
   }
   return item;
 }
 
 function moveItem(item: string): string {
   if (shuuroStore.client_stage == 0) {
-    return item;
+    return `+${item}`;
   } else if (shuuroStore.client_stage == 1) {
     let fen = item.split("_");
     return fen[0];

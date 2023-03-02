@@ -1,13 +1,16 @@
 import { defineStore } from "pinia";
+import { z } from 'zod';
 
-export interface ChatMessage {
-  user: string;
-  message: string;
-  time: string;
-  t?: string;
-  id: string;
-  variant: string;
-}
+export const ChatMessage = z.object({
+  user: z.string(),
+  message: z.string(),
+  time: z.string(),
+  t: z.string().optional(),
+  id: z.string(),
+  variant: z.string(),
+});
+
+export type ChatMessage = z.infer<typeof ChatMessage>;
 
 export interface HomeChatStore {
   homeChat: ChatMessage[];
@@ -22,10 +25,10 @@ export const useHomeChat = defineStore("useHomeChat", {
     };
   },
   actions: {
-    setHomeChat(homeChat: []) {
+    setHomeChat(homeChat: ChatMessage[]) {
       this.homeChat = homeChat;
     },
-    setGameChat(gameChat: []) {
+    setGameChat(gameChat: ChatMessage[]) {
       this.gameChat = gameChat;
     },
     addGameMessageChat(msg: ChatMessage) {

@@ -16,6 +16,7 @@ import moveUrl from "@/assets/sounds/move.ogg";
 import lowTimeUrl from "@/assets/sounds/low_time.ogg";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 import type { Api } from "@/plugins/chessground12/api";
+import type { GameInfo } from "@/plugins/webSocketTypes";
 
 const finished = [
   "Checkmate",
@@ -33,8 +34,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // SERVER DATA
 
     // convert server data to store
-    fromServer(s: any, username: string) {
-
+    fromServer(s: GameInfo, username: string) {
       this.setTime(s);
       this.setStatus(s);
       this.setHistory(s);
@@ -60,25 +60,25 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // set history for all stages
-    setHistory(s: any) {
+    setHistory(s: GameInfo) {
       this.history[0] = s.history[0];
       this.history[1] = s.history[1];
       this.history[2] = s.history[2];
     },
 
     // calculate correct time
-    setTime(s: any) {
-      this.game_id = s.game_id;
+    setTime(s: GameInfo) {
+      this.game_id = s._id;
       this.min = s.min / 60000;
       this.incr = s.incr / 1000;
-      this.side_to_move = s.side_to_move;
+      this.side_to_move = s.side_to_move as ColorN;
       this.last_clock = new Date(s.tc.last_click).toString();
     },
 
     // current status
-    setStatus(s: any) {
-      this.current_stage = s.current_stage;
-      this.client_stage = s.current_stage;
+    setStatus(s: GameInfo) {
+      this.current_stage = s.current_stage as StageN;
+      this.client_stage = s.current_stage as StageN;
       this.result = s.result;
       this.status = s.status;
       this.variant = s.variant;
@@ -86,7 +86,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // set clocks for both sides
-    setClocks(s: any) {
+    setClocks(s: GameInfo) {
       this.players = s.players;
       this.clocks = [
         new Clock(s.min / 60000, s.incr / 1000, 0, "1"),
@@ -97,7 +97,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // check if board is flipped etc
-    setBoardData(s: any, username: string) {
+    setBoardData(s: GameInfo, username: string) {
       this.flipped_board = this.player == 1 ? true : false;
       this.credit =
         this.player == 0
@@ -214,7 +214,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
         if (new_credit != this.credit) {
           this.clockPause(this.player!, true);
           this.clockStart(this.player!);
-          this.history[0]?.push([game_move, counter]);
+          this.history[0]?.push(game_move);
           this.scrollToBottom();
         }
         this.SEND("live_game_buy", game_move)
@@ -247,7 +247,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
           this.piece_counter = this.wasm0().shop_items(
             this.player_color!
           );
-          const h: [string, number][] = this.wasm0().history();
+          const h: string[] = this.wasm0().history();
           this.history[0] = h;
           this.credit = (this.wasm0() as ShuuroShop).get_credit(
             this.player_color!
@@ -965,25 +965,25 @@ export const useShuuroStore = defineStore("shuuroStore", {
       return this.current_index!;
     },
 
-    myHistory(index: StageN): string[] | [string, number][] {
+    myHistory(index: StageN): string[]  {
       return this.history![index];
     },
 
     getHistory(): string[] {
       if (this.client_stage == 0) {
         if (this.am_i_player) {
-          let history = this.myHistory(0) as [string, number][];
+          let history = this.myHistory(0) as [string];
           let color = this.player_color!;
           let newest: string[] = [];
           history.forEach((value) => {
-            let p = value[0][1];
+            let p = value[1];
             if (color == "white") {
               if (p == p.toUpperCase()) {
-                newest.push(value[0]);
+                newest.push(p);
               }
             } else if (color == "black") {
               if (p == p.toLowerCase()) {
-                newest.push(value[0]);
+                newest.push(p);
               }
             }
           });
@@ -1109,7 +1109,7 @@ export interface ShuuroStore {
   confirmed_players?: [boolean, boolean];
   wasm?: BoardWasm | [];
   cgs?: Cgs | [any, any, any];
-  history: [[string, number][], string[], string[]];
+  history: [string[], string[], string[]];
   offeredDraw?: boolean;
   ratings: any;
   premoveData: { orig: string; dest: string; active: boolean };

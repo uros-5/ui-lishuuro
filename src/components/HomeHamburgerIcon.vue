@@ -12,9 +12,6 @@ const user = useUser();
 </script>
 
 <style>
-/*
-   * Vortex
-   */
 .hamburger--vortex .hamburger-inner {
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);

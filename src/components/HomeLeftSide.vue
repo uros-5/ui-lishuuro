@@ -1,5 +1,4 @@
 <script setup lang="ts">
-//import HomeArenaNotification from "@/components/HomeArenaNotification.vue";
 import ChatRoom from "@/components/ChatRoom.vue";
 import { useHomeChat } from "@/store/useHomeChat";
 const store = useHomeChat();

@@ -8,9 +8,8 @@ const route = useRoute();
 function cssVariable(): string {
   let c;
   if (route == undefined) return "";
-  else if (route.fullPath.startsWith("/shuuro/0")) {
+  else if (route.fullPath.includes("/0")) {
     c = "1300px";
-    
     return `--main-max-width: ${c};`;
   } else if (route.fullPath.startsWith("/shuuro")) {
     return "";

@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { z } from "zod";
 
 export const useNews = defineStore("useNews", {
   state: (): NewsStore => {
@@ -21,12 +22,14 @@ export interface NewsStore {
   finished: boolean;
 }
 
-export interface NewsItem {
-  _id: string;
-  title: string;
-  user: string;
-  date: string;
-  category: string;
-  headline: string;
-  text: string;
-}
+export const NewsItem = z.object({
+  _id: z.string(),
+  title: z.string(),
+  user: z.string(),
+  date: z.string(),
+  category: z.string(),
+  headline: z.string(),
+  text: z.string(),
+});
+
+export type NewsItem = z.infer<typeof  NewsItem>; 

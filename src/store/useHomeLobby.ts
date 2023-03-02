@@ -1,16 +1,9 @@
+import  type { LobbyGame } from "@/plugins/webSocketTypes";
 import { defineStore } from "pinia";
 
-export interface LobbyGame {
-  t?: string;
-  username: string;
-  variant: string;
-  time: number;
-  incr: number;
-  color: string;
-}
 
-export interface LobbyGames {
-  homeLobby: LobbyGame[];
+export interface All {
+  homeLobby:  LobbyGame[];
   activePlayers: string[];
 }
 
@@ -20,7 +13,7 @@ export const allowedDuration = [
 ];
 
 export const useHomeLobby = defineStore("useHomeLobby", {
-  state: (): LobbyGames => {
+  state: (): All => {
     return { homeLobby: [], activePlayers: [] };
   },
   actions: {

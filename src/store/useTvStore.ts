@@ -7,6 +7,7 @@ import { defineStore } from "pinia";
 import init, { ShuuroPosition } from "@/plugins/shuuro-wasm";
 import type { Color } from "./useShuuroStore";
 import type { Key, Piece } from "@/plugins/chessground12/types";
+import {fightMove, liveGameDraw, liveGameEnd, liveGameResign, placeMove, type tvGameUpdate }  from "@/plugins/webSocketTypes";
 
 export const useTvStore = defineStore("tvStore", {
   state: (): TvStore => {
@@ -59,13 +60,13 @@ export const useTvStore = defineStore("tvStore", {
     setProfileGame(msg: any) {
       this.profile_game.game_id = msg.game_id;
       this.profile_game.sfen = msg.fen;
-      const cg = this.setCg(msg.game_id as string);
+      const cg = this.setCg(msg.game_id as string, msg.variant);
       this.profile_game.cg = cg;
       if (msg.current_stage == 0) {
         return;
       }
       this.profile_game.cs = msg.current_stage;
-      this.tempWasm(cg, msg.fen, msg.current_stage);
+      this.tempWasm(cg, msg.fen, msg.current_stage, msg.variant);
     },
 
     // get sfen for wasm
@@ -85,27 +86,32 @@ export const useTvStore = defineStore("tvStore", {
     setTvGame(id: string) {
       const game = this.game(id);
 
-      const cg = this.setCg(id + "_tv");
-      const wasm = this.tempWasm(cg, game.sfen, "");
+      const cg = this.setCg(id + "_tv", "shuuro");
+      const wasm = this.tempWasm(cg, game.sfen, "", "shuuro");
       game.cg = cg;
       game.pl_set = true;
       game.pieces_set = true;
     },
 
     // from server update
-    tvGameUpdate(msg: any) {
+    tvGameUpdate(msg: tvGameUpdate) {
       if (msg.t.endsWith("place")) {
-        this.tvPlace(msg);
+        if (placeMove.safeParse(msg.g)) 
+          this.tvPlace(msg.g);
       } else if (msg.t.endsWith("play")) {
-        this.tvMove(msg);
+        if (fightMove.safeParse(msg.g))
+          this.tvMove(msg.g);
       } else if (msg.t.endsWith("redirect_deploy")) {
         const game = this.newGame(msg);
         this.games.push(game);
       } else if (ENDED.includes(msg.t)) {
         const self = this;
-        setTimeout(function () {
-          self.removeGame(msg.game_id);
-        }, 350);
+        let over = isGameOver(msg.g);
+        if (over[0]) {
+          setTimeout(function () {
+            self.removeGame(over[1]);
+          }, 350);
+        }
       }
     },
 
@@ -128,10 +134,10 @@ export const useTvStore = defineStore("tvStore", {
     },
 
     // placing
-    tvPlace(msg: any) {
+    tvPlace(msg: placeMove) {
       const game = this.game(msg.game_id);
       const cg = game.cg as Api;
-      const place = msg.move.split("@");
+      const place = msg.game_move.split("@");
       const piece = place[0];
       const sq = place[1];
       const color: Color = piece == piece.toUpperCase() ? "white" : "black";
@@ -140,11 +146,11 @@ export const useTvStore = defineStore("tvStore", {
         role: `${piece.toLowerCase()}-piece` as Role,
         color: color,
       };
-      cg.newPiece(pieceObj, sq);
+      cg.newPiece(pieceObj, sq as Key);
     },
 
     // move
-    tvMove(msg: any) {
+    tvMove(msg: fightMove) {
       const move = msg.game_move.split("_");
       const game = this.game(msg.game_id);
       game.cg.move(move[0] as Key, move[1] as Key);
@@ -156,8 +162,8 @@ export const useTvStore = defineStore("tvStore", {
         };
         const cg = game.cg as Api;
         const pieces = cg.state.pieces;
-        pieces.delete(move[1]);
-        pieces.set(move[1], pieceObj as Piece);
+        pieces.delete(move[1] as Key);
+        pieces.set(move[1] as Key, pieceObj as Piece);
         (game.cg as Api).state.dom.redraw();
       }
     },
@@ -228,3 +234,19 @@ const ENDED = [
   "live_game_lot",
   "live_game_draw",
 ];
+
+function isGameOver(g: any): [boolean, string] {
+// export const ENDED_TYPES = [liveGameResign, liveGameDraw, liveGameEnd];
+  if (liveGameResign.safeParse(g).success) {
+    return [true, g.game_id];
+  }
+  else if (liveGameDraw.safeParse(g).success) {
+    return [true, g.game_id];
+  }
+  else if (liveGameEnd.safeParse(g).success) {
+    return [true, g.game_id];
+  }
+
+  return [false, ""]
+}
+

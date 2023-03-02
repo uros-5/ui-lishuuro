@@ -1,11 +1,14 @@
 import { useUser } from "@/store/useUser";
-import { useHomeChat } from "@/store/useHomeChat";
+import { ChatMessage, useHomeChat } from "@/store/useHomeChat";
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { useShuuroStore } from "@/store/useShuuroStore";
-import { useNews } from "@/store/useNews";
+import { NewsItem, useNews } from "@/store/useNews";
 import { useTvStore } from "@/store/useTvStore";
 import Sockette from "sockette";
-import {  wsUrl } from "./getBackend";
+import { wsUrl } from "./getBackend";
+import { activePlayersFull, Cnt, homeLobbyFull, LiveChatFull, LiveGameStart, LobbyGame, tvGames, tvGameUpdate } from "./webSocketTypes";
+import { z } from "zod";
+
 
 const ws = new Sockette(wsUrl(), {
   timeout: 1200,
@@ -19,9 +22,9 @@ const ws = new Sockette(wsUrl(), {
   onreconnect: (e) => {
     onreconnect(e);
   },
-  onmaximum: (e) => {},
-  onclose: (e) => {},
-  onerror: (e) => {},
+  onmaximum: (_e) => { },
+  onclose: (_e) => { },
+  onerror: (_e) => { },
 });
 
 const unsendMessages: any[] = [];
@@ -63,46 +66,54 @@ function onmessage(event: any) {
 
   switch (msg.t) {
     case "active_players_count":
-      user.updatePlCount(msg.cnt);
+      if (Cnt.safeParse(msg).success)
+        user.updatePlCount(msg.cnt);
       break;
     case "active_games_count":
-      user.updateGamesCount(msg.cnt);
+      if (Cnt.safeParse(msg).success)
+        user.updateGamesCount(msg.cnt);
       break;
     case "live_chat_message":
-      if (msg.id == "home") {
-        homeChat.sendMessage(msg);
-      } else {
-        homeChat.addGameMessageChat(msg);
-      }
-      break;
+      if (ChatMessage.safeParse(msg).success) {
+        if (msg.id == "home") {
+          homeChat.sendMessage(msg);
+        } else {
+          homeChat.addGameMessageChat(msg);
+        }
+      }; break
     case "live_chat_full":
-      if (msg.id == "home") {
-        homeChat.setHomeChat(msg.lines);
-      } else {
-        homeChat.setGameChat(msg.lines);
+      if (LiveChatFull.safeParse(msg).success) {
+        if (msg.id == "home") {
+          homeChat.setHomeChat(msg.lines);
+        } else {
+          homeChat.setGameChat(msg.lines);
+        }
       }
       break;
     case "home_lobby_full":
-      homeLobby.setHomeLobby(msg.lobbyGames);
+      if (homeLobbyFull.safeParse(msg).success)
+        homeLobby.setHomeLobby(msg.lobbyGames);
       break;
     case "active_players_full":
-      homeLobby.setActivePlayers(msg.players);
+      if (activePlayersFull.safeParse(msg).success)
+        homeLobby.setActivePlayers(msg.players);
       break;
     case "live_tv":
-      if (msg.games) {
+      if (tvGames.safeParse(msg).success) {
         tvStore.setGames(msg.games);
       }
       break;
     case "tv_game_update":
-      tvStore.tvGameUpdate(msg.g);
+      if(tvGameUpdate.safeParse(msg).success) 
+        tvStore.tvGameUpdate(msg.g);
       break;
     case "home_lobby_add":
-      delete msg["t"];
-      homeLobby.addGameToLobby(msg);
+      if (LobbyGame.safeParse(msg).success)
+        homeLobby.addGameToLobby(msg);
       break;
     case "home_lobby_remove":
-      delete msg["t"];
-      homeLobby.removeLobbyGame(msg);
+      if (LobbyGame.safeParse(msg).success)
+        homeLobby.removeLobbyGame(msg);
       break;
     case "live_restart":
       delete msg["t"];
@@ -111,16 +122,22 @@ function onmessage(event: any) {
       break;
     case "home_news":
       delete msg["t"];
-      newsStore.setNews(msg.news);
+      let news = z.object({
+        news: z.array(NewsItem)
+      });
+      if (news.safeParse(msg.news).success)
+        newsStore.setNews(msg.news);
       break;
     case "home_lobby_remove_user":
       delete msg["t"];
       homeLobby.removeLobbyGameByUser(msg.username);
       break;
     case "live_game_start":
+      console.log(msg);
+      let game = LiveGameStart.parse(msg);
       msg["game_info"]["game_id"] = msg["game_id"];
       shuuroStore.$reset()
-      shuuroStore.fromServer(msg["game_info"], user.username);
+      shuuroStore.fromServer(game["game_info"], user.username);
       break;
     case "live_game_spectators_count":
       delete msg["t"];

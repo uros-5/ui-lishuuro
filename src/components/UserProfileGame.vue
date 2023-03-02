@@ -69,7 +69,7 @@ const props = defineProps<{ game: ShuuroStore | any }>();
 
 function isStandard(): string {
   if (props.game.variant == 'standard') {
-    console.log('hellllll', props.game.variant);
+    
     return "standard8";
   }
   else { return ""; }

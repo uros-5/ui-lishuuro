@@ -66,7 +66,7 @@ function toolTipDate(): string {
 }
 
 function gameIcon(): string {
-  console.log(variantTitle());
+  
   return variantTitle() == "Shuuro" || variantTitle() == "Standard" ? "M" : "P";
 }
 </script>
