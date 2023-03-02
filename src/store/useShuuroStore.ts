@@ -16,7 +16,7 @@ import moveUrl from "@/assets/sounds/move.ogg";
 import lowTimeUrl from "@/assets/sounds/low_time.ogg";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 import type { Api } from "@/plugins/chessground12/api";
-import type { GameInfo } from "@/plugins/webSocketTypes";
+import type { GameInfo,  LiveGameDraw,  LiveGameFight,  LiveGameResign,  PauseConfirmed,  RedirectDeploy,  SpecCnt } from "@/plugins/webSocketTypes";
 
 const finished = [
   "Checkmate",
@@ -153,7 +153,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       this.client_stage = stage;
     },
 
-    updateWatchCount(msg: any): void {
+    updateWatchCount(msg: SpecCnt): void {
       if (msg.game_id == this.game_id) {
         this.watchCount = msg.count;
       }
@@ -323,7 +323,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // receive move from server and place on board
     serverPlace(msg: any) {
       router.push({ path: `/shuuro/1/${this.game_id}` });
-      this.wasmPlace(msg.move, true);
+      this.wasmPlace(msg.game_move, true);
       this.setClocks2(msg.clocks);
       if (msg.to_fight) {
         this.current_stage = 2;
@@ -380,7 +380,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // after shop redirect to deploy
-    redirectDeploy(s: any) {
+    redirectDeploy(s: RedirectDeploy) {
       this.last_clock = s.last_clock;
       this.sfen = s.sfen;
       this.last_clock = new Date().toString();
@@ -457,7 +457,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // move piece from server
-    serverMove2(msg: any) {
+    serverMove2(msg: LiveGameFight) {
       router.push({ path: `/shuuro/2/${this.game_id}` });
       this.client_stage = 2;
       this.wasmMove(msg.game_move, true);
@@ -597,8 +597,8 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // CLOCKS PART
-    pauseConfirmed(data: [boolean, boolean]) {
-      this.confirmed_players = data;
+    pauseConfirmed(data: PauseConfirmed) {
+      this.confirmed_players = data.confirmed;
       const confirmed = this.confirmed_players?.findIndex(
         (item) => item == true
       );
@@ -772,7 +772,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       this.cgs(1).state.movable!.dests = moves;
     },
 
-    gameDraw(msg: any, username: string) {
+    gameDraw(msg: LiveGameDraw, username: string) {
       if (msg.draw) {
         this.playAudio("res");
         this.clockPause(this.side_to_move);
@@ -790,7 +790,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       }
     },
 
-    gameResign(msg: any, username: string) {
+    gameResign(msg: LiveGameResign, username: string) {
       if (msg.resign) {
         this.playAudio("res");
         this.clockPause(0);

@@ -2,7 +2,7 @@
   <div :class="`info-wrap${part}`">
     <div class="clock-wrap">
       <div :id="`clock${part}`">
-        <div class="clock" :class="{ running: isRunning() }">
+        <div class="clock" :class="{ running: isRunning(), hurry: isHurry() }">
           <div class="clock-time min">
             {{ min() }}
           </div>
@@ -44,6 +44,11 @@ function sec(): string {
 function isRunning(): boolean {
   let id = props.color == "white" ? 0 : 1;
   return shuuroStore.clocks[id].running;
+}
+
+function isHurry(): boolean {
+  let id = props.color == "white" ? 0 : 1;
+  return shuuroStore.clocks[id].hurry;
 }
 </script>
 <style></style>

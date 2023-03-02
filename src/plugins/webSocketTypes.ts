@@ -20,29 +20,44 @@ export interface activePlayersCnt {
   cnt: number;
 }
 
+export const SpecCnt = z.object({
+  t: z.string(),
+  game_id: z.string(),
+  count: z.number()
+});
+
+export type SpecCnt = z.infer<typeof SpecCnt>;
+
+export const LiveGameHand = z.object({
+  t: z.string(),
+  hand: z.string()
+})
+
+export type LiveGameHand = z.infer<typeof LiveGameHand>;
+
 export const LobbyGame = z.object({
   username: z.string(),
   variant: z.string(),
   time: z.number(),
   incr: z.number(),
   color: z.string(),
-  t: z.string()
+  t: z.string().optional()
 })
 
 export type LobbyGame = z.infer<typeof LobbyGame>;
 
-export const homeLobbyFull = z.object({
+export const HomeLobbyFull = z.object({
   lobbyGames: z.array(LobbyGame)
 })
 
-export type homeLobbyFull = z.infer<typeof homeLobbyFull>;
+export type HomeLobbyFull = z.infer<typeof HomeLobbyFull>;
 
-export const activePlayersFull = z.object({
+export const ActivePlayersFull = z.object({
   t: z.string(),
   players: z.array(z.string())
 })
 
-export type activePlayersFull = z.infer<typeof activePlayersFull>;
+export type ActivePlayersFull = z.infer<typeof ActivePlayersFull>;
 
 export const tvGame = z.object({
   t: z.string(),
@@ -54,21 +69,21 @@ export const tvGame = z.object({
 
 export type tvGame = z.infer<typeof tvGame>;
 
-export const tvGames = z.object({
+export const TvGames = z.object({
   t: z.string(),
   games: z.array(tvGame)
 });
 
-export type tvGames = z.infer<typeof tvGames>;
+export type TvGames = z.infer<typeof TvGames>;
 
-export const tvGameUpdate = z.object({
+export const TvGameUpdate = z.object({
   t: z.string(),
   g: z.any()
 });;
 
-export type tvGameUpdate = z.infer<typeof tvGameUpdate>;
+export type TvGameUpdate = z.infer<typeof TvGameUpdate>;
 
-export const placeMove = z.object({
+export const LiveGamePlace = z.object({
   t: z.string(),
   game_move: z.string(),
   game_id: z.string(),
@@ -77,9 +92,9 @@ export const placeMove = z.object({
   clocks: z.tuple([z.number(), z.number()])
 });;
 
-export type placeMove = z.infer<typeof placeMove>;
+export type LiveGamePlace = z.infer<typeof LiveGamePlace>;
 
-export const fightMove = z.object({
+export const LiveGameFight = z.object({
   t: z.string(),
   game_move: z.string(),
   game_id: z.string(),
@@ -88,39 +103,43 @@ export const fightMove = z.object({
   outcome: z.string()
 });
 
-export type fightMove = z.infer<typeof fightMove>;
+export type LiveGameFight = z.infer<typeof LiveGameFight>;
 
-export const liveGameEnd = z.object({
+export const LiveGameConfirmed = z.object({
+  t: z.string(),
+  confirmed: z.tuple([z.boolean(), z.boolean()])
+});
+
+export const LiveGameEnd = z.object({
   t: z.string(),
   game_id: z.string()
 });
 
-export type liveGameEnd = z.infer<typeof liveGameEnd>;
+export type liveGameEnd = z.infer<typeof LiveGameEnd>;
 
 
-export const liveGameDraw = z.object({
+export const LiveGameDraw = z.object({
   t: z.string(),
-  game_id: z.string(),
-  draw: z.number()
+  game_id: z.string().optional(),
+  draw: z.boolean(),
+  player: z.string().optional()
 })
 
-export type liveGameDraw = z.infer<typeof liveGameDraw>;
+export type LiveGameDraw = z.infer<typeof LiveGameDraw>;
 
 
-export const liveGameResign = z.object({
+export const LiveGameResign = z.object({
   t: z.string(),
   game_id: z.string(),
   resign: z.boolean(),
   player: z.string()
 })
 
-export type liveGameResign = z.infer<typeof liveGameResign>;
+export type LiveGameResign = z.infer<typeof LiveGameResign>;
 
+export const ENDED_TYPES = [LiveGameResign, LiveGameDraw, LiveGameEnd];
 
-
-export const ENDED_TYPES = [liveGameResign, liveGameDraw, liveGameEnd];
-
-export const redirectDeploy = z.object({
+export const RedirectDeploy = z.object({
   t: z.string(),
   path: z.string(),
   hand: z.string(),
@@ -131,7 +150,7 @@ export const redirectDeploy = z.object({
   sfen: z.string()
 });
 
-export type redirectDeploy = z.infer<typeof redirectDeploy>;
+export type RedirectDeploy = z.infer<typeof RedirectDeploy>;
 
 export interface homeLobbyRemoveByUser {
   username: string;
@@ -164,7 +183,7 @@ export const GameInfo = z.object({
   })
 })
 
-export type GameInfo = z.infer<typeof GameInfo>; 
+export type GameInfo = z.infer<typeof GameInfo>;
 
 export const LiveGameStart = z.object({
   t: z.string(),
@@ -173,4 +192,21 @@ export const LiveGameStart = z.object({
 });
 
 export type LiveGameStart = z.infer<typeof LiveGameStart>;
+
+export const LiveGameSfen = z.object({
+  t: z.string(),
+  game_id: z.string(),
+  fen: z.string(),
+  current_stage: z.number(),
+  variant: z.string()
+})
+
+export type LiveGameSfen = z.infer<typeof LiveGameSfen>;
+
+export const PauseConfirmed = z.object({
+  t: z.string(),
+  confirmed: z.tuple([z.boolean(), z.boolean()])
+})
+
+export type PauseConfirmed = z.infer<typeof PauseConfirmed>;
 

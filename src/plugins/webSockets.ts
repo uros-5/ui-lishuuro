@@ -6,7 +6,13 @@ import { NewsItem, useNews } from "@/store/useNews";
 import { useTvStore } from "@/store/useTvStore";
 import Sockette from "sockette";
 import { wsUrl } from "./getBackend";
-import { activePlayersFull, Cnt, homeLobbyFull, LiveChatFull, LiveGameStart, LobbyGame, tvGames, tvGameUpdate } from "./webSocketTypes";
+import {
+  ActivePlayersFull, Cnt, HomeLobbyFull,
+  LiveChatFull, LiveGameConfirmed, LiveGameDraw,
+  LiveGameResign, LiveGameFight, LiveGameHand,
+  LiveGamePlace, LiveGameStart, LobbyGame, SpecCnt,
+  TvGames, TvGameUpdate, LiveGameSfen, PauseConfirmed, RedirectDeploy
+} from "./webSocketTypes";
 import { z } from "zod";
 
 
@@ -91,20 +97,20 @@ function onmessage(event: any) {
       }
       break;
     case "home_lobby_full":
-      if (homeLobbyFull.safeParse(msg).success)
+      if (HomeLobbyFull.safeParse(msg).success)
         homeLobby.setHomeLobby(msg.lobbyGames);
       break;
     case "active_players_full":
-      if (activePlayersFull.safeParse(msg).success)
+      if (ActivePlayersFull.safeParse(msg).success)
         homeLobby.setActivePlayers(msg.players);
       break;
     case "live_tv":
-      if (tvGames.safeParse(msg).success) {
+      if (TvGames.safeParse(msg).success) {
         tvStore.setGames(msg.games);
       }
       break;
     case "tv_game_update":
-      if(tvGameUpdate.safeParse(msg).success) 
+      if (TvGameUpdate.safeParse(msg).success)
         tvStore.tvGameUpdate(msg.g);
       break;
     case "home_lobby_add":
@@ -133,59 +139,54 @@ function onmessage(event: any) {
       homeLobby.removeLobbyGameByUser(msg.username);
       break;
     case "live_game_start":
-      console.log(msg);
       let game = LiveGameStart.parse(msg);
       msg["game_info"]["game_id"] = msg["game_id"];
       shuuroStore.$reset()
       shuuroStore.fromServer(game["game_info"], user.username);
       break;
     case "live_game_spectators_count":
-      delete msg["t"];
-      shuuroStore.updateWatchCount(msg);
+      if (SpecCnt.safeParse(msg).success)
+        shuuroStore.updateWatchCount(msg);
       break;
     case "live_game_hand":
-      delete msg["t"];
-      shuuroStore.setShuuroHand(msg.hand, user.username);
+      if (LiveGameHand.safeParse(msg).success)
+        shuuroStore.setShuuroHand(msg.hand, user.username);
       break;
     case "live_game_place":
-      delete msg["t"];
-      shuuroStore.serverPlace(msg);
+      if (LiveGamePlace.safeParse(msg).success)
+        shuuroStore.serverPlace(msg);
       break;
     case "live_game_play":
-      delete msg["t"];
-      shuuroStore.serverMove2(msg);
+      if (LiveGameFight.safeParse(msg).success)
+        shuuroStore.serverMove2(msg);
       break;
     case "live_game_confirmed":
-      delete msg["t"];
-      shuuroStore.setConfirmed(msg.confirmed);
+      if (LiveGameConfirmed.safeParse(msg).success)
+        shuuroStore.setConfirmed(msg.confirmed);
       break;
     case "live_game_draw":
-      delete msg["t"];
-      shuuroStore.gameDraw(msg, user.username);
+      if (LiveGameDraw.safeParse(msg).success)
+        shuuroStore.gameDraw(msg, user.username);
       break;
     case "live_game_resign":
-      delete msg["t"];
-      shuuroStore.gameResign(msg, msg.player);
+      if (LiveGameResign.safeParse(msg).success)
+        shuuroStore.gameResign(msg, msg.player);
       break;
     case "live_game_lot":
       delete msg["t"];
       shuuroStore.gameLot(msg, user.username);
       break;
     case "live_game_sfen":
-      delete msg["t"];
-      tvStore.setProfileGame(msg);
+      if (LiveGameSfen.safeParse(msg).success)
+        tvStore.setProfileGame(msg);
       break;
     case "pause_confirmed":
-      delete msg["t"];
-      shuuroStore.pauseConfirmed(msg.confirmed);
-      break;
-    case "redirect":
-      delete msg["t"];
-      shuuroStore.redirect(msg.path);
+      if (PauseConfirmed.safeParse(msg).success)
+        shuuroStore.pauseConfirmed(msg);
       break;
     case "redirect_deploy":
-      delete msg["t"];
-      shuuroStore.redirectDeploy(msg);
+      if (RedirectDeploy.safeParse(msg).success)
+        shuuroStore.redirectDeploy(msg);
       break;
   }
 }

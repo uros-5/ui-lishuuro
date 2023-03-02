@@ -7,7 +7,7 @@ import { defineStore } from "pinia";
 import init, { ShuuroPosition } from "@/plugins/shuuro-wasm";
 import type { Color } from "./useShuuroStore";
 import type { Key, Piece } from "@/plugins/chessground12/types";
-import {fightMove, liveGameDraw, liveGameEnd, liveGameResign, placeMove, type tvGameUpdate }  from "@/plugins/webSocketTypes";
+import {LiveGameDraw, LiveGameFight, LiveGameEnd, LiveGameResign, LiveGamePlace, type TvGameUpdate, LiveGameSfen }  from "@/plugins/webSocketTypes";
 
 export const useTvStore = defineStore("tvStore", {
   state: (): TvStore => {
@@ -57,7 +57,7 @@ export const useTvStore = defineStore("tvStore", {
     },
 
     // from server set profileGame
-    setProfileGame(msg: any) {
+    setProfileGame(msg: LiveGameSfen) {
       this.profile_game.game_id = msg.game_id;
       this.profile_game.sfen = msg.fen;
       const cg = this.setCg(msg.game_id as string, msg.variant);
@@ -66,7 +66,7 @@ export const useTvStore = defineStore("tvStore", {
         return;
       }
       this.profile_game.cs = msg.current_stage;
-      this.tempWasm(cg, msg.fen, msg.current_stage, msg.variant);
+      this.tempWasm(cg, msg.fen, "", msg.variant);
     },
 
     // get sfen for wasm
@@ -94,12 +94,12 @@ export const useTvStore = defineStore("tvStore", {
     },
 
     // from server update
-    tvGameUpdate(msg: tvGameUpdate) {
+    tvGameUpdate(msg: TvGameUpdate) {
       if (msg.t.endsWith("place")) {
-        if (placeMove.safeParse(msg.g)) 
+        if (LiveGamePlace.safeParse(msg.g)) 
           this.tvPlace(msg.g);
       } else if (msg.t.endsWith("play")) {
-        if (fightMove.safeParse(msg.g))
+        if (LiveGameFight.safeParse(msg.g))
           this.tvMove(msg.g);
       } else if (msg.t.endsWith("redirect_deploy")) {
         const game = this.newGame(msg);
@@ -134,7 +134,7 @@ export const useTvStore = defineStore("tvStore", {
     },
 
     // placing
-    tvPlace(msg: placeMove) {
+    tvPlace(msg: LiveGamePlace) {
       const game = this.game(msg.game_id);
       const cg = game.cg as Api;
       const place = msg.game_move.split("@");
@@ -150,7 +150,7 @@ export const useTvStore = defineStore("tvStore", {
     },
 
     // move
-    tvMove(msg: fightMove) {
+    tvMove(msg: LiveGameFight) {
       const move = msg.game_move.split("_");
       const game = this.game(msg.game_id);
       game.cg.move(move[0] as Key, move[1] as Key);
@@ -237,13 +237,13 @@ const ENDED = [
 
 function isGameOver(g: any): [boolean, string] {
 // export const ENDED_TYPES = [liveGameResign, liveGameDraw, liveGameEnd];
-  if (liveGameResign.safeParse(g).success) {
+  if (LiveGameResign.safeParse(g).success) {
     return [true, g.game_id];
   }
-  else if (liveGameDraw.safeParse(g).success) {
+  else if (LiveGameDraw.safeParse(g).success) {
     return [true, g.game_id];
   }
-  else if (liveGameEnd.safeParse(g).success) {
+  else if (LiveGameEnd.safeParse(g).success) {
     return [true, g.game_id];
   }
 
