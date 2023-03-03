@@ -4,7 +4,7 @@
       <td class="board invisible">
         <div class="standard" :class="`${isStandard()}`">
           <div :class="`chessground12 mini ${game._id}`" :id="game._id" :data-board="settings.getBoard()"
-            :data-piece="settings.getPiece()" />
+            :data-piece="settings.getPiece()" :data-size="settings.getVariant(game.variant)" />
         </div>
       </td>
       <td class="games-info">
@@ -69,7 +69,7 @@ const props = defineProps<{ game: ShuuroStore | any }>();
 
 function isStandard(): string {
   if (props.game.variant == 'standard') {
-    
+
     return "standard8";
   }
   else { return ""; }

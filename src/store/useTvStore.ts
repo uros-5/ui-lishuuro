@@ -27,7 +27,7 @@ export const useTvStore = defineStore("tvStore", {
     setCg(id: string, variant: string): Api {
       const elem = document.getElementById(id) as HTMLElement;
       const cg = Chessground(elem, userProfileConfig, 500, undefined);
-      if (variant == "standard") {
+      if (variant.startsWith("standard")) {
         cg.state.variant = "standard";
         cg.state.dimensions = dimensions[1];
         cg.state.geometry = Geometry.dim8x8;
@@ -85,7 +85,7 @@ export const useTvStore = defineStore("tvStore", {
     // set tv game
     setTvGame(id: string) {
       const game = this.game(id);
-
+      if (game == undefined) {return}
       const cg = this.setCg(id + "_tv", "shuuro");
       const wasm = this.tempWasm(cg, game.sfen, "", "shuuro");
       game.cg = cg;
@@ -95,16 +95,16 @@ export const useTvStore = defineStore("tvStore", {
 
     // from server update
     tvGameUpdate(msg: TvGameUpdate) {
-      if (msg.t.endsWith("place")) {
-        if (LiveGamePlace.safeParse(msg.g)) 
-          this.tvPlace(msg.g);
-      } else if (msg.t.endsWith("play")) {
-        if (LiveGameFight.safeParse(msg.g))
-          this.tvMove(msg.g);
-      } else if (msg.t.endsWith("redirect_deploy")) {
+      if (msg.g.t.endsWith("place")) {
+        let place = LiveGamePlace.parse(msg.g);
+        this.tvPlace(place);
+      } else if (msg.g.t.endsWith("play")) {
+        let play = LiveGameFight.parse(msg.g)
+        this.tvMove(play);
+      } else if (msg.g.t.endsWith("redirect_deploy")) {
         const game = this.newGame(msg);
         this.games.push(game);
-      } else if (ENDED.includes(msg.t)) {
+      } else if (ENDED.includes(msg.g.t)) {
         const self = this;
         let over = isGameOver(msg.g);
         if (over[0]) {
@@ -136,6 +136,7 @@ export const useTvStore = defineStore("tvStore", {
     // placing
     tvPlace(msg: LiveGamePlace) {
       const game = this.game(msg.game_id);
+      if (game == undefined) {return}
       const cg = game.cg as Api;
       const place = msg.game_move.split("@");
       const piece = place[0];
@@ -153,6 +154,7 @@ export const useTvStore = defineStore("tvStore", {
     tvMove(msg: LiveGameFight) {
       const move = msg.game_move.split("_");
       const game = this.game(msg.game_id);
+      if (game == undefined) {return}
       game.cg.move(move[0] as Key, move[1] as Key);
       if (this.isPromotion(game.cg, msg)) {
         const color = move[1].endsWith("2") ? "white" : "black";
@@ -180,7 +182,7 @@ export const useTvStore = defineStore("tvStore", {
     },
 
     // GETTERS
-    game(id: string): TvGame {
+    game(id: string): TvGame | undefined {
       return this.games.find((item) => item.game_id == id) as TvGame;
     },
 

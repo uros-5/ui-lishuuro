@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import init, { ShuuroShop, ShuuroPosition } from "@/plugins/shuuro-wasm";
 import { Clock } from "@/plugins/clock";
-import  Chessground from "@/plugins/chessground12";
+import Chessground from "@/plugins/chessground12";
 import router from "@/router";
 import { SEND } from "@/plugins/webSockets";
 import { anonConfig, liveConfig, p2 } from "@/plugins/chessground12/configs";
@@ -16,7 +16,7 @@ import moveUrl from "@/assets/sounds/move.ogg";
 import lowTimeUrl from "@/assets/sounds/low_time.ogg";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 import type { Api } from "@/plugins/chessground12/api";
-import type { GameInfo,  LiveGameDraw,  LiveGameFight,  LiveGameResign,  PauseConfirmed,  RedirectDeploy,  SpecCnt } from "@/plugins/webSocketTypes";
+import type { GameInfo, LiveGameDraw, LiveGameFight, LiveGameResign, PauseConfirmed, RedirectDeploy, SpecCnt } from "@/plugins/webSocketTypes";
 
 const finished = [
   "Checkmate",
@@ -166,9 +166,6 @@ export const useShuuroStore = defineStore("shuuroStore", {
         this.variant = "shuuro";
         return;
       }
-      else if (variant == "standard") {
-        this.variant = "standard";
-      }
       switch (this.current_stage) {
         case 0:
           (this.wasm0() as ShuuroShop).change_variant(this.variant);
@@ -185,8 +182,8 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // change variant if necessary
     changeTempVariant(pos: ShuuroPosition) {
       const variant = this.getVariant();
-      if (variant != "shuuro") {
-        pos.change_variant("shuuroFairy");
+      if (variant.endsWith("Fairy")) {
+        pos.change_variant(variant);
       }
     },
 
@@ -281,10 +278,10 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // change dimensions
     changeDimension() {
-      if (this.variant == "standard") {
-        this.cgs(this.current_stage).state.variant = "standard";
-      this.cgs(this.current_stage).state.dimensions = dimensions[1];
-      this.cgs(this.current_stage).state.geometry = Geometry.dim8x8;
+      if (this.variant.startsWith("standard")) {
+        this.cgs(this.client_stage!).state.variant = "standard";
+        this.cgs(this.client_stage!).state.dimensions = dimensions[1];
+        this.cgs(this.client_stage!).state.geometry = Geometry.dim8x8;
       }
     },
 
@@ -317,7 +314,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // send place move to server
     sendPlace(gameMove: string) {
-      this.SEND(  "live_game_place", gameMove);
+      this.SEND("live_game_place", gameMove);
     },
 
     // receive move from server and place on board
@@ -507,7 +504,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // send move to server
     sendMove(s: string) {
-      this.SEND(  "live_game_play", s)
+      this.SEND("live_game_play", s)
     },
 
     // set turn color
@@ -917,10 +914,10 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     dataMax(): Uint8Array {
       const data = new Uint8Array([1, 3, 6, 9, 9, 18, 3, 3, 4]);
-      if (this.variant == "shuuro" || this.variant == "standard") {
-        if(this.variant == "standard") {
-          data[5] = 12;
-        }
+      if (this.variant.startsWith("standard")) {
+        data[5] = 12;
+      }
+      if (!this.variant.endsWith("Fairy")) {
         return data.slice(0, 6);
       }
       return data;
@@ -928,7 +925,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     dataPrice(): Uint8Array {
       const data = new Uint8Array([0, 110, 70, 40, 40, 10, 130, 130, 70]);
-      if (this.variant == "shuuro" || this.variant == "standard") {
+      if (!this.variant.endsWith("Fairy")) {
         return data.slice(0, 6);
       }
       return data;
@@ -947,7 +944,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
         "g-piece"
       ];
 
-      if (this.variant == "shuuro" || this.variant == "standard") {
+      if (!this.variant.endsWith("Fairy")) {
         return pieces.slice(0, 6);
       }
       return pieces;
@@ -965,7 +962,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       return this.current_index!;
     },
 
-    myHistory(index: StageN): string[]  {
+    myHistory(index: StageN): string[] {
       return this.history![index];
     },
 

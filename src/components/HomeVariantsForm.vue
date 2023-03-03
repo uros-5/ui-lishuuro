@@ -10,6 +10,8 @@
               SHUURO FAIRY
             </option>
             <option value="standard" title="Standard chess with plinths">STANDARD</option>
+            <option value="standardFairy" title="Standard chess with plinths and with fairy pieces.">STANDARD FAIRY
+            </option>
           </optgroup>
         </select>
       </div>
@@ -23,15 +25,15 @@
         <button class="icon icon-black" type="button" title="Black" @click="
           color = 'black';
         createGame();
-                    " />
+                              " />
         <button class="icon icon-adjust" type="button" title="Random" @click="
           color = 'random';
         createGame();
-                    " />
+                              " />
         <button class="icon icon-white" type="button" title="White" @click="
           color = 'white';
         createGame();
-                    " />
+                              " />
       </div>
     </div>
   </form>

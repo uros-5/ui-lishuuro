@@ -69,19 +69,6 @@ export const tvGame = z.object({
 
 export type tvGame = z.infer<typeof tvGame>;
 
-export const TvGames = z.object({
-  t: z.string(),
-  games: z.array(tvGame)
-});
-
-export type TvGames = z.infer<typeof TvGames>;
-
-export const TvGameUpdate = z.object({
-  t: z.string(),
-  g: z.any()
-});;
-
-export type TvGameUpdate = z.infer<typeof TvGameUpdate>;
 
 export const LiveGamePlace = z.object({
   t: z.string(),
@@ -104,6 +91,22 @@ export const LiveGameFight = z.object({
 });
 
 export type LiveGameFight = z.infer<typeof LiveGameFight>;
+
+
+export const TvGames = z.object({
+  t: z.string(),
+  games: z.array(tvGame)
+});
+
+export type TvGames = z.infer<typeof TvGames>;
+
+export const TvGameUpdate = z.object({
+  t: z.string(),
+  g: LiveGamePlace.or(LiveGameFight)
+});;
+
+export type TvGameUpdate = z.infer<typeof TvGameUpdate>;
+
 
 export const LiveGameConfirmed = z.object({
   t: z.string(),

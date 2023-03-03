@@ -22,8 +22,9 @@ onMounted(() => {
 <style scoped></style>
 
 <template>
-  <div id="chessground12" class="chessground12" :class="{ 'standard8': shuuroStore.variant == 'standard' }"
-    :data-board="settings.getBoard()" :data-piece="settings.getPiece()" />
+  <div id="chessground12" class="chessground12" :class="{ 'standard8': shuuroStore.variant.startsWith('standard') }"
+    :data-board="settings.getBoard()" :data-piece="settings.getPiece()"
+    :data-size="settings.getVariant(shuuroStore.getVariant())" />
 </template>
 
 <style>

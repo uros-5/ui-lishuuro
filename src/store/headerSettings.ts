@@ -49,6 +49,9 @@ export const useHeaderSettings = defineStore("headerSettings", {
     getPiece(): string {
       return `piece-${this.piece}`;
     },
+    getVariant(variant: string): string {
+      return variant.startsWith("shuuro") ? `${12}` : `${8}`; 
+    },
     zoom() {
       document
         .querySelector(".round")

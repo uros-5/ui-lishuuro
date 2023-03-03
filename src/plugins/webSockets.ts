@@ -111,7 +111,7 @@ function onmessage(event: any) {
       break;
     case "tv_game_update":
       if (TvGameUpdate.safeParse(msg).success)
-        tvStore.tvGameUpdate(msg.g);
+        tvStore.tvGameUpdate(msg);
       break;
     case "home_lobby_add":
       if (LobbyGame.safeParse(msg).success)

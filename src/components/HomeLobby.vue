@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { onMounted } from "vue";
-import type { LobbyGame } from "@/store/useHomeLobby";
+import type { LobbyGame } from "@/plugins/webSocketTypes";
 import { SEND } from "@/plugins/webSockets";
 
 const store = useHomeLobby();

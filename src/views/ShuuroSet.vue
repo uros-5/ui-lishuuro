@@ -1,13 +1,14 @@
 <template>
-  <div id="chessground12" class="chessground12" :class="{ 'standard8': shuuroStore.variant == 'standard' }"
-    :data-board="settings.getBoard()" :data-piece="settings.getPiece()" />
+  <div id="chessground12" class="chessground12" :class="{ 'standard8': shuuroStore.variant.startsWith('standard') }"
+    :data-board="settings.getBoard()" :data-piece="settings.getPiece()"
+    :data-size="settings.getVariant(shuuroStore.getVariant())" />
   <!--
-          <div class="cg-wrap cg-512 orientation-white shuuro-board manipulable">
-            <cg-container :style="setStyle()">
-              <cg-board> </cg-board>
-            </cg-container>
-          </div>
-        -->
+              <div class="cg-wrap cg-512 orientation-white shuuro-board manipulable">
+                <cg-container :style="setStyle()">
+                  <cg-board> </cg-board>
+                </cg-container>
+              </div>
+            -->
 </template>
 <script setup lang="ts">
 import { useBoardSize } from "@/store/useBoardSize";
