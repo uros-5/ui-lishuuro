@@ -10,6 +10,7 @@
               <th>Rating</th>
               <th>Time</th>
               <th>Variant</th>
+              <th>Subvariant</th>
             </tr>
           </thead>
           <tbody>
@@ -24,6 +25,7 @@
                 <td class="icon" :data-icon="dataIcon(i.variant)">
                   <variant-name> &nbsp; {{ i.variant }}</variant-name>
                 </td>
+                <td>{{ getSubVariant(i.sub_variant) }}</td>
               </tr>
             </transition-group>
           </tbody>
@@ -37,6 +39,7 @@ import { useHomeLobby } from "@/store/useHomeLobby";
 import { onMounted } from "vue";
 import type { LobbyGame } from "@/plugins/webSocketTypes";
 import { SEND } from "@/plugins/webSockets";
+import { getSubVariant } from "@/plugins/subVariant";
 
 const store = useHomeLobby();
 

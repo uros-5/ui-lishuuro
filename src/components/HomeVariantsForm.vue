@@ -5,12 +5,21 @@
         <label for="variant">Variant</label>
         <select id="variant" v-model="variant" name="variant">
           <optgroup label="ShuuroVariant">
-            <option value="shuuro" title="Shuuro, unmodified.">SHUURO</option>
-            <option value="shuuroFairy" title="Shuuro, with fairy pieces.">
+            <option value="shuuro_4" title="Shuuro, unmodified.">SHUURO</option>
+            <option value="shuuroFairy_4" title="Shuuro, with fairy pieces.">
               SHUURO FAIRY
             </option>
-            <option value="standard" title="Standard chess with plinths">STANDARD</option>
-            <option value="standardFairy" title="Standard chess with plinths and with fairy pieces.">STANDARD FAIRY
+          </optgroup>
+          <optgroup label="StandardChess">
+            <option value="standard_4" title="Standard chess with plinths.">STANDARD</option>
+            <option value="standardFairy_4" title="Standard chess with plinths and with fairy pieces.">STANDARD FAIRY
+            </option>
+          </optgroup>
+          <optgroup label="SubVariants">
+            <option value="standard_0" title="Standard chess with plinths, without first two stages.">STANDARD</option>
+            <option value="standardFairy_1" title="Fairy chess with plinths, without queen.">STANDARD FAIRY v1</option>
+            <option value="standardFairy_2" title="Fairy chess with plinths, with giraffe.">STANDARD FAIRY v2</option>
+            <option value="standardFairy_3" title="Standard chess with placement and with plinths.">STANDARD PLACEMENT
             </option>
           </optgroup>
         </select>
@@ -22,18 +31,21 @@
       <span id="increment">{{ incrementDuration[incr] }}</span>
       <input id="inc" v-model.number="incr" class="slider" name="inc" type="range" min="0" max="28" />
       <div id="color-button-group" style="display: block">
-        <button class="icon icon-black" type="button" title="Black" @click="
-          color = 'black';
-        createGame();
-                              " />
-        <button class="icon icon-adjust" type="button" title="Random" @click="
-          color = 'random';
-        createGame();
-                              " />
-        <button class="icon icon-white" type="button" title="White" @click="
-          color = 'white';
-        createGame();
-                              " />
+        <button class="icon icon-black" type="button" title="Black"
+          @click="
+            color = 'black';
+          createGame();
+                                                                                                                                                                                                            " />
+        <button class="icon icon-adjust" type="button" title="Random"
+          @click="
+            color = 'random';
+          createGame();
+                                                                                                                                                                                                            " />
+        <button class="icon icon-white" type="button" title="White"
+          @click="
+            color = 'white';
+          createGame();
+                                                                                                                                                                                                            " />
       </div>
     </div>
   </form>
@@ -43,6 +55,7 @@ import { allowedDuration } from "@/store/useHomeLobby";
 import { SEND } from "@/plugins/webSockets";
 import { useUser } from "@/store/useUser";
 import { ref } from "vue";
+import type { LobbyGame } from "@/plugins/webSocketTypes";
 
 const userStore = useUser();
 
@@ -53,15 +66,24 @@ let color = ref("white");
 let incrementDuration = [0].concat(allowedDuration);
 
 function createGame() {
-  let game = {
+  let choice = inputVariant();
+  let game: LobbyGame = {
     t: "home_lobby_add",
     time: allowedDuration[time.value],
     incr: incrementDuration[incr.value],
-    variant: variant.value,
+    variant: choice[0],
+    sub_variant: choice[1],
     color: color.value,
     username: userStore.username,
   };
   SEND(game);
+}
+
+function inputVariant(): [string, number] {
+  let parts = variant.value.split("_");
+  let selectedVariant = parts[0];
+  let subVariant = parts[1];
+  return [selectedVariant, Number(subVariant)];
 }
 </script>
 

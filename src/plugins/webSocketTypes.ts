@@ -38,6 +38,7 @@ export type LiveGameHand = z.infer<typeof LiveGameHand>;
 export const LobbyGame = z.object({
   username: z.string(),
   variant: z.string(),
+  sub_variant: z.number(),
   time: z.number(),
   incr: z.number(),
   color: z.string(),
@@ -183,7 +184,8 @@ export const GameInfo = z.object({
   tc: z.object({
     last_click: z.string(),
     clocks: z.tuple([z.number(), z.number()]),
-  })
+  }),
+  sub_variant: z.number()
 })
 
 export type GameInfo = z.infer<typeof GameInfo>;
