@@ -7,8 +7,8 @@
       <ShuuroLeftSideUsername :player_username="player(1)" :rating="rating(player(1))" color="black" />
     </section>
     <section class="shuuro-navigator">
-      <router-link class="user-link" :to="navRoute('0')"> Shop </router-link>
-      <router-link class="user-link" :to="navRoute('1')"> Deploy </router-link>
+      <router-link class="user-link" v-if="shuuroStore.getSubVariant() == 100" :to="navRoute('0')"> Shop </router-link>
+      <router-link class="user-link" v-if="!isFightSubVariant()" :to="navRoute('1')"> Deploy </router-link>
       <router-link class="user-link" :to="navRoute('2')"> Fight </router-link>
     </section>
   </div>
@@ -30,6 +30,11 @@ function player(index: number): string {
 function rating(username: string): number {
   let r = shuuroStore.ratings;
   return 1500;
+}
+
+function isFightSubVariant(): boolean {
+  let subVariant = shuuroStore.getSubVariant();
+  return [0, 1, 2].includes(subVariant)
 }
 </script>
 <style>

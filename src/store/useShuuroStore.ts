@@ -35,6 +35,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // convert server data to store
     fromServer(s: GameInfo, username: string) {
+      console.log(s.current_stage);
       this.setTime(s);
       this.setStatus(s);
       this.setHistory(s);
@@ -82,6 +83,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       this.result = s.result;
       this.status = s.status;
       this.variant = s.variant;
+      this.subVariant = s.sub_variant;
       //this.ratings = s.ratings;
     },
 
@@ -912,6 +914,10 @@ export const useShuuroStore = defineStore("shuuroStore", {
       return this.variant;
     },
 
+    getSubVariant(): number {
+      return this.subVariant;
+    },
+
     dataMax(): Uint8Array {
       const data = new Uint8Array([1, 3, 6, 9, 9, 18, 3, 3, 4]);
       if (this.variant.startsWith("standard")) {
@@ -1057,6 +1063,7 @@ function emptyState(): ShuuroStore {
     flipped_board: false,
     client_stage: 0,
     am_i_player: false,
+    subVariant: 100,
     // SHOP PART
     credit: 800,
     piece_counter: new Uint8Array([1, 0, 0, 0, 0, 0, 0, 0, 0]),
@@ -1110,6 +1117,7 @@ export interface ShuuroStore {
   offeredDraw?: boolean;
   ratings: any;
   premoveData: { orig: string; dest: string; active: boolean };
+  subVariant: number;
 }
 
 export type Stage = "shop" | "deploy" | "fight";

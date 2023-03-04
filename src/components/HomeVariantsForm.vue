@@ -5,14 +5,14 @@
         <label for="variant">Variant</label>
         <select id="variant" v-model="variant" name="variant">
           <optgroup label="ShuuroVariant">
-            <option value="shuuro_4" title="Shuuro, unmodified.">SHUURO</option>
-            <option value="shuuroFairy_4" title="Shuuro, with fairy pieces.">
+            <option value="shuuro_100" title="Shuuro, unmodified.">SHUURO</option>
+            <option value="shuuroFairy_100" title="Shuuro, with fairy pieces.">
               SHUURO FAIRY
             </option>
           </optgroup>
           <optgroup label="StandardChess">
-            <option value="standard_4" title="Standard chess with plinths.">STANDARD</option>
-            <option value="standardFairy_4" title="Standard chess with plinths and with fairy pieces.">STANDARD FAIRY
+            <option value="standard_100" title="Standard chess with plinths.">STANDARD</option>
+            <option value="standardFairy_100" title="Standard chess with plinths and with fairy pieces.">STANDARD FAIRY
             </option>
           </optgroup>
           <optgroup label="SubVariants">
@@ -35,17 +35,17 @@
           @click="
             color = 'black';
           createGame();
-                                                                                                                                                                                                            " />
+                                                                                                                                                                                                                        " />
         <button class="icon icon-adjust" type="button" title="Random"
           @click="
             color = 'random';
           createGame();
-                                                                                                                                                                                                            " />
+                                                                                                                                                                                                                        " />
         <button class="icon icon-white" type="button" title="White"
           @click="
             color = 'white';
           createGame();
-                                                                                                                                                                                                            " />
+                                                                                                                                                                                                                        " />
       </div>
     </div>
   </form>
