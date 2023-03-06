@@ -6,11 +6,7 @@
           <thead>
             <tr>
               <th />
-              <th>Player</th>
-              <th>Rating</th>
-              <th>Time</th>
-              <th>Variant</th>
-              <th>Subvariant</th>
+              <th v-for="i in ['Player', 'Rating', 'Time', 'Variant', 'Subvariant']" :key="i">{{ i }}</th>
             </tr>
           </thead>
           <tbody>
@@ -56,7 +52,7 @@ function iconColor(color: string): string {
 }
 
 function dataIcon(variant: string): string {
-  return variant == "shuuro" || variant == "standard" ? "M" : "P";
+  return variant.startsWith("shuuro") || variant.startsWith("standard") ? "M" : "P";
 }
 
 onMounted(() => {

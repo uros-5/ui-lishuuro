@@ -160,7 +160,11 @@ function variantTitle(): string {
     case "shuuro":
       return "SHUURO";
     case "shuuroFairy":
-      return "SHUURO FAIRY"; case "standard": return "STANDARD"; default: return "SHUURO"
+      return "SHUURO FAIRY";
+    case "standard": return "STANDARD";
+    case "standardFairy":
+      return "STANDARD FAIRY";
+    default: return "SHUURO"
   }
 }
 

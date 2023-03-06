@@ -5,7 +5,6 @@ export const ChatMessage = z.object({
   user: z.string(),
   message: z.string(),
   time: z.string(),
-  t: z.string().optional(),
   id: z.string(),
   variant: z.string(),
 });
@@ -32,7 +31,6 @@ export const useHomeChat = defineStore("useHomeChat", {
       this.gameChat = gameChat;
     },
     addGameMessageChat(msg: ChatMessage) {
-      delete msg["t"];
       this.gameChat.push(msg);
     },
     sendMessage(message: ChatMessage) {

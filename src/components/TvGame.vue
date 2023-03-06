@@ -4,7 +4,7 @@
       <TvGameIcon />
       <TvGameUsername :username="b" />
     </div>
-    <TvGameCg :id="id" />
+    <TvGameCg :id="id" :variant="variant" />
     <TvGameUsername :username="w" />
   </div>
 </template>
@@ -15,7 +15,7 @@ import TvGameUsername from "./TvGameUsername.vue";
 import TvGameIcon from "./TvGameIcon.vue";
 import TvGameCg from "./TvGameCg.vue";
 
-const props = defineProps<{ w: string; b: string; id: string }>();
+const props = defineProps<{ w: string; b: string; id: string, variant: string }>();
 </script>
 
 <style scoped>

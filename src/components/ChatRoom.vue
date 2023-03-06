@@ -26,6 +26,7 @@ import { ref, defineProps } from "vue";
 import { useCookies } from "vue3-cookies";
 import { useUser } from "@/store/useUser";
 import { SEND } from "@/plugins/webSockets";
+import type { ChatMessage } from "@/store/useHomeChat";
 
 const props = defineProps<{
   messages: ChatMessage[];
@@ -51,6 +52,7 @@ function onEnter(): void {
     message.value = "";
   }
 }
+
 
 function setPlaceholder(): string {
   if (props.finished > -1) {
@@ -81,15 +83,10 @@ function fmtTime(time: string): string {
   return `${hours}:${minutes}`;
 }
 
-let toggle = (): void => {
+function toggle() {
   hiddenChat.value = !hiddenChat.value;
 };
 
-interface ChatMessage {
-  time: string;
-  user: string;
-  message: string;
-}
 </script>
 
 <style scoped>

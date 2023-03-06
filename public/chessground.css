@@ -58,7 +58,7 @@ selection.standard8 cg-board square {
   height: 12.5%;
 }
 
-.standard8 cg-board square {
+div[data-size="8"] cg-board square {
   width: 12.5%;
   height: 12.5%;
 }
@@ -123,7 +123,7 @@ selection.standard8 cg-board piece {
 }
 
 
-.standard8 cg-board piece {
+div[data-size="8"] cg-board piece {
   width: 12.5%;
   height: 12.5%;
 }

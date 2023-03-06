@@ -35,7 +35,6 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // convert server data to store
     fromServer(s: GameInfo, username: string) {
-      console.log(s.current_stage);
       this.setTime(s);
       this.setStatus(s);
       this.setHistory(s);

@@ -68,7 +68,7 @@ function onmessage(event: any) {
   const newsStore = useNews();
   const tvStore = useTvStore();
 
-  const msg = JSON.parse(event.data);
+  const msg: {t: string, data: any} = JSON.parse(event.data);
 
   switch (msg.t) {
     case "active_players_count":
@@ -80,7 +80,7 @@ function onmessage(event: any) {
         user.updateGamesCount(msg.cnt);
       break;
     case "live_chat_message":
-      if (ChatMessage.safeParse(msg).success) {
+      if (ChatMessage.safeParse(msg.data).success) {
         if (msg.id == "home") {
           homeChat.sendMessage(msg);
         } else {
@@ -88,11 +88,11 @@ function onmessage(event: any) {
         }
       }; break
     case "live_chat_full":
-      if (LiveChatFull.safeParse(msg).success) {
-        if (msg.id == "home") {
-          homeChat.setHomeChat(msg.lines);
+      let full = LiveChatFull.parse(msg.data)
+        if (full.id == "home") {
+          homeChat.setHomeChat(full.lines);
         } else {
-          homeChat.setGameChat(msg.lines);
+          homeChat.setGameChat(full.lines);
         }
       }
       break;
@@ -110,8 +110,8 @@ function onmessage(event: any) {
       }
       break;
     case "tv_game_update":
-      if (TvGameUpdate.safeParse(msg).success)
-        tvStore.tvGameUpdate(msg);
+      let m = TvGameUpdate.parse(msg);
+      tvStore.tvGameUpdate(m);
       break;
     case "home_lobby_add":
       if (LobbyGame.safeParse(msg).success)

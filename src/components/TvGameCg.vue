@@ -1,5 +1,5 @@
 <template>
-  <div :class="`mini ${id}`" :data-board="settings.getBoard()" data-size="12" :data-piece="settings.getPiece()"
+  <div :class="`mini ${id}`" :data-board="settings.getBoard()" :data-size="dataSize()" :data-piece="settings.getPiece()"
     :id="`${id}_tv`" style="width: auto; padding-bottom: 100%" />
 </template>
 
@@ -8,12 +8,21 @@ import { useHeaderSettings } from "@/store/headerSettings";
 import { useTvStore } from "@/store/useTvStore";
 import { onMounted } from "vue";
 
-const props = defineProps<{ id: string }>();
+const props = defineProps<{ id: string, variant: string }>();
 const store = useTvStore();
 const settings = useHeaderSettings();
 
+function dataSize(): string {
+  if (props.variant.startsWith("shuuro")) {
+    return "12";
+  }
+  else {
+    return "8";
+  }
+}
+
 onMounted(() => {
-  store.setTvGame(props.id);
+  store.setTvGame(props.id, props.variant);
 });
 </script>
 

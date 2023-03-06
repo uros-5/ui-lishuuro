@@ -7,7 +7,7 @@ import { defineStore } from "pinia";
 import init, { ShuuroPosition } from "@/plugins/shuuro-wasm";
 import type { Color } from "./useShuuroStore";
 import type { Key, Piece } from "@/plugins/chessground12/types";
-import {LiveGameDraw, LiveGameFight, LiveGameEnd, LiveGameResign, LiveGamePlace, type TvGameUpdate, LiveGameSfen }  from "@/plugins/webSocketTypes";
+import {LiveGameDraw, LiveGameFight, LiveGameEnd, LiveGameResign, LiveGamePlace, type TvGameUpdate, LiveGameSfen, TvGame, RedirectDeploy }  from "@/plugins/webSocketTypes";
 
 export const useTvStore = defineStore("tvStore", {
   state: (): TvStore => {
@@ -83,11 +83,11 @@ export const useTvStore = defineStore("tvStore", {
     },
 
     // set tv game
-    setTvGame(id: string) {
+    setTvGame(id: string, variant: string) {
       const game = this.game(id);
       if (game == undefined) {return}
-      const cg = this.setCg(id + "_tv", "shuuro");
-      const wasm = this.tempWasm(cg, game.sfen, "", "shuuro");
+      const cg = this.setCg(id + "_tv", variant);
+      const wasm = this.tempWasm(cg, game.sfen, "", variant);
       game.cg = cg;
       game.pl_set = true;
       game.pieces_set = true;
@@ -102,7 +102,7 @@ export const useTvStore = defineStore("tvStore", {
         let play = LiveGameFight.parse(msg.g)
         this.tvMove(play);
       } else if (msg.g.t.endsWith("redirect_deploy")) {
-        const game = this.newGame(msg);
+        const game = this.newGame(RedirectDeploy.parse(msg.g));
         this.games.push(game);
       } else if (ENDED.includes(msg.g.t)) {
         const self = this;
@@ -116,13 +116,14 @@ export const useTvStore = defineStore("tvStore", {
     },
 
     // create new game when deploy is ready
-    newGame(msg: any): TvGame {
+    newGame(msg: RedirectDeploy): TvGame {
       const path = msg.path.split("/1/")[1];
       const game = empty_game(path);
       game.w = msg.w;
       game.b = msg.b;
       game.sfen = msg.sfen;
       game.stage = 1;
+      game.variant = msg.variant;
       return game;
     },
 
@@ -199,17 +200,6 @@ export const useTvStore = defineStore("tvStore", {
   },
 });
 
-export interface TvGame {
-  b: string;
-  w: string;
-  sfen: string;
-  stage: number;
-  game_id: string;
-  pl_set?: boolean;
-  pieces_set?: boolean;
-  cg?: Api | any;
-  cs?: number;
-}
 
 export interface TvStore {
   games: TvGame[];
@@ -219,6 +209,7 @@ export interface TvStore {
 
 export function empty_game(id: string): TvGame {
   return {
+    t: "",
     game_id: id,
     stage: 1,
     b: "",
@@ -227,6 +218,7 @@ export function empty_game(id: string): TvGame {
     pl_set: false,
     pieces_set: false,
     cs: 0,
+    variant: ""
   };
 }
 

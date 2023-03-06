@@ -60,15 +60,21 @@ export const ActivePlayersFull = z.object({
 
 export type ActivePlayersFull = z.infer<typeof ActivePlayersFull>;
 
-export const tvGame = z.object({
+export const TvGame = z.object({
   t: z.string(),
   game_id: z.string(),
   w: z.string(),
   b: z.string(),
   sfen: z.string(),
+  variant: z.string(),
+  stage: z.number().optional(),
+  pl_set: z.boolean().optional(),
+  pieces_set: z.boolean().optional(),
+  cs: z.number().optional(),
+  cg: z.any()
 });
 
-export type tvGame = z.infer<typeof tvGame>;
+export type TvGame = z.infer<typeof TvGame>;
 
 
 export const LiveGamePlace = z.object({
@@ -94,33 +100,35 @@ export const LiveGameFight = z.object({
 export type LiveGameFight = z.infer<typeof LiveGameFight>;
 
 
-export const TvGames = z.object({
+export const RedirectDeploy = z.object({
   t: z.string(),
-  games: z.array(tvGame)
+  path: z.string(),
+  hand: z.string(),
+  last_clock: z.string(),
+  side_to_move: z.string(),
+  w: z.string(),
+  b: z.string(),
+  sfen: z.string(),
+  variant: z.string()
 });
 
-export type TvGames = z.infer<typeof TvGames>;
+export type RedirectDeploy = z.infer<typeof RedirectDeploy>;
 
-export const TvGameUpdate = z.object({
-  t: z.string(),
-  g: LiveGamePlace.or(LiveGameFight)
-});;
-
-export type TvGameUpdate = z.infer<typeof TvGameUpdate>;
-
-
-export const LiveGameConfirmed = z.object({
-  t: z.string(),
-  confirmed: z.tuple([z.boolean(), z.boolean()])
+export const LiveGameLost = z.object({
+  "t": z.string(),
+  "game_id": z.string(),
+  "status": z.number(),
+  "result": z.string(),
 });
+
+export type LiveGameLost = z.infer<typeof LiveGameLost>;
 
 export const LiveGameEnd = z.object({
   t: z.string(),
   game_id: z.string()
 });
 
-export type liveGameEnd = z.infer<typeof LiveGameEnd>;
-
+export type LiveGameEnd = z.infer<typeof LiveGameEnd>;
 
 export const LiveGameDraw = z.object({
   t: z.string(),
@@ -141,20 +149,27 @@ export const LiveGameResign = z.object({
 
 export type LiveGameResign = z.infer<typeof LiveGameResign>;
 
-export const ENDED_TYPES = [LiveGameResign, LiveGameDraw, LiveGameEnd];
 
-export const RedirectDeploy = z.object({
+export const TvGames = z.object({
   t: z.string(),
-  path: z.string(),
-  hand: z.string(),
-  last_clock: z.string(),
-  side_to_move: z.string(),
-  w: z.string(),
-  b: z.string(),
-  sfen: z.string()
+  games: z.array(TvGame)
 });
 
-export type RedirectDeploy = z.infer<typeof RedirectDeploy>;
+export type TvGames = z.infer<typeof TvGames>;
+
+export const TvGameUpdate = z.object({
+  t: z.string(),
+  g: LiveGamePlace.or(LiveGameFight).or(RedirectDeploy).or(LiveGameDraw).or(LiveGameResign).or(LiveGameEnd)
+});;
+
+export type TvGameUpdate = z.infer<typeof TvGameUpdate>;
+
+export const LiveGameConfirmed = z.object({
+  t: z.string(),
+  confirmed: z.tuple([z.boolean(), z.boolean()])
+});
+
+export const ENDED_TYPES = [LiveGameResign, LiveGameDraw, LiveGameEnd];
 
 export interface homeLobbyRemoveByUser {
   username: string;
@@ -164,7 +179,6 @@ export interface liveGameStart {
   game_id: string;
   game_info: {};
 }
-
 
 export const GameInfo = z.object({
   _id: z.string(),
