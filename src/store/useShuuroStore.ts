@@ -48,11 +48,11 @@ export const useShuuroStore = defineStore("shuuroStore", {
       if (stage == 0) {
         this.shopInfo();
       } else if (stage == 1) {
-        this.setDeployCg();
-        this.setDeployWasm(s.sfen);
+        if (this.setDeployCg())
+          this.setDeployWasm(s.sfen);
       } else if (stage == 2) {
-        this.setFightCg();
-        this.setFightWasm(s.sfen);
+        if (this.setFightCg())
+          this.setFightWasm(s.sfen);
       }
       this.updateCurrentIndex(this.cs());
       this.playLive();
@@ -257,10 +257,11 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // DEPLOY PART
 
     // set deploy chessground
-    setDeployCg() {
+    setDeployCg(): boolean {
       const config = this.getConfig();
       this.changePocketRoles(config);
       const elem = document.querySelector("#chessground12") as HTMLElement;
+      if (elem == null) return false;
       const top = document.querySelector("#pocket0") as HTMLElement;
       const bot = document.querySelector("#pocket1") as HTMLElement;
       this.cgs![1] = Chessground(elem, config, 800, top, bot);
@@ -268,6 +269,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       this.changeDimension();
       this.cgs(1).redrawAll();
       this.cgs(1).state.events.dropNewPiece = this.decrementPocket;
+      return true;
     },
 
     // change pocket roles
@@ -420,8 +422,9 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // FIGHT PART
 
     // set fight chessground
-    setFightCg() {
+    setFightCg(): boolean {
       const element = document.querySelector("#chessground12") as HTMLElement;
+      if (element == null) return false;
       const config = this.getConfig();
       this.enablePremove(config);
       this.cgs![2]! = Chessground(element!, config) as Api;
@@ -429,6 +432,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       this.cgs(2).state.events.select = this.selectSq;
       this.cgs(2).state.movable.events.after = this.movedPiece;
       this.cgs(2).redrawAll();
+      return true;
     },
 
     // select square
