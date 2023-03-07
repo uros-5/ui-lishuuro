@@ -17,10 +17,10 @@ export const useHomeLobby = defineStore("useHomeLobby", {
     return { homeLobby: [], activePlayers: [] };
   },
   actions: {
-    setHomeLobby(homeLobby: []): void {
+    setHomeLobby(homeLobby: LobbyGame[]): void {
       this.homeLobby = homeLobby;
     },
-    setActivePlayers(activePlayers: []): void {
+    setActivePlayers(activePlayers: string[]): void {
       this.activePlayers = activePlayers;
     },
     addGameToLobby(game: LobbyGame): void {

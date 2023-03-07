@@ -95,18 +95,18 @@ export const useTvStore = defineStore("tvStore", {
 
     // from server update
     tvGameUpdate(msg: TvGameUpdate) {
-      if (msg.g.t.endsWith("place")) {
-        let place = LiveGamePlace.parse(msg.g);
+      if (msg.t.endsWith("place")) {
+        let place = LiveGamePlace.parse(msg.data);
         this.tvPlace(place);
-      } else if (msg.g.t.endsWith("play")) {
-        let play = LiveGameFight.parse(msg.g)
+      } else if (msg.t.endsWith("play")) {
+        let play = LiveGameFight.parse(msg.data)
         this.tvMove(play);
-      } else if (msg.g.t.endsWith("redirect_deploy")) {
-        const game = this.newGame(RedirectDeploy.parse(msg.g));
+      } else if (msg.t.endsWith("redirect_deploy")) {
+        const game = this.newGame(RedirectDeploy.parse(msg.data));
         this.games.push(game);
-      } else if (ENDED.includes(msg.g.t)) {
+      } else if (ENDED.includes(msg.t)) {
         const self = this;
-        let over = isGameOver(msg.g);
+        let over = isGameOver(msg.data);
         if (over[0]) {
           setTimeout(function () {
             self.removeGame(over[1]);
@@ -209,7 +209,6 @@ export interface TvStore {
 
 export function empty_game(id: string): TvGame {
   return {
-    t: "",
     game_id: id,
     stage: 1,
     b: "",
@@ -229,16 +228,16 @@ const ENDED = [
   "live_game_draw",
 ];
 
-function isGameOver(g: any): [boolean, string] {
+function isGameOver(game: any): [boolean, string] {
 // export const ENDED_TYPES = [liveGameResign, liveGameDraw, liveGameEnd];
-  if (LiveGameResign.safeParse(g).success) {
-    return [true, g.game_id];
+  if (LiveGameResign.safeParse(game).success) {
+    return [true, game.game_id];
   }
-  else if (LiveGameDraw.safeParse(g).success) {
-    return [true, g.game_id];
+  else if (LiveGameDraw.safeParse(game).success) {
+    return [true, game.game_id];
   }
-  else if (LiveGameEnd.safeParse(g).success) {
-    return [true, g.game_id];
+  else if (LiveGameEnd.safeParse(game).success) {
+    return [true, game.game_id];
   }
 
   return [false, ""]

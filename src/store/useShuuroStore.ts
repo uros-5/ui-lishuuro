@@ -16,7 +16,7 @@ import moveUrl from "@/assets/sounds/move.ogg";
 import lowTimeUrl from "@/assets/sounds/low_time.ogg";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 import type { Api } from "@/plugins/chessground12/api";
-import type { GameInfo, LiveGameDraw, LiveGameFight, LiveGameResign, PauseConfirmed, RedirectDeploy, SpecCnt } from "@/plugins/webSocketTypes";
+import type { GameInfo, LiveGameDraw, LiveGameFight, LiveGameLost, LiveGamePlace, LiveGameResign, PauseConfirmed, RedirectDeploy, SpecCnt } from "@/plugins/webSocketTypes";
 
 const finished = [
   "Checkmate",
@@ -319,7 +319,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // receive move from server and place on board
-    serverPlace(msg: any) {
+    serverPlace(msg: LiveGamePlace) {
       router.push({ path: `/shuuro/1/${this.game_id}` });
       this.wasmPlace(msg.game_move, true);
       this.setClocks2(msg.clocks);
@@ -799,7 +799,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       }
     },
 
-    gameLot(msg: any, username: string) {
+    gameLot(msg: LiveGameLost, username: string) {
       if (msg.status == 8 || msg.status == 5) {
         this.playAudio("res");
         this.clockPause(0, false);
@@ -959,6 +959,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       return (
         this.am_i_player! &&
         this.current_stage! == 0 &&
+        this.status < 0 &&
         !this.amIConfirmed()
       );
     },

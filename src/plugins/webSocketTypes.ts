@@ -9,19 +9,16 @@ export const LiveChatFull = z.object({
 export type LiveChatFull = z.infer<typeof LiveChatFull>;
 
 export const Cnt = z.object({
-  t: z.string(),
   cnt: z.number()
 });
 
 export type Cnt = z.infer<typeof Cnt>;
 
 export interface activePlayersCnt {
-  t: string;
   cnt: number;
 }
 
 export const SpecCnt = z.object({
-  t: z.string(),
   game_id: z.string(),
   count: z.number()
 });
@@ -29,7 +26,6 @@ export const SpecCnt = z.object({
 export type SpecCnt = z.infer<typeof SpecCnt>;
 
 export const LiveGameHand = z.object({
-  t: z.string(),
   hand: z.string()
 })
 
@@ -42,7 +38,6 @@ export const LobbyGame = z.object({
   time: z.number(),
   incr: z.number(),
   color: z.string(),
-  t: z.string().optional()
 })
 
 export type LobbyGame = z.infer<typeof LobbyGame>;
@@ -54,14 +49,12 @@ export const HomeLobbyFull = z.object({
 export type HomeLobbyFull = z.infer<typeof HomeLobbyFull>;
 
 export const ActivePlayersFull = z.object({
-  t: z.string(),
   players: z.array(z.string())
 })
 
 export type ActivePlayersFull = z.infer<typeof ActivePlayersFull>;
 
 export const TvGame = z.object({
-  t: z.string(),
   game_id: z.string(),
   w: z.string(),
   b: z.string(),
@@ -78,7 +71,6 @@ export type TvGame = z.infer<typeof TvGame>;
 
 
 export const LiveGamePlace = z.object({
-  t: z.string(),
   game_move: z.string(),
   game_id: z.string(),
   to_fight: z.boolean(),
@@ -89,7 +81,6 @@ export const LiveGamePlace = z.object({
 export type LiveGamePlace = z.infer<typeof LiveGamePlace>;
 
 export const LiveGameFight = z.object({
-  t: z.string(),
   game_move: z.string(),
   game_id: z.string(),
   status: z.number(),
@@ -101,7 +92,6 @@ export type LiveGameFight = z.infer<typeof LiveGameFight>;
 
 
 export const RedirectDeploy = z.object({
-  t: z.string(),
   path: z.string(),
   hand: z.string(),
   last_clock: z.string(),
@@ -115,23 +105,20 @@ export const RedirectDeploy = z.object({
 export type RedirectDeploy = z.infer<typeof RedirectDeploy>;
 
 export const LiveGameLost = z.object({
-  "t": z.string(),
-  "game_id": z.string(),
-  "status": z.number(),
-  "result": z.string(),
+  game_id: z.string(),
+  status: z.number(),
+  result: z.string(),
 });
 
 export type LiveGameLost = z.infer<typeof LiveGameLost>;
 
 export const LiveGameEnd = z.object({
-  t: z.string(),
   game_id: z.string()
 });
 
 export type LiveGameEnd = z.infer<typeof LiveGameEnd>;
 
 export const LiveGameDraw = z.object({
-  t: z.string(),
   game_id: z.string().optional(),
   draw: z.boolean(),
   player: z.string().optional()
@@ -141,7 +128,6 @@ export type LiveGameDraw = z.infer<typeof LiveGameDraw>;
 
 
 export const LiveGameResign = z.object({
-  t: z.string(),
   game_id: z.string(),
   resign: z.boolean(),
   player: z.string()
@@ -151,7 +137,6 @@ export type LiveGameResign = z.infer<typeof LiveGameResign>;
 
 
 export const TvGames = z.object({
-  t: z.string(),
   games: z.array(TvGame)
 });
 
@@ -159,13 +144,12 @@ export type TvGames = z.infer<typeof TvGames>;
 
 export const TvGameUpdate = z.object({
   t: z.string(),
-  g: LiveGamePlace.or(LiveGameFight).or(RedirectDeploy).or(LiveGameDraw).or(LiveGameResign).or(LiveGameEnd)
+  data: LiveGamePlace.or(LiveGameFight).or(RedirectDeploy).or(LiveGameDraw).or(LiveGameResign).or(LiveGameEnd)
 });;
 
 export type TvGameUpdate = z.infer<typeof TvGameUpdate>;
 
 export const LiveGameConfirmed = z.object({
-  t: z.string(),
   confirmed: z.tuple([z.boolean(), z.boolean()])
 });
 
@@ -205,7 +189,6 @@ export const GameInfo = z.object({
 export type GameInfo = z.infer<typeof GameInfo>;
 
 export const LiveGameStart = z.object({
-  t: z.string(),
   game_id: z.string(),
   game_info: GameInfo
 });
@@ -213,7 +196,6 @@ export const LiveGameStart = z.object({
 export type LiveGameStart = z.infer<typeof LiveGameStart>;
 
 export const LiveGameSfen = z.object({
-  t: z.string(),
   game_id: z.string(),
   fen: z.string(),
   current_stage: z.number(),
@@ -223,7 +205,6 @@ export const LiveGameSfen = z.object({
 export type LiveGameSfen = z.infer<typeof LiveGameSfen>;
 
 export const PauseConfirmed = z.object({
-  t: z.string(),
   confirmed: z.tuple([z.boolean(), z.boolean()])
 })
 

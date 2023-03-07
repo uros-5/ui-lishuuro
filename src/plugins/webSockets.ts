@@ -11,7 +11,7 @@ import {
   LiveChatFull, LiveGameConfirmed, LiveGameDraw,
   LiveGameResign, LiveGameFight, LiveGameHand,
   LiveGamePlace, LiveGameStart, LobbyGame, SpecCnt,
-  TvGames, TvGameUpdate, LiveGameSfen, PauseConfirmed, RedirectDeploy
+  TvGames, TvGameUpdate, LiveGameSfen, PauseConfirmed, RedirectDeploy, LiveGameLost
 } from "./webSocketTypes";
 import { z } from "zod";
 
@@ -68,125 +68,123 @@ function onmessage(event: any) {
   const newsStore = useNews();
   const tvStore = useTvStore();
 
-  const msg: {t: string, data: any} = JSON.parse(event.data);
-
+  const msg: { t: string, data: any } = JSON.parse(event.data);
+  let data: any = {};
+  console.log(msg);
   switch (msg.t) {
     case "active_players_count":
-      if (Cnt.safeParse(msg).success)
-        user.updatePlCount(msg.cnt);
+      data = Cnt.parse(msg.data);
+      user.updatePlCount(data.cnt);
       break;
     case "active_games_count":
-      if (Cnt.safeParse(msg).success)
-        user.updateGamesCount(msg.cnt);
+      data = Cnt.parse(msg.data);
+      user.updateGamesCount(data.cnt);
       break;
     case "live_chat_message":
-      if (ChatMessage.safeParse(msg.data).success) {
-        if (msg.id == "home") {
-          homeChat.sendMessage(msg);
-        } else {
-          homeChat.addGameMessageChat(msg);
-        }
-      }; break
+      data = ChatMessage.parse(msg.data);
+      if (data.id == "home") {
+        homeChat.sendMessage(data);
+      } else {
+        homeChat.addGameMessageChat(data);
+      }
+      break;
     case "live_chat_full":
       let full = LiveChatFull.parse(msg.data)
-        if (full.id == "home") {
-          homeChat.setHomeChat(full.lines);
-        } else {
-          homeChat.setGameChat(full.lines);
-        }
+      if (full.id == "home") {
+        homeChat.setHomeChat(full.lines);
+      } else {
+        homeChat.setGameChat(full.lines);
       }
       break;
     case "home_lobby_full":
-      if (HomeLobbyFull.safeParse(msg).success)
-        homeLobby.setHomeLobby(msg.lobbyGames);
+      data = HomeLobbyFull.parse(msg.data);
+      homeLobby.setHomeLobby(data.lobbyGames);
       break;
     case "active_players_full":
-      if (ActivePlayersFull.safeParse(msg).success)
-        homeLobby.setActivePlayers(msg.players);
+      data = ActivePlayersFull.parse(msg.data);
+      homeLobby.setActivePlayers(data.players);
       break;
     case "live_tv":
-      if (TvGames.safeParse(msg).success) {
-        tvStore.setGames(msg.games);
-      }
+      data = TvGames.parse(msg.data);
+      tvStore.setGames(data.games);
       break;
     case "tv_game_update":
-      let m = TvGameUpdate.parse(msg);
-      tvStore.tvGameUpdate(m);
+      data = TvGameUpdate.parse(msg.data);
+      tvStore.tvGameUpdate(data);
       break;
     case "home_lobby_add":
-      if (LobbyGame.safeParse(msg).success)
-        homeLobby.addGameToLobby(msg);
+      data = LobbyGame.parse(msg.data);
+      homeLobby.addGameToLobby(data);
       break;
     case "home_lobby_remove":
-      if (LobbyGame.safeParse(msg).success)
-        homeLobby.removeLobbyGame(msg);
+      data = LobbyGame.parse(msg.data);
+      homeLobby.removeLobbyGame(data);
       break;
     case "live_restart":
-      delete msg["t"];
       user.conMsg = "Server will restart";
       user.onReconnect();
       break;
-    case "home_news":
-      delete msg["t"];
+    case "home_news": {
       let news = z.object({
         news: z.array(NewsItem)
       });
-      if (news.safeParse(msg.news).success)
-        newsStore.setNews(msg.news);
+      data = news.parse(msg.data);
+      newsStore.setNews(data.news);
       break;
+    };
     case "home_lobby_remove_user":
-      delete msg["t"];
-      homeLobby.removeLobbyGameByUser(msg.username);
+      data = LobbyGame.parse(msg.data);
+      homeLobby.removeLobbyGameByUser(data.username);
       break;
     case "live_game_start":
-      let game = LiveGameStart.parse(msg);
-      msg["game_info"]["game_id"] = msg["game_id"];
+      let game = LiveGameStart.parse(msg.data);
+      game["game_info"]["_id"] = game["game_id"];
       shuuroStore.$reset()
       shuuroStore.fromServer(game["game_info"], user.username);
       break;
     case "live_game_spectators_count":
-      if (SpecCnt.safeParse(msg).success)
-        shuuroStore.updateWatchCount(msg);
+        data = SpecCnt.parse(msg.data);
+        shuuroStore.updateWatchCount(data);
       break;
     case "live_game_hand":
-      if (LiveGameHand.safeParse(msg).success)
-        shuuroStore.setShuuroHand(msg.hand, user.username);
+        data = LiveGameHand.parse(msg.data);
+        shuuroStore.setShuuroHand(data.hand, user.username);
       break;
     case "live_game_place":
-      if (LiveGamePlace.safeParse(msg).success)
-        shuuroStore.serverPlace(msg);
+        data = LiveGamePlace.parse(msg.data);
+        shuuroStore.serverPlace(data);
       break;
     case "live_game_play":
-      if (LiveGameFight.safeParse(msg).success)
-        shuuroStore.serverMove2(msg);
+        data = LiveGameFight.parse(msg.data);
+        shuuroStore.serverMove2(data);
       break;
     case "live_game_confirmed":
-      if (LiveGameConfirmed.safeParse(msg).success)
-        shuuroStore.setConfirmed(msg.confirmed);
+        data = LiveGameConfirmed.parse(msg.data);
+        shuuroStore.setConfirmed(data.confirmed);
       break;
     case "live_game_draw":
-      if (LiveGameDraw.safeParse(msg).success)
-        shuuroStore.gameDraw(msg, user.username);
+        data = LiveGameDraw.parse(msg.data);
+        shuuroStore.gameDraw(data, user.username);
       break;
     case "live_game_resign":
-      if (LiveGameResign.safeParse(msg).success)
-        shuuroStore.gameResign(msg, msg.player);
+        data = LiveGameResign.parse(msg.data);
+        shuuroStore.gameResign(data, data.player);
       break;
     case "live_game_lot":
-      delete msg["t"];
-      shuuroStore.gameLot(msg, user.username);
+      data = LiveGameLost.parse(msg.data);
+      shuuroStore.gameLot(data, user.username);
       break;
     case "live_game_sfen":
-      if (LiveGameSfen.safeParse(msg).success)
-        tvStore.setProfileGame(msg);
+        data = LiveGameSfen.parse(msg.data);
+        tvStore.setProfileGame(data);
       break;
     case "pause_confirmed":
-      if (PauseConfirmed.safeParse(msg).success)
-        shuuroStore.pauseConfirmed(msg);
+        data = PauseConfirmed.parse(msg.data);
+        shuuroStore.pauseConfirmed(data);
       break;
     case "redirect_deploy":
-      if (RedirectDeploy.safeParse(msg).success)
-        shuuroStore.redirectDeploy(msg);
+        data = RedirectDeploy.parse(msg.data);
+        shuuroStore.redirectDeploy(data);
       break;
   }
 }
