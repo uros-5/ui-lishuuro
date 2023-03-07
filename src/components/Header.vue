@@ -51,7 +51,7 @@ header {
   color: var(--font-color);
 }
 
-@media (max-width: 799px) and (orientation: portrait) {
+@media (max-width: 799px) {
   .site-title-nav {
     padding-left: 0;
     flex-direction: column;

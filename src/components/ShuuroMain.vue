@@ -22,6 +22,7 @@
       <PlayerHand side="bottom" :in-center="false" :counter="[0, 0, 0, 0, 0, 0, 0, 0]"
         :color="shuuroStore.getColor(bottomPlayer())" hand-type="pocket" />
     </div>
+    <div class="material material-bottom standard disabled"></div>
   </div>
 </template>
 <script setup lang="ts">
@@ -74,5 +75,16 @@ function bottomPlayer(): string {
   align-content: center;
   background: var(--bg-color2);
   border-bottom: 1px solid var(--border-color);
+}
+
+
+.new-pocket {
+  border-radius: 3px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
+  background: #888;
+  white-space: nowrap;
+  display: flex;
+  width: 100%;
+  margin: auto;
 }
 </style>

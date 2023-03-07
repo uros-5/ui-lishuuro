@@ -22,17 +22,17 @@
           @click="
             color = 'black';
           createGame();
-                                                                                                                                                                                                                                                            " />
+                                                                                                                                                                                                                                                                                    " />
         <button class="icon icon-adjust" type="button" title="Random"
           @click="
             color = 'random';
           createGame();
-                                                                                                                                                                                                                                                            " />
+                                                                                                                                                                                                                                                                                    " />
         <button class="icon icon-white" type="button" title="White"
           @click="
             color = 'white';
           createGame();
-                                                                                                                                                                                                                                                            " />
+                                                                                                                                                                                                                                                                                    " />
       </div>
     </div>
   </form>
@@ -83,7 +83,6 @@ const ALL_VARIANTS =
 function createGame() {
   let choice = inputVariant();
   let game: LobbyGame = {
-    t: "home_lobby_add",
     time: allowedDuration[time.value],
     incr: incrementDuration[incr.value],
     variant: choice[0],
@@ -91,7 +90,11 @@ function createGame() {
     color: color.value,
     username: userStore.username,
   };
-  SEND(game);
+  let obj = {
+    t: "home_lobby_add",
+    data: game
+  }
+  SEND(obj);
 }
 
 function inputVariant(): [string, number] {

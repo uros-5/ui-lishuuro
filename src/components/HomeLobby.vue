@@ -40,8 +40,7 @@ import { getSubVariant } from "@/plugins/subVariant";
 const store = useHomeLobby();
 
 function acceptGame(game: LobbyGame): void {
-  game.t = "home_lobby_accept";
-  SEND(game);
+  SEND({ t: "home_lobby_accept", data: game });
 }
 
 function iconColor(color: string): string {

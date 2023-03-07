@@ -1,9 +1,9 @@
 {
   "name": "ui-lishuuro",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "build-only": "vite build",

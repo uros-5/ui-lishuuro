@@ -17,7 +17,6 @@ import { useHomeChat } from "@/store/useHomeChat";
 
 const shuuroStore = useShuuroStore();
 const homeChat = useHomeChat();
-const zoomValue = ref("100");
 
 onMounted(() => {
   const id = useRoute().params["id"];

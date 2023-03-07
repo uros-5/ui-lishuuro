@@ -137,7 +137,7 @@ const user = useUser();
   bottom: -10px;
 }
 
-@media (max-width: 799px) and (orientation: portrait) {
+@media (max-width: 799px) {
   .hamburger {
     display: block;
   }

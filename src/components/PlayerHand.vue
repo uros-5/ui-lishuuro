@@ -1,9 +1,6 @@
 <template>
   <div class="cg-wrap pocket" :data-piece="hs.getPiece()" :style="inCenter ? '' : cgWidth()">
-    <div v-if="isHand()" :id="divId()" style="flex-wrap: wrap" :style="`--pocketLength: ${pocketLength()};
-                                                                              --files: ${files()};
-                                                                              --ranks: ${files()};
-                                                                              ${cgWidth()}`" :class="pocketCss()">
+    <div v-if="isHand()" :id="divId()" style="flex-wrap: wrap" :style="pocketStyle()" :class="pocketCss()">
       <piece v-for="(i, index) in store.pieces()" v-if="handType == 'shop'" :key="i" :class="`${color} ${i} ${handType}`"
         :data-color="color" :data-role="i" :data-nb="dataNb(index)" :data-max="store.dataMax()[index]"
         @click="increment(index, i[0])" />
@@ -102,6 +99,13 @@ function files(): number {
 function pocketLength(): number {
   let variant = store.getVariant();
   return variant.endsWith("Fairy") ? 9 : 6;
+}
+
+function pocketStyle(): string {
+  return `--pocketLength: ${pocketLength()};
+          --files: ${files()};
+          --ranks: ${files()};
+          ${cgWidth()}`
 }
 </script>
 
