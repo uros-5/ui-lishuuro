@@ -3,7 +3,7 @@
     <div class="info2">
       <div class="tc">
         {{ minute }} + {{ sec }} • {{ ratedGame() }}•
-        <a class="user-link" target="_blank" href="/">{{ variantTitle() }}</a>
+        <router-link class="user-link" to="/">{{ variantTitle() }}</router-link>
       </div>
       <info-date timestamp="" :title="toolTipDate()">
         {{ gameDate() }}
@@ -15,7 +15,6 @@
 import { defineProps } from "vue";
 import { timeago } from "@/plugins/timeago";
 import { useShuuroStore } from "@/store/useShuuroStore";
-import { ServerDate } from "@/plugins/serverDate";
 
 const store = useShuuroStore();
 
@@ -28,7 +27,18 @@ const props = defineProps<{
 }>();
 
 function variantTitle(): string {
-  return props.variant == "shuuro12" ? "Shuuro" : "Shuuro Fairy";
+  switch (props.variant) {
+    case "shuuro":
+      return "Shuuro";
+    case "shuuroFairy":
+      return "Shuuro Fairy";
+    case "standard":
+      return "Standard";
+    case "standardFairy":
+      return "Standard Fairy";
+    default: return "";
+
+  }
 }
 
 function ratedGame(): string {
@@ -40,23 +50,24 @@ function ratedGame(): string {
 }
 
 function gameDate(): string {
-  if (store.$state.status < 0) {
+  if (store.status < 0) {
     return "Playing right now";
   } else {
-    return timeago(store.$state.last_clock!);
+    return timeago(store.last_clock!);
   }
 }
 
 function toolTipDate(): string {
-  const d = store.$state.last_clock;
+  const d = store.last_clock;
   if (d) {
-    return store.$state.last_clock!.toString();
+    return store.last_clock!.toString();
   }
   return "";
 }
 
 function gameIcon(): string {
-  return variantTitle() == "Shuuro" ? "M" : "P";
+  
+  return variantTitle() == "Shuuro" || variantTitle() == "Standard" ? "M" : "P";
 }
 </script>
 <style></style>

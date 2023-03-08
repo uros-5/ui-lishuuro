@@ -1,6 +1,6 @@
 // https://stackoverflow.com/questions/20618355/the-simplest-possible-javascript-countdown-timer
 
-import { Ref, ref } from "vue";
+import { type Ref, ref } from "vue";
 
 const HURRY = 10000;
 

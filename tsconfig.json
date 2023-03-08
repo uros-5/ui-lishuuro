@@ -1,41 +1,43 @@
 {
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "target": "esnext",
+  "module": "esnext",
+  "moduleResolution": "node",
+  "strict": true,
+  "jsx": "preserve",
+  "sourceMap": true,
+  "resolveJsonModule": true,
+  "esModuleInterop": true,
+  "lib": [
+    "esnext",
+    "dom"
+  ],
+  "include": [
+    "env.d.ts",
+    "src/**/*",
+    "src/**/*.vue"
+  ],
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "jsx": "preserve",
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "lib": [
-      "esnext",
-      "dom"
-    ],
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/*"
-      ],
-      "~/*": [
-        "../*"
+        "./src/*"
       ]
     },
     "plugins": [
       {
         "name": "typescript-vue-plugin"
       }
+    ],
+    "types": [
+      "node"
     ]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
-  ],
   "references": [
     {
-      "path": "./tsconfig.node.json"
+      "path": "./tsconfig.config.json"
     }
-  ]
+  ],
+  "preserveValueImports": true,
+  "isolatedModules": true,
 }

@@ -1,12 +1,9 @@
 <template>
   <div id="btn-controls-top" class="btn-controls">
     <button id="flip" @click="flipSide()">
-      <i class="icon icon-refresh" /></button
-    ><button @click="fastBackward">
-      <i class="icon icon-fast-backward" /></button
-    ><button @click="stepBackward">
-      <i class="icon icon-step-backward" /></button
-    ><button @click="stepForward">
+      <i class="icon icon-refresh" /></button><button @click="fastBackward">
+      <i class="icon icon-fast-backward" /></button><button @click="stepBackward">
+      <i class="icon icon-step-backward" /></button><button @click="stepForward">
       <i class="icon icon-step-forward" />
     </button>
     <button @click="fastForward">
@@ -16,13 +13,12 @@
 </template>
 
 <script setup lang="ts">
-import { Api } from "chessground12/api";
 import { useShuuroStore } from "../store/useShuuroStore";
 const shuuroStore = useShuuroStore();
 
 function flipSide(): void {
-  let now = shuuroStore.$state.flipped_board;
-  shuuroStore.$state.flipped_board = !now;
+  let now = shuuroStore.flipped_board;
+  shuuroStore.flipped_board = !now;
   if (shuuroStore.current_stage == 1) {
     shuuroStore.cgs(1).toggleOrientation();
   } else if (shuuroStore.current_stage == 2) {
@@ -31,16 +27,21 @@ function flipSide(): void {
 }
 
 function fastBackward(): void {
-  shuuroStore.$state.current_index = 0;
+  shuuroStore.current_index = 0;
   if (fenExist(shuuroStore.currentIndex())) {
-    let fen = getFen(0);
+    let placement_index = shuuroStore.myHistory(1).length - 1;
+    let fen = shuuroStore.client_stage == 1 ? getFen(0) : getFen(placement_index, 1);
     wasmFen(fen);
+    shuuroStore.current_index = -1;
   }
 }
 
 function stepBackward(): void {
-  if (shuuroStore.currentIndex() > 0) {
-    shuuroStore.$state.current_index! -= 1;
+  if (shuuroStore.currentIndex() == 0) {
+    fastBackward();
+  }
+  else if (shuuroStore.currentIndex() > 0) {
+    shuuroStore.current_index! -= 1;
     if (fenExist(shuuroStore.currentIndex())) {
       let fen = getFen(shuuroStore.currentIndex());
       wasmFen(fen);
@@ -49,10 +50,10 @@ function stepBackward(): void {
 }
 
 function stepForward(): void {
-  let history = currentHistory();
-  let index = shuuroStore.$state.current_index!;
+  let history = shuuroStore.getHistory();
+  let index = shuuroStore.current_index!;
   if (index + 1 < history.length) {
-    shuuroStore.$state.current_index! += 1;
+    shuuroStore.current_index! += 1;
     if (fenExist(shuuroStore.currentIndex())) {
       let fen = getFen(shuuroStore.currentIndex());
       wasmFen(fen);
@@ -61,8 +62,8 @@ function stepForward(): void {
 }
 
 function fastForward(): void {
-  let history = currentHistory();
-  shuuroStore.$state.current_index = history.length - 1;
+  let history = shuuroStore.getHistory();
+  shuuroStore.current_index = history.length - 1;
   if (fenExist(shuuroStore.currentIndex())) {
     let fen = getFen(shuuroStore.currentIndex());
     wasmFen(fen);
@@ -73,24 +74,14 @@ function wasmFen(fen: string) {
   shuuroStore.tempWasm(fen);
 }
 
-function currentHistory(): [string, number][] {
-  if (shuuroStore.$state.client_stage == 0) {
-    return shuuroStore.history(0)!;
-  } else if (shuuroStore.$state.client_stage == 1) {
-    return shuuroStore.history(1)!;
-  } else if (shuuroStore.$state.client_stage == 2) {
-    return shuuroStore.history(2)!;
-  }
-  return [];
-}
-
-function getFen(index: number): string {
-  switch (shuuroStore.$state.client_stage!) {
+function getFen(index: number, stage?: number): string {
+  let client_stage = stage ? stage : shuuroStore.client_stage!;
+  switch (client_stage) {
     case 1:
-      let s = shuuroStore.history(1)![index][0].split("_");
+      let s = (shuuroStore.myHistory(1)[index] as string).split("_");
       return `${s[1]} ${s[2]} ${s[3]}`;
     case 2:
-      let st = shuuroStore.history(2)![index][0];
+      let st = (shuuroStore.myHistory(2)![index] as string);
       return st != undefined ? st : "";
     default:
       return "";
@@ -99,10 +90,10 @@ function getFen(index: number): string {
 
 function fenExist(index: number): boolean {
   if (index < 0) return false;
-  if (shuuroStore.$state.client_stage == 1) {
-    return index <= shuuroStore.history(1)!.length;
-  } else if (shuuroStore.$state.client_stage == 2) {
-    return index < shuuroStore.history(2)!.length;
+  if (shuuroStore.client_stage == 1) {
+    return index <= shuuroStore.myHistory(1)!.length;
+  } else if (shuuroStore.client_stage == 2) {
+    return index < shuuroStore.myHistory(2)!.length;
   }
   return false;
 }

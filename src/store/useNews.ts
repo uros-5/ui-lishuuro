@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { z } from "zod";
 
 export const useNews = defineStore("useNews", {
   state: (): NewsStore => {
@@ -6,11 +7,11 @@ export const useNews = defineStore("useNews", {
   },
   actions: {
     setNews(news: NewsItem[]) {
-      this.$state.news = news;
-      this.$state.finished = true;
+      this.news = news;
+      this.finished = true;
     },
     exist(id: string): NewsItem | undefined {
-      let item = this.$state.news.find((item) => item._id == id);
+      const item = this.news.find((item) => item._id == id);
       return item;
     },
   },
@@ -21,12 +22,14 @@ export interface NewsStore {
   finished: boolean;
 }
 
-export interface NewsItem {
-  _id: string;
-  title: string;
-  user: string;
-  date: string;
-  category: string;
-  headline: string;
-  text: string;
-}
+export const NewsItem = z.object({
+  _id: z.string(),
+  title: z.string(),
+  user: z.string(),
+  date: z.string(),
+  category: z.string(),
+  headline: z.string(),
+  text: z.string(),
+});
+
+export type NewsItem = z.infer<typeof  NewsItem>; 

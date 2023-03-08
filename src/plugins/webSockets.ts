@@ -1,12 +1,20 @@
 import { useUser } from "@/store/useUser";
-import { useHomeChat } from "@/store/useHomeChat";
+import { ChatMessage, useHomeChat } from "@/store/useHomeChat";
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { useShuuroStore } from "@/store/useShuuroStore";
-import { useNews } from "@/store/useNews";
+import { NewsItem, useNews } from "@/store/useNews";
 import { useTvStore } from "@/store/useTvStore";
 import Sockette from "sockette";
-import { backend, wsUrl } from "./getBackend";
-import { liveChatMessage } from "./webSocketTypes";
+import { wsUrl } from "./getBackend";
+import {
+  ActivePlayersFull, Cnt, HomeLobbyFull,
+  LiveChatFull, LiveGameConfirmed, LiveGameDraw,
+  LiveGameResign, LiveGameFight, LiveGameHand,
+  LiveGamePlace, LiveGameStart, LobbyGame, SpecCnt,
+  TvGames, TvGameUpdate, LiveGameSfen, PauseConfirmed, RedirectDeploy, LiveGameLost
+} from "./webSocketTypes";
+import { z } from "zod";
+
 
 const ws = new Sockette(wsUrl(), {
   timeout: 1200,
@@ -20,12 +28,12 @@ const ws = new Sockette(wsUrl(), {
   onreconnect: (e) => {
     onreconnect(e);
   },
-  onmaximum: (e) => {},
-  onclose: (e) => {},
-  onerror: (e) => {},
+  onmaximum: (_e) => { },
+  onclose: (_e) => { },
+  onerror: (_e) => { },
 });
 
-let unsendMessages: any[] = [];
+const unsendMessages: any[] = [];
 
 export function SEND(msg: any) {
   try {
@@ -60,115 +68,123 @@ function onmessage(event: any) {
   const newsStore = useNews();
   const tvStore = useTvStore();
 
-  const msg = JSON.parse(event.data);
-
+  const msg: { t: string, data: any } = JSON.parse(event.data);
+  let data: any = {};
+  console.log(msg);
   switch (msg.t) {
     case "active_players_count":
-      user.updatePlCount(msg.cnt);
+      data = Cnt.parse(msg.data);
+      user.updatePlCount(data.cnt);
       break;
     case "active_games_count":
-      user.updateGamesCount(msg.cnt);
+      data = Cnt.parse(msg.data);
+      user.updateGamesCount(data.cnt);
       break;
     case "live_chat_message":
-      if (msg.id == "home") {
-        homeChat.sendMessage(msg);
+      data = ChatMessage.parse(msg.data);
+      if (data.id == "home") {
+        homeChat.sendMessage(data);
       } else {
-        homeChat.addGameMessageChat(msg);
+        homeChat.addGameMessageChat(data);
       }
       break;
     case "live_chat_full":
-      if (msg.id == "home") {
-        homeChat.setHomeChat(msg.lines);
+      let full = LiveChatFull.parse(msg.data)
+      if (full.id == "home") {
+        homeChat.setHomeChat(full.lines);
       } else {
-        homeChat.setGameChat(msg.lines);
+        homeChat.setGameChat(full.lines);
       }
       break;
     case "home_lobby_full":
-      homeLobby.setHomeLobby(msg.lobbyGames);
+      data = HomeLobbyFull.parse(msg.data);
+      homeLobby.setHomeLobby(data.lobbyGames);
       break;
     case "active_players_full":
-      homeLobby.setActivePlayers(msg.players);
+      data = ActivePlayersFull.parse(msg.data);
+      homeLobby.setActivePlayers(data.players);
       break;
     case "live_tv":
-      if (msg.games) {
-        tvStore.setGames(msg.games);
-      }
+      data = TvGames.parse(msg.data);
+      tvStore.setGames(data.games);
       break;
     case "tv_game_update":
-      tvStore.tvGameUpdate(msg.g);
+      data = TvGameUpdate.parse(msg.data);
+      tvStore.tvGameUpdate(data);
       break;
     case "home_lobby_add":
-      delete msg["t"];
-      homeLobby.addGameToLobby(msg);
+      data = LobbyGame.parse(msg.data);
+      homeLobby.addGameToLobby(data);
       break;
     case "home_lobby_remove":
-      delete msg["t"];
-      homeLobby.removeLobbyGame(msg);
+      data = LobbyGame.parse(msg.data);
+      homeLobby.removeLobbyGame(data);
       break;
     case "live_restart":
-      delete msg["t"];
-      user.$state.conMsg = "Server will restart";
+      user.conMsg = "Server will restart";
       user.onReconnect();
       break;
-    case "home_news":
-      delete msg["t"];
-      newsStore.setNews(msg.news);
+    case "home_news": {
+      let news = z.object({
+        news: z.array(NewsItem)
+      });
+      data = news.parse(msg.data);
+      newsStore.setNews(data.news);
       break;
+    };
     case "home_lobby_remove_user":
-      delete msg["t"];
-      homeLobby.removeLobbyGameByUser(msg.username);
+      data = LobbyGame.parse(msg.data);
+      homeLobby.removeLobbyGameByUser(data.username);
       break;
     case "live_game_start":
-      msg["game_info"]["game_id"] = msg["game_id"];
-      shuuroStore.fromServer(msg["game_info"], user.$state.username);
+      let game = LiveGameStart.parse(msg.data);
+      game["game_info"]["_id"] = game["game_id"];
+      shuuroStore.$reset()
+      shuuroStore.fromServer(game["game_info"], user.username);
       break;
     case "live_game_spectators_count":
-      delete msg["t"];
-      shuuroStore.updateWatchCount(msg);
+        data = SpecCnt.parse(msg.data);
+        shuuroStore.updateWatchCount(data);
       break;
     case "live_game_hand":
-      delete msg["t"];
-      shuuroStore.setShuuroHand(msg.hand, user.$state.username);
+        data = LiveGameHand.parse(msg.data);
+        shuuroStore.setShuuroHand(data.hand, user.username);
       break;
     case "live_game_place":
-      delete msg["t"];
-      shuuroStore.serverPlace(msg);
+        data = LiveGamePlace.parse(msg.data);
+        shuuroStore.serverPlace(data);
       break;
     case "live_game_play":
-      delete msg["t"];
-      shuuroStore.serverMove2(msg);
+        data = LiveGameFight.parse(msg.data);
+        shuuroStore.serverMove2(data);
       break;
     case "live_game_confirmed":
-      delete msg["t"];
-      shuuroStore.setConfirmed(msg.confirmed);
+        data = LiveGameConfirmed.parse(msg.data);
+        shuuroStore.setConfirmed(data.confirmed);
       break;
     case "live_game_draw":
-      delete msg["t"];
-      shuuroStore.gameDraw(msg, user.$state.username);
+        data = LiveGameDraw.parse(msg.data);
+        shuuroStore.gameDraw(data, user.username);
       break;
     case "live_game_resign":
-      delete msg["t"];
-      shuuroStore.gameResign(msg, msg.player);
+        data = LiveGameResign.parse(msg.data);
+        shuuroStore.gameResign(data, data.player);
       break;
     case "live_game_lot":
-      delete msg["t"];
-      shuuroStore.gameLot(msg, user.$state.username);
+      data = LiveGameLost.parse(msg.data);
+      shuuroStore.gameLot(data, user.username);
       break;
     case "live_game_sfen":
-      delete msg["t"];
-      tvStore.setProfileGame(msg);
+        data = LiveGameSfen.parse(msg.data);
+        tvStore.setProfileGame(data);
       break;
     case "pause_confirmed":
-      delete msg["t"];
-      shuuroStore.pauseConfirmed(msg.confirmed);
-      break;
-    case "redirect":
-      delete msg["t"];
-      shuuroStore.redirect(msg.path);
+        data = PauseConfirmed.parse(msg.data);
+        shuuroStore.pauseConfirmed(data);
       break;
     case "redirect_deploy":
-      delete msg["t"];
-      shuuroStore.redirectDeploy(msg);
+        data = RedirectDeploy.parse(msg.data);
+        shuuroStore.redirectDeploy(data);
       break;
   }
 }

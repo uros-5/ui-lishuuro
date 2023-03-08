@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import Header from "@/components/Header.vue";
-import Connection from "@/components/Connection.vue";
+import ServerConnection from "@/components/ServerConnection.vue";
 
 const route = useRoute();
 
 function cssVariable(): string {
   let c;
   if (route == undefined) return "";
-  else if (route.fullPath.startsWith("/shuuro/0")) {
+  else if (route.fullPath.includes("/0")) {
     c = "1300px";
+    return `--main-max-width: ${c};`;
   } else if (route.fullPath.startsWith("/shuuro")) {
     return "";
   } else {
@@ -28,7 +29,7 @@ function cssVariable(): string {
       </transition>
     </router-view>
   </div>
-  <Connection />
+  <ServerConnection />
 </template>
 
 <style>

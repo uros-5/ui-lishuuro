@@ -3,20 +3,10 @@
     <div class="site-title-nav">
       <HomeHamburgerIcon />
       <div class="topnav">
-        <router-link
-          @click="user.toggleHeader"
-          to="/"
-          class="nav-link active home"
-        >
+        <router-link @click="user.toggleHeader" to="/" class="nav-link active home">
           lishuuro
         </router-link>
-        <router-link
-          @click="user.toggleHeader"
-          v-for="i in nav"
-          :key="i"
-          :to="i.url"
-          class="nav-link"
-        >
+        <router-link @click="user.toggleHeader" v-for="i in nav" v-bind:key="i.url" :to="i.url" class="nav-link">
           {{ i.text }}
         </router-link>
       </div>
@@ -61,7 +51,7 @@ header {
   color: var(--font-color);
 }
 
-@media (max-width: 799px) and (orientation: portrait) {
+@media (max-width: 799px) {
   .site-title-nav {
     padding-left: 0;
     flex-direction: column;

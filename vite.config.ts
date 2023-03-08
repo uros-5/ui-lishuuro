@@ -1,7 +1,7 @@
+import { fileURLToPath, URL } from "node:url";
+
 import { defineConfig } from "vite";
-import path from "path";
 import vue from "@vitejs/plugin-vue";
-import ViteRsw from "vite-plugin-rsw";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,6 +9,7 @@ export default defineConfig({
     "process.env": process.env,
   },
   assetsInclude: ["**/*.ogg"],
+
   plugins: [
     vue({
       template: {
@@ -17,18 +18,13 @@ export default defineConfig({
         },
       },
     }),
-    //ViteRsw(),
-
-    /*ViteRsw({
-		crates: [{name: "shuuro-wasm", unwatch: [ '../src/**' ],}],
-	}),*/
   ],
+  optimizeDeps: { exclude: ["shuuro-wasm"] },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
-  optimizeDeps: { exclude: ["shuuro-wasm"] },
 });
 
 const CUSTOM_ELEMENTS = [
@@ -52,4 +48,5 @@ const CUSTOM_ELEMENTS = [
   "icon",
   "vs-swords",
   "back",
+  "mini-game"
 ];

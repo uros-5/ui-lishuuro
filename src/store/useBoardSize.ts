@@ -12,13 +12,13 @@ export const useBoardSize = defineStore("boardSize", {
       this.rowsAndCols = n;
     }, // eslint-disable-next-line
     resize(_event: Event) {
-      let board = document.querySelector("#mainboard")! as HTMLElement;
+      const board = document.querySelector("#mainboard")! as HTMLElement;
       if (board != null) {
         this.updateHeight(board.offsetWidth!);
       }
     },
     genVars(): string {
-      return `--cg-width: ${this.height}px; --cg-height: ${this.height}px;`;
+      return `--cg-width: ${this.height -65}px; --cg-height: ${this.height-65}px;`;
     },
     cgContainerStyle(): string {
       const height = this.height;

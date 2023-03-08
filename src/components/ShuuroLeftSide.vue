@@ -2,9 +2,10 @@
   <aside class="sidebar-first">
     <ShuuroStageInfo />
     <ChatRoom
-      :messages="chatStore.$state.gameChat"
-      :ws-type="store.$state.game_id"
-      :finished="store.$state.status"
+      :messages="chatStore.gameChat"
+      :ws-type="store.game_id"
+      :finished="store.status"
+      variant=""
     />
     <ShuuroSpectators />
   </aside>
@@ -15,7 +16,12 @@ import ChatRoom from "@/components/ChatRoom.vue";
 import ShuuroSpectators from "./ShuuroSpectators.vue";
 import { useShuuroStore } from "@/store/useShuuroStore";
 import { useHomeChat } from "@/store/useHomeChat";
+import { onMounted } from "vue";
 const store = useShuuroStore();
 const chatStore = useHomeChat();
+
+onMounted(() => {
+  
+})
 </script>
 <style></style>

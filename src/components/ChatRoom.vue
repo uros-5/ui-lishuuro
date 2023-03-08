@@ -2,13 +2,7 @@
   <div id="roundchat" class="roundchat chat">
     <div class="chatroom">
       Chat room
-      <input
-        id="checkbox"
-        title="Toggle the chat"
-        name="checkbox"
-        type="checkbox"
-        @click="toggle"
-      />
+      <input id="checkbox" title="Toggle the chat" name="checkbox" type="checkbox" @click="toggle" />
     </div>
     <ol id="lobbychat-messages">
       <div v-if="hiddenChat" id="messages">
@@ -22,17 +16,8 @@
       </div>
     </ol>
 
-    <input
-      id="chat-entry"
-      v-model="message"
-      maxlength="50"
-      type="text"
-      name="entry"
-      autocomplete="off"
-      :placeholder="setPlaceholder()"
-      :disabled="toDisableInput()"
-      @keyup.enter="onEnter"
-    />
+    <input id="chat-entry" v-model="message" maxlength="50" type="text" name="entry" autocomplete="off"
+      :placeholder="setPlaceholder()" :disabled="toDisableInput()" @keyup.enter="onEnter" />
   </div>
 </template>
 
@@ -41,31 +26,38 @@ import { ref, defineProps } from "vue";
 import { useCookies } from "vue3-cookies";
 import { useUser } from "@/store/useUser";
 import { SEND } from "@/plugins/webSockets";
+import type { ChatMessage } from "@/store/useHomeChat";
 
-const props =
-  defineProps<{ messages: ChatMessage[]; wsType: string; finished: number }>();
+const props = defineProps<{
+  messages: ChatMessage[];
+  wsType: string;
+  finished: number;
+  variant: string;
+}>();
 const message = ref("");
 const hiddenChat = ref(true);
 const cookie = useCookies().cookies;
 const user = useUser();
 
 function onEnter(): void {
-  if (message.value.length > 0 && message.value.length < 80) {
+  if (message.value.length > 0 && message.value.length < 50) {
     SEND({
       t: "live_chat_message",
       message: message.value,
-      user: user.$state.username,
+      user: user.username,
       time: "",
       id: props.wsType,
+      variant: "shuuro",
     });
     message.value = "";
   }
 }
 
+
 function setPlaceholder(): string {
   if (props.finished > -1) {
     return "Chat disabled for old games";
-  } else if (user.$state.reg == false) {
+  } else if (user.reg == false) {
     return "Sign in to chat";
   } else {
     return "Please be nice in the chat!";
@@ -91,15 +83,10 @@ function fmtTime(time: string): string {
   return `${hours}:${minutes}`;
 }
 
-let toggle = (): void => {
+function toggle() {
   hiddenChat.value = !hiddenChat.value;
 };
 
-interface ChatMessage {
-  time: string;
-  user: string;
-  message: string;
-}
 </script>
 
 <style scoped>

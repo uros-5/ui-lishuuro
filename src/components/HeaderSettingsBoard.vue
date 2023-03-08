@@ -5,7 +5,7 @@ const settings = useHeaderSettings();
 
 settings.$subscribe((_mutation, _state) => {
   settings.zoom();
-  localStorage.setItem("zoom", `${settings.$state.zoom}`);
+  localStorage.setItem("zoom", `${settings.currentZoom}`);
 });
 
 function selected(t: string, img: number): string {
@@ -19,34 +19,16 @@ function selected(t: string, img: number): string {
 
 <template>
   <div id="settings-background">
-    <input
-      v-model="settings.$state.zoom"
-      id="zoom"
-      class="slider"
-      name="zoom"
-      type="range"
-      min="0"
-      max="100"
-      step="1.15625"
-    />
+    <input v-model="settings.currentZoom" id="zoom" class="slider" name="zoom" type="range" min="0" max="100"
+      step="1.15625" />
     <div id="allboards">
-      <label
-        v-for="i in [0, 1, 2]"
-        class="board board 1 standard12x12 board"
-        :for="`board${i}`"
-        :class="`board-${i}${selected('board', i)}`"
-        @click="settings.setBoardImg(i)"
-      >
+      <label v-for="i in [0, 1, 2, 3, 4, 5]" v-bind:key="i" class="board board 1 standard12x12 board" :for="`board${i}`"
+        :class="`board-${i}${selected('board', i)}`" @click="settings.setBoardImg(i)">
       </label>
     </div>
     <div id="allpieces">
-      <label
-        v-for="i in [0, 1, 2]"
-        class=""
-        :for="`piece${i}`"
-        :class="`piece-${i}${selected('piece', i)}`"
-        @click="settings.setPieceImg(i)"
-      >
+      <label v-for="i in [0, 1, 2]" v-bind:key="i" class="" :for="`piece${i}`"
+        :class="`piece-${i}${selected('piece', i)}`" @click="settings.setPieceImg(i)">
       </label>
     </div>
   </div>
@@ -71,23 +53,68 @@ div #allpieces {
   padding: 30px;
 }
 
+.piece-0 {
+  background-image: url("@/../public/assets/pieces/merida/wN.svg");
+}
+
 .board-0,
-div[data-board$="0"] cg-board {
-  background-image: url("@/assets/board/12x12brown.svg") !important;
+div[data-size="8"][data-board$="0"] cg-board {
+  background-image: url("@/assets/board/8x8brown.svg");
 }
 
 .board-1,
-div[data-board$="1"] cg-board {
-  background-image: url("@/assets/board/12x12blue.svg") !important;
+div[data-size="8"][data-board$="1"] cg-board {
+  background-image: url("@/assets/board/8x8blue.svg");
 }
 
 .board-2,
-div[data-board$="2"] cg-board {
-  background-image: url("@/assets/board/12x12green.svg") !important;
+div[data-size="8"][data-board$="2"] cg-board {
+  background-image: url("@/assets/board/8x8green.svg");
 }
 
-.piece-0 {
-  background-image: url("@/../public/assets/pieces/merida/wN.svg");
+.board-3,
+div[data-size="8"][data-board$="3"] cg-board {
+  background-image: url("@/assets/board/8x8gray.svg");
+}
+
+.board-4,
+div[data-size="8"][data-board$="4"] cg-board {
+  background-image: url("@/assets/board/8x8brown_sand.svg");
+}
+
+.board-5,
+div[data-size="8"][data-board$="5"] cg-board {
+  background-image: url("@/assets/board/8x8brown_yellow.svg");
+}
+
+.board-0,
+div[data-board$="0"][data-size$="12"] cg-board {
+  background-image: url("@/assets/board/12x12brown.svg");
+}
+
+.board-1,
+div[data-board$="1"][data-size$="12"] cg-board {
+  background-image: url("@/assets/board/12x12blue.svg");
+}
+
+.board-2,
+div[data-board$="2"][data-size$="12"] cg-board {
+  background-image: url("@/assets/board/12x12green.svg");
+}
+
+.board-3,
+div[data-board$="3"][data-size$="12"] cg-board {
+  background-image: url("@/assets/board/12x12gray.svg");
+}
+
+.board-4,
+div[data-board$="4"][data-size$="12"] cg-board {
+  background-image: url("@/assets/board/12x12brown_sand.svg");
+}
+
+.board-5,
+div[data-board$="5"][data-size$="12"] cg-board {
+  background-image: url("@/assets/board/12x12brown_yellow.svg");
 }
 
 .piece-1 {

@@ -30,7 +30,7 @@
           </div>
           <table id="games">
             <tbody>
-              <UserProfileGame v-for="g in games" key="game" :game="g" />
+              <UserProfileGame v-for="g in games" v-bind:key="g" :game="g" />
             </tbody>
           </table>
         </div>

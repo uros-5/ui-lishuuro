@@ -1,10 +1,10 @@
 <template>
   <div class="under-right">
     <router-link to="/players">
-      <span id="u_cnt">{{ store.$state.plCount }} players</span>
+      <span id="u_cnt">{{ store.plCount }} players</span>
     </router-link>
-    <router-link to="/">
-      <span id="g_cnt">{{ store.$state.gamesCount }} games in play</span>
+    <router-link to="/tv">
+      <span id="g_cnt">{{ store.gamesCount }} games in play</span>
     </router-link>
   </div>
 </template>

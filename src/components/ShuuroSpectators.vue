@@ -16,7 +16,7 @@ import { useShuuroStore } from "@/store/useShuuroStore";
 const store = useShuuroStore();
 
 function fmtCount(): string {
-  let count = store.$state.watchCount!;
+  let count = store.watchCount!;
   if (count <= 2) {
     return "";
   }

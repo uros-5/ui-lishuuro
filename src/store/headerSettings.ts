@@ -6,53 +6,56 @@ export const useHeaderSettings = defineStore("headerSettings", {
   },
   actions: {
     toggle() {
-      let self = this;
+      const self = this;
       function close() {
-        self.$state.show = false;
+        self.show = false;
         document
           .querySelector("#main-wrap")
           ?.removeEventListener("click", close, false);
       }
-      this.$state.show = !this.$state.show;
-      if (this.$state.show) {
+      this.show = !this.show;
+      if (this.show) {
         document.querySelector("#main-wrap")?.addEventListener("click", close);
       } else {
         close();
       }
     },
     click(c: Clicked) {
-      this.$state.clicked = c;
+      this.clicked = c;
     },
     setTheme(theme: string) {
       document.querySelector("html")?.setAttribute("data-theme", theme);
-      this.$state.theme = theme;
+      this.theme = theme;
       localStorage.setItem("theme", theme);
     },
     setBoardImg(image: number) {
-      if ([0, 1, 2].includes(image)) {
+      if ([0, 1, 2, 3, 4, 5].includes(image)) {
         localStorage.setItem("board", `${image}`);
-        this.$state.board = `${image}`;
+        this.board = `${image}`;
       }
     },
     setPieceImg(image: number) {
       if ([0, 1, 2].includes(image)) {
         localStorage.setItem("piece", `${image}`);
-        this.$state.piece = `${image}`;
+        this.piece = `${image}`;
       }
     },
     getTheme(): string {
-      return this.$state.theme;
+      return this.theme;
     },
     getBoard(): string {
-      return `board-${this.$state.board}`;
+      return `board-${this.board}`;
     },
     getPiece(): string {
-      return `piece-${this.$state.piece}`;
+      return `piece-${this.piece}`;
+    },
+    getVariant(variant: string): string {
+      return variant.startsWith("shuuro") ? `${12}` : `${8}`; 
     },
     zoom() {
       document
         .querySelector(".round")
-        ?.setAttribute("style", `--zoom: ${this.$state.zoom}`);
+        ?.setAttribute("style", `--zoom: ${this.currentZoom}`);
     },
   },
 });
@@ -63,7 +66,7 @@ interface HeaderSettings {
   theme: string;
   board: string;
   piece: string;
-  zoom: string;
+  currentZoom: string;
 }
 type Clicked = "" | "background" | "board";
 
@@ -82,6 +85,6 @@ function hs(): HeaderSettings {
     board: board,
     piece: piece,
     theme: theme,
-    zoom: zoom,
+    currentZoom: zoom,
   };
 }

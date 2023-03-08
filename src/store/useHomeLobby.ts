@@ -1,16 +1,9 @@
+import  type { LobbyGame } from "@/plugins/webSocketTypes";
 import { defineStore } from "pinia";
 
-export interface LobbyGame {
-  t?: string;
-  username: string;
-  variant: string;
-  time: number;
-  incr: number;
-  color: string;
-}
 
-export interface LobbyGames {
-  homeLobby: LobbyGame[];
+export interface All {
+  homeLobby:  LobbyGame[];
   activePlayers: string[];
 }
 
@@ -20,28 +13,29 @@ export const allowedDuration = [
 ];
 
 export const useHomeLobby = defineStore("useHomeLobby", {
-  state: (): LobbyGames => {
+  state: (): All => {
     return { homeLobby: [], activePlayers: [] };
   },
   actions: {
-    setHomeLobby(homeLobby: []): void {
-      this.$state.homeLobby = homeLobby;
+    setHomeLobby(homeLobby: LobbyGame[]): void {
+      this.homeLobby = homeLobby;
     },
-    setActivePlayers(activePlayers: []): void {
-      this.$state.activePlayers = activePlayers;
+    setActivePlayers(activePlayers: string[]): void {
+      this.activePlayers = activePlayers;
     },
     addGameToLobby(game: LobbyGame): void {
-      this.$state.homeLobby.push(game);
+      if (!this.homeLobby.find((item) => item.username == game.username)) 
+        this.homeLobby.push(game);
     },
     removeLobbyGame(game: LobbyGame): void {
-      this.$state.homeLobby = this.$state.homeLobby.filter((item) => {
+      this.homeLobby = this.homeLobby.filter((item) => {
         if (!isGameEqual(item, game)) {
           return item;
         }
       });
     },
     removeLobbyGameByUser(user: string): void {
-      this.$state.homeLobby = this.$state.homeLobby.filter((item) => {
+      this.homeLobby = this.homeLobby.filter((item) => {
         const game = item as LobbyGame;
         if (game.username != user) {
           return item;

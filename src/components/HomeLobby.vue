@@ -1,24 +1,17 @@
 <template>
   <div class="seeks">
     <div id="seeks-table">
-      <div id="seeks-wrapper">
+      <div id="seeks-wrapper" class="lobby-background">
         <table id="seeks">
           <thead>
             <tr>
               <th />
-              <th>Player</th>
-              <th>Rating</th>
-              <th>Time</th>
-              <th>Variant</th>
+              <th v-for="i in ['Player', 'Rating', 'Time', 'Variant', 'Subvariant']" :key="i">{{ i }}</th>
             </tr>
           </thead>
           <tbody>
             <transition-group name="lobby-t">
-              <tr
-                v-for="i in store.$state.homeLobby"
-                :key="i.time"
-                @click="acceptGame(i)"
-              >
+              <tr v-for="i in store.homeLobby" :key="i.time" @click="acceptGame(i)">
                 <td>
                   <i-side class="icon" :class="iconColor(i.color)" />
                 </td>
@@ -28,6 +21,7 @@
                 <td class="icon" :data-icon="dataIcon(i.variant)">
                   <variant-name> &nbsp; {{ i.variant }}</variant-name>
                 </td>
+                <td>{{ getSubVariant(i.sub_variant) }}</td>
               </tr>
             </transition-group>
           </tbody>
@@ -39,14 +33,14 @@
 <script setup lang="ts">
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { onMounted } from "vue";
-import { LobbyGame } from "@/store/useHomeLobby";
+import type { LobbyGame } from "@/plugins/webSocketTypes";
 import { SEND } from "@/plugins/webSockets";
+import { getSubVariant } from "@/plugins/subVariant";
 
 const store = useHomeLobby();
 
 function acceptGame(game: LobbyGame): void {
-  game.t = "home_lobby_accept";
-  SEND(game);
+  SEND({ t: "home_lobby_accept", data: game });
 }
 
 function iconColor(color: string): string {
@@ -57,7 +51,7 @@ function iconColor(color: string): string {
 }
 
 function dataIcon(variant: string): string {
-  return variant == "shuuro12" ? "M" : "P";
+  return variant.startsWith("shuuro") || variant.startsWith("standard") ? "M" : "P";
 }
 
 onMounted(() => {
@@ -97,5 +91,16 @@ onMounted(() => {
 .lobby-t-leave-active {
   transition: opacity 0.25s ease, background-color 0.15s linear,
     transform 0.2s ease;
+}
+
+.lobby-background {
+  box-shadow: var(--base-shadow);
+  background-position: center;
+  background-image: url('@/assets/home/seek-bg2.svg');
+  background-color: var(--bg-seek);
+  background-blend-mode: overlay;
+  background-size: 100% 100%;
+  width: 100%;
+  height: 100%;
 }
 </style>

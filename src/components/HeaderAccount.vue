@@ -1,12 +1,12 @@
 <template>
   <div class="site-buttons">
     <div id="username">
-      <router-link class="user-link" :to="`/@/${store.$state.username}`">{{
-        store.$state.username
+      <router-link class="user-link" :to="`/@/${store.username}`">{{
+        store.username
       }}</router-link>
     </div>
     <a
-      v-if="store.$state.reg == false"
+      v-if="store.reg == false"
       class="login nav-link"
       :href="loginUrl"
       title="Login with Lichess"

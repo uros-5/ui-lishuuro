@@ -1,4 +1,9 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import {
+  createRouter,
+  createWebHistory,
+  type RouteRecordRaw,
+} from "vue-router";
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -7,7 +12,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/logged",
     component: () =>
-      import(/* webpackChunkName: "Logged" */ "@/views/Logged.vue"),
+      import(/* webpackChunkName: "Logged" */ "@/views/LoggedUser.vue"),
   },
   {
     path: "/news/:id",
@@ -21,25 +26,22 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/tv",
-    component: () => import(/* webpackChunkName: "Tv" */ "@/views/Tv.vue"),
+    component: () => import(/* webpackChunkName: "Tv" */ "@/views/LiveTv.vue"),
   },
   {
     path: "/players",
     component: () =>
-      import(/* webpackChunkName: "Players" */ "@/views/Players.vue"),
+      import(/* webpackChunkName: "Players" */ "@/views/ActivePlayers.vue"),
   },
   {
     path: "/tournaments",
     component: () =>
-      import(/* webpackChunkName: "Tournaments" */ "@/views/Tournaments.vue"),
+      import(
+        /* webpackChunkName: "Tournaments" */ "@/views/LiveTournaments.vue"
+      ),
   },
   {
-    path: "/players",
-    component: () =>
-      import(/* webpackChunkName: "Players" */ "@/views/Players.vue"),
-  },
-  {
-    path: "/shuuro/",
+    path: "/:variant/",
     component: () =>
       import(
         /* webpackChunkName: "ShuuroLayout" */ "@/components/ShuuroLayout.vue"

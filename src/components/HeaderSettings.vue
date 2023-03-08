@@ -5,7 +5,7 @@
     </button>
     <div id="settings" style="display: flex" v-if="store.show">
       <div id="settings-main" v-if="store.clicked == ''" style="display: flex">
-        <div id="settings-buttons" v-if="user.$state.reg">
+        <div id="settings-buttons" v-if="user.reg">
           <button id="btn-logout">Log out</button>
         </div>
         <div id="settings-buttons">
@@ -15,18 +15,11 @@
           <button id="btn-board" @click="store.clicked = 'board'">
             Board Settings
           </button>
-          <HeaderSettingsSaveAll
-            v-if="user.username == 'iiiurosiii'"
-            :username="user.username"
-          />
+          <HeaderSettingsSaveAll v-if="user.username == 'iiiurosiii'" :username="user.username" />
         </div>
       </div>
       <div id="settings-sub" style="display: flex">
-        <div
-          v-if="store.clicked != ''"
-          id="settings-background"
-          style="display: flex"
-        >
+        <div v-if="store.clicked != ''" id="settings-background" style="display: flex">
           <HeaderSettingsButton />
 
           <HeaderSettingsTheme v-if="store.clicked == 'background'" />
@@ -50,7 +43,7 @@ const store = useHeaderSettings();
 onMounted(() => {
   let theme = store.getTheme();
   document.querySelector("html")?.setAttribute("data-theme", theme);
-  setTimeout(store.zoom, 450);
+  setTimeout(store.currentZoom, 450);
 });
 </script>
 <style>

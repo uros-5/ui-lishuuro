@@ -1,6 +1,6 @@
 <template>
   <a id="reconnecting" class="link text" data-icon="p">
-    {{ user.$state.conMsg }}
+    {{ user.conMsg }}
   </a>
 </template>
 
