@@ -19,6 +19,7 @@
   ],
   "compilerOptions": {
     "baseUrl": ".",
+    "ignoreDeprecations": "5.0",
     "paths": {
       "@/*": [
         "./src/*"
@@ -31,7 +32,8 @@
     ],
     "types": [
       "node"
-    ]
+    ],
+    "isolatedModules": true
   },
   "references": [
     {
@@ -39,5 +41,5 @@
     }
   ],
   "preserveValueImports": true,
-  "isolatedModules": true,
+  "isolatedModules": true
 }

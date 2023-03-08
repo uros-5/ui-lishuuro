@@ -70,7 +70,6 @@ function onmessage(event: any) {
 
   const msg: { t: string, data: any } = JSON.parse(event.data);
   let data: any = {};
-  console.log(msg);
   switch (msg.t) {
     case "active_players_count":
       data = Cnt.parse(msg.data);
@@ -152,27 +151,33 @@ function onmessage(event: any) {
       break;
     case "live_game_place":
         data = LiveGamePlace.parse(msg.data);
-        shuuroStore.serverPlace(data);
+        if (shuuroStore.silentRedirect(data.game_id))
+          shuuroStore.serverPlace(data);
       break;
     case "live_game_play":
         data = LiveGameFight.parse(msg.data);
-        shuuroStore.serverMove2(data);
+        if (shuuroStore.silentRedirect(data.game_id))
+          shuuroStore.serverMove2(data);
       break;
     case "live_game_confirmed":
         data = LiveGameConfirmed.parse(msg.data);
-        shuuroStore.setConfirmed(data.confirmed);
+        if (shuuroStore.silentRedirect(data.game_id))
+          shuuroStore.setConfirmed(data.confirmed);
       break;
     case "live_game_draw":
         data = LiveGameDraw.parse(msg.data);
-        shuuroStore.gameDraw(data, user.username);
+        if (shuuroStore.silentRedirect(data.game_id))
+          shuuroStore.gameDraw(data, user.username);
       break;
     case "live_game_resign":
         data = LiveGameResign.parse(msg.data);
-        shuuroStore.gameResign(data, data.player);
+        if (shuuroStore.silentRedirect(data.game_id))
+          shuuroStore.gameResign(data, data.player);
       break;
     case "live_game_lot":
       data = LiveGameLost.parse(msg.data);
-      shuuroStore.gameLot(data, user.username);
+        if (shuuroStore.silentRedirect(data.game_id))
+        shuuroStore.gameLot(data, user.username);
       break;
     case "live_game_sfen":
         data = LiveGameSfen.parse(msg.data);

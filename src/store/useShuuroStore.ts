@@ -1,21 +1,22 @@
 import { defineStore } from "pinia";
-import init, { ShuuroShop, ShuuroPosition } from "@/plugins/shuuro-wasm";
+import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
-import Chessground from "@/plugins/chessground12";
+import {Chessground} from "chessground12";
 import router from "@/router";
 import { SEND } from "@/plugins/webSockets";
-import { anonConfig, liveConfig, p2 } from "@/plugins/chessground12/configs";
-import { readPockets } from "@/plugins/chessground12/pocket";
-import { dimensions, Geometry, type Key, type MoveMetadata, type Piece } from "@/plugins/chessground12/types";
-import { setCheck } from "@/plugins/chessground12/board";
-import type { Config } from "@/plugins/chessground12/config";
+import { anonConfig, liveConfig, p2 } from "chessground12/configs";
+import { readPockets } from "chessground12/pocket";
+import { dimensions, type Key, type MoveMetadata, type Piece } from "chessground12/types";
+import { Geometry } from "chessground12/types";
+import { setCheck } from "chessground12/board";
+import type { Config } from "chessground12/config";
 
 import captureUrl from "@/assets/sounds/capture.ogg";
 import resUrl from "@/assets/sounds/res.ogg";
 import moveUrl from "@/assets/sounds/move.ogg";
 import lowTimeUrl from "@/assets/sounds/low_time.ogg";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
-import type { Api } from "@/plugins/chessground12/api";
+import type { Api } from "chessground12/api";
 import type { GameInfo, LiveGameDraw, LiveGameFight, LiveGameLost, LiveGamePlace, LiveGameResign, PauseConfirmed, RedirectDeploy, SpecCnt } from "@/plugins/webSocketTypes";
 
 const finished = [
@@ -47,7 +48,6 @@ export const useShuuroStore = defineStore("shuuroStore", {
       const stage = this.current_stage;
       if (stage == 0) {
         this.shopInfo();
-        console.log('hafjsadkfjaskfja')
       } else if (stage == 1) {
         if (this.setDeployCg())
           this.setDeployWasm(s.sfen);
@@ -323,7 +323,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // receive move from server and place on board
     serverPlace(msg: LiveGamePlace) {
-      router.push({ path: `/shuuro/1/${this.game_id}` });
+      router.push({ path: `/shuuro/1/${msg.game_id}` });
       this.wasmPlace(msg.game_move, true);
       this.setClocks2(msg.clocks);
       if (msg.to_fight) {
@@ -331,7 +331,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
         this.client_stage = 2;
         this.last_clock = new Date().toString();
         this.playAudio("res");
-        router.push({ path: `/shuuro/2/${this.game_id}` });
+        router.push({ path: `/shuuro/2/${msg.game_id}` });
       }
       if (msg.first_move_error) {
         const self = this;
@@ -461,7 +461,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // move piece from server
     serverMove2(msg: LiveGameFight) {
-      router.push({ path: `/shuuro/2/${this.game_id}` });
+      router.push({ path: `/shuuro/2/${msg.game_id}` });
       this.client_stage = 2;
       this.wasmMove(msg.game_move, true);
       this.setClocks2(msg.clocks);
@@ -1035,6 +1035,20 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     cs(): StageN {
       return this.client_stage!;
+    },
+
+    silentRedirect(id: string): boolean {
+      if (id != this.game_id) {
+      let obj = {
+        t: "live_game_start",
+        game_id: id,
+        color: "white",
+        variant: "shuuro"
+      };
+        SEND(obj);
+        return false
+      }
+      return true
     },
 
     SEND(t: string, game_move?: string) {
