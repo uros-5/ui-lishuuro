@@ -11,7 +11,7 @@
 
       </div>
       <section v-if="store.games.length == 0" class="empty-lobby">
-        <h1>There is no available games at the moment.</h1>
+        <h1>There are no available games at the moment.</h1>
       </section>
     </main>
   </div>

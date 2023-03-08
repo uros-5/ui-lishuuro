@@ -70,6 +70,7 @@ function onmessage(event: any) {
 
   const msg: { t: string, data: any } = JSON.parse(event.data);
   let data: any = {};
+  console.log(msg);
   switch (msg.t) {
     case "active_players_count":
       data = Cnt.parse(msg.data);

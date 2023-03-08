@@ -3,7 +3,7 @@
     <router-link to="/players">
       <span id="u_cnt">{{ store.plCount }} players</span>
     </router-link>
-    <router-link to="/">
+    <router-link to="/tv">
       <span id="g_cnt">{{ store.gamesCount }} games in play</span>
     </router-link>
   </div>

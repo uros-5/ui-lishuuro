@@ -22,17 +22,17 @@
           @click="
             color = 'black';
           createGame();
-                                                                                                                                                                                                                                                                                    " />
+                                                                                                                                                                                                                                                                                                            " />
         <button class="icon icon-adjust" type="button" title="Random"
           @click="
             color = 'random';
           createGame();
-                                                                                                                                                                                                                                                                                    " />
+                                                                                                                                                                                                                                                                                                            " />
         <button class="icon icon-white" type="button" title="White"
           @click="
             color = 'white';
           createGame();
-                                                                                                                                                                                                                                                                                    " />
+                                                                                                                                                                                                                                                                                                            " />
       </div>
     </div>
   </form>
@@ -43,6 +43,7 @@ import { SEND } from "@/plugins/webSockets";
 import { useUser } from "@/store/useUser";
 import { ref } from "vue";
 import type { LobbyGame } from "@/plugins/webSocketTypes";
+import { ALL_VARIANTS } from "@/plugins/all_variants";
 
 const userStore = useUser();
 
@@ -51,34 +52,6 @@ let incr = ref(14);
 let variant = ref("");
 let color = ref("white");
 let incrementDuration = [0].concat(allowedDuration);
-
-const ALL_VARIANTS =
-  [{
-    label: "ShuuroVariant",
-    options: [
-      { value: "shuuro_100", title: "Shuuro, unmodified.", text: "SHUURO" },
-      {
-        value: "shuuroFairy_100", title: "Shuuro, with fairy pieces.", text:
-          "SHUURO FAIRY"
-      }
-    ]
-  },
-  {
-    label: "StandardChess",
-    options: [
-      { value: "standard_100", title: "Standard chess with plinths.", text: "STANDARD" },
-      { value: "standardFairy_100", title: "Standard chess with plinths and with fairy pieces.", text: "STANDARD FAIRY" }
-    ]
-  },
-  {
-    label: "SubVariants",
-    options: [
-      { value: "standard_0", title: "Standard chess with plinths, without first two stages.", text: "STANDARD" },
-      { value: "standardFairy_1", title: "Fairy chess with plinths, without queen.", text: "STANDARD FAIRY v1" },
-      { value: "standardFairy_2", title: "Fairy chess with plinths, with giraffe.", text: "STANDARD FAIRY v2" },
-      { value: "standard_3", title: "Standard chess with placement and with plinths.", text: "STANDARD PLACEMENT" }
-    ]
-  }];
 
 function createGame() {
   let choice = inputVariant();

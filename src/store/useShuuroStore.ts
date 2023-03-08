@@ -47,6 +47,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       const stage = this.current_stage;
       if (stage == 0) {
         this.shopInfo();
+        console.log('hafjsadkfjaskfja')
       } else if (stage == 1) {
         if (this.setDeployCg())
           this.setDeployWasm(s.sfen);

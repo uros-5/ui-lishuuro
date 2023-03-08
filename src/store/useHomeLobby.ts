@@ -24,7 +24,8 @@ export const useHomeLobby = defineStore("useHomeLobby", {
       this.activePlayers = activePlayers;
     },
     addGameToLobby(game: LobbyGame): void {
-      this.homeLobby.push(game);
+      if (!this.homeLobby.find((item) => item.username == game.username)) 
+        this.homeLobby.push(game);
     },
     removeLobbyGame(game: LobbyGame): void {
       this.homeLobby = this.homeLobby.filter((item) => {
