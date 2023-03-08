@@ -8,7 +8,11 @@
         <mini-game :key="i.game_id" v-for="i in store.games">
           <TvGame :w="i.w" :b="i.b" :id="i.game_id" :variant="i.variant" />
         </mini-game>
+
       </div>
+      <section v-if="store.games.length == 0" class="empty-lobby">
+        <h1>There is no available games at the moment.</h1>
+      </section>
     </main>
   </div>
 </template>
@@ -56,5 +60,14 @@ mini-game {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.empty-lobby {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  grid-area: main;
+  font-size: 1.3em;
 }
 </style>
