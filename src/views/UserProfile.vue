@@ -134,7 +134,7 @@ watch(route, (newRoute, _oldRoute) => {
 
 .shield-trophy {
   width: 50px;
-  background-image: url(images/trophy/shield-gold.png);
+  /*background-image: url(images/trophy/shield-gold.png);*/
   font-size: 30px;
   line-height: 60px;
   color: #333 !important;
