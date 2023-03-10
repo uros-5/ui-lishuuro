@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
-import {Chessground} from "chessground12";
+import { Chessground } from "chessground12";
 import router from "@/router";
 import { SEND } from "@/plugins/webSockets";
 import { anonConfig, liveConfig, p2 } from "chessground12/configs";
@@ -340,6 +340,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
           self.clockPause(self.side_to_move);
           self.result = self.stmS();
           self.status = 1;
+          self.switchToAnonConfig();
         }, 500);
       }
     },
@@ -471,6 +472,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
         this.status = msg.status;
         this.result = msg.outcome;
         this.scrollToBottom();
+        this.switchToAnonConfig();
       }
     },
 
@@ -783,6 +785,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
           this.clockPause(0);
           this.clockPause(1);
         }
+        this.switchToAnonConfig();
         this.status = 5;
         this.result = "Draw";
         this.scrollToBottom();
@@ -801,6 +804,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
         this.status = 7;
         this.result = this.getColor(username);
         this.scrollToBottom();
+        this.switchToAnonConfig();
       }
     },
 
@@ -812,6 +816,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
         this.status = msg.status;
         this.result = msg.result;
         this.scrollToBottom();
+        this.switchToAnonConfig();
       }
     },
 
@@ -876,6 +881,10 @@ export const useShuuroStore = defineStore("shuuroStore", {
           : anonConfig;
       return config;
     },
+
+    switchToAnonConfig() {
+      if (this.client_stage != 0)
+      this.cgs(this.client_stage!).set(anonConfig);    },
 
     canConfirm1(): boolean {
       return this.am_i_player! && this.current_stage == 0;
@@ -1038,13 +1047,16 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     silentRedirect(id: string): boolean {
-      if (id != this.game_id) {
-      let obj = {
-        t: "live_game_start",
-        game_id: id,
-        color: "white",
-        variant: "shuuro"
-      };
+      if (id == undefined) {
+        return true;
+      }
+      else if (id != this.game_id) {
+        let obj = {
+          t: "live_game_start",
+          game_id: id,
+          color: "white",
+          variant: "shuuro"
+        };
         SEND(obj);
         return false
       }

@@ -33,7 +33,7 @@ onMounted(() => {
         variant: variant
       };
       SEND(obj);
-      SEND({ t: "live_chat_full", game_id: id, variant: "shuuro" });
+      SEND({ t: "live_chat_full", data: { game_id: id, variant: "shuuro" } });
     }
     //fetchData();
   }

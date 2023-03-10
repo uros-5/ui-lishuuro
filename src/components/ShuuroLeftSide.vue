@@ -1,12 +1,7 @@
 <template>
   <aside class="sidebar-first">
     <ShuuroStageInfo />
-    <ChatRoom
-      :messages="chatStore.gameChat"
-      :ws-type="store.game_id"
-      :finished="store.status"
-      variant=""
-    />
+    <ChatRoom :messages="chatStore.gameChat" :ws-type="store.game_id" :finished="store.status" variant="shuuro" />
     <ShuuroSpectators />
   </aside>
 </template>
@@ -21,7 +16,7 @@ const store = useShuuroStore();
 const chatStore = useHomeChat();
 
 onMounted(() => {
-  
+
 })
 </script>
 <style></style>

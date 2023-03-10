@@ -43,11 +43,13 @@ function onEnter(): void {
   if (message.value.length > 0 && message.value.length < 50) {
     SEND({
       t: "live_chat_message",
-      message: message.value,
-      user: user.username,
-      time: "",
-      id: props.wsType,
-      variant: "shuuro",
+      data: {
+        message: message.value,
+        user: user.username,
+        time: "",
+        id: props.wsType,
+        variant: "shuuro",
+      }
     });
     message.value = "";
   }
