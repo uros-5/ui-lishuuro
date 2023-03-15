@@ -79,7 +79,7 @@ function getFen(index: number, stage?: number): string {
   switch (client_stage) {
     case 1:
       let s = (shuuroStore.myHistory(1)[index] as string).split("_");
-      return `${s[1]} ${s[2]} ${s[3]}`;
+      return `${s[1]} ${s[3]} ${s[2]}`;
     case 2:
       let st = (shuuroStore.myHistory(2)![index] as string);
       return st != undefined ? st : "";

@@ -576,7 +576,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       }
 
       if (cs == 1) {
-        const h = sfen.split(" ")[1];
+        const h = sfen.split(" ")[2];
         tempWasm.set_hand(h);
         const hand = tempWasm.count_hand_pieces();
         this.cgs(1).state.pockets = readPockets(
