@@ -4,7 +4,7 @@
     <aside>
       <div class="player-sum box">
         <UserProfileHeader :username="username()" />
-        <UserProfileSocial :username="username()" :reg="false" />
+        <UserProfileSocial :username="username()" :reg="exist" />
         <div id="profile">
           <div class="filter-tabs">
             <div class="sub-ratings">
@@ -48,6 +48,7 @@ import GET from "@/plugins/axios";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 const route = useRoute();
 let games = ref([]);
+let exist = ref(false);
 
 function username(): string {
   return route.params.username as string;
@@ -56,6 +57,7 @@ function username(): string {
 function newGames(id: string) {
   GET(`games/${id}`).then((value) => {
     games.value = value.data.games;
+    exist.value = true;
   });
 }
 
