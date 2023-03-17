@@ -103,8 +103,10 @@ function res() {
 }
 
 function sumMoves(): number {
-  let shop = sumShop();
-  return shop + props.game.history[1].length + props.game.history[2].length;
+  if (props.game.current_stage == 0) return 0;
+  let [splitter, plyIndex] = props.game.current_stage == 1 ? ["_", 4] : [" ", 3];
+  let ply = props.game.sfen.split(splitter)[plyIndex];
+  return Number(ply);
 }
 
 function sumShop(): number {
