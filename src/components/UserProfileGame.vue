@@ -105,7 +105,6 @@ function res() {
 function sumMoves(): number {
   if (props.game.current_stage == 0) return 0;
   // let [splitter, plyIndex] = props.game.current_stage == 1 ? [" ", 3] : [" ", 3];
-  console.log(props.game.sfen);
   let ply = props.game.sfen.split(" ")[3];
   return ply == 1 ? 0 : Number(ply);
 }
