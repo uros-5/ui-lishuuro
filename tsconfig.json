@@ -8,31 +8,20 @@
   "sourceMap": true,
   "resolveJsonModule": true,
   "esModuleInterop": true,
-  "lib": [
-    "esnext",
-    "dom"
-  ],
-  "include": [
-    "env.d.ts",
-    "src/**/*",
-    "src/**/*.vue"
-  ],
+  "lib": ["esnext", "dom"],
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "compilerOptions": {
     "baseUrl": ".",
     "ignoreDeprecations": "5.0",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
     "plugins": [
       {
         "name": "typescript-vue-plugin"
       }
     ],
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "isolatedModules": true
   },
   "references": [

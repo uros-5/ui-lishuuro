@@ -2,9 +2,11 @@
   <div class="player-data">
     <i-side class="icon" :class="cssColor()"></i-side>
     <player>
-      <router-link class="user-link" :to="`/@/${player_username}`"><player-title class="player-now" />{{ player_username
-      }} ({{ rating
-}})<span /></router-link>
+      <router-link class="user-link" :to="`/@/${player_username}`"
+        ><player-title class="player-now" />{{ player_username }} ({{
+          rating
+        }})<span
+      /></router-link>
     </player>
   </div>
 </template>

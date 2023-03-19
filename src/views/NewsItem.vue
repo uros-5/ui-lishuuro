@@ -9,7 +9,8 @@
           <span class="text">
             <router-link :to="`/@/${props.user}`">
               @{{ props.user }}
-            </router-link></span>
+            </router-link></span
+          >
           <span class="text"> {{ props.category }} </span>
         </div>
         <div class="headline">
@@ -33,7 +34,7 @@ import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 
 const newsStore = useNews();
 const props: Ref<NewsItem> = ref({
-  _id: '',
+  _id: "",
   user: "",
   category: "",
   title: "",

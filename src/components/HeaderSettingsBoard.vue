@@ -19,16 +19,36 @@ function selected(t: string, img: number): string {
 
 <template>
   <div id="settings-background">
-    <input v-model="settings.currentZoom" id="zoom" class="slider" name="zoom" type="range" min="0" max="100"
-      step="1.15625" />
+    <input
+      v-model="settings.currentZoom"
+      id="zoom"
+      class="slider"
+      name="zoom"
+      type="range"
+      min="0"
+      max="100"
+      step="1.15625"
+    />
     <div id="allboards">
-      <label v-for="i in [0, 1, 2, 3, 4, 5]" v-bind:key="i" class="board board 1 standard12x12 board" :for="`board${i}`"
-        :class="`board-${i}${selected('board', i)}`" @click="settings.setBoardImg(i)">
+      <label
+        v-for="i in [0, 1, 2, 3, 4, 5]"
+        v-bind:key="i"
+        class="board board 1 standard12x12 board"
+        :for="`board${i}`"
+        :class="`board-${i}${selected('board', i)}`"
+        @click="settings.setBoardImg(i)"
+      >
       </label>
     </div>
     <div id="allpieces">
-      <label v-for="i in [0, 1, 2]" v-bind:key="i" class="" :for="`piece${i}`"
-        :class="`piece-${i}${selected('piece', i)}`" @click="settings.setPieceImg(i)">
+      <label
+        v-for="i in [0, 1, 2]"
+        v-bind:key="i"
+        class=""
+        :for="`piece${i}`"
+        :class="`piece-${i}${selected('piece', i)}`"
+        @click="settings.setPieceImg(i)"
+      >
       </label>
     </div>
   </div>

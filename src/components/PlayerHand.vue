@@ -1,9 +1,27 @@
 <template>
-  <div class="cg-wrap pocket" :data-piece="hs.getPiece()" :style="inCenter ? '' : cgWidth()">
-    <div v-if="isHand()" :id="divId()" style="flex-wrap: wrap" :style="pocketStyle()" :class="pocketCss()">
-      <piece v-for="(i, index) in store.pieces()" v-if="handType == 'shop'" :key="i" :class="`${color} ${i} ${handType}`"
-        :data-color="color" :data-role="i" :data-nb="dataNb(index)" :data-max="store.dataMax()[index]"
-        @click="increment(index, i[0])" />
+  <div
+    class="cg-wrap pocket"
+    :data-piece="hs.getPiece()"
+    :style="inCenter ? '' : cgWidth()"
+  >
+    <div
+      v-if="isHand()"
+      :id="divId()"
+      style="flex-wrap: wrap"
+      :style="pocketStyle()"
+      :class="pocketCss()"
+    >
+      <piece
+        v-for="(i, index) in store.pieces()"
+        v-if="handType == 'shop'"
+        :key="i"
+        :class="`${color} ${i} ${handType}`"
+        :data-color="color"
+        :data-role="i"
+        :data-nb="dataNb(index)"
+        :data-max="store.dataMax()[index]"
+        @click="increment(index, i[0])"
+      />
     </div>
   </div>
 </template>
@@ -61,7 +79,6 @@ function dataNb(index: number): number | string {
 }
 
 function increment(_index: number, p: string): void {
-
   if (props.handType == "shop" && store.am_i_player == true) {
     if (props.color == "white") {
       p = p.toUpperCase();
@@ -105,7 +122,7 @@ function pocketStyle(): string {
   return `--pocketLength: ${pocketLength()};
           --files: ${files()};
           --ranks: ${files()};
-          ${cgWidth()}`
+          ${cgWidth()}`;
 }
 </script>
 

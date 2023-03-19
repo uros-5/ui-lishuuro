@@ -50,7 +50,7 @@ export const useHeaderSettings = defineStore("headerSettings", {
       return `piece-${this.piece}`;
     },
     getVariant(variant: string): string {
-      return variant.startsWith("shuuro") ? `${12}` : `${8}`; 
+      return variant.startsWith("shuuro") ? `${12}` : `${8}`;
     },
     zoom() {
       document

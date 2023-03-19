@@ -1,10 +1,18 @@
 <template>
   <tr>
-    <router-link :to="gameUrl(game._id, game.current_stage, game.status)" @click="setShuuroStore">
+    <router-link
+      :to="gameUrl(game._id, game.current_stage, game.status)"
+      @click="setShuuroStore"
+    >
       <td class="board invisible">
         <div class="standard" :class="`${isStandard()}`">
-          <div :class="`chessground12 mini ${game._id}`" :id="game._id" :data-board="settings.getBoard()"
-            :data-piece="settings.getPiece()" :data-size="settings.getVariant(game.variant)" />
+          <div
+            :class="`chessground12 mini ${game._id}`"
+            :id="game._id"
+            :data-board="settings.getBoard()"
+            :data-piece="settings.getPiece()"
+            :data-size="settings.getVariant(game.variant)"
+          />
         </div>
       </td>
       <td class="games-info">
@@ -24,15 +32,25 @@
         <div class="info-middle">
           <div class="versus">
             <player>
-              <router-link :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.players[0]}`"><player-title>
-                </player-title>{{ props.game.players[0] }}</router-link>
+              <router-link
+                :key="useRoute().fullPath"
+                class="user-link"
+                :to="`/@/${props.game.players[0]}`"
+                ><player-title> </player-title
+                >{{ props.game.players[0] }}</router-link
+              >
               <br />
               1500?
             </player>
             <vs-swords class="icon" :data-icon="sword"></vs-swords>
             <player>
-              <router-link :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.players[1]}`"><player-title>
-                </player-title>{{ props.game.players[1] }}</router-link>
+              <router-link
+                :key="useRoute().fullPath"
+                class="user-link"
+                :to="`/@/${props.game.players[1]}`"
+                ><player-title> </player-title
+                >{{ props.game.players[1] }}</router-link
+              >
               <br />
               1500?
             </player>
@@ -68,16 +86,20 @@ const sword = '"';
 const props = defineProps<{ game: ShuuroStore | any }>();
 
 function isStandard(): string {
-  if (props.game.variant == 'standard') {
-
+  if (props.game.variant == "standard") {
     return "standard8";
+  } else {
+    return "";
   }
-  else { return ""; }
 }
 
 onMounted(() => {
   if (props.game.status <= 0) {
-    SEND({ t: "live_game_sfen", game_id: props.game._id, variant: props.game.variant! });
+    SEND({
+      t: "live_game_sfen",
+      game_id: props.game._id,
+      variant: props.game.variant!,
+    });
   } else {
     let stage = props.game.current_stage;
     if (stage == "shop") {
@@ -104,7 +126,6 @@ function res() {
 
 function sumMoves(): number {
   if (props.game.current_stage == 0) return 0;
-  // let [splitter, plyIndex] = props.game.current_stage == 1 ? [" ", 3] : [" ", 3];
   let ply = props.game.sfen.split(" ")[3];
   return ply == 1 ? 0 : Number(ply);
 }
@@ -163,10 +184,12 @@ function variantTitle(): string {
       return "SHUURO";
     case "shuuroFairy":
       return "SHUURO FAIRY";
-    case "standard": return "STANDARD";
+    case "standard":
+      return "STANDARD";
     case "standardFairy":
       return "STANDARD FAIRY";
-    default: return "SHUURO"
+    default:
+      return "SHUURO";
   }
 }
 

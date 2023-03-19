@@ -8,7 +8,6 @@
         <mini-game :key="i.game_id" v-for="i in store.games">
           <TvGame :w="i.w" :b="i.b" :id="i.game_id" :variant="i.variant" />
         </mini-game>
-
       </div>
       <section v-if="store.games.length == 0" class="empty-lobby">
         <h1>There are no available games at the moment.</h1>
@@ -47,8 +46,10 @@ onUnmounted(() => {
   --auto-grid-min-size: 24rem;
   justify-content: center;
   overflow-x: hidden;
-  grid-template-columns: repeat(auto-fill,
-      minmax(var(--auto-grid-min-size), 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--auto-grid-min-size), 1fr)
+  );
   grid-gap: 0.3rem;
 }
 

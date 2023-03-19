@@ -1,8 +1,14 @@
 <template>
   <div class="player-social">
     <div class="btn-rack">
-      <a v-if="!username.startsWith('Anon')" class="icon icon-at" :href="`https://lichess.org/@/${props.username}`"
-        rel="noopener" target="_blank" title="Lichess profile"></a>
+      <a
+        v-if="!username.startsWith('Anon')"
+        class="icon icon-at"
+        :href="`https://lichess.org/@/${props.username}`"
+        rel="noopener"
+        target="_blank"
+        title="Lichess profile"
+      ></a>
     </div>
   </div>
 </template>

@@ -22,14 +22,22 @@ function canDR(): boolean {
 function draw() {
   let d = confirm("Are you sure you want to draw?");
   if (d) {
-    SEND({ t: "live_game_draw", game_id: store.game_id, variant: store.getVariant() });
+    SEND({
+      t: "live_game_draw",
+      game_id: store.game_id,
+      variant: store.getVariant(),
+    });
   }
 }
 
 function resign() {
   let r = confirm("Are you sure you want to resign?");
   if (r) {
-    SEND({ t: "live_game_resign", game_id: store.game_id, variant: store.getVariant() });
+    SEND({
+      t: "live_game_resign",
+      game_id: store.game_id,
+      variant: store.getVariant(),
+    });
   }
 }
 

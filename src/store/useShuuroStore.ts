@@ -6,7 +6,12 @@ import router from "@/router";
 import { SEND } from "@/plugins/webSockets";
 import { anonConfig, liveConfig, p2 } from "chessground12/configs";
 import { readPockets } from "chessground12/pocket";
-import { dimensions, type Key, type MoveMetadata, type Piece } from "chessground12/types";
+import {
+  dimensions,
+  type Key,
+  type MoveMetadata,
+  type Piece,
+} from "chessground12/types";
 import { Geometry } from "chessground12/types";
 import { setCheck } from "chessground12/board";
 import type { Config } from "chessground12/config";
@@ -17,7 +22,17 @@ import moveUrl from "@/assets/sounds/move.ogg";
 import lowTimeUrl from "@/assets/sounds/low_time.ogg";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 import type { Api } from "chessground12/api";
-import type { GameInfo, LiveGameDraw, LiveGameFight, LiveGameLost, LiveGamePlace, LiveGameResign, PauseConfirmed, RedirectDeploy, SpecCnt } from "@/plugins/webSocketTypes";
+import type {
+  GameInfo,
+  LiveGameDraw,
+  LiveGameFight,
+  LiveGameLost,
+  LiveGamePlace,
+  LiveGameResign,
+  PauseConfirmed,
+  RedirectDeploy,
+  SpecCnt,
+} from "@/plugins/webSocketTypes";
 
 const finished = [
   "Checkmate",
@@ -49,11 +64,9 @@ export const useShuuroStore = defineStore("shuuroStore", {
       if (stage == 0) {
         this.shopInfo();
       } else if (stage == 1) {
-        if (this.setDeployCg())
-          this.setDeployWasm(s.sfen);
+        if (this.setDeployCg()) this.setDeployWasm(s.sfen);
       } else if (stage == 2) {
-        if (this.setFightCg())
-          this.setFightWasm(s.sfen);
+        if (this.setFightCg()) this.setFightWasm(s.sfen);
       }
       this.updateCurrentIndex(this.cs());
       this.playLive();
@@ -101,10 +114,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // check if board is flipped etc
     setBoardData(s: GameInfo, username: string) {
       this.flipped_board = this.player == 1 ? true : false;
-      this.credit =
-        this.player == 0
-          ? this.credits[0]
-          : this.credits[1];
+      this.credit = this.player == 0 ? this.credits[0] : this.credits[1];
       this.player_color = this.getColor(username) as Color;
       this.confirmed_players = [false, false];
       this.sfen = s.sfen;
@@ -191,8 +201,8 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // get hand and confirmed_players
     shopInfo(): void {
-      this.SEND("live_game_hand")
-      this.SEND("live_game_confirmed")
+      this.SEND("live_game_hand");
+      this.SEND("live_game_confirmed");
     },
 
     // get from server confirmed and set
@@ -216,7 +226,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
           this.history[0]?.push(game_move);
           this.scrollToBottom();
         }
-        this.SEND("live_game_buy", game_move)
+        this.SEND("live_game_buy", game_move);
         this.current_index = this.myHistory(0)?.length! - 1;
         this.credit! = new_credit;
       }
@@ -227,7 +237,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       if (this.canShop()) {
         this.wasm0().confirm(this.player_color!);
         if (this.wasm0().is_confirmed(this.player_color!)) {
-          this.SEND("live_game_confirm", "cc")
+          this.SEND("live_game_confirm", "cc");
           this.clockPause(this.player!);
           this.confirmed_players![this.player!] = true;
         }
@@ -243,9 +253,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
           this.changeVariant();
 
           (this.wasm0() as ShuuroShop).set_hand(hand);
-          this.piece_counter = this.wasm0().shop_items(
-            this.player_color!
-          );
+          this.piece_counter = this.wasm0().shop_items(this.player_color!);
           const h: string[] = this.wasm0().history();
           this.history[0] = h;
           this.credit = (this.wasm0() as ShuuroShop).get_credit(
@@ -335,7 +343,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       }
       if (msg.first_move_error) {
         const self = this;
-        setTimeout(function() {
+        setTimeout(function () {
           self.playAudio("res");
           self.clockPause(self.side_to_move);
           self.result = self.stmS();
@@ -512,7 +520,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // send move to server
     sendMove(s: string) {
-      this.SEND("live_game_play", s)
+      this.SEND("live_game_play", s);
     },
 
     // set turn color
@@ -623,9 +631,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // start game glocks
     startNormal(elapsed: number) {
       this.clock_ms[this.side_to_move] -= elapsed;
-      this.clock(this.side_to_move).start(
-        this.clock_ms[this.side_to_move]
-      );
+      this.clock(this.side_to_move).start(this.clock_ms[this.side_to_move]);
       const otherClock = this.side_to_move == 0 ? 1 : 0;
       this.clock(otherClock).setTime(this.clock_ms[otherClock]);
       this.clockPause(otherClock);
@@ -669,7 +675,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // flag notification
-    flagNotif() { },
+    flagNotif() {},
 
     // low time notification
     lowTimeNotif() {
@@ -830,7 +836,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     enablePremove(config: Config) {
       if (this.am_i_player && this.status < 1) {
         config.premovable = {
-          events: { set: (orig, dest) => { }, unset: () => { } },
+          events: { set: (orig, dest) => {}, unset: () => {} },
         };
         config.premovable.enabled = true;
         config.premovable!.events!.set = (orig, dest, metadata) => {
@@ -865,10 +871,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     canPlay(): boolean {
-      if (
-        this.side_to_move == this.player &&
-        this.status < 1
-      ) {
+      if (this.side_to_move == this.player && this.status < 1) {
         return true;
       }
       return false;
@@ -876,15 +879,13 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     getConfig(): Config {
       const config =
-        this.am_i_player && this.status < 1
-          ? liveConfig
-          : anonConfig;
+        this.am_i_player && this.status < 1 ? liveConfig : anonConfig;
       return config;
     },
 
     switchToAnonConfig() {
-      if (this.client_stage != 0)
-      this.cgs(this.client_stage!).set(anonConfig);    },
+      if (this.client_stage != 0) this.cgs(this.client_stage!).set(anonConfig);
+    },
 
     canConfirm1(): boolean {
       return this.am_i_player! && this.current_stage == 0;
@@ -960,7 +961,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
         "p-piece",
         "c-piece",
         "a-piece",
-        "g-piece"
+        "g-piece",
       ];
 
       if (!this.variant.endsWith("Fairy")) {
@@ -1014,7 +1015,6 @@ export const useShuuroStore = defineStore("shuuroStore", {
       return [];
     },
 
-
     wasm(index: StageN): ShuuroPosition {
       return this.wasm![index] as ShuuroPosition;
     },
@@ -1049,24 +1049,23 @@ export const useShuuroStore = defineStore("shuuroStore", {
     silentRedirect(id: string): boolean {
       if (id == undefined) {
         return true;
-      }
-      else if (id != this.game_id) {
+      } else if (id != this.game_id) {
         let obj = {
           t: "live_game_start",
           game_id: id,
           color: "white",
-          variant: "shuuro"
+          variant: "shuuro",
         };
         SEND(obj);
-        return false
+        return false;
       }
-      return true
+      return true;
     },
 
     SEND(t: string, game_move?: string) {
       let msg = { game_id: this.game_id, variant: this.variant, t, game_move };
-      SEND(msg)
-    }
+      SEND(msg);
+    },
   },
 });
 

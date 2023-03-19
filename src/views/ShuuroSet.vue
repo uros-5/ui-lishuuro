@@ -1,7 +1,12 @@
 <template>
-  <div id="chessground12" class="chessground12" :class="{ 'standard8': shuuroStore.variant.startsWith('standard') }"
-    :data-board="settings.getBoard()" :data-piece="settings.getPiece()"
-    :data-size="settings.getVariant(shuuroStore.getVariant())" />
+  <div
+    id="chessground12"
+    class="chessground12"
+    :class="{ standard8: shuuroStore.variant.startsWith('standard') }"
+    :data-board="settings.getBoard()"
+    :data-piece="settings.getPiece()"
+    :data-size="settings.getVariant(shuuroStore.getVariant())"
+  />
 </template>
 <script setup lang="ts">
 import { useBoardSize } from "@/store/useBoardSize";

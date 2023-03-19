@@ -1,9 +1,12 @@
 <template>
   <div id="btn-controls-top" class="btn-controls">
     <button id="flip" @click="flipSide()">
-      <i class="icon icon-refresh" /></button><button @click="fastBackward">
-      <i class="icon icon-fast-backward" /></button><button @click="stepBackward">
-      <i class="icon icon-step-backward" /></button><button @click="stepForward">
+      <i class="icon icon-refresh" /></button
+    ><button @click="fastBackward">
+      <i class="icon icon-fast-backward" /></button
+    ><button @click="stepBackward">
+      <i class="icon icon-step-backward" /></button
+    ><button @click="stepForward">
       <i class="icon icon-step-forward" />
     </button>
     <button @click="fastForward">
@@ -30,7 +33,8 @@ function fastBackward(): void {
   shuuroStore.current_index = 0;
   if (fenExist(shuuroStore.currentIndex())) {
     let placement_index = shuuroStore.myHistory(1).length - 1;
-    let fen = shuuroStore.client_stage == 1 ? getFen(0) : getFen(placement_index, 1);
+    let fen =
+      shuuroStore.client_stage == 1 ? getFen(0) : getFen(placement_index, 1);
     wasmFen(fen);
     shuuroStore.current_index = -1;
   }
@@ -39,8 +43,7 @@ function fastBackward(): void {
 function stepBackward(): void {
   if (shuuroStore.currentIndex() == 0) {
     fastBackward();
-  }
-  else if (shuuroStore.currentIndex() > 0) {
+  } else if (shuuroStore.currentIndex() > 0) {
     shuuroStore.current_index! -= 1;
     if (fenExist(shuuroStore.currentIndex())) {
       let fen = getFen(shuuroStore.currentIndex());
@@ -81,7 +84,7 @@ function getFen(index: number, stage?: number): string {
       let s = (shuuroStore.myHistory(1)[index] as string).split("_");
       return `${s[1]} ${s[3]} ${s[2]}`;
     case 2:
-      let st = (shuuroStore.myHistory(2)![index] as string);
+      let st = shuuroStore.myHistory(2)![index] as string;
       return st != undefined ? st : "";
     default:
       return "";

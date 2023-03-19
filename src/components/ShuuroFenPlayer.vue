@@ -3,8 +3,9 @@
     <div class="player-data">
       <i-side id="player0" class="icon" :class="cssOnline()" />
       <player>
-        <router-link class="user-link m-ul" :to="`/@/${player_username}`"><player-title />{{ player_username
-        }}</router-link>
+        <router-link class="user-link m-ul" :to="`/@/${player_username}`"
+          ><player-title />{{ player_username }}</router-link
+        >
         <rating />
       </player>
     </div>

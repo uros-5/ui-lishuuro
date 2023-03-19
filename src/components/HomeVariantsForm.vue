@@ -5,7 +5,12 @@
         <label for="variant">Variant</label>
         <select id="variant" v-model="variant" name="variant">
           <optgroup v-for="i in ALL_VARIANTS" :key="i.label" :label="i.label">
-            <option v-for="j in i.options" :key="j.value" :value="j.value" :title="j.title">
+            <option
+              v-for="j in i.options"
+              :key="j.value"
+              :value="j.value"
+              :title="j.title"
+            >
               {{ j.text }}
             </option>
           </optgroup>
@@ -13,26 +18,54 @@
       </div>
       <label for="min">&nbsp; Minutes per side:</label>
       <span id="minutes">{{ allowedDuration[time] }}</span>
-      <input id="min" v-model.number="time" class="slider" name="min" type="range" min="0" max="27" />
+      <input
+        id="min"
+        v-model.number="time"
+        class="slider"
+        name="min"
+        type="range"
+        min="0"
+        max="27"
+      />
       <label id="incrementlabel" for="inc">&nbsp;Increment in seconds:</label>
       <span id="increment">{{ incrementDuration[incr] }}</span>
-      <input id="inc" v-model.number="incr" class="slider" name="inc" type="range" min="0" max="28" />
+      <input
+        id="inc"
+        v-model.number="incr"
+        class="slider"
+        name="inc"
+        type="range"
+        min="0"
+        max="28"
+      />
       <div id="color-button-group" style="display: block">
-        <button class="icon icon-black" type="button" title="Black"
+        <button
+          class="icon icon-black"
+          type="button"
+          title="Black"
           @click="
             color = 'black';
-          createGame();
-                                                                                                                                                                                                                                                                                                            " />
-        <button class="icon icon-adjust" type="button" title="Random"
+            createGame();
+          "
+        />
+        <button
+          class="icon icon-adjust"
+          type="button"
+          title="Random"
           @click="
             color = 'random';
-          createGame();
-                                                                                                                                                                                                                                                                                                            " />
-        <button class="icon icon-white" type="button" title="White"
+            createGame();
+          "
+        />
+        <button
+          class="icon icon-white"
+          type="button"
+          title="White"
           @click="
             color = 'white';
-          createGame();
-                                                                                                                                                                                                                                                                                                            " />
+            createGame();
+          "
+        />
       </div>
     </div>
   </form>
@@ -65,8 +98,8 @@ function createGame() {
   };
   let obj = {
     t: "home_lobby_add",
-    data: game
-  }
+    data: game,
+  };
   SEND(obj);
 }
 

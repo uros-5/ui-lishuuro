@@ -7,14 +7,27 @@ import { useTvStore } from "@/store/useTvStore";
 import Sockette from "sockette";
 import { wsUrl } from "./getBackend";
 import {
-  ActivePlayersFull, Cnt, HomeLobbyFull,
-  LiveChatFull, LiveGameConfirmed, LiveGameDraw,
-  LiveGameResign, LiveGameFight, LiveGameHand,
-  LiveGamePlace, LiveGameStart, LobbyGame, SpecCnt,
-  TvGames, TvGameUpdate, LiveGameSfen, PauseConfirmed, RedirectDeploy, LiveGameLost
+  ActivePlayersFull,
+  Cnt,
+  HomeLobbyFull,
+  LiveChatFull,
+  LiveGameConfirmed,
+  LiveGameDraw,
+  LiveGameResign,
+  LiveGameFight,
+  LiveGameHand,
+  LiveGamePlace,
+  LiveGameStart,
+  LobbyGame,
+  SpecCnt,
+  TvGames,
+  TvGameUpdate,
+  LiveGameSfen,
+  PauseConfirmed,
+  RedirectDeploy,
+  LiveGameLost,
 } from "./webSocketTypes";
 import { z } from "zod";
-
 
 const ws = new Sockette(wsUrl(), {
   timeout: 1200,
@@ -28,9 +41,9 @@ const ws = new Sockette(wsUrl(), {
   onreconnect: (e) => {
     onreconnect(e);
   },
-  onmaximum: (_e) => { },
-  onclose: (_e) => { },
-  onerror: (_e) => { },
+  onmaximum: (_e) => {},
+  onclose: (_e) => {},
+  onerror: (_e) => {},
 });
 
 const unsendMessages: any[] = [];
@@ -68,7 +81,7 @@ function onmessage(event: any) {
   const newsStore = useNews();
   const tvStore = useTvStore();
 
-  const msg: { t: string, data: any } = JSON.parse(event.data);
+  const msg: { t: string; data: any } = JSON.parse(event.data);
   let data: any = {};
   switch (msg.t) {
     case "active_players_count":
@@ -88,7 +101,7 @@ function onmessage(event: any) {
       }
       break;
     case "live_chat_full":
-      let full = LiveChatFull.parse(msg.data)
+      let full = LiveChatFull.parse(msg.data);
       if (full.id == "home") {
         homeChat.setHomeChat(full.lines);
       } else {
@@ -125,12 +138,12 @@ function onmessage(event: any) {
       break;
     case "home_news": {
       let news = z.object({
-        news: z.array(NewsItem)
+        news: z.array(NewsItem),
       });
       data = news.parse(msg.data);
       newsStore.setNews(data.news);
       break;
-    };
+    }
     case "home_lobby_remove_user":
       data = LobbyGame.parse(msg.data);
       homeLobby.removeLobbyGameByUser(data.username);
@@ -138,58 +151,58 @@ function onmessage(event: any) {
     case "live_game_start":
       let game = LiveGameStart.parse(msg.data);
       game["game_info"]["_id"] = game["game_id"];
-      shuuroStore.$reset()
+      shuuroStore.$reset();
       shuuroStore.fromServer(game["game_info"], user.username);
       break;
     case "live_game_spectators_count":
-        data = SpecCnt.parse(msg.data);
-        shuuroStore.updateWatchCount(data);
+      data = SpecCnt.parse(msg.data);
+      shuuroStore.updateWatchCount(data);
       break;
     case "live_game_hand":
-        data = LiveGameHand.parse(msg.data);
-        shuuroStore.setShuuroHand(data.hand, user.username);
+      data = LiveGameHand.parse(msg.data);
+      shuuroStore.setShuuroHand(data.hand, user.username);
       break;
     case "live_game_place":
-        data = LiveGamePlace.parse(msg.data);
-        if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.serverPlace(data);
+      data = LiveGamePlace.parse(msg.data);
+      if (shuuroStore.silentRedirect(data.game_id))
+        shuuroStore.serverPlace(data);
       break;
     case "live_game_play":
-        data = LiveGameFight.parse(msg.data);
-        if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.serverMove2(data);
+      data = LiveGameFight.parse(msg.data);
+      if (shuuroStore.silentRedirect(data.game_id))
+        shuuroStore.serverMove2(data);
       break;
     case "live_game_confirmed":
-        data = LiveGameConfirmed.parse(msg.data);
-        if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.setConfirmed(data.confirmed);
+      data = LiveGameConfirmed.parse(msg.data);
+      if (shuuroStore.silentRedirect(data.game_id))
+        shuuroStore.setConfirmed(data.confirmed);
       break;
     case "live_game_draw":
-        data = LiveGameDraw.parse(msg.data);
-        if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.gameDraw(data, user.username);
+      data = LiveGameDraw.parse(msg.data);
+      if (shuuroStore.silentRedirect(data.game_id))
+        shuuroStore.gameDraw(data, user.username);
       break;
     case "live_game_resign":
-        data = LiveGameResign.parse(msg.data);
-        if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.gameResign(data, data.player);
+      data = LiveGameResign.parse(msg.data);
+      if (shuuroStore.silentRedirect(data.game_id))
+        shuuroStore.gameResign(data, data.player);
       break;
     case "live_game_lot":
       data = LiveGameLost.parse(msg.data);
-        if (shuuroStore.silentRedirect(data.game_id))
+      if (shuuroStore.silentRedirect(data.game_id))
         shuuroStore.gameLot(data, user.username);
       break;
     case "live_game_sfen":
-        data = LiveGameSfen.parse(msg.data);
-        tvStore.setProfileGame(data);
+      data = LiveGameSfen.parse(msg.data);
+      tvStore.setProfileGame(data);
       break;
     case "pause_confirmed":
-        data = PauseConfirmed.parse(msg.data);
-        shuuroStore.pauseConfirmed(data);
+      data = PauseConfirmed.parse(msg.data);
+      shuuroStore.pauseConfirmed(data);
       break;
     case "redirect_deploy":
-        data = RedirectDeploy.parse(msg.data);
-        shuuroStore.redirectDeploy(data);
+      data = RedirectDeploy.parse(msg.data);
+      shuuroStore.redirectDeploy(data);
       break;
   }
 }

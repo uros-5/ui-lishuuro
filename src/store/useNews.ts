@@ -32,4 +32,4 @@ export const NewsItem = z.object({
   text: z.string(),
 });
 
-export type NewsItem = z.infer<typeof  NewsItem>; 
+export type NewsItem = z.infer<typeof NewsItem>;

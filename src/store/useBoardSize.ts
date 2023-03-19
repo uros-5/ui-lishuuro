@@ -18,7 +18,9 @@ export const useBoardSize = defineStore("boardSize", {
       }
     },
     genVars(): string {
-      return `--cg-width: ${this.height -65}px; --cg-height: ${this.height-65}px;`;
+      return `--cg-width: ${this.height - 65}px; --cg-height: ${
+        this.height - 65
+      }px;`;
     },
     cgContainerStyle(): string {
       const height = this.height;

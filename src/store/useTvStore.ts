@@ -1,4 +1,4 @@
-import {Chessground}  from "chessground12";
+import { Chessground } from "chessground12";
 import type { Api } from "chessground12/api";
 import { setCheck } from "chessground12/board";
 import { userProfileConfig } from "chessground12/configs";
@@ -7,7 +7,17 @@ import { defineStore } from "pinia";
 import init, { ShuuroPosition } from "shuuro-wasm";
 import type { Color } from "./useShuuroStore";
 import type { Key, Piece } from "chessground12/types";
-import {LiveGameDraw, LiveGameFight, LiveGameEnd, LiveGameResign, LiveGamePlace, type TvGameUpdate, LiveGameSfen, TvGame, RedirectDeploy }  from "@/plugins/webSocketTypes";
+import {
+  LiveGameDraw,
+  LiveGameFight,
+  LiveGameEnd,
+  LiveGameResign,
+  LiveGamePlace,
+  type TvGameUpdate,
+  LiveGameSfen,
+  TvGame,
+  RedirectDeploy,
+} from "@/plugins/webSocketTypes";
 
 export const useTvStore = defineStore("tvStore", {
   state: (): TvStore => {
@@ -85,7 +95,9 @@ export const useTvStore = defineStore("tvStore", {
     // set tv game
     setTvGame(id: string, variant: string) {
       const game = this.game(id);
-      if (game == undefined) {return}
+      if (game == undefined) {
+        return;
+      }
       const cg = this.setCg(id + "_tv", variant);
       const wasm = this.tempWasm(cg, game.sfen, "", variant);
       game.cg = cg;
@@ -99,7 +111,7 @@ export const useTvStore = defineStore("tvStore", {
         let place = LiveGamePlace.parse(msg.data);
         this.tvPlace(place);
       } else if (msg.t.endsWith("play")) {
-        let play = LiveGameFight.parse(msg.data)
+        let play = LiveGameFight.parse(msg.data);
         this.tvMove(play);
       } else if (msg.t.endsWith("redirect_deploy")) {
         const game = this.newGame(RedirectDeploy.parse(msg.data));
@@ -129,15 +141,15 @@ export const useTvStore = defineStore("tvStore", {
 
     // remove game from store
     removeGame(id: string) {
-      this.games = this.games.filter(
-        (item) => item.game_id != id
-      );
+      this.games = this.games.filter((item) => item.game_id != id);
     },
 
     // placing
     tvPlace(msg: LiveGamePlace) {
       const game = this.game(msg.game_id);
-      if (game == undefined) {return}
+      if (game == undefined) {
+        return;
+      }
       const cg = game.cg as Api;
       const place = msg.game_move.split("@");
       const piece = place[0];
@@ -155,7 +167,9 @@ export const useTvStore = defineStore("tvStore", {
     tvMove(msg: LiveGameFight) {
       const move = msg.game_move.split("_");
       const game = this.game(msg.game_id);
-      if (game == undefined) {return}
+      if (game == undefined) {
+        return;
+      }
       game.cg.move(move[0] as Key, move[1] as Key);
       if (this.isPromotion(game.cg, msg)) {
         const color = move[1].endsWith("2") ? "white" : "black";
@@ -200,7 +214,6 @@ export const useTvStore = defineStore("tvStore", {
   },
 });
 
-
 export interface TvStore {
   games: TvGame[];
   profile_game: TvGame;
@@ -217,7 +230,7 @@ export function empty_game(id: string): TvGame {
     pl_set: false,
     pieces_set: false,
     cs: 0,
-    variant: ""
+    variant: "",
   };
 }
 
@@ -229,17 +242,14 @@ const ENDED = [
 ];
 
 function isGameOver(game: any): [boolean, string] {
-// export const ENDED_TYPES = [liveGameResign, liveGameDraw, liveGameEnd];
+  // export const ENDED_TYPES = [liveGameResign, liveGameDraw, liveGameEnd];
   if (LiveGameResign.safeParse(game).success) {
     return [true, game.game_id];
-  }
-  else if (LiveGameDraw.safeParse(game).success) {
+  } else if (LiveGameDraw.safeParse(game).success) {
     return [true, game.game_id];
-  }
-  else if (LiveGameEnd.safeParse(game).success) {
+  } else if (LiveGameEnd.safeParse(game).success) {
     return [true, game.game_id];
   }
 
-  return [false, ""]
+  return [false, ""];
 }
-

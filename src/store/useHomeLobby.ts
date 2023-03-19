@@ -1,9 +1,8 @@
-import  type { LobbyGame } from "@/plugins/webSocketTypes";
+import type { LobbyGame } from "@/plugins/webSocketTypes";
 import { defineStore } from "pinia";
 
-
 export interface All {
-  homeLobby:  LobbyGame[];
+  homeLobby: LobbyGame[];
   activePlayers: string[];
 }
 
@@ -24,7 +23,7 @@ export const useHomeLobby = defineStore("useHomeLobby", {
       this.activePlayers = activePlayers;
     },
     addGameToLobby(game: LobbyGame): void {
-      if (!this.homeLobby.find((item) => item.username == game.username)) 
+      if (!this.homeLobby.find((item) => item.username == game.username))
         this.homeLobby.push(game);
     },
     removeLobbyGame(game: LobbyGame): void {

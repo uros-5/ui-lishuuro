@@ -1,5 +1,5 @@
 <template>
-  <main class="round" style="--zoom: 100;">
+  <main class="round" style="--zoom: 100">
     <ShuuroLeftSide />
     <ShuuroMain />
   </main>
@@ -25,12 +25,11 @@ onMounted(() => {
     router.push("/");
   } else {
     if (shuuroStore.game_id == "") {
-
       let obj = {
         t: "live_game_start",
         game_id: id,
         color: "white",
-        variant: variant
+        variant: variant,
       };
       SEND(obj);
       SEND({ t: "live_chat_full", data: { game_id: id, variant: "shuuro" } });
@@ -41,7 +40,11 @@ onMounted(() => {
 
 onUnmounted(() => {
   const id = shuuroStore.game_id;
-  const obj = { t: "live_game_remove_spectator", game_id: id, variant: "shuuro" };
+  const obj = {
+    t: "live_game_remove_spectator",
+    game_id: id,
+    variant: "shuuro",
+  };
   SEND(obj);
   shuuroStore.game_id = "";
   homeChat.gameChat = [];

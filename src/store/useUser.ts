@@ -7,7 +7,7 @@ const cookie = useCookies().cookies;
 const cookieData = { expire: "365d", sameSite: "" };
 const themes = ["dark", "light"];
 
-type VueUser = {username: string, logged: boolean}
+type VueUser = { username: string; logged: boolean };
 
 export const useUser = defineStore("useUser", {
   state: () => {
@@ -45,8 +45,24 @@ export const useUser = defineStore("useUser", {
       const prod = getProd();
       const d = new Date();
       d.setTime(d.getTime() + 60 * 60 * 24 * 365);
-      cookie.set("username", this.username, d.toUTCString(), "", "", prod, "Lax");
-      cookie.set("reg", this.reg.toString(), d.toUTCString(), "", "", prod, "Lax");
+      cookie.set(
+        "username",
+        this.username,
+        d.toUTCString(),
+        "",
+        "",
+        prod,
+        "Lax"
+      );
+      cookie.set(
+        "reg",
+        this.reg.toString(),
+        d.toUTCString(),
+        "",
+        "",
+        prod,
+        "Lax"
+      );
     },
 
     updatePlCount(cnt: number): void {

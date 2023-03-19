@@ -1,8 +1,14 @@
 <template>
   <div class="movelist-block">
     <div id="movelist">
-      <ShuuroFenItem v-for="(item, index) in shuuroStore.getHistory()" v-if="fenItemCheck()" :key="index"
-        :fen="fenItem(item)" :move="moveItem(item)" :index="index + 1" />
+      <ShuuroFenItem
+        v-for="(item, index) in shuuroStore.getHistory()"
+        v-if="fenItemCheck()"
+        :key="index"
+        :fen="fenItem(item)"
+        :move="moveItem(item)"
+        :index="index + 1"
+      />
 
       <div id="result" v-if="showRes()">
         {{ resultMessage() }}
@@ -37,11 +43,7 @@ function moveItem(item: string): string {
 }
 
 function resultMessage(): string {
-  return Rm(
-    shuuroStore.result,
-    shuuroStore.status,
-    shuuroStore.players
-  );
+  return Rm(shuuroStore.result, shuuroStore.status, shuuroStore.players);
 }
 
 function fenItemCheck(): boolean {

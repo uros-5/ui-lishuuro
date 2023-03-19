@@ -36,8 +36,8 @@ function variantTitle(): string {
       return "Standard";
     case "standardFairy":
       return "Standard Fairy";
-    default: return "";
-
+    default:
+      return "";
   }
 }
 
@@ -66,7 +66,6 @@ function toolTipDate(): string {
 }
 
 function gameIcon(): string {
-  
   return variantTitle() == "Shuuro" || variantTitle() == "Standard" ? "M" : "P";
 }
 </script>

@@ -6,12 +6,27 @@
           <thead>
             <tr>
               <th />
-              <th v-for="i in ['Player', 'Rating', 'Time', 'Variant', 'Subvariant']" :key="i">{{ i }}</th>
+              <th
+                v-for="i in [
+                  'Player',
+                  'Rating',
+                  'Time',
+                  'Variant',
+                  'Subvariant',
+                ]"
+                :key="i"
+              >
+                {{ i }}
+              </th>
             </tr>
           </thead>
           <tbody>
             <transition-group name="lobby-t">
-              <tr v-for="i in store.homeLobby" :key="i.time" @click="acceptGame(i)">
+              <tr
+                v-for="i in store.homeLobby"
+                :key="i.time"
+                @click="acceptGame(i)"
+              >
                 <td>
                   <i-side class="icon" :class="iconColor(i.color)" />
                 </td>
@@ -51,7 +66,9 @@ function iconColor(color: string): string {
 }
 
 function dataIcon(variant: string): string {
-  return variant.startsWith("shuuro") || variant.startsWith("standard") ? "M" : "P";
+  return variant.startsWith("shuuro") || variant.startsWith("standard")
+    ? "M"
+    : "P";
 }
 
 onMounted(() => {
@@ -96,7 +113,7 @@ onMounted(() => {
 .lobby-background {
   box-shadow: var(--base-shadow);
   background-position: center;
-  background-image: url('@/assets/home/seek-bg2.svg');
+  background-image: url("@/assets/home/seek-bg2.svg");
   background-color: var(--bg-seek);
   background-blend-mode: overlay;
   background-size: 100% 100%;

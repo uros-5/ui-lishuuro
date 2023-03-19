@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { z } from 'zod';
+import { z } from "zod";
 
 export const ChatMessage = z.object({
   user: z.string(),

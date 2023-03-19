@@ -3,7 +3,12 @@
     {{ Math.floor(index! / 2 + 1) }}
   </div>
 
-  <div class="move" :class="{ active: shuuroStore.current_index == index! - 1 }" :ply="index" @click="updateIndex">
+  <div
+    class="move"
+    :class="{ active: shuuroStore.current_index == index! - 1 }"
+    :ply="index"
+    @click="updateIndex"
+  >
     <san>{{ m() }}</san>
     <eval :id="`ply${index!}`" />
   </div>

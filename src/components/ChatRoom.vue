@@ -2,7 +2,13 @@
   <div id="roundchat" class="roundchat chat">
     <div class="chatroom">
       Chat room
-      <input id="checkbox" title="Toggle the chat" name="checkbox" type="checkbox" @click="toggle" />
+      <input
+        id="checkbox"
+        title="Toggle the chat"
+        name="checkbox"
+        type="checkbox"
+        @click="toggle"
+      />
     </div>
     <ol id="lobbychat-messages">
       <div v-if="hiddenChat" id="messages">
@@ -16,8 +22,17 @@
       </div>
     </ol>
 
-    <input id="chat-entry" v-model="message" maxlength="50" type="text" name="entry" autocomplete="off"
-      :placeholder="setPlaceholder()" :disabled="toDisableInput()" @keyup.enter="onEnter" />
+    <input
+      id="chat-entry"
+      v-model="message"
+      maxlength="50"
+      type="text"
+      name="entry"
+      autocomplete="off"
+      :placeholder="setPlaceholder()"
+      :disabled="toDisableInput()"
+      @keyup.enter="onEnter"
+    />
   </div>
 </template>
 
@@ -49,12 +64,11 @@ function onEnter(): void {
         time: "",
         id: props.wsType,
         variant: "shuuro",
-      }
+      },
     });
     message.value = "";
   }
 }
-
 
 function setPlaceholder(): string {
   if (props.finished > -1) {
@@ -87,8 +101,7 @@ function fmtTime(time: string): string {
 
 function toggle() {
   hiddenChat.value = !hiddenChat.value;
-};
-
+}
 </script>
 
 <style scoped>

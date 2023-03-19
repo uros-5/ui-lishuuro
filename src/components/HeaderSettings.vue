@@ -15,11 +15,18 @@
           <button id="btn-board" @click="store.clicked = 'board'">
             Board Settings
           </button>
-          <HeaderSettingsSaveAll v-if="user.username == 'iiiurosiii'" :username="user.username" />
+          <HeaderSettingsSaveAll
+            v-if="user.username == 'iiiurosiii'"
+            :username="user.username"
+          />
         </div>
       </div>
       <div id="settings-sub" style="display: flex">
-        <div v-if="store.clicked != ''" id="settings-background" style="display: flex">
+        <div
+          v-if="store.clicked != ''"
+          id="settings-background"
+          style="display: flex"
+        >
           <HeaderSettingsButton />
 
           <HeaderSettingsTheme v-if="store.clicked == 'background'" />

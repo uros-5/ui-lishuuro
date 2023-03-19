@@ -12,12 +12,15 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
   },
-  rules : {
-    "vue/no-use-v-if-with-v-for": ["error", {
-        "allowUsingIterationVar": false
-      }],
+  rules: {
+    "vue/no-use-v-if-with-v-for": [
+      "error",
+      {
+        allowUsingIterationVar: false,
+      },
+    ],
     "no-case-declarations": "off",
     "@typescript-eslint/no-unused-vars": "off",
-    "vue/require-v-for-key": "off"
-  }
+    "vue/require-v-for-key": "off",
+  },
 };
