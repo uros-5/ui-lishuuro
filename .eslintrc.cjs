@@ -13,6 +13,11 @@ module.exports = {
     ecmaVersion: "latest",
   },
   rules: {
+    'prettier-vue/prettier': [
+      {
+        printWidth: 80
+      }
+    ],
     "vue/no-use-v-if-with-v-for": [
       "error",
       {
