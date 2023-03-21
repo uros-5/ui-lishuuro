@@ -343,7 +343,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       }
       if (msg.first_move_error) {
         const self = this;
-        setTimeout(function () {
+        setTimeout(function() {
           self.playAudio("res");
           self.clockPause(self.side_to_move);
           self.result = self.stmS();
@@ -453,8 +453,10 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // find legal moves for current player in stage 2
     legal_moves() {
-      const moves = this.wasm(2).legal_moves(this.player_color![0] as string);
-      this.cgs(2).state.movable.dests = moves;
+      if (this.status < 0) {
+        const moves = this.wasm(2).legal_moves(this.player_color![0] as string);
+        this.cgs(2).state.movable.dests = moves;
+      }
     },
 
     // after moving
@@ -597,6 +599,42 @@ export const useShuuroStore = defineStore("shuuroStore", {
       tempWasm.free();
     },
 
+    // fen buttons helpers
+
+    getFen(index: number, stage?: number): string {
+      let client_stage = stage ? stage : this.client_stage!;
+      switch (client_stage) {
+        case 1:
+          let s = (this.myHistory(1)[index] as string).split("_");
+          return `${s[1]} ${s[3]} ${s[2]}`;
+        case 2:
+          let st = this.myHistory(2)![index] as string;
+          return st != undefined ? st : "";
+        default:
+          return "";
+      }
+    },
+
+    fenExist(index: number): boolean {
+      if (index < 0) return false;
+      if (this.client_stage == 1) {
+        return index <= this.myHistory(1)!.length;
+      } else if (this.client_stage == 2) {
+        return index < this.myHistory(2)!.length;
+      }
+      return false;
+    },
+
+    fastForward(): void {
+      let history = this.getHistory();
+      this.current_index = history.length - 1;
+      if (this.fenExist(this.currentIndex())) {
+        let fen = this.getFen(this.currentIndex());
+        this.tempWasm(fen);
+      }
+    },
+
+
     // set check
     setCheckDeploy(stage: StageN) {
       const is_check = this.wasm(1).is_check();
@@ -675,7 +713,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // flag notification
-    flagNotif() {},
+    flagNotif() { },
 
     // low time notification
     lowTimeNotif() {
@@ -836,7 +874,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     enablePremove(config: Config) {
       if (this.am_i_player && this.status < 1) {
         config.premovable = {
-          events: { set: (orig, dest) => {}, unset: () => {} },
+          events: { set: (orig, dest) => { }, unset: () => { } },
         };
         config.premovable.enabled = true;
         config.premovable!.events!.set = (orig, dest, metadata) => {

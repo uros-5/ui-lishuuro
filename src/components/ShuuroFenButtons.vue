@@ -9,7 +9,7 @@
     ><button @click="stepForward">
       <i class="icon icon-step-forward" />
     </button>
-    <button @click="fastForward">
+    <button @click="shuuroStore.fastForward">
       <i class="icon icon-fast-forward" />
     </button>
   </div>
@@ -31,10 +31,12 @@ function flipSide(): void {
 
 function fastBackward(): void {
   shuuroStore.current_index = 0;
-  if (fenExist(shuuroStore.currentIndex())) {
+  if (shuuroStore.fenExist(shuuroStore.currentIndex())) {
     let placement_index = shuuroStore.myHistory(1).length - 1;
     let fen =
-      shuuroStore.client_stage == 1 ? getFen(0) : getFen(placement_index, 1);
+      shuuroStore.client_stage == 1
+        ? shuuroStore.getFen(0)
+        : shuuroStore.getFen(placement_index, 1);
     wasmFen(fen);
     shuuroStore.current_index = -1;
   }
@@ -45,8 +47,8 @@ function stepBackward(): void {
     fastBackward();
   } else if (shuuroStore.currentIndex() > 0) {
     shuuroStore.current_index! -= 1;
-    if (fenExist(shuuroStore.currentIndex())) {
-      let fen = getFen(shuuroStore.currentIndex());
+    if (shuuroStore.fenExist(shuuroStore.currentIndex())) {
+      let fen = shuuroStore.getFen(shuuroStore.currentIndex());
       wasmFen(fen);
     }
   }
@@ -57,48 +59,15 @@ function stepForward(): void {
   let index = shuuroStore.current_index!;
   if (index + 1 < history.length) {
     shuuroStore.current_index! += 1;
-    if (fenExist(shuuroStore.currentIndex())) {
-      let fen = getFen(shuuroStore.currentIndex());
+    if (shuuroStore.fenExist(shuuroStore.currentIndex())) {
+      let fen = shuuroStore.getFen(shuuroStore.currentIndex());
       wasmFen(fen);
     }
   }
 }
 
-function fastForward(): void {
-  let history = shuuroStore.getHistory();
-  shuuroStore.current_index = history.length - 1;
-  if (fenExist(shuuroStore.currentIndex())) {
-    let fen = getFen(shuuroStore.currentIndex());
-    wasmFen(fen);
-  }
-}
-
 function wasmFen(fen: string) {
   shuuroStore.tempWasm(fen);
-}
-
-function getFen(index: number, stage?: number): string {
-  let client_stage = stage ? stage : shuuroStore.client_stage!;
-  switch (client_stage) {
-    case 1:
-      let s = (shuuroStore.myHistory(1)[index] as string).split("_");
-      return `${s[1]} ${s[3]} ${s[2]}`;
-    case 2:
-      let st = shuuroStore.myHistory(2)![index] as string;
-      return st != undefined ? st : "";
-    default:
-      return "";
-  }
-}
-
-function fenExist(index: number): boolean {
-  if (index < 0) return false;
-  if (shuuroStore.client_stage == 1) {
-    return index <= shuuroStore.myHistory(1)!.length;
-  } else if (shuuroStore.client_stage == 2) {
-    return index < shuuroStore.myHistory(2)!.length;
-  }
-  return false;
 }
 </script>
 <style></style>

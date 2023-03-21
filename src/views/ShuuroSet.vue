@@ -13,6 +13,7 @@ import { useBoardSize } from "@/store/useBoardSize";
 import { useShuuroStore } from "@/store/useShuuroStore";
 import { onMounted } from "vue";
 import { useHeaderSettings } from "@/store/headerSettings";
+import init from "shuuro-wasm";
 
 const store = useBoardSize();
 const shuuroStore = useShuuroStore();
@@ -21,7 +22,15 @@ const settings = useHeaderSettings();
 store.updateRowsAndCols(12);
 shuuroStore.updateClientStage(1);
 
-onMounted(() => {
+async function setTempFen() {
+  if (shuuroStore.client_stage != shuuroStore.current_stage) {
+    init().then((_) => {
+      shuuroStore.fastForward();
+    });
+  }
+}
+
+onMounted(async () => {
   if (shuuroStore.game_id == "") {
     /*
     SEND({
@@ -35,6 +44,7 @@ onMounted(() => {
       shuuroStore.setDeployCg();
       shuuroStore.setDeployWasm(shuuroStore.sfen);
       shuuroStore.updateClientStage(1);
+      await setTempFen();
     }
   }
 });

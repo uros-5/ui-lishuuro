@@ -2,18 +2,28 @@
 import { onMounted } from "vue";
 import { useShuuroStore } from "@/store/useShuuroStore";
 import { useHeaderSettings } from "@/store/headerSettings";
+import init from "shuuro-wasm";
 
 const shuuroStore = useShuuroStore();
 const settings = useHeaderSettings();
 shuuroStore.updateClientStage(2);
 
-onMounted(() => {
+async function setTempFen() {
+  if (shuuroStore.client_stage != shuuroStore.current_stage) {
+    init().then((_) => {
+      shuuroStore.fastForward();
+    });
+  }
+}
+
+onMounted(async () => {
   if (shuuroStore.game_id == "") {
   } else {
     if (shuuroStore.sfen) {
       shuuroStore.setFightCg();
       shuuroStore.setFightWasm(shuuroStore.sfen);
       shuuroStore.updateClientStage(2);
+      await setTempFen();
     }
   }
 });

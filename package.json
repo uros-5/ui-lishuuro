@@ -16,7 +16,7 @@
     "chessground12": "^0.1.6",
     "path": "^0.12.7",
     "pinia": "^2.0.28",
-    "shuuro-wasm": "^0.2.2",
+    "shuuro-wasm": "^0.2.3",
     "sockette": "^2.0.6",
     "vue": "^3.2.45",
     "vue-cookie-next": "^1.3.0",
