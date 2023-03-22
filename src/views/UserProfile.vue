@@ -29,8 +29,12 @@
             </div>
           </div>
           <table id="games">
-            <tbody>
-              <UserProfileGame v-for="g in games" v-bind:key="g" :game="g" />
+            <tbody ref="scrollComponent">
+              <UserProfileGame
+                v-for="g in games"
+                v-bind:key="g._id"
+                :game="g"
+              />
             </tbody>
           </table>
         </div>
@@ -42,34 +46,66 @@
 import UserProfileHeader from "@/components/UserProfileHeader.vue";
 import UserProfileSocial from "@/components/UserProfileSocial.vue";
 import UserProfileGame from "@/components/UserProfileGame.vue";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, reactive, type Ref, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import GET from "@/plugins/axios";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
+import type { ProfileGame } from "@/plugins/webSocketTypes";
+
+type Response = {
+  data: {
+    games: ProfileGame[]
+  }
+}
+
 const route = useRoute();
-let games = ref([]);
-let exist = ref(false);
+const games: Ref<ProfileGame[]> = ref([]);
+const scrollComponent = ref(null);
+const currentPage = ref(-1);
+const exist = ref(true);
 
 function username(): string {
   return route.params.username as string;
 }
 
-function newGames(id: string) {
-  GET(`games/${id}`).then((value) => {
-    games.value = value.data.games;
-    exist.value = true;
+function newGames(id: string, page: number) {
+  if (!exist.value) {return;}
+  GET(`games/${id}/${page}`).then((value: Response) => {
+    if (value.data.games.length > 0) {
+      games.value.push(...value.data.games);
+      exist.value = true;
+    }
+    else {
+      exist.value = false;
+    }
   });
 }
 
+function handleScroll(e: Event) {
+  let element = (scrollComponent.value as unknown) as HTMLDivElement;
+  if (element.getBoundingClientRect().bottom < window.innerHeight) {
+    currentPage.value += 1;
+    newGames(username(), currentPage.value)
+  }
+}
+
 onMounted(() => {
-  newGames(username());
+  currentPage.value += 1;
+  newGames(username(), currentPage.value);
   updateHeadTitle(username());
+  window.addEventListener("scroll", handleScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
 });
 
 watch(route, (newRoute, _oldRoute) => {
   let username = newRoute.params.username;
   if (!username) return;
-  newGames(newRoute.params.username as string);
+  games.value = [];
+  exist.value = true;
+  newGames(newRoute.params.username as string, 0);
 });
 </script>
 

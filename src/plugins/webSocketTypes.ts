@@ -192,6 +192,14 @@ export const GameInfo = z.object({
 
 export type GameInfo = z.infer<typeof GameInfo>;
 
+export const ProfileGame = GameInfo.omit({
+  history: true,
+  credits: true,
+  hands: true,
+});
+
+export type ProfileGame = z.infer<typeof ProfileGame>;
+
 export const LiveGameStart = z.object({
   game_id: z.string(),
   game_info: GameInfo,

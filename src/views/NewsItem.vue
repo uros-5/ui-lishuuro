@@ -9,7 +9,8 @@
           <span class="text">
             <router-link :to="`/@/${props.user}`">
               @{{ props.user }}
-            </router-link></span>
+            </router-link></span
+          >
           <span class="text"> {{ props.category }} </span>
         </div>
         <div class="headline">

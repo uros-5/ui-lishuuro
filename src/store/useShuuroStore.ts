@@ -343,7 +343,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       }
       if (msg.first_move_error) {
         const self = this;
-        setTimeout(function() {
+        setTimeout(function () {
           self.playAudio("res");
           self.clockPause(self.side_to_move);
           self.result = self.stmS();
@@ -634,7 +634,6 @@ export const useShuuroStore = defineStore("shuuroStore", {
       }
     },
 
-
     // set check
     setCheckDeploy(stage: StageN) {
       const is_check = this.wasm(1).is_check();
@@ -713,7 +712,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // flag notification
-    flagNotif() { },
+    flagNotif() {},
 
     // low time notification
     lowTimeNotif() {
@@ -874,7 +873,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     enablePremove(config: Config) {
       if (this.am_i_player && this.status < 1) {
         config.premovable = {
-          events: { set: (orig, dest) => { }, unset: () => { } },
+          events: { set: (orig, dest) => {}, unset: () => {} },
         };
         config.premovable.enabled = true;
         config.premovable!.events!.set = (orig, dest, metadata) => {

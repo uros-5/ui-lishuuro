@@ -21,7 +21,7 @@
             <div class="tc">
               {{ Math.floor(game.min / 60000) }}+{{
                 Math.floor(game.incr / 1000)
-              }}{{ game.rated_game }} {{ variantTitle() }}
+              }}{{ " Casual" }} {{ variantTitle() }}
             </div>
             <div>
               {{ ldate() }}
@@ -79,11 +79,12 @@ import { useTvStore } from "@/store/useTvStore";
 import { SEND } from "@/plugins/webSockets";
 import { ServerDate } from "@/plugins/serverDate";
 import { useHeaderSettings } from "@/store/headerSettings";
+import type { ProfileGame } from "@/plugins/webSocketTypes";
 const tv = useTvStore();
 const settings = useHeaderSettings();
 const sword = '"';
 
-const props = defineProps<{ game: ShuuroStore | any }>();
+const props = defineProps<{ game: ProfileGame }>();
 
 function isStandard(): string {
   if (props.game.variant == "standard") {
@@ -102,12 +103,12 @@ onMounted(() => {
     });
   } else {
     let stage = props.game.current_stage;
-    if (stage == "shop") {
+    if (stage == 0) {
       return;
     }
     let cg = tv.setCg(props.game._id, props.game.variant);
     let sfen = props.game.sfen;
-    tv.tempWasm(cg, sfen, stage, props.game.variant);
+    tv.tempWasm(cg, sfen, "", props.game.variant);
   }
 });
 
@@ -127,15 +128,7 @@ function res() {
 function sumMoves(): number {
   if (props.game.current_stage == 0) return 0;
   let ply = props.game.sfen.split(" ")[3];
-  return ply == 1 ? 0 : Number(ply);
-}
-
-function sumShop(): number {
-  if (props.game.history[1].length > 0) {
-    let count = props.game.history[1][0].split("_")[2].length + 1;
-    return count;
-  }
-  return 0;
+  return ply == "1" ? 0 : Number(ply);
 }
 
 function styleRes(): string {
@@ -179,7 +172,7 @@ function gameUrl(id: string, stage: number, status: number): string {
 }
 
 function variantTitle(): string {
-  switch ((props.game as ShuuroStore).variant) {
+  switch (props.game.variant) {
     case "shuuro":
       return "SHUURO";
     case "shuuroFairy":
