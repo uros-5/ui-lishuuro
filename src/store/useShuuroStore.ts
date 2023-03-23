@@ -221,8 +221,6 @@ export const useShuuroStore = defineStore("shuuroStore", {
         const new_credit = this.wasm0().get_credit(color);
         const counter = this.wasm0().get_piece(p);
         if (new_credit != this.credit) {
-          this.clockPause(this.player!, true);
-          this.clockStart(this.player!);
           this.history[0]?.push(game_move);
           this.scrollToBottom();
         }
