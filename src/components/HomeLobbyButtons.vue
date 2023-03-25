@@ -17,7 +17,7 @@
 }
 
 [data-icon]::before {
-  font-family: "pychess" !important;
+  font-family: "lishuuro" !important;
   content: attr(data-icon);
   speak: never;
   font-style: normal;

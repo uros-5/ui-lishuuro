@@ -6,21 +6,12 @@
           <thead>
             <tr>
               <th />
-              <th
-                v-for="i in [
-                  'Player',
-                  'Rating',
-                  'Time',
-                  'Variant',
-                  'Subvariant',
-                ]"
-                :key="i"
-              >
+              <th v-for="i in ['Player', 'Rating', 'Time', 'Variant']" :key="i">
                 {{ i }}
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="bigger-font">
             <transition-group name="lobby-t">
               <tr
                 v-for="i in store.homeLobby"
@@ -33,10 +24,10 @@
                 <td><player-title />{{ i.username }}</td>
                 <td>//</td>
                 <td>{{ i.time }} + {{ i.incr }}</td>
-                <td class="icon" :data-icon="dataIcon(i.variant)">
-                  <variant-name> &nbsp; {{ i.variant }}</variant-name>
-                </td>
-                <td>{{ getSubVariant(i.sub_variant) }}</td>
+                <HomeLobbyDataIcon
+                  :variant="i.variant"
+                  :sub-variant="i.sub_variant"
+                />
               </tr>
             </transition-group>
           </tbody>
@@ -51,6 +42,7 @@ import { onMounted } from "vue";
 import type { LobbyGame } from "@/plugins/webSocketTypes";
 import { SEND } from "@/plugins/webSockets";
 import { getSubVariant } from "@/plugins/subVariant";
+import HomeLobbyDataIcon from "./HomeLobbyDataIcon.vue";
 
 const store = useHomeLobby();
 
@@ -119,5 +111,9 @@ onMounted(() => {
   background-size: 100% 100%;
   width: 100%;
   height: 100%;
+}
+
+.bigger-font {
+  font-size: 1.1em;
 }
 </style>

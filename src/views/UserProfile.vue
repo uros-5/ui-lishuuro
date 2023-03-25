@@ -166,7 +166,7 @@ watch(route, (newRoute, _oldRoute) => {
   height: 60px;
   background-size: contain;
   background-repeat: no-repeat;
-  font-family: "pychess";
+  font-family: "lishuuro";
   text-align: center;
 }
 
