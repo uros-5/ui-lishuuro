@@ -1,4 +1,4 @@
-import { Chessground } from "chessground12";
+import  { Chessground}   from "chessground12";
 import type { Api } from "chessground12/api";
 import { setCheck } from "chessground12/board";
 import { userProfileConfig } from "chessground12/configs";

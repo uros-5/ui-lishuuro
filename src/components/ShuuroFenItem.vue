@@ -30,6 +30,18 @@ function updateIndex(): void {
   } else if (shuuroStore.client_stage == 2) {
     let sfen = fightSfen(props.fen);
     shuuroStore.tempWasm(sfen);
+    let ci = shuuroStore.currentIndex();
+    let lm = shuuroStore.getLastMove(ci);
+    shuuroStore.cgs(2).setLastMove(lm.from, lm.to);
+  }
+  playAudio();
+}
+
+function playAudio() {
+  if (props.move.includes("x")) {
+    shuuroStore.playAudio("capture");
+  } else {
+    shuuroStore.playAudio("move");
   }
 }
 

@@ -39,6 +39,8 @@ function fastBackward(): void {
         : shuuroStore.getFen(placement_index, 1);
     wasmFen(fen);
     shuuroStore.current_index = -1;
+    lastMove();
+    shuuroStore.cgs(2).state.lastMove = [];
   }
 }
 
@@ -50,6 +52,7 @@ function stepBackward(): void {
     if (shuuroStore.fenExist(shuuroStore.currentIndex())) {
       let fen = shuuroStore.getFen(shuuroStore.currentIndex());
       wasmFen(fen);
+      lastMove();
     }
   }
 }
@@ -62,6 +65,7 @@ function stepForward(): void {
     if (shuuroStore.fenExist(shuuroStore.currentIndex())) {
       let fen = shuuroStore.getFen(shuuroStore.currentIndex());
       wasmFen(fen);
+      lastMove();
     }
   }
 }
@@ -69,5 +73,21 @@ function stepForward(): void {
 function wasmFen(fen: string) {
   shuuroStore.tempWasm(fen);
 }
+
+function lastMove() {
+  let ci = shuuroStore.currentIndex();
+  let lm = shuuroStore.getLastMove(ci);
+  if (lm.from == "" || lm.to == "") {
+    return;
+  }
+  shuuroStore.cgs(2).setLastMove(lm.from, lm.to);
+  if (lm.san.includes("x")) {
+    shuuroStore.playAudio("capture");
+  } else {
+    shuuroStore.playAudio("move");
+  }
+}
+
+function playAudio() {}
 </script>
 <style></style>

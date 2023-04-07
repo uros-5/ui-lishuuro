@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
-import { Chessground } from "chessground12";
+import {Chessground }from "chessground12";
 import router from "@/router";
 import { SEND } from "@/plugins/webSockets";
 import { anonConfig, liveConfig, p2 } from "chessground12/configs";
@@ -341,7 +341,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       }
       if (msg.first_move_error) {
         const self = this;
-        setTimeout(function () {
+        setTimeout(function() {
           self.playAudio("res");
           self.clockPause(self.side_to_move);
           self.result = self.stmS();
@@ -355,6 +355,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     setCheck(check: boolean) {
       const is_check = check;
       setCheck(this.cgs(this.cs()).state, is_check);
+      this.cgs(this.cs()).state.dom.redraw()
     },
 
     // deploy wasm placing piece
@@ -476,7 +477,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       this.setClocks2(msg.clocks);
       if (this.gameOver(msg.outcome)) {
         this.playAudio("res");
-        this.clockPause(this.side_to_move, false);
+        this.deactivateClocks()
         this.status = msg.status;
         this.result = msg.outcome;
         this.scrollToBottom();
@@ -566,10 +567,8 @@ export const useShuuroStore = defineStore("shuuroStore", {
       let stm = tempWasm.side_to_move() as Color;
       stm = stm[0] == "w" ? "white" : "black";
       this.cgs(cs).state.turnColor = stm;
-      this.cgs(cs).state.pieces = pieces;
+      this.cgs(cs).setPieces(pieces);
       this.setCheck(check);
-      this.cgs(cs).state.dom.redraw();
-      this.cgs(cs).state.dom.redrawNow();
 
       if (this.current_index == this.myHistory(cs)!.length - 1) {
         this.cgs(cs).state.movable.showDests = true;
@@ -613,6 +612,28 @@ export const useShuuroStore = defineStore("shuuroStore", {
       }
     },
 
+    getLastMove(index: number, stage?: number): { from: string, to: string, san: string } {
+
+      let client_stage = stage ? stage : this.client_stage!;
+      let m: any = "";
+      let def = { from: "", to: "" , san: ""};
+      if (index < 0) { return def }
+      switch (client_stage) {
+        case 1:
+          let s = (this.myHistory(1)[index] as string).split("_");
+          m = s[0].split("@")
+          return { from: m[0], to: m[1], san: "" }
+        case 2:
+          let st = this.myHistory(2)![index] as string;
+          m = st.split(" ")[4].split("_");
+          return { from: m[0], to: m[1].replace("*", ""), san: st.split(" ")[5] }
+        default:
+          return def;
+      }
+    },
+
+
+
     fenExist(index: number): boolean {
       if (index < 0) return false;
       if (this.client_stage == 1) {
@@ -629,6 +650,9 @@ export const useShuuroStore = defineStore("shuuroStore", {
       if (this.fenExist(this.currentIndex())) {
         let fen = this.getFen(this.currentIndex());
         this.tempWasm(fen);
+        let ci = this.currentIndex();
+        let lm = this.getLastMove(ci);
+        this.cgs(2).setLastMove(lm.from, lm.to);
       }
     },
 
@@ -706,11 +730,17 @@ export const useShuuroStore = defineStore("shuuroStore", {
       else {
         this.clock(0).setTime(this.clock_ms[0]);
         this.clock(1).setTime(this.clock_ms[1]);
+        this.deactivateClocks()
       }
     },
 
+    deactivateClocks() {
+      this.clock(0).pause(false);
+      this.clock(1).pause(false);
+    },
+
     // flag notification
-    flagNotif() {},
+    flagNotif() { },
 
     // low time notification
     lowTimeNotif() {
@@ -871,7 +901,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     enablePremove(config: Config) {
       if (this.am_i_player && this.status < 1) {
         config.premovable = {
-          events: { set: (orig, dest) => {}, unset: () => {} },
+          events: { set: (orig, dest) => { }, unset: () => { } },
         };
         config.premovable.enabled = true;
         config.premovable!.events!.set = (orig, dest, metadata) => {
