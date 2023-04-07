@@ -187,7 +187,8 @@ function variantTitle(): string {
 }
 
 function dataIcon(): string {
-  return variantTitle() == "SHUURO" || "STANDARD" ? "M" : "P";
+  return props.game.variant.endsWith("Fairy") ? "" : "M";
+  // return variantTitle() == "SHUURO" || "STANDARD" ? "M" : "P";
 }
 </script>
 
@@ -265,5 +266,9 @@ div.info-middle {
   .invisible {
     display: none;
   }
+}
+
+.bigger-icon {
+  font-size: 42px;
 }
 </style>

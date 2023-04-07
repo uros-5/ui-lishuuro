@@ -172,7 +172,7 @@ export const useTvStore = defineStore("tvStore", {
       }
       game.cg.move(move[0] as Key, move[1] as Key);
       if (this.isPromotion(game.cg, msg)) {
-        const color = move[1].endsWith("2") ? "white" : "black";
+        const color = move[1].endsWith("*") ? "white" : "black";
         const pieceObj = {
           role: "q-piece" as Role,
           color: color,

@@ -66,7 +66,7 @@ function toolTipDate(): string {
 }
 
 function gameIcon(): string {
-  return variantTitle() == "Shuuro" || variantTitle() == "Standard" ? "M" : "P";
+  return props.variant.endsWith("Fairy") ? "" : "M";
 }
 </script>
 <style></style>

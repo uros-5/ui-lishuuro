@@ -498,11 +498,11 @@ export const useShuuroStore = defineStore("shuuroStore", {
           } else {
             this.playAudio("move");
           }
-          if (lastMove.endsWith("*")) {
+          if (lastMove.includes("=")) {
             this.setPieces();
           }
         }
-        if (lastMove.endsWith("*")) {
+        if (lastMove.includes("=")) {
           this.setPieces();
         }
         this.setTurnColor();

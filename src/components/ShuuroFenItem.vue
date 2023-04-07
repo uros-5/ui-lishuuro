@@ -34,9 +34,6 @@ function updateIndex(): void {
 }
 
 function m(): string {
-  if (shuuroStore.client_stage == 2) {
-    return props.move.split("_")[1];
-  }
   return props.move;
 }
 </script>

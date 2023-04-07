@@ -37,7 +37,7 @@ function moveItem(item: string): string {
     return fen[0];
   } else if (shuuroStore.client_stage == 2) {
     let fen = item.split(" ");
-    return fen[4];
+    return fen[5];
   }
   return "";
 }
