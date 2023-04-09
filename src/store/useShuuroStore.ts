@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
-import {Chessground }from "chessground12";
+import { Chessground } from "chessground12";
 import router from "@/router";
 import { SEND } from "@/plugins/webSockets";
 import { anonConfig, liveConfig, p2 } from "chessground12/configs";
@@ -445,16 +445,26 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // select square
-    selectSq(key: Key) {
+    selectSq(_key: Key) {
       if (this.canPlay()) {
+      }
+      else if (this.analyze) {
+        let dests = this.cgs(2).state.movable.dests;
+        if (dests?.size == 0 || dests == undefined) {
+          this.legal_moves();
+        }
       }
     },
 
     // find legal moves for current player in stage 2
     legal_moves() {
-      if (this.status < 0) {
-        const moves = this.wasm(2).legal_moves(this.player_color![0] as string);
+      let color = !this.analyze ? this.player_color![0] as string : this.wasm(2).side_to_move();
+      if (this.status < 0 || this.analyze) {
+        const moves = this.wasm(2).legal_moves(color);
         this.cgs(2).state.movable.dests = moves;
+        if (!this.analyze) return;
+        this.cgs(2).state.movable.color = color == "w" ? "white" : "black"
+        this.cgs(2).state.turnColor = color == "w" ? "white" : "black"
       }
     },
 
@@ -467,6 +477,22 @@ export const useShuuroStore = defineStore("shuuroStore", {
       if (_metadata.captured!) {
         this.playAudio("capture");
       }
+    },
+
+    movedPiece2(orig: Key, dest: Key, _metadata: MoveMetadata) {
+      if (this.current_index! != this.analysisMoves.length - 1)
+        this.analysisMoves.splice(this.current_index!);
+
+      const gameMove = `${orig}_${dest}`;
+      this.wasmMove(gameMove, false);
+      this.playAudio("move");
+      if (_metadata.captured!) {
+        this.playAudio("capture");
+      }
+      let lm = this.wasm(2).last_move();
+      this.analysisMoves.push(lm)
+      this.current_index = this.analysisMoves.length - 1;
+
     },
 
     // move piece from server
@@ -509,7 +535,8 @@ export const useShuuroStore = defineStore("shuuroStore", {
         this.setTurnColor();
         this.setCheckFight();
         this.switchClock();
-        this.history[2].push(lastMove);
+        if (!this.analyze)
+          this.history[2].push(lastMove);
         this.scrollToBottom();
         this.updateCurrentIndex(2);
         this.cgs(2).state.dom.redraw();
@@ -521,7 +548,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // send move to server
     sendMove(s: string) {
-      this.SEND("live_game_play", s);
+      if (!this.analyze) { this.SEND("live_game_play", s) }
     },
 
     // set turn color
@@ -535,7 +562,8 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // set plinths
-    setPlinths() {
+    setPlinths(ignore?: boolean) {
+      if (ignore == true) return;
       this.changeDimension();
       const cs = this.cs();
       const plinths = this.wasm(cs).map_plinths();
@@ -616,7 +644,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
       let client_stage = stage ? stage : this.client_stage!;
       let m: any = "";
-      let def = { from: "", to: "" , san: ""};
+      let def = { from: "", to: "", san: "" };
       if (index < 0) { return def }
       switch (client_stage) {
         case 1:
@@ -631,8 +659,6 @@ export const useShuuroStore = defineStore("shuuroStore", {
           return def;
       }
     },
-
-
 
     fenExist(index: number): boolean {
       if (index < 0) return false;
@@ -653,6 +679,9 @@ export const useShuuroStore = defineStore("shuuroStore", {
         let ci = this.currentIndex();
         let lm = this.getLastMove(ci);
         this.cgs(2).setLastMove(lm.from, lm.to);
+        this.analysisMoves = []
+        this.selectSq("a7")
+        this.switchToLiveConfig();
       }
     },
 
@@ -819,13 +848,13 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // change cg and create new ShuuroPosition for fight
-    setFightWasm(sfen: string) {
+    setFightWasm(sfen: string, ignore?: boolean) {
       init().then((_exports) => {
         this.wasm![2] = new ShuuroPosition(this.variant);
         this.changeVariant();
         this.wasm(2).set_sfen(sfen);
         this.changeDimension();
-        this.setPlinths();
+        this.setPlinths(ignore);
         this.setPieces();
         this.activateClock();
         this.cgs(2).state.movable.color = this.player_color;
@@ -950,6 +979,21 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     switchToAnonConfig() {
       if (this.client_stage != 0) this.cgs(this.client_stage!).set(anonConfig);
+    },
+
+    switchToLiveConfig() {
+      if (!this.analyze) return;
+      this.cgs(2).set(liveConfig)
+      this.cgs(2).state.movable.events.after = this.movedPiece2;
+      this.cgs(2).state.events.select = this.selectSq;
+    },
+
+    resetAnalyze(sfen: string) {
+      if (this.analyze) {
+        this.analysisMoves = [];
+        this.setFightWasm(sfen, true)
+        this.cgs(2).state.movable.showDests = true
+      }
     },
 
     canConfirm1(): boolean {
@@ -1127,10 +1171,20 @@ export const useShuuroStore = defineStore("shuuroStore", {
       return true;
     },
 
+    canAnalyze(): boolean {
+      if (this.cs() == 2 && this.status > -1) {
+        return true;
+      }
+      return false;
+    },
+
+
     SEND(t: string, game_move?: string) {
+      if (this.analyze) return;
       let msg = { game_id: this.game_id, variant: this.variant, t, game_move };
       SEND(msg);
     },
+
   },
 });
 
@@ -1172,6 +1226,8 @@ function emptyState(): ShuuroStore {
     offeredDraw: false,
     ratings: undefined,
     premoveData: { active: false, orig: "", dest: "" },
+    analyze: false,
+    analysisMoves: []
   };
 }
 
@@ -1213,6 +1269,9 @@ export interface ShuuroStore {
   ratings: any;
   premoveData: { orig: string; dest: string; active: boolean };
   subVariant: number;
+  analyze: boolean;
+  analysisMoves: string[];
+
 }
 
 export type Stage = "shop" | "deploy" | "fight";

@@ -49,4 +49,6 @@ const CUSTOM_ELEMENTS = [
   "vs-swords",
   "back",
   "mini-game",
+  "vari",
+  "vari-move"
 ];

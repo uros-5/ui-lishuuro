@@ -74,7 +74,7 @@
 import { allowedDuration } from "@/store/useHomeLobby";
 import { SEND } from "@/plugins/webSockets";
 import { useUser } from "@/store/useUser";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import type { LobbyGame } from "@/plugins/webSocketTypes";
 import { ALL_VARIANTS } from "@/plugins/all_variants";
 
@@ -109,6 +109,10 @@ function inputVariant(): [string, number] {
   let subVariant = parts[1];
   return [selectedVariant, Number(subVariant)];
 }
+
+onMounted(() => {
+  variant.value = "standard_3";
+});
 </script>
 
 <style scoped>

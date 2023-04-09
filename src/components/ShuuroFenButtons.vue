@@ -41,6 +41,7 @@ function fastBackward(): void {
     shuuroStore.current_index = -1;
     lastMove();
     shuuroStore.cgs(2).state.lastMove = [];
+    shuuroStore.resetAnalyze(fen);
   }
 }
 
@@ -52,6 +53,7 @@ function stepBackward(): void {
     if (shuuroStore.fenExist(shuuroStore.currentIndex())) {
       let fen = shuuroStore.getFen(shuuroStore.currentIndex());
       wasmFen(fen);
+      shuuroStore.resetAnalyze(fen);
       lastMove();
     }
   }
@@ -65,6 +67,7 @@ function stepForward(): void {
     if (shuuroStore.fenExist(shuuroStore.currentIndex())) {
       let fen = shuuroStore.getFen(shuuroStore.currentIndex());
       wasmFen(fen);
+      shuuroStore.resetAnalyze(fen);
       lastMove();
     }
   }
@@ -87,7 +90,5 @@ function lastMove() {
     shuuroStore.playAudio("move");
   }
 }
-
-function playAudio() {}
 </script>
 <style></style>

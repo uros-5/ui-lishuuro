@@ -41,6 +41,7 @@
       />
     </div>
     <div class="material material-bottom standard disabled"></div>
+    <AnalyzeButton />
   </div>
 </template>
 <script setup lang="ts">
@@ -52,6 +53,7 @@ import ShuuroMatchButtons from "@/components/ShuuroMatchButtons.vue";
 import PlayerHand from "./PlayerHand.vue";
 import ShuuroMatchOfferDialog from "@/components/ShuuroMatchOfferDialog.vue";
 import { useShuuroStore } from "@/store/useShuuroStore";
+import AnalyzeButton from "./AnalyzeButton.vue";
 const shuuroStore = useShuuroStore();
 
 function topPlayer(): string {

@@ -3,12 +3,14 @@
     <div id="movelist">
       <ShuuroFenItem
         v-for="(item, index) in shuuroStore.getHistory()"
-        v-if="fenItemCheck()"
+        v-if="fenItemCheck() && shuuroStore.analysisMoves.length == 0"
         :key="index"
         :fen="fenItem(item)"
         :move="moveItem(item)"
         :index="index + 1"
       />
+
+      <AnalyzeRow v-if="shuuroStore.analysisMoves.length > 0" />
 
       <div id="result" v-if="showRes()">
         {{ resultMessage() }}
@@ -20,6 +22,7 @@
 import { useShuuroStore } from "@/store/useShuuroStore";
 import ShuuroFenItem from "./ShuuroFenItem.vue";
 import { resultMessage as Rm } from "@/plugins/resultMessage";
+import AnalyzeRow from "./AnalyzeRow.vue";
 const shuuroStore = useShuuroStore();
 
 function fenItem(item: string): string {

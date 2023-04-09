@@ -28,8 +28,12 @@ function updateIndex(): void {
     let sfen = deploySfen(props.fen);
     shuuroStore.tempWasm(sfen);
   } else if (shuuroStore.client_stage == 2) {
-    let sfen = fightSfen(props.fen);
-    shuuroStore.tempWasm(sfen);
+    if (shuuroStore.analyze) {
+      shuuroStore.setFightWasm(props.fen, true);
+    } else {
+      let sfen = fightSfen(props.fen);
+      shuuroStore.tempWasm(sfen);
+    }
     let ci = shuuroStore.currentIndex();
     let lm = shuuroStore.getLastMove(ci);
     shuuroStore.cgs(2).setLastMove(lm.from, lm.to);
@@ -74,5 +78,6 @@ function m(): string {
 
 .move.active {
   background-color: var(--blue-active);
+  font-weight: bold;
 }
 </style>
