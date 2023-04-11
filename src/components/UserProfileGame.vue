@@ -75,12 +75,14 @@ import { timeago } from "@/plugins/timeago";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useTvStore } from "@/store/useTvStore";
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
 import { ServerDate } from "@/plugins/serverDate";
 import { useHeaderSettings } from "@/store/headerSettings";
 import type { ProfileGame } from "@/plugins/webSocketTypes";
 const tv = useTvStore();
 const settings = useHeaderSettings();
+const { SEND } = useWs();
 const sword = '"';
 
 const props = defineProps<{ game: ProfileGame }>();

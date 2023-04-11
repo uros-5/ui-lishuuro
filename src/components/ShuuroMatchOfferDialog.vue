@@ -14,7 +14,9 @@
 
 <script setup lang="ts">
 import { useShuuroStore } from "../store/useShuuroStore";
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
+const { SEND } = useWs();
 
 const store = useShuuroStore();
 

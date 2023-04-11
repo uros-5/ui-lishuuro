@@ -40,11 +40,13 @@
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { onMounted } from "vue";
 import type { LobbyGame } from "@/plugins/webSocketTypes";
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
 import { getSubVariant } from "@/plugins/subVariant";
 import HomeLobbyDataIcon from "./HomeLobbyDataIcon.vue";
 
 const store = useHomeLobby();
+const { SEND } = useWs();
 
 function acceptGame(game: LobbyGame): void {
   SEND({ t: "home_lobby_accept", data: game });

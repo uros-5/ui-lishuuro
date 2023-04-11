@@ -3,8 +3,11 @@
 </template>
 
 <script lang="ts" setup>
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
 import { useHeaderSettings } from "@/store/headerSettings";
+
+const { SEND } = useWs();
 
 const props = defineProps<{ username: string }>();
 

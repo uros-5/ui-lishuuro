@@ -77,6 +77,14 @@ function showRes(): boolean {
   grid-row: 3 / span 17;
 }
 
+@media (max-width: 799px) and (orientation: portrait) {
+  .movelist-block2 {
+    grid-row-start: 2;
+    grid-row: none;
+    grid-area: "moves";
+  }
+}
+
 .movelist2 {
   height: auto !important;
   overflow-y: initial !important;

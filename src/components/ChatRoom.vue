@@ -40,8 +40,11 @@
 import { ref, defineProps } from "vue";
 import { useCookies } from "vue3-cookies";
 import { useUser } from "@/store/useUser";
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
 import type { ChatMessage } from "@/store/useHomeChat";
+
+const { SEND } = useWs();
 
 const props = defineProps<{
   messages: ChatMessage[];

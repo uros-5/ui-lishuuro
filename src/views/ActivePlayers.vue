@@ -28,10 +28,12 @@
 
 <script setup lang="ts">
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { onMounted } from "vue";
 
+const { SEND } = useWs();
 const store = useHomeLobby();
 
 onMounted(() => {

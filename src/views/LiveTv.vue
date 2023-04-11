@@ -18,12 +18,14 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted } from "vue";
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
 import { useTvStore } from "@/store/useTvStore";
 import TvGame from "@/components/TvGame.vue";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 
 const store = useTvStore();
+const { SEND } = useWs();
 
 onMounted(() => {
   SEND({ t: "live_tv" });

@@ -12,9 +12,11 @@ import { useRoute } from "vue-router";
 import ShuuroLeftSide from "@/components/ShuuroLeftSide.vue";
 import ShuuroMain from "@/components/ShuuroMain.vue";
 import { useShuuroStore } from "@/store/useShuuroStore";
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
 import { useHomeChat } from "@/store/useHomeChat";
 
+const { SEND } = useWs();
 const shuuroStore = useShuuroStore();
 const homeChat = useHomeChat();
 

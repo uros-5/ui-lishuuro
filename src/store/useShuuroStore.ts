@@ -3,7 +3,8 @@ import init, { ShuuroShop, ShuuroPosition } from "shuuro-wasm";
 import { Clock } from "@/plugins/clock";
 import { Chessground } from "chessground12";
 import router from "@/router";
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
 import { anonConfig, liveConfig, p2 } from "chessground12/configs";
 import { readPockets } from "chessground12/pocket";
 import {
@@ -1157,6 +1158,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     silentRedirect(id: string): boolean {
+    const {SEND} = useWs();
       if (id == undefined) {
         return true;
       } else if (id != this.game_id) {
@@ -1181,6 +1183,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
 
     SEND(t: string, game_move?: string) {
+      const {SEND} = useWs();
       if (this.analyze) return;
       let msg = { game_id: this.game_id, variant: this.variant, t, game_move };
       SEND(msg);

@@ -2,8 +2,10 @@
 import { useRoute } from "vue-router";
 import Header from "@/components/Header.vue";
 import ServerConnection from "@/components/ServerConnection.vue";
+import { useWs } from "@/store/useWs";
 
 const route = useRoute();
+const { SEND } = useWs();
 
 function cssVariable(): string {
   let c;

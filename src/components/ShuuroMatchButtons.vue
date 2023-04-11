@@ -13,7 +13,9 @@
 
 <script setup lang="ts">
 import { useShuuroStore } from "@/store/useShuuroStore";
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
+const { SEND } = useWs();
 
 function canDR(): boolean {
   return store.status < 0 && store.am_i_player!;
