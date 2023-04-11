@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted } from "vue";
 import router from "@/router";
 import { useRoute } from "vue-router";
 import ShuuroLeftSide from "@/components/ShuuroLeftSide.vue";

@@ -112,6 +112,8 @@ function inputVariant(): [string, number] {
 
 onMounted(() => {
   variant.value = "standard_3";
+  time.value = 10;
+  incr.value = 5;
 });
 </script>
 

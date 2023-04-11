@@ -993,6 +993,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
         this.analysisMoves = [];
         this.setFightWasm(sfen, true)
         this.cgs(2).state.movable.showDests = true
+        this.cgs(2).state.draggable.enabled = true;
       }
     },
 

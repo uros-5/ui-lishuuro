@@ -1,6 +1,9 @@
 <template>
-  <div class="movelist-block">
-    <div id="movelist">
+  <div
+    class="movelist-block"
+    :class="{ 'movelist-block2': shuuroStore.analyze }"
+  >
+    <div id="movelist" :class="{ movelist2: shuuroStore.analyze == true }">
       <ShuuroFenItem
         v-for="(item, index) in shuuroStore.getHistory()"
         v-if="fenItemCheck() && shuuroStore.analysisMoves.length == 0"
@@ -64,4 +67,18 @@ function showRes(): boolean {
   );
 }
 </script>
-<style scoped></style>
+<style scoped>
+.movelist-block2 {
+  display: flex;
+  height: auto;
+  max-height: none;
+  overflow-y: scroll;
+  justify-content: initial;
+  grid-row: 3 / span 17;
+}
+
+.movelist2 {
+  height: auto !important;
+  overflow-y: initial !important;
+}
+</style>

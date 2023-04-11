@@ -27,14 +27,15 @@
 <script setup lang="ts">
 import GET from "@/plugins/axios";
 import { ref, type Ref } from "vue";
-import { type NewsItem, useNews } from "@/store/useNews";
+import { NewsItem, useNews } from "@/store/useNews";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 
 const newsStore = useNews();
+
 const props: Ref<NewsItem> = ref({
-  _id: "",
+  _id: '',
   user: "",
   category: "",
   title: "",
@@ -43,20 +44,17 @@ const props: Ref<NewsItem> = ref({
   headline: "",
 });
 
+
+
 onMounted(() => {
   let id = useRoute().params.id;
   let item = newsStore.exist(id as string);
   if (!item) {
     GET(`news/${id}`).then((value: any) => {
       if (value.data.exist) {
-        let item: NewsItem = value.data.news;
-        props.value.text = item.text;
-        props.value.category = item.category;
-        props.value.headline = item.headline;
-        props.value.date = item.date;
-        props.value.title = item.title;
-        props.value.user = item.user;
-        updateHeadTitle(item.title);
+        let data = NewsItem.parse(value.data.news);
+        props.value = data;
+        updateHeadTitle(props.value.title);
       }
     });
   } else {

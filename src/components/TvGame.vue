@@ -15,7 +15,7 @@ import TvGameUsername from "./TvGameUsername.vue";
 import TvGameIcon from "./TvGameIcon.vue";
 import TvGameCg from "./TvGameCg.vue";
 
-const props = defineProps<{
+defineProps<{
   w: string;
   b: string;
   id: string;

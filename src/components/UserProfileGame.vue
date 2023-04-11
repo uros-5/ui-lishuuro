@@ -72,7 +72,6 @@
 <script setup lang="ts">
 import { resultMessage } from "@/plugins/resultMessage";
 import { timeago } from "@/plugins/timeago";
-import type { ShuuroStore } from "@/store/useShuuroStore";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useTvStore } from "@/store/useTvStore";

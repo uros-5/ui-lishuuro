@@ -1,5 +1,5 @@
 <template>
-  <div id="btn-controls-top" class="btn-controls">
+  <div id="btn-controls-top" class="btn-controls" :style="materialTop()">
     <button id="flip" @click="flipSide()">
       <i class="icon icon-refresh" /></button
     ><button @click="fastBackward">
@@ -18,6 +18,14 @@
 <script setup lang="ts">
 import { useShuuroStore } from "../store/useShuuroStore";
 const shuuroStore = useShuuroStore();
+
+function materialTop(): string {
+  if (shuuroStore.analyze) {
+    return "grid-area: mat-top;";
+  } else {
+    return "";
+  }
+}
 
 function flipSide(): void {
   let now = shuuroStore.flipped_board;

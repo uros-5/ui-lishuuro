@@ -7,8 +7,11 @@
     >
       <router-view />
     </selection>
-    <div class="material material-top black standard disabled" />
-    <div class="pocket-top">
+    <div
+      v-if="!shuuroStore.analyze"
+      class="material material-top black standard disabled"
+    />
+    <div v-if="!shuuroStore.analyze" class="pocket-top">
       <PlayerHand
         :in-center="false"
         side="top"
@@ -17,21 +20,34 @@
         hand-type="pocket"
       />
     </div>
-    <ShuuroClock :color="shuuroStore.getColor(topPlayer())" part="0" />
-    <div id="expiration-top" />
-    <ShuuroFenPlayer :player_username="topPlayer()" :online="false" />
+    <ShuuroClock
+      v-if="!shuuroStore.analyze"
+      :color="shuuroStore.getColor(topPlayer())"
+      part="0"
+    />
+    <div v-if="!shuuroStore.analyze" id="expiration-top" />
+    <ShuuroFenPlayer
+      v-if="!shuuroStore.analyze"
+      :player_username="topPlayer()"
+      :online="false"
+    />
     <ShuuroFenButtons />
     <ShuuroFen />
-    <ShuuroMatchOfferDialog />
-    <ShuuroMatchButtons />
+    <ShuuroMatchOfferDialog v-if="!shuuroStore.analyze" />
+    <ShuuroMatchButtons v-if="!shuuroStore.analyze" />
     <ShuuroFenPlayer
+      v-if="!shuuroStore.analyze"
       :player_username="bottomPlayer()"
       :online="true"
       style="grid-area: user-bot"
     />
-    <div id="expiration-bottom" />
-    <ShuuroClock :color="shuuroStore.getColor(bottomPlayer())" part="1" />
-    <div class="pocket-bot">
+    <div v-if="!shuuroStore.analyze" id="expiration-bottom" />
+    <ShuuroClock
+      v-if="!shuuroStore.analyze"
+      :color="shuuroStore.getColor(bottomPlayer())"
+      part="1"
+    />
+    <div v-if="!shuuroStore.analyze" class="pocket-bot">
       <PlayerHand
         side="bottom"
         :in-center="false"
@@ -40,7 +56,10 @@
         hand-type="pocket"
       />
     </div>
-    <div class="material material-bottom standard disabled"></div>
+    <div
+      v-if="!shuuroStore.analyze"
+      class="material material-bottom standard disabled"
+    ></div>
     <AnalyzeButton />
   </div>
 </template>
