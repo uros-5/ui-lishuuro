@@ -55,7 +55,7 @@ const props = defineProps<{
 const message = ref("");
 const hiddenChat = ref(true);
 const cookie = useCookies().cookies;
-const user = useUser();
+const { user } = useUser();
 
 function onEnter(): void {
   if (message.value.length > 0 && message.value.length < 50) {

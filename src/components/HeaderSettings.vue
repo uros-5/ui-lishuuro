@@ -44,7 +44,7 @@ import { useHeaderSettings } from "@/store/headerSettings";
 import HeaderSettingsBoard from "./HeaderSettingsBoard.vue";
 import HeaderSettingsButton from "./HeaderSettingsButton.vue";
 import HeaderSettingsSaveAll from "./HeaderSettingsSaveAll.vue";
-const user = useUser();
+const { user } = useUser();
 const store = useHeaderSettings();
 
 onMounted(() => {

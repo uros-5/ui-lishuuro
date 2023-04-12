@@ -61,11 +61,11 @@ export const useWs = defineStore("useWsStore", () => {
     switch (msg.t) {
       case "active_players_count":
         data = Cnt.parse(msg.data);
-        user.updatePlCount(data.cnt);
+        user.user.plCount = data.cnt;
         break;
       case "active_games_count":
         data = Cnt.parse(msg.data);
-        user.updateGamesCount(data.cnt);
+        user.user.gamesCount = data.cnt;
         break;
       case "live_chat_message":
         data = ChatMessage.parse(msg.data);
@@ -108,7 +108,7 @@ export const useWs = defineStore("useWsStore", () => {
         homeLobby.removeLobbyGame(data);
         break;
       case "live_restart":
-        user.conMsg = "Server will restart";
+        user.user.conMsg = "Server will restart";
         user.onReconnect();
         break;
       case "home_news": {
@@ -127,7 +127,7 @@ export const useWs = defineStore("useWsStore", () => {
         let game = LiveGameStart.parse(msg.data);
         game["game_info"]["_id"] = game["game_id"];
         shuuroStore.$reset();
-        shuuroStore.fromServer(game["game_info"], user.username);
+        shuuroStore.fromServer(game["game_info"], user.user.username);
         break;
       case "live_game_spectators_count":
         data = SpecCnt.parse(msg.data);
@@ -135,7 +135,7 @@ export const useWs = defineStore("useWsStore", () => {
         break;
       case "live_game_hand":
         data = LiveGameHand.parse(msg.data);
-        shuuroStore.setShuuroHand(data.hand, user.username);
+        shuuroStore.setShuuroHand(data.hand, user.user.username);
         break;
       case "live_game_place":
         data = LiveGamePlace.parse(msg.data);
@@ -155,7 +155,7 @@ export const useWs = defineStore("useWsStore", () => {
       case "live_game_draw":
         data = LiveGameDraw.parse(msg.data);
         if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.gameDraw(data, user.username);
+          shuuroStore.gameDraw(data, user.user.username);
         break;
       case "live_game_resign":
         data = LiveGameResign.parse(msg.data);
@@ -165,7 +165,7 @@ export const useWs = defineStore("useWsStore", () => {
       case "live_game_lot":
         data = LiveGameLost.parse(msg.data);
         if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.gameLot(data, user.username);
+          shuuroStore.gameLot(data, user.user.username);
         break;
       case "live_game_sfen":
         data = LiveGameSfen.parse(msg.data);

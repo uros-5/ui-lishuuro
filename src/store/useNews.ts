@@ -1,21 +1,20 @@
 import { defineStore } from "pinia";
+import { ref } from "vue";
 import { z } from "zod";
 
-export const useNews = defineStore("useNews", {
-  state: (): NewsStore => {
-    return { news: [], finished: false };
-  },
-  actions: {
-    setNews(news: NewsItem[]) {
-      this.news = news;
-      this.finished = true;
-    },
-    exist(id: string): NewsItem | undefined {
-      const item = this.news.find((item) => item._id == id);
+export const useNews = defineStore("useNews", () => {
+    const news = ref([] as NewsItem[]);
+    const finished = ref(false);
+    function setNews(data: NewsItem[]) {
+      news.value = data;
+      finished.value = true;
+    }
+    function exist(id: string): NewsItem | undefined {
+      const item = news.value.find((item) => item._id == id);
       return item;
-    },
-  },
-});
+    }
+    return {news, finished, setNews, exist}
+  });
 
 export interface NewsStore {
   news: NewsItem[];

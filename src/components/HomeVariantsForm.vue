@@ -79,7 +79,7 @@ import { ref } from "vue";
 import type { LobbyGame } from "@/plugins/webSocketTypes";
 import { ALL_VARIANTS } from "@/plugins/all_variants";
 
-const userStore = useUser();
+const { user } = useUser();
 const { SEND } = useWs();
 
 let time = ref(9);
@@ -96,7 +96,7 @@ function createGame() {
     variant: choice[0],
     sub_variant: choice[1],
     color: color.value,
-    username: userStore.username,
+    username: user.username,
   };
   let obj = {
     t: "home_lobby_add",

@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { useUser } from "@/store/useUser";
-const user = useUser();
+const { user } = useUser();
 </script>
 
 <style scoped>

@@ -8,11 +8,11 @@ import router from "@/router";
 import { onMounted } from "vue";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 
-const store = useUser();
+const { user, updateAnonCookie } = useUser();
 
 onMounted(() => {
-  store.updateAnonCookie();
-  updateHeadTitle(`Logged as ${store.username}`);
+  updateAnonCookie();
+  updateHeadTitle(`Logged as ${user.username}`);
   router.push("/");
 });
 </script>
