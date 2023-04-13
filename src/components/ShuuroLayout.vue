@@ -14,11 +14,11 @@ import ShuuroMain from "@/components/ShuuroMain.vue";
 import { useShuuroStore } from "@/store/useShuuroStore";
 import { useWs } from "@/store/useWs";
 
-import { useHomeChat } from "@/store/useHomeChat";
+import { useChat } from "@/store/useChat";
 
 const { SEND } = useWs();
 const shuuroStore = useShuuroStore();
-const homeChat = useHomeChat();
+const homeChat = useChat();
 
 onMounted(() => {
   const id = useRoute().params["id"];

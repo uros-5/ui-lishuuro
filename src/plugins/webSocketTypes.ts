@@ -1,4 +1,4 @@
-import { ChatMessage } from "@/store/useHomeChat";
+import { ChatMessage } from "@/store/useChat";
 import { z } from "zod";
 
 export const LiveChatFull = z.object({

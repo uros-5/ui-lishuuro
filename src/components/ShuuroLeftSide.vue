@@ -15,10 +15,10 @@ import ShuuroStageInfo from "@/components/ShuuroStageInfo.vue";
 import ChatRoom from "@/components/ChatRoom.vue";
 import ShuuroSpectators from "./ShuuroSpectators.vue";
 import { useShuuroStore } from "@/store/useShuuroStore";
-import { useHomeChat } from "@/store/useHomeChat";
+import { useChat } from "@/store/useChat";
 import { onMounted } from "vue";
 const store = useShuuroStore();
-const chatStore = useHomeChat();
+const chatStore = useChat();
 
 onMounted(() => {});
 </script>

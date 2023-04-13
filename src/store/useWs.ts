@@ -1,5 +1,5 @@
 import { useUser } from "@/store/useUser";
-import { ChatMessage, useHomeChat } from "@/store/useHomeChat";
+import { ChatMessage, useChat } from "@/store/useChat";
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { useShuuroStore } from "@/store/useShuuroStore";
 import { NewsItem, useNews } from "@/store/useNews";
@@ -32,11 +32,9 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 export const useWs = defineStore("useWsStore", () => {
-  console.log('jea')
-
   const unsendMessages = ref([]);
   const user = useUser()
-  const homeChat = useHomeChat();
+  const chat = useChat();
   const homeLobby = useHomeLobby();
   const shuuroStore = useShuuroStore();
   const newsStore = useNews();
@@ -70,17 +68,17 @@ export const useWs = defineStore("useWsStore", () => {
       case "live_chat_message":
         data = ChatMessage.parse(msg.data);
         if (data.id == "home") {
-          homeChat.sendMessage(data);
+          chat.homeChat.push(data);
         } else {
-          homeChat.addGameMessageChat(data);
+          chat.gameChat.push(data);
         }
         break;
       case "live_chat_full":
         let full = LiveChatFull.parse(msg.data);
         if (full.id == "home") {
-          homeChat.setHomeChat(full.lines);
+          chat.homeChat = [...full.lines];
         } else {
-          homeChat.setGameChat(full.lines);
+          chat.gameChat = [...full.lines];
         }
         break;
       case "home_lobby_full":

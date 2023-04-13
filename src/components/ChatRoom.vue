@@ -42,7 +42,7 @@ import { useCookies } from "vue3-cookies";
 import { useUser } from "@/store/useUser";
 import { useWs } from "@/store/useWs";
 
-import type { ChatMessage } from "@/store/useHomeChat";
+import type { ChatMessage } from "@/store/useChat";
 
 const { SEND } = useWs();
 
