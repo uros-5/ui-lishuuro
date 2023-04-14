@@ -34,6 +34,7 @@ import type {
   RedirectDeploy,
   SpecCnt,
 } from "@/plugins/webSocketTypes";
+import { FenBtn } from "@/plugins/fen";
 
 const finished = [
   "Checkmate",
@@ -671,6 +672,40 @@ export const useShuuroStore = defineStore("shuuroStore", {
       return false;
     },
 
+    fenIndex(t: FenBtn): number {
+      let current_index = this.analyze ? this.analyzeIndex : this.current_index!;
+      let client_stage = this.analyze ? 2 : this.client_stage!;
+      let history = this.analyze ? this.analysisMoves : this.myHistory(client_stage);
+      switch (t) {
+        case FenBtn.First:
+          return 0;
+        case FenBtn.Next:
+          return current_index + 1
+        case FenBtn.Previous:
+          return current_index - 1;
+        case FenBtn.Last:
+          return history.length - 1
+      }
+    },
+
+    getFen2(t: FenBtn, index: number): [string | undefined, number] {
+      let client_stage = this.analyze ? 2 : this.client_stage!;
+      let history = this.analyze ? this.analysisMoves : this.myHistory(client_stage);
+      if (index <= 0) {
+        return [undefined, index]
+      }
+      if (t == FenBtn.First && client_stage) {
+        history = this.myHistory(client_stage);
+        index = -1;
+      }
+      return [history.at(index), index]
+    },
+
+    updateIndex(index: number) {
+      this.current_index = index;
+    },
+
+
     fastForward(): void {
       let history = this.getHistory();
       this.current_index = history.length - 1;
@@ -1158,7 +1193,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     silentRedirect(id: string): boolean {
-    const {SEND} = useWs();
+      const { SEND } = useWs();
       if (id == undefined) {
         return true;
       } else if (id != this.game_id) {
@@ -1183,7 +1218,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
 
     SEND(t: string, game_move?: string) {
-      const {SEND} = useWs();
+      const { SEND } = useWs();
       if (this.analyze) return;
       let msg = { game_id: this.game_id, variant: this.variant, t, game_move };
       SEND(msg);
@@ -1231,7 +1266,8 @@ function emptyState(): ShuuroStore {
     ratings: undefined,
     premoveData: { active: false, orig: "", dest: "" },
     analyze: false,
-    analysisMoves: []
+    analysisMoves: [],
+    analyzeIndex: 0
   };
 }
 
@@ -1275,7 +1311,7 @@ export interface ShuuroStore {
   subVariant: number;
   analyze: boolean;
   analysisMoves: string[];
-
+  analyzeIndex: number;
 }
 
 export type Stage = "shop" | "deploy" | "fight";

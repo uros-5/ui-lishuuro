@@ -1,11 +1,12 @@
 <template>
   <vari id="vari69">
+    <vari-move @click="selectSan(-1)">-</vari-move>
     <vari-move
       @click="selectSan(index)"
       v-for="(i, index) in store.analysisMoves"
       :key="i"
       ply=""
-      :class="{ active: index == store.currentIndex() }"
+      :class="{ active: index == store.analyzeIndex }"
     >
       <san>{{ sanFormat(i) }}</san>
     </vari-move>
@@ -23,14 +24,14 @@ function sanFormat(fen: string) {
 }
 
 function selectSan(index: number) {
-  if (index == 0) {
+  if (index == -1) {
     store.analysisMoves = [];
     store.fastForward();
   } else {
     // store.analysisMoves.splice(index + 1);
     let fen = store.analysisMoves[index];
     store.setFightWasm(fen, true);
-    store.current_index = index;
+    store.analyzeIndex = index;
   }
 }
 </script>
