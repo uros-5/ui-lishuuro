@@ -50,7 +50,6 @@ export const useWs = defineStore("useWsStore", () => {
     setInterval(() => {
       SEND("");
     }, 40 * 1000);
-
   }
 
   function onmessage(e: MessageEvent) {
