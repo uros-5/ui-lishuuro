@@ -1,37 +1,32 @@
-import type { GameInfo } from "@/plugins/webSocketTypes";
+import type { GameInfo, UserLive } from "@/plugins/webSocketTypes";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { useUser } from "../useUser";
 import { useWs } from "../useWs";
-import { useAnalyzeStore } from "./useAnalyzeStore";
-import { useCgStore } from "./useCgStore";
-import { useShopStore } from "./useShopStore";
-import { useWasmStore } from "./useWasmStore";
 
-export type Stage = "shop" | "deploy" | "fight";
-export type StageN = 0 | 1 | 2;
-export type Color = "white" | "black" | "none";
-
-export const useGameStore = defineStore("useGameStore", () => {
+export const useGameStore = defineStore("usegamestore", () => {
   const game = ref(emptyGame());
+  const user = useUser();
   const watchCount = ref(0);
-  const amIPlayer = ref(false);
   const offeredDraw = ref(false);
-  const wasm = useWasmStore();
-  const cg = useCgStore();
-  const analyze = useAnalyzeStore();
-  const shop = useShopStore();
-  const { SEND } = useWs();
+  const player = ref({ isPlayer: false, player: 2 } as UserLive)
+  const {SEND} = useWs();
 
-  const $reset = () => game.value = emptyGame();
-  const send = (t: string, game_move?: string) => {
-    if (analyze.analyze) return;
-    let msg = { game_id: game.value._id, variant: game.value.variant, t, game_move };
-    SEND(msg);
-  };
+  return new class {
+    get game() {
+      return game
+    }
 
 
-  return { game, send, $reset }
+    send(t: string, game_move?: string) {
+      // if (analyze.analyze) return;
+      let msg = { game_id: game.value._id, variant: game.value.variant, t, game_move };
+      SEND(msg);
+    }
+
+  }
 });
+
 
 function emptyGame(): GameInfo {
   return {

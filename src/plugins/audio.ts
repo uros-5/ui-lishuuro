@@ -1,0 +1,24 @@
+import captureUrl from "@/assets/sounds/capture.ogg";
+import resUrl from "@/assets/sounds/res.ogg";
+import moveUrl from "@/assets/sounds/move.ogg";
+import lowTimeUrl from "@/assets/sounds/low_time.ogg";
+
+export function playAudio(sound: string) {
+  let audio;
+  switch (sound) {
+    case "res":
+      audio = resUrl;
+      break;
+    case "move":
+      audio = moveUrl;
+      break;
+    case "capture":
+      audio = captureUrl;
+      break;
+    case "low_time":
+      audio = lowTimeUrl;
+      break;
+  }
+  const a = new Audio(audio);
+  a.play();
+}

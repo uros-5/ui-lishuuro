@@ -27,6 +27,7 @@ import { useShuuroStore } from "@/store/useShuuroStore";
 import { useUser } from "@/store/useUser";
 
 const shuuroStore = useShuuroStore();
+
 const { user } = useUser();
 
 onMounted(() => {
