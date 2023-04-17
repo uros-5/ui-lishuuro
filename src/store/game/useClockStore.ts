@@ -4,24 +4,18 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 export const useClockStore = defineStore("useClockStore", () => {
-  const clock = ref(empty());
+  const state = ref(empty());
   return new class {
-    start(id: number) {
-      clock.value.clocks[id].start();
+    start(id: number, duration = 0) {
+      state.value.clocks[id].start(duration);
     }
 
     pause(id: number, incr = true) {
-      clock.value.clocks[id].pause(incr);
-      this.setms(id, clock.value.clocks[id].duration)
-    }
-
-    private setms(id: number, ms: number, decr?: boolean) {
-      decr == true ? clock.value.clock_ms[id] -= ms
-        : clock.value.clock_ms[id] = ms;
+      state.value.clocks[id].pause(incr);
     }
 
     setTime(id: number, ms: number) {
-      clock.value.clocks[id].setTime(ms);
+      state.value.clocks[id].setTime(ms);
     }
 
     pauseBoth() {
@@ -29,9 +23,9 @@ export const useClockStore = defineStore("useClockStore", () => {
       [0, 1].forEach(item => self.pause(item, false))
     }
 
-    startBoth() {
+    startBoth(elapsed: number, clocks: [number, number]) {
       let self = this;
-      [0, 1].forEach(item => self.start(item))
+      [0, 1].forEach(item => self.start(item, clocks[item] - elapsed))
     }
 
     otherClock(id: number) {
@@ -39,38 +33,36 @@ export const useClockStore = defineStore("useClockStore", () => {
     }
 
     setLastClock(last_clock: string) {
-      clock.value.last_clock = new Date(last_clock).toString()
+      state.value.last_clock = new Date(last_clock).toString()
     }
 
     fromServer(s: GameInfo) {
-      clock.value.clocks = [
+      state.value.clocks = [
         new Clock(s.min / 60000, s.incr / 1000, 0, "1") as any,
         new Clock(s.min / 60000, s.incr / 1000, 0, "0") as any,
       ];
-      clock.value.clock_ms = [...(s.tc.clocks)];
     }
 
     fromMove(data: [number, number]) {
-      [0, 1].forEach(item => clock.value.clocks[item].duration = data[item])
+      [0, 1].forEach(item => state.value.clocks[item].duration = data[item])
     }
 
     get elapsed(): number {
       const now = new Date();
-      const converted_date = new Date(clock.value.last_clock);
+      const converted_date = new Date(state.value.last_clock);
       const elapsed = now.getTime() - converted_date.getTime();
       return elapsed;
     }
 
-    get clock() {
-      return clock
+    get state() {
+      return state
     }
   };
 });
 
-function empty(): { clocks: [Clock, Clock], clock_ms: [number, number], last_clock: string } {
+function empty(): { clocks: [Clock, Clock], last_clock: string } {
   return {
     clocks: [new Clock(0, 0, 0, "1"), new Clock(0, 0, 0, "0")],
-    clock_ms: [0, 0],
     last_clock: new Date().toString()
   }
 }

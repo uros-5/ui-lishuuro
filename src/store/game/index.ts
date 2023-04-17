@@ -5,25 +5,51 @@ import { useUser } from "../useUser";
 import { useWs } from "../useWs";
 
 export const useGameStore = defineStore("usegamestore", () => {
-  const game = ref(emptyGame());
+  const state = ref(emptyGame());
   const user = useUser();
   const watchCount = ref(0);
   const offeredDraw = ref(false);
   const player = ref({ isPlayer: false, player: 2 } as UserLive)
-  const {SEND} = useWs();
+  const { SEND } = useWs();
 
   return new class {
-    get game() {
-      return game
+    get state() {
+      return state
     }
-
 
     send(t: string, game_move?: string) {
       // if (analyze.analyze) return;
-      let msg = { game_id: game.value._id, variant: game.value.variant, t, game_move };
+      let msg = { game_id: state.value._id, variant: state.value.variant, t, game_move };
       SEND(msg);
     }
 
+    scrollToBottom(): void {
+      const container = document.querySelector("#movelist");
+      container!.scrollTop = container!.scrollHeight;
+    }
+
+    addMove(h: 0 | 1 | 2, move: string) {
+      state.value.history[h].push(move)
+    }
+
+    addMoves(h: 0 | 1 | 2, moves: string[]) {
+      state.value.history[h] = moves;
+    }
+
+    get player() {
+      return player
+    }
+
+    get playerColor(): string {
+      switch(this.player.value.player) {
+        case 0:
+          return "white";
+        case 1:
+          return "black";
+        default:
+          return "none";
+      }
+    }
   }
 });
 
