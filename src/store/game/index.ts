@@ -6,18 +6,20 @@ import { useWs } from "../useWs";
 import { anonConfig, liveConfig, p2 } from "chessground12/configs";
 import { useWasmStore } from "./useWasmStore";
 import { useCgStore } from "./useCgStore";
+import { useAnalyzeStore } from "./useAnalyzeStore";
 
 export const useGameStore = defineStore("usegamestore", () => {
   const state = ref(emptyGame());
   const user = useUser();
   const wasm = useWasmStore();
+  const analyze = useAnalyzeStore();
   const cg = useCgStore();
   const watchCount = ref(0);
   const offeredDraw = ref(false);
   const server = ref(false);
   const player = ref({ isPlayer: false, player: 2 } as UserLive)
   const clientStage = ref(0);
-  const analyze = ref({ active: false, moves: [] as string[] });
+  const index = ref(0);
   const { SEND } = useWs();
 
   return new class {
@@ -54,6 +56,18 @@ export const useGameStore = defineStore("usegamestore", () => {
       return clientStage
     }
 
+    fromServer(_: GameInfo) {
+      server.value = true;
+    }
+
+    index() {
+      return index
+    }
+
+    set updateStage(stage: number) {
+      clientStage.value = stage;
+    }
+
     get canPlay(): boolean {
       if (this.state.value.side_to_move == this.player.value.player
         && this.state.value.status < 1) {
@@ -62,32 +76,18 @@ export const useGameStore = defineStore("usegamestore", () => {
       return false;
     }
 
-    get analyze() {
-      return analyze
-    }
-
-
     legal_moves(): Map<any, any> {
-      if (!this.analyze.value.active) return new Map();
-      let color = !this.analyze.value.active ? this.playerColor[0] as string : wasm.fight().side_to_move();
-      if (state.value.status < 0 || this.analyze.value.active) {
-        const moves = wasm.fight().legal_moves(color);
+      let wasm2 = analyze.state.active ? wasm.analyze() : wasm.fight();
+      let color = !analyze.state.active ? this.playerColor[0] as string : wasm2.side_to_move();
+      if (state.value.status < 0 || analyze.state.active) {
+        const moves = wasm2.legal_moves(color);
         return moves
       }
       return new Map()
     }
 
-    toggleAnalyze() {
-      analyze.value.active = !analyze.value.active;
-      analyze.value.moves = [];
-    }
-
-    addAnalyzeMove(move: string) {
-      analyze.value.moves.push(move)
-    }
-
     send(t: string, game_move?: string) {
-      if (analyze.value.active) return;
+      if (analyze.state.active) return;
       let msg = { game_id: state.value._id, variant: state.value.variant, t, game_move };
       SEND(msg);
     }

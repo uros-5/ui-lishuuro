@@ -2,14 +2,12 @@ import { defineStore } from "pinia";
 import { useWasmStore } from "@/store/game/useWasmStore"
 import { ref } from "vue";
 import { useGameStore } from ".";
-import { useIndexStore } from "./useIndexStore";
 import { useClockStore } from "./useClockStore";
 
 export const useShopStore = defineStore("useShopStore", () => {
   const state = ref(empty());
   const wasm = useWasmStore();
   const game = useGameStore();
-  const index = useIndexStore();
   const clock = useClockStore();
 
   return new class {
@@ -48,7 +46,7 @@ export const useShopStore = defineStore("useShopStore", () => {
           game.scrollToBottom();
         }
         game.send("live_game_buy", game_move);
-        index.live = game.state.history[0].length - 1;
+        game.index().value = game.state.history[0].length - 1;
         state.value.credit = new_credit;
       }
     }
