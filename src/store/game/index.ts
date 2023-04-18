@@ -9,12 +9,17 @@ export const useGameStore = defineStore("usegamestore", () => {
   const user = useUser();
   const watchCount = ref(0);
   const offeredDraw = ref(false);
+  const server = ref(false);
   const player = ref({ isPlayer: false, player: 2 } as UserLive)
   const { SEND } = useWs();
 
   return new class {
     get state() {
       return state
+    }
+
+    get server() {
+      return server
     }
 
     send(t: string, game_move?: string) {
