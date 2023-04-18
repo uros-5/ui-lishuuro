@@ -5,11 +5,13 @@ import { useUser } from "../useUser";
 import { useWs } from "../useWs";
 import { anonConfig, liveConfig, p2 } from "chessground12/configs";
 import { useWasmStore } from "./useWasmStore";
+import { useCgStore } from "./useCgStore";
 
 export const useGameStore = defineStore("usegamestore", () => {
   const state = ref(emptyGame());
   const user = useUser();
   const wasm = useWasmStore();
+  const cg = useCgStore();
   const watchCount = ref(0);
   const offeredDraw = ref(false);
   const server = ref(false);
@@ -85,7 +87,7 @@ export const useGameStore = defineStore("usegamestore", () => {
     }
 
     send(t: string, game_move?: string) {
-      // if (analyze.analyze) return;
+      if (analyze.value.active) return;
       let msg = { game_id: state.value._id, variant: state.value.variant, t, game_move };
       SEND(msg);
     }

@@ -94,17 +94,29 @@ export const useCgStore = defineStore("useCgStore", () => {
       );
     }
 
-
     pocketSelect(piece: Piece) {
       if (!game.canPlay) {
         return;
       }
-      const ch =
+      const ch = this.shuuroPiece(piece);
+      const moves = wasm.placement().place_moves(ch);
+      this.legal_moves = moves;
+    }
+
+
+    shuuroPiece(piece: Piece): string {
+      const p =
         piece.color == "white"
           ? piece.role[0].toUpperCase()
           : piece.role[0].toLowerCase();
-      const moves = wasm.placement().place_moves(ch);
-      state.value.cg.state.movable!.dests = moves;
+      return p;
+    }
+
+    afterPlace(piece: Piece, key: Key) {
+      if (!game.canPlay) {
+        return;
+      }
+
     }
 
     enablePremove(config: Config) {
@@ -123,7 +135,6 @@ export const useCgStore = defineStore("useCgStore", () => {
         };
       }
     }
-
 
     selectSq(_key: Key) {
       if (game.canPlay) {
