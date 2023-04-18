@@ -23,7 +23,7 @@ export const useWasmStore = defineStore("useWasmStore", () => {
       return state.value.wasm[0]!;
     }
 
-    position(): ShuuroPosition {
+    placement(): ShuuroPosition {
       return state.value.wasm[1]!;
     }
 

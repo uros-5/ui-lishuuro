@@ -3,14 +3,19 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useUser } from "../useUser";
 import { useWs } from "../useWs";
+import { anonConfig, liveConfig, p2 } from "chessground12/configs";
+import { useWasmStore } from "./useWasmStore";
 
 export const useGameStore = defineStore("usegamestore", () => {
   const state = ref(emptyGame());
   const user = useUser();
+  const wasm = useWasmStore();
   const watchCount = ref(0);
   const offeredDraw = ref(false);
   const server = ref(false);
   const player = ref({ isPlayer: false, player: 2 } as UserLive)
+  const clientStage = ref(0);
+  const analyze = ref({ active: false, moves: [] as string[] });
   const { SEND } = useWs();
 
   return new class {
@@ -20,6 +25,63 @@ export const useGameStore = defineStore("usegamestore", () => {
 
     get server() {
       return server
+    }
+
+    get player() {
+      return player
+    }
+
+    get playerColor(): string {
+      switch (this.player.value.player) {
+        case 0:
+          return "white";
+        case 1:
+          return "black";
+        default:
+          return "none";
+      }
+    }
+
+    get config() {
+      const config =
+        player.value.isPlayer && state.value.status < 1 ? liveConfig : anonConfig;
+      return config;
+    }
+
+    get clientStage() {
+      return clientStage
+    }
+
+    get canPlay(): boolean {
+      if (this.state.value.side_to_move == this.player.value.player
+        && this.state.value.status < 1) {
+        return true;
+      }
+      return false;
+    }
+
+    get analyze() {
+      return analyze
+    }
+
+
+    legal_moves(): Map<any, any> {
+      if (!this.analyze.value.active) return new Map();
+      let color = !this.analyze.value.active ? this.playerColor[0] as string : wasm.fight().side_to_move();
+      if (state.value.status < 0 || this.analyze.value.active) {
+        const moves = wasm.fight().legal_moves(color);
+        return moves
+      }
+      return new Map()
+    }
+
+    toggleAnalyze() {
+      analyze.value.active = !analyze.value.active;
+      analyze.value.moves = [];
+    }
+
+    addAnalyzeMove(move: string) {
+      analyze.value.moves.push(move)
     }
 
     send(t: string, game_move?: string) {
@@ -39,21 +101,6 @@ export const useGameStore = defineStore("usegamestore", () => {
 
     addMoves(h: 0 | 1 | 2, moves: string[]) {
       state.value.history[h] = moves;
-    }
-
-    get player() {
-      return player
-    }
-
-    get playerColor(): string {
-      switch(this.player.value.player) {
-        case 0:
-          return "white";
-        case 1:
-          return "black";
-        default:
-          return "none";
-      }
     }
   }
 });
