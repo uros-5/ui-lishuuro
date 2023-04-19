@@ -136,9 +136,6 @@ export const useGameStore = defineStore("usegamestore", () => {
       }
     }
 
-
-
-
     index() {
       return index
     }
@@ -183,6 +180,11 @@ export const useGameStore = defineStore("usegamestore", () => {
     addMoves(h: 0 | 1 | 2, moves: string[]) {
       state.value.history[h] = moves;
     }
+
+    reset() {
+      state.value = emptyGame();
+    }
+  
   }
 });
 

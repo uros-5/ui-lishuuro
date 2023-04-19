@@ -3,61 +3,61 @@
     <selection
       id="mainboard"
       class="standard"
-      :class="{ standard8: shuuroStore.variant.startsWith('standard') }"
+      :class="{ standard8: isStandard() }"
     >
       <router-view />
     </selection>
     <div
-      v-if="!shuuroStore.analyze"
+      v-if="!analyzeStore.state.active"
       class="material material-top black standard disabled"
     />
-    <div v-if="!shuuroStore.analyze" class="pocket-top">
+    <div v-if="!analyzeStore.state.active" class="pocket-top">
       <PlayerHand
         :in-center="false"
         side="top"
         :counter="[0, 0, 0, 0, 0, 0, 0, 0]"
-        :color="shuuroStore.getColor(topPlayer())"
+        :color="getColor(topPlayer())"
         hand-type="pocket"
       />
     </div>
     <ShuuroClock
-      v-if="!shuuroStore.analyze"
-      :color="shuuroStore.getColor(topPlayer())"
+      v-if="!analyzeStore.state.active"
+      :color="getColor(topPlayer())"
       part="0"
     />
-    <div v-if="!shuuroStore.analyze" id="expiration-top" />
+    <div v-if="!analyzeStore.state.active" id="expiration-top" />
     <ShuuroFenPlayer
-      v-if="!shuuroStore.analyze"
+      v-if="!analyzeStore.state.active"
       :player_username="topPlayer()"
       :online="false"
     />
     <ShuuroFenButtons />
     <ShuuroFen />
-    <ShuuroMatchOfferDialog v-if="!shuuroStore.analyze" />
-    <ShuuroMatchButtons v-if="!shuuroStore.analyze" />
+    <ShuuroMatchOfferDialog v-if="!analyzeStore.state.active" />
+    <ShuuroMatchButtons v-if="!analyzeStore.state.active" />
     <ShuuroFenPlayer
-      v-if="!shuuroStore.analyze"
+      v-if="!analyzeStore.state.active"
       :player_username="bottomPlayer()"
       :online="true"
       style="grid-area: user-bot"
     />
-    <div v-if="!shuuroStore.analyze" id="expiration-bottom" />
+    <div v-if="!analyzeStore.state.active" id="expiration-bottom" />
     <ShuuroClock
-      v-if="!shuuroStore.analyze"
-      :color="shuuroStore.getColor(bottomPlayer())"
+      v-if="!analyzeStore.state.active"
+      :color="getColor(bottomPlayer())"
       part="1"
     />
-    <div v-if="!shuuroStore.analyze" class="pocket-bot">
+    <div v-if="!analyzeStore.state.active" class="pocket-bot">
       <PlayerHand
         side="bottom"
         :in-center="false"
         :counter="[0, 0, 0, 0, 0, 0, 0, 0]"
-        :color="shuuroStore.getColor(bottomPlayer())"
+        :color="getColor(bottomPlayer())"
         hand-type="pocket"
       />
     </div>
     <div
-      v-if="!shuuroStore.analyze"
+      v-if="!analyzeStore.state.active"
       class="material material-bottom standard disabled"
     ></div>
     <AnalyzeButton />
@@ -71,24 +71,38 @@ import ShuuroFen from "@/components/ShuuroFen.vue";
 import ShuuroMatchButtons from "@/components/ShuuroMatchButtons.vue";
 import PlayerHand from "./PlayerHand.vue";
 import ShuuroMatchOfferDialog from "@/components/ShuuroMatchOfferDialog.vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
 import AnalyzeButton from "./AnalyzeButton.vue";
-const shuuroStore = useShuuroStore();
+import { useGameStore } from "@/store/game";
+import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
+import { useCgStore } from "@/store/game/useCgStore";
+
+const gameStore = useGameStore();
+const analyzeStore = useAnalyzeStore();
+const cgStore = useCgStore();
 
 function topPlayer(): string {
-  if (shuuroStore.flipped_board) {
-    return shuuroStore.players[0];
+  if (cgStore.flipped) {
+    return gameStore.state.players[0];
   } else {
-    return shuuroStore.players[1];
+    return gameStore.state.players[1];
   }
 }
 
 function bottomPlayer(): string {
-  if (shuuroStore.flipped_board) {
-    return shuuroStore.players[1];
+  if (cgStore.flipped) {
+    return gameStore.state.players[1];
   } else {
-    return shuuroStore.players[0];
+    return gameStore.state.players[0];
   }
+}
+
+function getColor(username: string): string {
+  const index = gameStore.state.players.findIndex((item) => item == username)!;
+  return index == 0 ? "white" : "black";
+}
+
+function isStandard(): boolean {
+  return gameStore.state.variant.startsWith("standard");
 }
 </script>
 <style>

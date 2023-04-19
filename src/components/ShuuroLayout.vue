@@ -11,13 +11,13 @@ import router from "@/router";
 import { useRoute } from "vue-router";
 import ShuuroLeftSide from "@/components/ShuuroLeftSide.vue";
 import ShuuroMain from "@/components/ShuuroMain.vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
 import { useWs } from "@/store/useWs";
 
 import { useChat } from "@/store/useChat";
+import { useGameStore } from "@/store/game";
 
 const { SEND } = useWs();
-const shuuroStore = useShuuroStore();
+const gameStore = useGameStore();
 const homeChat = useChat();
 
 onMounted(() => {
@@ -26,7 +26,7 @@ onMounted(() => {
   if (id == "" || id == undefined) {
     router.push("/");
   } else {
-    if (shuuroStore.game_id == "") {
+    if (gameStore.state._id == "") {
       let obj = {
         t: "live_game_start",
         game_id: id,
@@ -41,14 +41,14 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  const id = shuuroStore.game_id;
+  const id = gameStore.state._id;
   const obj = {
     t: "live_game_remove_spectator",
     game_id: id,
     variant: "shuuro",
   };
   SEND(obj);
-  shuuroStore.game_id = "";
+  gameStore.reset();
   homeChat.gameChat = [];
 });
 </script>

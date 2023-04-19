@@ -1,52 +1,19 @@
 <template>
-  <div
-    id="chessground12"
-    class="chessground12"
-    :class="{ standard8: shuuroStore.variant.startsWith('standard') }"
-    :data-board="settings.getBoard()"
-    :data-piece="settings.getPiece()"
-    :data-size="settings.getVariant(shuuroStore.getVariant())"
-  />
+  <ShuuroChessground />
 </template>
 <script setup lang="ts">
 import { useBoardSize } from "@/store/useBoardSize";
-import { useShuuroStore } from "@/store/useShuuroStore";
 import { onMounted } from "vue";
-import { useHeaderSettings } from "@/store/headerSettings";
-import init from "shuuro-wasm";
+import { useGameStore } from "@/store/game";
+import ShuuroChessground from "@/components/ShuuroChessground.vue";
 
 const store = useBoardSize();
-const shuuroStore = useShuuroStore();
-const settings = useHeaderSettings();
+const gameStore = useGameStore();
 
 store.updateRowsAndCols(12);
-shuuroStore.updateClientStage(1);
-
-async function setTempFen() {
-  if (shuuroStore.client_stage != shuuroStore.current_stage) {
-    init().then((_) => {
-      shuuroStore.fastForward();
-    });
-  }
-}
 
 onMounted(async () => {
-  if (shuuroStore.game_id == "") {
-    /*
-    SEND({
-      t: "live_game_start",
-      game_id: router.currentRoute.value.params["id"],
-      color: "white",
-    });
-    */
-  } else {
-    if (shuuroStore.sfen) {
-      shuuroStore.setDeployCg();
-      shuuroStore.setDeployWasm(shuuroStore.sfen);
-      shuuroStore.updateClientStage(1);
-      await setTempFen();
-    }
-  }
+  gameStore.updateStage = 1;
 });
 </script>
 

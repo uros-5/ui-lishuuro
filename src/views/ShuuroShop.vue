@@ -1,37 +1,52 @@
 <template>
   <div class="shuuro-shop">
     <div class="shop-table">
-      <p v-for="(i, index) in shuuroStore.pieces()" v-bind:key="index">
+      <p v-for="(i, index) in pieces(gameStore.state)" v-bind:key="index">
         <span class="local-piece">{{ i[0] }}</span>
-        <span class="local-price"> {{ shuuroStore.dataPrice()[index] }} </span>
+        <span class="local-price">
+          {{ dataPrice(gameStore.state)[index] }}
+        </span>
       </p>
     </div>
     <PlayerHand
       side=""
       :in-center="true"
       :counter="[1, 0, 0, 0, 0, 0, 0, 0]"
-      :color="shuuroStore.getColor(user.username)"
+      :color="getColor(user.username)"
       hand-type="shop"
     />
-    <p class="local-credit">Credit: {{ shuuroStore.credit }}</p>
-    <button class="shuuro-confirm" @click="shuuroStore.confirm(user.username)">
-      Confirm
-    </button>
+    <p class="local-credit">Credit: {{ myCredit() }}</p>
+    <button class="shuuro-confirm" @click="shopStore.confirm()">Confirm</button>
   </div>
 </template>
 
 <script setup lang="ts">
 import PlayerHand from "@/components/PlayerHand.vue";
-import { onMounted } from "vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
+import { computed, onMounted } from "vue";
 import { useUser } from "@/store/useUser";
+import { useGameStore } from "@/store/game";
+import { useShopStore } from "@/store/game/useShopStore";
+import { pieces, dataPrice } from "@/plugins/shop";
 
-const shuuroStore = useShuuroStore();
+const gameStore = useGameStore();
+const shopStore = useShopStore();
 
 const { user } = useUser();
 
+function getColor(username: string): string {
+  const index = gameStore.state.players.findIndex((item) => item == username)!;
+  return index == 0 ? "white" : "black";
+}
+
+function myCredit() {
+  computed(() => {
+    const credit = gameStore.state.credits[gameStore.player.player];
+    return credit == undefined ? 800 : credit;
+  });
+}
+
 onMounted(() => {
-  shuuroStore.updateClientStage(0);
+  gameStore.updateStage = 0;
 });
 </script>
 

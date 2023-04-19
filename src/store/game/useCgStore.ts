@@ -15,6 +15,7 @@ import { useAnalyzeStore } from "./useAnalyzeStore";
 
 export const useCgStore = defineStore("useCgStore", () => {
   const state = ref(empty());
+  const flippedBoard = ref(false);
   const premoveData = ref(
     {
       orig: "", dest: "", active: false
@@ -32,6 +33,24 @@ export const useCgStore = defineStore("useCgStore", () => {
       this.watcher = watch(state, (newstate, oldstate, _clean) => {
         this.cgWatcher(newstate, oldstate);
       });
+    }
+
+    newElement(element: null | HTMLElement, id: 0 | 1 | 2) {
+      switch (id) {
+        case 0:
+          state.value.element = element;
+          break;
+        case 1:
+          state.value.top = element;
+          break;
+        case 2:
+          state.value.bot = element;
+          break;
+      }
+    }
+
+    state() {
+      return state
     }
 
     cgWatcher(newstate: State, _oldstate: State) {
@@ -62,7 +81,13 @@ export const useCgStore = defineStore("useCgStore", () => {
 
     flipBoard() {
       state.value.cg.toggleOrientation()
+      flippedBoard.value = !flippedBoard.value;
     }
+
+    get flipped() {
+      return flippedBoard
+    }
+
 
     setPieces(cg: Api, sp: ShuuroPosition) {
       const pieces = sp.map_pieces();

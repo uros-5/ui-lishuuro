@@ -2,10 +2,10 @@
   <div class="game-info">
     <section>
       <ShuuroStageMatchInfo
-        :variant="shuuroStore.getVariant()"
-        :minute="shuuroStore.min"
-        :sec="shuuroStore.incr"
-        :rated="shuuroStore.rated_game"
+        :variant="store.state.variant"
+        :minute="store.state.min"
+        :sec="store.state.incr"
+        :rated="false"
         date="*"
       />
       <ShuuroLeftSideUsername
@@ -22,7 +22,7 @@
     <section class="shuuro-navigator">
       <router-link
         class="user-link"
-        v-if="shuuroStore.getSubVariant() == 100"
+        v-if="store.state.sub_variant == 100"
         :to="navRoute('0')"
       >
         Shop
@@ -39,26 +39,25 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useShuuroStore } from "@/store/useShuuroStore";
 import ShuuroLeftSideUsername from "./ShuuroLeftSideUsername.vue";
 import ShuuroStageMatchInfo from "@/components/ShuuroStageMatchInfo.vue";
-const shuuroStore = useShuuroStore();
+import { useGameStore } from "@/store/game";
+const store = useGameStore();
 
 function navRoute(stage: string): string {
-  return `/shuuro/${stage}/${shuuroStore.game_id}`;
+  return `/shuuro/${stage}/${store.state._id}`;
 }
 
 function player(index: number): string {
-  return shuuroStore.players[index];
+  return store.state.players[index];
 }
 
 function rating(username: string): number {
-  let r = shuuroStore.ratings;
   return 1500;
 }
 
 function isFightSubVariant(): boolean {
-  let subVariant = shuuroStore.getSubVariant();
+  let subVariant = store.state.sub_variant;
   return [0, 1, 2].includes(subVariant);
 }
 </script>

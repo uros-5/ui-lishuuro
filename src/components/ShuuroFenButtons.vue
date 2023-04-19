@@ -1,6 +1,6 @@
 <template>
   <div id="btn-controls-top" class="btn-controls" :style="materialTop()">
-    <button id="flip" @click="flipSide()">
+    <button id="flip" @click="cgStore.flipBoard()">
       <i class="icon icon-refresh" /></button
     ><button @click="fastBackward">
       <i class="icon icon-fast-backward" /></button
@@ -16,24 +16,16 @@
 </template>
 
 <script setup lang="ts">
+import { useCgStore } from "@/store/game/useCgStore";
 import { useShuuroStore } from "../store/useShuuroStore";
-const shuuroStore = useShuuroStore();
+
+const cgStore = useCgStore();
 
 function materialTop(): string {
   if (shuuroStore.analyze) {
     return "grid-area: mat-top;";
   } else {
     return "";
-  }
-}
-
-function flipSide(): void {
-  let now = shuuroStore.flipped_board;
-  shuuroStore.flipped_board = !now;
-  if (shuuroStore.current_stage == 1) {
-    shuuroStore.cgs(1).toggleOrientation();
-  } else if (shuuroStore.current_stage == 2) {
-    shuuroStore.cgs(2).toggleOrientation();
   }
 }
 

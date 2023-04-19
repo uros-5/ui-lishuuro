@@ -52,7 +52,7 @@ export const useShopStore = defineStore("useShopStore", () => {
     }
 
 
-    confirm(username: string) {
+    confirm() {
       if (this.canShop) {
         wasm.shop().confirm(game.playerColor);
         if (wasm.shop().is_confirmed(game.playerColor)) {
@@ -97,6 +97,14 @@ export const useShopStore = defineStore("useShopStore", () => {
         game.state.status < 0 &&
         !this.amIConfirmed
       );
+    }
+
+    get pieceCounter() {
+      return state.value.pieceCounter
+    }
+
+    get credit() {
+      return state.value.credit;
     }
   }
 

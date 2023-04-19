@@ -2,15 +2,21 @@
   <div :class="`info-wrap${part}`">
     <div class="clock-wrap">
       <div :id="`clock${part}`">
-        <div class="clock" :class="{ running: isRunning(), hurry: isHurry() }">
+        <div
+          class="clock"
+          :class="{
+            running: field(ClockField.Running),
+            hurry: field(ClockField.Hurry),
+          }"
+        >
           <div class="clock-time min">
-            {{ min() }}
+            {{ field(ClockField.Min) }}
           </div>
           <div class="clock-sep low">:</div>
           <div class="clock-time sec">
-            {{ sec() }}
+            {{ field(ClockField.Sec) }}
           </div>
-          <div class="clock-time byo">+{{ shuuroStore.incr }}s</div>
+          <div class="clock-time byo">+{{ 15 }}s</div>
         </div>
       </div>
       <div id="more-time" />
@@ -20,35 +26,35 @@
   </div>
 </template>
 <script setup lang="ts">
+import { useClockStore } from "@/store/game/useClockStore";
 import { defineProps } from "vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
+
+const clockStore = useClockStore();
 
 const props = defineProps<{
   color: string;
   part: string;
 }>();
 
-const shuuroStore = useShuuroStore();
-
-function min(): string {
-  let id = props.color == "white" ? 0 : 1;
-  return shuuroStore.clocks[id].currentMin;
+enum ClockField {
+  Min,
+  Sec,
+  Running,
+  Hurry,
 }
 
-function sec(): string {
+function field(field: ClockField) {
   let id = props.color == "white" ? 0 : 1;
-  let result = shuuroStore.clocks[id].currentSec;
-  return result;
-}
-
-function isRunning(): boolean {
-  let id = props.color == "white" ? 0 : 1;
-  return shuuroStore.clocks[id].running;
-}
-
-function isHurry(): boolean {
-  let id = props.color == "white" ? 0 : 1;
-  return shuuroStore.clocks[id].hurry;
+  switch (field) {
+    case ClockField.Min:
+      return clockStore.state.clocks[id].currentMin;
+    case ClockField.Sec:
+      return clockStore.state.clocks[id].currentSec;
+    case ClockField.Running:
+      return clockStore.state.clocks[id].running;
+    case ClockField.Hurry:
+      return clockStore.state.clocks[id].hurry;
+  }
 }
 </script>
 <style></style>
