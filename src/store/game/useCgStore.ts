@@ -6,11 +6,12 @@ import type { Config } from "chessground12/config";
 import { p2 } from "chessground12/configs";
 import { defineStore } from "pinia";
 import type { ShuuroPosition } from "shuuro-wasm";
-import { ref, watch } from "vue";
+import { ref, watch, type WatchStopHandle } from "vue";
 import { useGameStore } from ".";
 import { useWasmStore } from "./useWasmStore";
 import { readPockets } from "chessground12/pocket";
-import type { Key, Piece } from "chessground12/types";
+import type { Key, MoveMetadata, Piece } from "chessground12/types";
+import { useAnalyzeStore } from "./useAnalyzeStore";
 
 export const useCgStore = defineStore("useCgStore", () => {
   const state = ref(empty());
@@ -20,30 +21,45 @@ export const useCgStore = defineStore("useCgStore", () => {
     });
   const game = useGameStore();
   const wasm = useWasmStore();
+  const analyze = useAnalyzeStore();
+
   let stage = 0;
 
-  function cgWatcher(newstate: State, _oldstate: State) {
-    if (newstate.element && game.server) {
-      if (game.state.current_stage == 1) {
-        if (newstate.top && newstate.bot && stage != 1) {
-          stage = 1;
-          const cg = deployCg(newstate.element, game.config, newstate.top, newstate.bot, game.state.variant);
+  return new class {
+    watcher: WatchStopHandle;
+
+    constructor() {
+      this.watcher = watch(state, (newstate, oldstate, _clean) => {
+        this.cgWatcher(newstate, oldstate);
+      });
+    }
+
+    cgWatcher(newstate: State, _oldstate: State) {
+      if (newstate.element && game.server) {
+        if (game.clientStage == 1) {
+          if (newstate.top && newstate.bot && stage != 1) {
+            stage = 1;
+            const cg = deployCg(newstate.element, game.config, newstate.top, newstate.bot, game.state.variant);
+            state.value.cg = cg;
+            game.player.player == 1 ? this.flipBoard() : null;
+            this.changePocketRoles();
+            state.value.cg.redrawAll();
+            state.value.cg.state.events.dropNewPiece = this.afterPlace;
+          }
+        }
+        else if ((game.clientStage == 2 || analyze.state.active) && stage != 2) {
+          stage = analyze.state.active ? 3 : 2;
+          const cg = fightCg(newstate.element, game.config, game.state.variant);
           state.value.cg = cg;
+          game.player.player == 1 ? this.flipBoard() : null;
+          this.enablePremove();
+          state.value.cg.state.events.select = this.selectSq;
+          state.value.cg.state.movable.events.after = this.afterMove;
+          state.value.cg.redrawAll()
         }
       }
-      else if (game.state.current_stage == 2 && stage != 2) {
-        stage = 2;
-        const cg = fightCg(newstate.element, game.config, game.state.variant);
-        state.value.cg = cg;
-      }
     }
-  };
 
-  let _watcher = watch(state, (newstate, oldstate, _clean) => {
-    cgWatcher(newstate, oldstate);
-  });
-
-  return new class {
     flipBoard() {
       state.value.cg.toggleOrientation()
     }
@@ -68,9 +84,9 @@ export const useCgStore = defineStore("useCgStore", () => {
       cg.state.dom.redraw()
     }
 
-    changePocketRoles(config: Config) {
+    changePocketRoles() {
       if (game.state.variant.endsWith("Fairy")) {
-        config.pocketRoles = p2;
+        state.value.cg.state.pocketRoles = p2;
       }
     }
 
@@ -116,21 +132,27 @@ export const useCgStore = defineStore("useCgStore", () => {
       if (!game.canPlay) {
         return;
       }
+    }
+
+
+    afterMove(orig: Key, dest: Key, _metadata: MoveMetadata) {
 
     }
 
-    enablePremove(config: Config) {
+
+    enablePremove() {
       if (game.player.isPlayer && game.state.status < 1) {
-        config.premovable = {
-          events: { set: (_orig, _dest) => { }, unset: () => { } },
+        state.value.cg.state.premovable.events = {
+          set: (orig, dest) => { },
+          unset: () => { }
         };
-        config.premovable.enabled = true;
-        config.premovable!.events!.set = (orig, dest, _) => {
+        state.value.cg.state.premovable.enabled = true;
+        state.value.cg.state.premovable!.events!.set = (orig, dest, _) => {
           premoveData.value.orig = orig;
           premoveData.value.dest = dest;
           premoveData.value.active = true;
         };
-        config.premovable!.events!.unset! = () => {
+        state.value.cg.state.premovable!.events!.unset! = () => {
           premoveData.value.active = false;
         };
       }
@@ -139,7 +161,7 @@ export const useCgStore = defineStore("useCgStore", () => {
     selectSq(_key: Key) {
       if (game.canPlay) {
       }
-      else if (game.analyze.active) {
+      else if (analyze.state.active) {
         let dests = state.value.cg.state.movable.dests;
         if (dests?.size == 0 || dests == undefined) {
           const lm = game.legal_moves();

@@ -1,4 +1,4 @@
-import type { GameInfo, UserLive } from "@/plugins/webSocketTypes";
+import type { GameInfo, SpecCnt, UserLive } from "@/plugins/webSocketTypes";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useUser } from "../useUser";
@@ -7,6 +7,11 @@ import { anonConfig, liveConfig, p2 } from "chessground12/configs";
 import { useWasmStore } from "./useWasmStore";
 import { useCgStore } from "./useCgStore";
 import { useAnalyzeStore } from "./useAnalyzeStore";
+import { useClockStore } from "./useClockStore";
+import router from "@/router";
+import { updateHeadTitle } from "@/plugins/updateHeadTitle";
+import { useShopStore } from "./useShopStore";
+import { playAudio } from "@/plugins/audio";
 
 export const useGameStore = defineStore("usegamestore", () => {
   const state = ref(emptyGame());
@@ -14,6 +19,8 @@ export const useGameStore = defineStore("usegamestore", () => {
   const wasm = useWasmStore();
   const analyze = useAnalyzeStore();
   const cg = useCgStore();
+  const clock = useClockStore();
+  const shop = useShopStore();
   const watchCount = ref(0);
   const offeredDraw = ref(false);
   const server = ref(false);
@@ -47,18 +54,90 @@ export const useGameStore = defineStore("usegamestore", () => {
     }
 
     get config() {
-      const config =
-        player.value.isPlayer && state.value.status < 1 ? liveConfig : anonConfig;
-      return config;
+      if (player.value.isPlayer && state.value.status < 1) {
+        if (clientStage.value == state.value.current_stage) {
+          return liveConfig;
+        }
+      }
+      else if (analyze.state.active) {
+        return liveConfig;
+      }
+      return anonConfig;
     }
 
     get clientStage() {
       return clientStage
     }
 
-    fromServer(_: GameInfo) {
+    fromServer(s: GameInfo) {
+      state.value = s;
+      state.value.min = s.min / 60000;
+      state.value.incr = s.incr / 1000;
+      state.value.last_clock = new Date(s.tc.last_click).toString();
+      clientStage.value = s.current_stage;
+      clock.fromServer(s);
+      this.setPlayer();
       server.value = true;
+      this.updateHeadTitle()
+      index.value = -1;
+      if (s.current_stage == 0) {
+        shop.shopInfo();
+      }
+      else if (s.current_stage == 1) {
+
+      }
+      else if (s.current_stage == 2) {
+
+      }
+      this.playLive()
     }
+
+    updateHeadTitle() {
+      const players = state.value.players;
+      updateHeadTitle(`${players[0]} vs ${players[1]}`);
+    }
+
+    setPlayer() {
+      if (user.user.username == state.value.players[0]) {
+        player.value.player = 0;
+        player.value.isPlayer = true;
+      } else if (user.user.username == state.value.players[1]) {
+        player.value.player = 1;
+        player.value.isPlayer = true;
+      } else {
+        player.value.player = 2;
+        player.value.isPlayer = false;
+      }
+    }
+
+
+    setRedirect() {
+      const r = router.currentRoute;
+      if (state.value.status > 0) {
+        const fullPath = r.value.fullPath;
+        if (fullPath.startsWith(`/shuuro/${state.value.current_stage}`)) {
+          clientStage.value = state.value.current_stage;
+        }
+      }
+      router.push({
+        path: `/shuuro/${state.value.current_stage}/${state.value._id}`,
+      });
+    }
+
+    playLive() {
+      if (state.value.status <= 0) {
+        playAudio("res");
+      }
+    }
+
+    updateWatchCount(msg: SpecCnt): void {
+      if (msg.game_id == state.value._id) {
+        watchCount.value = msg.count;
+      }
+    }
+
+
+
 
     index() {
       return index
