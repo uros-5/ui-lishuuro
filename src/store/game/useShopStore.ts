@@ -1,10 +1,9 @@
-import { defineStore } from "pinia";
 import { useWasmStore } from "@/store/game/useWasmStore"
 import { ref } from "vue";
 import { useGameStore } from ".";
 import { useClockStore } from "./useClockStore";
 
-export const useShopStore = defineStore("useShopStore", () => {
+export const useShopStore = () => {
   const state = ref(empty());
   const wasm = useWasmStore();
   const game = useGameStore();
@@ -107,7 +106,7 @@ export const useShopStore = defineStore("useShopStore", () => {
     }
   }
 
-});
+};
 
 function empty(): State {
   return {

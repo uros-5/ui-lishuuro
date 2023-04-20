@@ -1,9 +1,8 @@
-import { defineStore } from "pinia";
 import { ShuuroPosition, ShuuroShop } from "shuuro-wasm";
 import init from "shuuro-wasm";
 import { ref } from "vue";
 
-export const useWasmStore = defineStore("useWasmStore", () => {
+export const useWasmStore = () => {
   const state = ref({ wasm: [undefined, undefined, undefined], analyzeWasm: undefined, init: false } as WasmStore)
   return new class {
     async init() {
@@ -37,7 +36,7 @@ export const useWasmStore = defineStore("useWasmStore", () => {
 
   }
 
-});
+};
 
 type WasmStore = {
   wasm: [ShuuroShop | undefined, ShuuroPosition | undefined, ShuuroPosition | undefined];

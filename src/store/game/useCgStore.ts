@@ -1,10 +1,7 @@
 import { deployCg, fightCg } from "@/plugins/cg";
-import { Chessground } from "chessground12";
 import type { Api } from "chessground12/api";
 import { setCheck } from "chessground12/board";
-import type { Config } from "chessground12/config";
 import { p2 } from "chessground12/configs";
-import { defineStore } from "pinia";
 import type { ShuuroPosition } from "shuuro-wasm";
 import { ref, watch, type WatchStopHandle } from "vue";
 import { useGameStore } from ".";
@@ -13,7 +10,7 @@ import { readPockets } from "chessground12/pocket";
 import type { Key, MoveMetadata, Piece } from "chessground12/types";
 import { useAnalyzeStore } from "./useAnalyzeStore";
 
-export const useCgStore = defineStore("useCgStore", () => {
+export const useCgStore = () => {
   const state = ref(empty());
   const flippedBoard = ref(false);
   const premoveData = ref(
@@ -50,11 +47,12 @@ export const useCgStore = defineStore("useCgStore", () => {
     }
 
     state() {
-      return state
+      return state.value
     }
 
     cgWatcher(newstate: State, _oldstate: State) {
       if (newstate.element && game.server) {
+        analyze.state.active ? stage = 3 : null;
         if (game.clientStage == 1) {
           if (newstate.top && newstate.bot && stage != 1) {
             stage = 1;
@@ -67,7 +65,7 @@ export const useCgStore = defineStore("useCgStore", () => {
           }
         }
         else if ((game.clientStage == 2 || analyze.state.active) && stage != 2) {
-          stage = analyze.state.active ? 3 : 2;
+          stage = 2;
           const cg = fightCg(newstate.element, game.config, game.state.variant);
           state.value.cg = cg;
           game.player.player == 1 ? this.flipBoard() : null;
@@ -80,7 +78,7 @@ export const useCgStore = defineStore("useCgStore", () => {
     }
 
     flipBoard() {
-      state.value.cg.toggleOrientation()
+      state.value.cg!.toggleOrientation()
       flippedBoard.value = !flippedBoard.value;
     }
 
@@ -111,7 +109,7 @@ export const useCgStore = defineStore("useCgStore", () => {
 
     changePocketRoles() {
       if (game.state.variant.endsWith("Fairy")) {
-        state.value.cg.state.pocketRoles = p2;
+        state.value.cg!.state.pocketRoles = p2;
       }
     }
 
@@ -120,18 +118,18 @@ export const useCgStore = defineStore("useCgStore", () => {
         return;
       }
 
-      state.value.cg.state.pockets = readPockets(
+      state.value.cg!.state.pockets = readPockets(
         `[${hand}]`,
-        state.value.cg.state.pocketRoles!
+        state.value.cg!.state.pocketRoles!
       );
-      state.value.cg.redrawAll();
+      state.value.cg!.redrawAll();
     }
 
     wasmPocket() {
       const hand = wasm.placement().count_hand_pieces();
-      state.value.cg.state.pockets = readPockets(
+      state.value.cg!.state.pockets = readPockets(
         `[${hand}]`,
-        state.value.cg.state.pocketRoles!
+        state.value.cg!.state.pocketRoles!
       );
     }
 
@@ -167,17 +165,17 @@ export const useCgStore = defineStore("useCgStore", () => {
 
     enablePremove() {
       if (game.player.isPlayer && game.state.status < 1) {
-        state.value.cg.state.premovable.events = {
+        state.value.cg!.state.premovable.events = {
           set: (orig, dest) => { },
           unset: () => { }
         };
-        state.value.cg.state.premovable.enabled = true;
-        state.value.cg.state.premovable!.events!.set = (orig, dest, _) => {
+        state.value.cg!.state.premovable.enabled = true;
+        state.value.cg!.state.premovable!.events!.set = (orig, dest, _) => {
           premoveData.value.orig = orig;
           premoveData.value.dest = dest;
           premoveData.value.active = true;
         };
-        state.value.cg.state.premovable!.events!.unset! = () => {
+        state.value.cg!.state.premovable!.events!.unset! = () => {
           premoveData.value.active = false;
         };
       }
@@ -187,7 +185,7 @@ export const useCgStore = defineStore("useCgStore", () => {
       if (game.canPlay) {
       }
       else if (analyze.state.active) {
-        let dests = state.value.cg.state.movable.dests;
+        let dests = state.value.cg!.state.movable.dests;
         if (dests?.size == 0 || dests == undefined) {
           const lm = game.legal_moves();
           this.legal_moves = lm;
@@ -196,21 +194,20 @@ export const useCgStore = defineStore("useCgStore", () => {
     }
 
     set legal_moves(lm: Map<any, any>) {
-      state.value.cg.state.movable.dests = lm;
+      state.value.cg!.state.movable.dests = lm;
     }
 
     set movable_color(color: string) {
-      state.value.cg.state.movable.color = color == "w" ? "white" : "black"
-      state.value.cg.state.turnColor = color == "w" ? "white" : "black"
+      state.value.cg!.state.movable.color = color == "w" ? "white" : "black"
+      state.value.cg!.state.turnColor = color == "w" ? "white" : "black"
     }
 
   }
-})
+};
 
 function empty(): State {
-  const element = new HTMLElement();
   return {
-    cg: Chessground(element),
+    cg: undefined,
     element: null,
     top: null,
     bot: null,
@@ -220,7 +217,7 @@ function empty(): State {
 }
 
 type State = {
-  cg: Api,
+  cg: Api | undefined,
   element: HTMLElement | null | undefined,
   top: HTMLElement | null | undefined,
   bot: HTMLElement | null | undefined,

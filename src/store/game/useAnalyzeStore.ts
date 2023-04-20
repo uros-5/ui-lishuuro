@@ -1,15 +1,14 @@
 import { FenBtn } from "@/plugins/fen";
-import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useGameStore } from ".";
 
-export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
+export const useAnalyzeStore = () => {
   const state = ref(empty());
   const game = useGameStore();
   return new class {
 
     get state() {
-      return state
+      return state.value
     }
 
     toggle() {
@@ -24,7 +23,7 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
       state.value.index = index;
     }
 
-    $reset() {
+    reset() {
       state.value = empty();
     }
 
@@ -60,7 +59,7 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
     }
 
   }
-});
+};
 
 function empty() {
   return { active: false, moves: [] as string[], index: 0 }

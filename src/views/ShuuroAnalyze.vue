@@ -6,23 +6,24 @@
 import { onMounted, onUnmounted } from "vue";
 import ShuuroChessground from "@/components/ShuuroChessground.vue";
 import { useGameStore } from "@/store/game";
+import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 
 const shuuroStore = useGameStore();
-shuuroStore.updateStage = 2;
+const analyzeStore = useAnalyzeStore();
+shuuroStore.clientStage = 2;
 
 onMounted(async () => {
-  if (shuuroStore.game_id == "") {
+  if (shuuroStore.state._id == "") {
   } else {
-    shuuroStore.analyze = true;
-    if (!shuuroStore.canAnalyze()) {
-      shuuroStore.redirect("/");
+    analyzeStore.toggle();
+    if (!analyzeStore.canAnalyze) {
+      // shuuroStore.redirect("/");
     }
   }
 });
 
 onUnmounted(() => {
-  shuuroStore.analyze = false;
-  shuuroStore.analysisMoves = [];
+  analyzeStore.reset();
 });
 </script>
 

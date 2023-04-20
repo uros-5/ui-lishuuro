@@ -1,9 +1,8 @@
 import { Clock } from "@/plugins/clock";
 import type { GameInfo } from "@/plugins/webSocketTypes";
-import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export const useClockStore = defineStore("useClockStore", () => {
+export const useClockStore = () => {
   const state = ref(empty());
   return new class {
     start(id: number, duration = 0) {
@@ -55,10 +54,10 @@ export const useClockStore = defineStore("useClockStore", () => {
     }
 
     get state() {
-      return state
+      return state.value
     }
   };
-});
+};
 
 function empty(): { clocks: [Clock, Clock], last_clock: string } {
   return {

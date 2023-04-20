@@ -41,6 +41,7 @@ export const useWs = defineStore("useWsStore", () => {
   const shopStore = useShopStore();
   const newsStore = useNews();
   const tvStore = useTvStore();
+  console.log(shuuroStore);
 
   function onopen(_e: Event) {
     user.onOpen();
@@ -125,7 +126,7 @@ export const useWs = defineStore("useWsStore", () => {
       case "live_game_start":
         let game = LiveGameStart.parse(msg.data);
         game["game_info"]["_id"] = game["game_id"];
-        shuuroStore.$reset();
+        shuuroStore.reset();
         shuuroStore.fromServer(game["game_info"]);
         break;
       case "live_game_spectators_count":

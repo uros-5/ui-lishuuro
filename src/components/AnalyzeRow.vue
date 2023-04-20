@@ -25,7 +25,7 @@ function sanFormat(fen: string) {
 
 function selectSan(index: number) {
   if (index == -1) {
-    analyzeStore.$reset();
+    analyzeStore.reset();
   } else {
   }
 }

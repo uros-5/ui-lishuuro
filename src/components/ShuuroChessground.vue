@@ -6,7 +6,7 @@
     :class="{ standard8: gameStore.state.variant.startsWith('standard') }"
     :data-board="settings.getBoard()"
     :data-piece="settings.getPiece()"
-    :data-size="settings.getVariant(gameStore.state"
+    :data-size="settings.getVariant(gameStore.state.variant)"
   />
 </template>
 

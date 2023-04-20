@@ -1,9 +1,8 @@
 import type { GameInfo, LiveGameDraw, LiveGameFight, LiveGameLost, LiveGamePlace, LiveGameResign, RedirectDeploy, SpecCnt, UserLive } from "@/plugins/webSocketTypes";
-import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useUser } from "../useUser";
 import { useWs } from "../useWs";
-import { anonConfig, liveConfig, p2 } from "chessground12/configs";
+import { anonConfig, liveConfig} from "chessground12/configs";
 import { useWasmStore } from "./useWasmStore";
 import { useCgStore } from "./useCgStore";
 import { useAnalyzeStore } from "./useAnalyzeStore";
@@ -14,7 +13,7 @@ import { useShopStore } from "./useShopStore";
 import { playAudio } from "@/plugins/audio";
 import { FenBtn } from "@/plugins/fen";
 
-export const useGameStore = defineStore("usegamestore", () => {
+export const useGameStore = () => {
   const state = ref(emptyGame());
   const user = useUser();
   const wasm = useWasmStore();
@@ -32,7 +31,7 @@ export const useGameStore = defineStore("usegamestore", () => {
 
   return new class {
     get state() {
-      return state
+      return state.value
     }
 
     get server() {
@@ -40,11 +39,11 @@ export const useGameStore = defineStore("usegamestore", () => {
     }
 
     get player() {
-      return player
+      return player.value
     }
 
     get playerColor(): string {
-      switch (this.player.value.player) {
+      switch (this.player.player) {
         case 0:
           return "white";
         case 1:
@@ -189,8 +188,8 @@ export const useGameStore = defineStore("usegamestore", () => {
     }
 
     get canPlay(): boolean {
-      if (this.state.value.side_to_move == this.player.value.player
-        && this.state.value.status < 1) {
+      if (this.state.side_to_move == this.player.player
+        && this.state.status < 1) {
         return true;
       }
       return false;
@@ -277,7 +276,7 @@ export const useGameStore = defineStore("usegamestore", () => {
     }
 
   }
-});
+};
 
 
 function emptyGame(): GameInfo {

@@ -1,7 +1,6 @@
-import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export const useIndexStore = defineStore("useIndexStore", () => {
+export const useIndexStore = () => {
   const state = ref({ live: 0, analyze: 0 })
   return new class {
     get state() {
@@ -16,4 +15,4 @@ export const useIndexStore = defineStore("useIndexStore", () => {
       state.value.analyze = index
     }
   }
-});
+};
