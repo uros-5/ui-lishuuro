@@ -11,12 +11,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useShuuroStore } from "@/store/useShuuroStore";
-
-const store = useShuuroStore();
+import { useGameStore } from "@/store/game";
+const gameStore = useGameStore();
 
 function fmtCount(): string {
-  let count = store.watchCount!;
+  let count = gameStore.watchCount;
   if (count <= 2) {
     return "";
   }

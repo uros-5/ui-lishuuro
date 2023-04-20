@@ -4,11 +4,11 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted } from "vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
 import ShuuroChessground from "@/components/ShuuroChessground.vue";
+import { useGameStore } from "@/store/game";
 
-const shuuroStore = useShuuroStore();
-shuuroStore.updateClientStage(2);
+const shuuroStore = useGameStore();
+shuuroStore.updateStage = 2;
 
 onMounted(async () => {
   if (shuuroStore.game_id == "") {

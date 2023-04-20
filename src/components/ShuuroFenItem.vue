@@ -1,11 +1,12 @@
 <template>
-  <div v-if="index! % 2 == 1" class="move counter">
+  <div v-if="index! % 2 == 1 && index != 1" class="move counter">
     {{ Math.floor(index! / 2 + 1) }}
   </div>
 
   <div
     class="move"
-    :class="{ active: shuuroStore.current_index == index! - 1 }"
+    v-if="index != 1"
+    :class="{ active: shuuroStore.index().value == index! - 1 }"
     :ply="index"
     @click="updateIndex"
   >
@@ -16,36 +17,22 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
 import { deploySfen, fightSfen } from "@/plugins/fen";
+import { useGameStore } from "@/store/game";
+import { playAudio } from "@/plugins/audio";
 
 const props = defineProps<{ index: number; fen: string; move: string }>();
-const shuuroStore = useShuuroStore();
+const shuuroStore = useGameStore();
 
 function updateIndex(): void {
-  shuuroStore.current_index = props.index - 1;
-  if (shuuroStore.client_stage == 1) {
-    let sfen = deploySfen(props.fen);
-    shuuroStore.tempWasm(sfen);
-  } else if (shuuroStore.client_stage == 2) {
-    if (shuuroStore.analyze) {
-      shuuroStore.setFightWasm(props.fen, true);
-    } else {
-      let sfen = fightSfen(props.fen);
-      shuuroStore.tempWasm(sfen);
-    }
-    let ci = shuuroStore.currentIndex();
-    let lm = shuuroStore.getLastMove(ci);
-    shuuroStore.cgs(2).setLastMove(lm.from, lm.to);
-  }
-  playAudio();
+  audio();
 }
 
-function playAudio() {
+function audio() {
   if (props.move.includes("x")) {
-    shuuroStore.playAudio("capture");
+    playAudio("capture");
   } else {
-    shuuroStore.playAudio("move");
+    playAudio("move");
   }
 }
 

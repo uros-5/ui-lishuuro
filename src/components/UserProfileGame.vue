@@ -160,10 +160,7 @@ function userColor(p: string): string {
   return props.game.players[0] == p ? "w" : "b";
 }
 
-function setShuuroStore() {
-  //props.game.game_id = props.game._id.$oid;
-  //useShuuroStore().fromServer(props.game, useUser().username);
-}
+function setShuuroStore() {}
 
 function gameUrl(id: string, stage: number, status: number): string {
   if (status < 0) {

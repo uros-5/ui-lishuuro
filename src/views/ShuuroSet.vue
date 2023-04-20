@@ -13,7 +13,7 @@ const gameStore = useGameStore();
 store.updateRowsAndCols(12);
 
 onMounted(async () => {
-  gameStore.updateStage = 1;
+  gameStore.clientStage = 1;
 });
 </script>
 

@@ -12,7 +12,6 @@ export function fightSfen(f: string): string {
   const fen = sfen[0];
   const stm = sfen[1];
   const ply = sfen[3];
-
   return `${fen} ${stm} - ${ply}`;
 }
 

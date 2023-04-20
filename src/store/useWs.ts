@@ -1,7 +1,6 @@
 import { useUser } from "@/store/useUser";
 import { ChatMessage, useChat } from "@/store/useChat";
 import { useHomeLobby } from "@/store/useHomeLobby";
-import { useShuuroStore } from "@/store/useShuuroStore";
 import { NewsItem, useNews } from "@/store/useNews";
 import { useTvStore } from "@/store/useTvStore";
 import Sockette from "sockette";
@@ -30,13 +29,14 @@ import {
 import { z } from "zod";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { useGameStore } from "./game";
 
 export const useWs = defineStore("useWsStore", () => {
   const unsendMessages = ref([]);
   const user = useUser()
   const chat = useChat();
   const homeLobby = useHomeLobby();
-  const shuuroStore = useShuuroStore();
+  const shuuroStore = useGameStore();
   const newsStore = useNews();
   const tvStore = useTvStore();
 

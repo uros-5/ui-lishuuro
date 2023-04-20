@@ -3,20 +3,20 @@
     <vari-move @click="selectSan(-1)">-</vari-move>
     <vari-move
       @click="selectSan(index)"
-      v-for="(i, index) in store.analysisMoves"
+      v-for="(i, index) in analyzeStore.state.moves"
       :key="i"
       ply=""
-      :class="{ active: index == store.analyzeIndex }"
+      :class="{ active: index == analyzeStore.state.index }"
     >
-      <san>{{ sanFormat(i) }}</san>
+      <san v-if="index != 0">{{ sanFormat(i) }}</san>
     </vari-move>
   </vari>
 </template>
 
 <script setup lang="ts">
-import { useShuuroStore } from "@/store/useShuuroStore";
+import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 
-let store = useShuuroStore();
+let analyzeStore = useAnalyzeStore();
 
 function sanFormat(fen: string) {
   let parts = fen.split(" ");
@@ -25,13 +25,8 @@ function sanFormat(fen: string) {
 
 function selectSan(index: number) {
   if (index == -1) {
-    store.analysisMoves = [];
-    store.fastForward();
+    analyzeStore.$reset();
   } else {
-    // store.analysisMoves.splice(index + 1);
-    let fen = store.analysisMoves[index];
-    store.setFightWasm(fen, true);
-    store.analyzeIndex = index;
   }
 }
 </script>

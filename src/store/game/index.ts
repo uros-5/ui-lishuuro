@@ -12,6 +12,7 @@ import router from "@/router";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 import { useShopStore } from "./useShopStore";
 import { playAudio } from "@/plugins/audio";
+import { FenBtn } from "@/plugins/fen";
 
 export const useGameStore = defineStore("usegamestore", () => {
   const state = ref(emptyGame());
@@ -69,6 +70,18 @@ export const useGameStore = defineStore("usegamestore", () => {
       return clientStage
     }
 
+    get offeredDraw() {
+      return offeredDraw
+    }
+
+    get history() {
+      return state.value.history[state.value.current_stage]
+    }
+
+    rejectDraw() {
+      offeredDraw.value = false;
+    }
+
     fromServer(s: GameInfo) {
       state.value = s;
       state.value.min = s.min / 60000;
@@ -80,6 +93,7 @@ export const useGameStore = defineStore("usegamestore", () => {
       server.value = true;
       this.updateHeadTitle()
       index.value = -1;
+      this.startPosFix()
       if (s.current_stage == 0) {
         shop.shopInfo();
       }
@@ -90,6 +104,15 @@ export const useGameStore = defineStore("usegamestore", () => {
 
       }
       this.playLive()
+    }
+
+    startPosFix() {
+      if (state.value.current_stage == 2) {
+        const last = state.value.history[1].at(-1); 
+        if (last) {
+          state.value.history[2].unshift(last)
+        }
+      }
     }
 
     updateHeadTitle() {
@@ -136,11 +159,15 @@ export const useGameStore = defineStore("usegamestore", () => {
       }
     }
 
+    get watchCount() {
+      return watchCount
+    }
+
     index() {
       return index
     }
 
-    set updateStage(stage: number) {
+    set clientStage(stage: number) {
       clientStage.value = stage;
     }
 
@@ -183,6 +210,30 @@ export const useGameStore = defineStore("usegamestore", () => {
 
     reset() {
       state.value = emptyGame();
+    }
+
+    findFen(fenBtn: FenBtn) {
+      const len = state.value.history[state.value.current_stage].length;
+      switch (fenBtn) {
+        case FenBtn.First:
+          index.value = 0;
+          break;
+        case FenBtn.Previous:
+          index.value -= 1;
+          break;
+        case FenBtn.Next:
+          index.value += 1;
+          break;
+        case FenBtn.Last:
+          index.value = len - 1;
+          break;
+      }
+      if (index.value <= 0) {
+        index.value = 0;
+      }
+      else if (index.value >= len) {
+        index.value = len
+      }
     }
   
   }

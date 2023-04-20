@@ -9,20 +9,24 @@
     ><button @click="stepForward">
       <i class="icon icon-step-forward" />
     </button>
-    <button @click="shuuroStore.fastForward">
+    <button @click="fastForward">
       <i class="icon icon-fast-forward" />
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
+import { FenBtn } from "@/plugins/fen";
+import { useGameStore } from "@/store/game";
+import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 import { useCgStore } from "@/store/game/useCgStore";
-import { useShuuroStore } from "../store/useShuuroStore";
 
 const cgStore = useCgStore();
+const analyzeStore = useAnalyzeStore();
+const gameStore = useGameStore();
 
 function materialTop(): string {
-  if (shuuroStore.analyze) {
+  if (analyzeStore.state.active) {
     return "grid-area: mat-top;";
   } else {
     return "";
@@ -30,65 +34,27 @@ function materialTop(): string {
 }
 
 function fastBackward(): void {
-  shuuroStore.current_index = 0;
-  if (shuuroStore.fenExist(shuuroStore.currentIndex())) {
-    let placement_index = shuuroStore.myHistory(1).length - 1;
-    let fen =
-      shuuroStore.client_stage == 1
-        ? shuuroStore.getFen(0)
-        : shuuroStore.getFen(placement_index, 1);
-    wasmFen(fen);
-    shuuroStore.current_index = -1;
-    lastMove();
-    shuuroStore.cgs(2).state.lastMove = [];
-    shuuroStore.resetAnalyze(fen);
-  }
+  analyzeStore.state.active
+    ? analyzeStore.findFen(FenBtn.First)
+    : gameStore.findFen(FenBtn.First);
 }
 
 function stepBackward(): void {
-  if (shuuroStore.currentIndex() == 0) {
-    fastBackward();
-  } else if (shuuroStore.currentIndex() > 0) {
-    shuuroStore.current_index! -= 1;
-    if (shuuroStore.fenExist(shuuroStore.currentIndex())) {
-      let fen = shuuroStore.getFen(shuuroStore.currentIndex());
-      wasmFen(fen);
-      shuuroStore.resetAnalyze(fen);
-      lastMove();
-    }
-  }
+  analyzeStore.state.active
+    ? analyzeStore.findFen(FenBtn.Previous)
+    : gameStore.findFen(FenBtn.Previous);
 }
 
 function stepForward(): void {
-  let history = shuuroStore.getHistory();
-  let index = shuuroStore.current_index!;
-  if (index + 1 < history.length) {
-    shuuroStore.current_index! += 1;
-    if (shuuroStore.fenExist(shuuroStore.currentIndex())) {
-      let fen = shuuroStore.getFen(shuuroStore.currentIndex());
-      wasmFen(fen);
-      shuuroStore.resetAnalyze(fen);
-      lastMove();
-    }
-  }
+  analyzeStore.state.active
+    ? analyzeStore.findFen(FenBtn.Next)
+    : gameStore.findFen(FenBtn.Next);
 }
 
-function wasmFen(fen: string) {
-  shuuroStore.tempWasm(fen);
-}
-
-function lastMove() {
-  let ci = shuuroStore.currentIndex();
-  let lm = shuuroStore.getLastMove(ci);
-  if (lm.from == "" || lm.to == "") {
-    return;
-  }
-  shuuroStore.cgs(2).setLastMove(lm.from, lm.to);
-  if (lm.san.includes("x")) {
-    shuuroStore.playAudio("capture");
-  } else {
-    shuuroStore.playAudio("move");
-  }
+function fastForward(): void {
+  analyzeStore.state.active
+    ? analyzeStore.findFen(FenBtn.Last)
+    : gameStore.findFen(FenBtn.Last);
 }
 </script>
 <style></style>

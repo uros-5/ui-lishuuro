@@ -13,28 +13,28 @@
 </template>
 
 <script setup lang="ts">
-import { useShuuroStore } from "../store/useShuuroStore";
 import { useWs } from "@/store/useWs";
+import { useGameStore } from "@/store/game";
 
 const { SEND } = useWs();
 
-const store = useShuuroStore();
+const gameStore = useGameStore();
 
 function canDraw() {
-  return store.am_i_player && store.offeredDraw!;
+  return gameStore.player.isPlayer && gameStore.offeredDraw;
 }
 
 function rejectDraw() {
-  store.offeredDraw = false;
+  gameStore.rejectDraw();
 }
 
 function acceptDraw() {
   SEND({
     t: "live_game_draw",
-    game_id: store.game_id,
-    variant: store.getVariant(),
+    game_id: gameStore.state._id,
+    variant: gameStore.state.variant,
   });
-  store.offeredDraw = false;
+  rejectDraw();
 }
 </script>
 

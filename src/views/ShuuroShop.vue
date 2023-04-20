@@ -46,7 +46,7 @@ function myCredit() {
 }
 
 onMounted(() => {
-  gameStore.updateStage = 0;
+  gameStore.clientStage = 0;
 });
 </script>
 

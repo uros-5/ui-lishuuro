@@ -14,9 +14,9 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 import { timeago } from "@/plugins/timeago";
-import { useShuuroStore } from "@/store/useShuuroStore";
+import { useGameStore } from "@/store/game";
 
-const store = useShuuroStore();
+const store = useGameStore();
 
 const props = defineProps<{
   variant: string;
@@ -50,17 +50,17 @@ function ratedGame(): string {
 }
 
 function gameDate(): string {
-  if (store.status < 0) {
+  if (store.state.status < 0) {
     return "Playing right now";
   } else {
-    return timeago(store.last_clock!);
+    return timeago(store.state.last_clock);
   }
 }
 
 function toolTipDate(): string {
-  const d = store.last_clock;
+  const d = store.state.last_clock;
   if (d) {
-    return store.last_clock!.toString();
+    return store.state.last_clock.toString();
   }
   return "";
 }

@@ -12,13 +12,14 @@
 </template>
 
 <script setup lang="ts">
-import { useShuuroStore } from "@/store/useShuuroStore";
+import { useGameStore } from "@/store/game";
 import { useWs } from "@/store/useWs";
 
+const store = useGameStore();
 const { SEND } = useWs();
 
 function canDR(): boolean {
-  return store.status < 0 && store.am_i_player!;
+  return store.state.status < 0 && store.player.isPlayer;
 }
 
 function draw() {
@@ -26,8 +27,8 @@ function draw() {
   if (d) {
     SEND({
       t: "live_game_draw",
-      game_id: store.game_id,
-      variant: store.getVariant(),
+      game_id: store.state._id,
+      variant: store.state.variant,
     });
   }
 }
@@ -37,13 +38,11 @@ function resign() {
   if (r) {
     SEND({
       t: "live_game_resign",
-      game_id: store.game_id,
-      variant: store.getVariant(),
+      game_id: store.state._id,
+      variant: store.state.variant,
     });
   }
 }
-
-const store = useShuuroStore();
 </script>
 
 <style></style>

@@ -6,7 +6,7 @@ import ShuuroChessground from "@/components/ShuuroChessground.vue";
 const gameStore = useGameStore();
 
 onMounted(async () => {
-  gameStore.updateStage = 2;
+  gameStore.clientStage = 2;
   if (gameStore.state._id == "") {
   } else {
   }

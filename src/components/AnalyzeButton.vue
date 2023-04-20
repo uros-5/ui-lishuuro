@@ -1,14 +1,10 @@
 <template>
   <div
     class="btn-controls after"
-    v-if="
-      shuuroStore.canAnalyze() &&
-      shuuroStore.analyze == false &&
-      shuuroStore.current_stage == 2
-    "
+    v-if="analyzeStore.canAnalyze && analyzeStore.state.active == false"
   >
     <button
-      v-if="shuuroStore.canAnalyze() && shuuroStore.analyze == false"
+      v-if="analyzeStore.canAnalyze && analyzeStore.state.active == false"
       @click="analyze"
       class="analysis"
     >
@@ -18,12 +14,16 @@
 </template>
 
 <script setup lang="ts">
-import { useShuuroStore } from "@/store/useShuuroStore";
-const shuuroStore = useShuuroStore();
+import { useGameStore } from "@/store/game";
+import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
+import router from "@/router";
+
+const shuuroStore = useGameStore();
+const analyzeStore = useAnalyzeStore();
 
 function analyze() {
-  shuuroStore.analyze = true;
-  shuuroStore.redirect(`/shuuro/3/${shuuroStore.game_id}`);
+  analyzeStore.toggle();
+  router.push(`/shuuro/3/${shuuroStore.state._id}`);
   shuuroStore.scrollToBottom();
 }
 
