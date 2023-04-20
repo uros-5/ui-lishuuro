@@ -1,4 +1,4 @@
-import type { GameInfo, SpecCnt, UserLive } from "@/plugins/webSocketTypes";
+import type { GameInfo, LiveGameDraw, LiveGameFight, LiveGameLost, LiveGamePlace, LiveGameResign, RedirectDeploy, SpecCnt, UserLive } from "@/plugins/webSocketTypes";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useUser } from "../useUser";
@@ -67,7 +67,7 @@ export const useGameStore = defineStore("usegamestore", () => {
     }
 
     get clientStage() {
-      return clientStage
+      return clientStage.value
     }
 
     get offeredDraw() {
@@ -106,9 +106,26 @@ export const useGameStore = defineStore("usegamestore", () => {
       this.playLive()
     }
 
+    silentRedirect(id: string): boolean {
+      const { SEND } = useWs();
+      if (id == undefined) {
+        return true;
+      } else if (id != state.value._id) {
+        let obj = {
+          t: "live_game_start",
+          game_id: id,
+          color: "white",
+          variant: "shuuro",
+        };
+        SEND(obj);
+        return false;
+      }
+      return true;
+    }
+
     startPosFix() {
       if (state.value.current_stage == 2) {
-        const last = state.value.history[1].at(-1); 
+        const last = state.value.history[1].at(-1);
         if (last) {
           state.value.history[2].unshift(last)
         }
@@ -235,7 +252,30 @@ export const useGameStore = defineStore("usegamestore", () => {
         index.value = len
       }
     }
-  
+
+    serverPlace(msg: LiveGamePlace) {
+      
+    }
+
+    serverMove2(msg: LiveGameFight) {
+      
+    }
+
+    gameDraw(msg: LiveGameDraw) {
+      
+    }
+
+    gameResign(msg: LiveGameResign) {
+      
+    }
+    
+    gameLot(msg: LiveGameLost) {
+
+    }
+
+    redirectDeploy(s: RedirectDeploy) {
+    }
+
   }
 });
 

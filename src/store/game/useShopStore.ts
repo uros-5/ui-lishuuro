@@ -11,7 +11,6 @@ export const useShopStore = defineStore("useShopStore", () => {
   const clock = useClockStore();
 
   return new class {
-
     shopInfo(): void {
       game.send("live_game_hand");
       game.send("live_game_confirmed");

@@ -30,6 +30,7 @@ import { z } from "zod";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useGameStore } from "./game";
+import { useShopStore } from "./game/useShopStore";
 
 export const useWs = defineStore("useWsStore", () => {
   const unsendMessages = ref([]);
@@ -37,6 +38,7 @@ export const useWs = defineStore("useWsStore", () => {
   const chat = useChat();
   const homeLobby = useHomeLobby();
   const shuuroStore = useGameStore();
+  const shopStore = useShopStore();
   const newsStore = useNews();
   const tvStore = useTvStore();
 
@@ -124,7 +126,7 @@ export const useWs = defineStore("useWsStore", () => {
         let game = LiveGameStart.parse(msg.data);
         game["game_info"]["_id"] = game["game_id"];
         shuuroStore.$reset();
-        shuuroStore.fromServer(game["game_info"], user.user.username);
+        shuuroStore.fromServer(game["game_info"]);
         break;
       case "live_game_spectators_count":
         data = SpecCnt.parse(msg.data);
@@ -132,7 +134,7 @@ export const useWs = defineStore("useWsStore", () => {
         break;
       case "live_game_hand":
         data = LiveGameHand.parse(msg.data);
-        shuuroStore.setShuuroHand(data.hand, user.user.username);
+        shopStore.setHand(data.hand);
         break;
       case "live_game_place":
         data = LiveGamePlace.parse(msg.data);
@@ -147,22 +149,22 @@ export const useWs = defineStore("useWsStore", () => {
       case "live_game_confirmed":
         data = LiveGameConfirmed.parse(msg.data);
         if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.setConfirmed(data.confirmed);
+          shopStore.setConfirmed(data.confirmed);
         break;
       case "live_game_draw":
         data = LiveGameDraw.parse(msg.data);
         if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.gameDraw(data, user.user.username);
+          shuuroStore.gameDraw(data);
         break;
       case "live_game_resign":
         data = LiveGameResign.parse(msg.data);
         if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.gameResign(data, data.player);
+          shuuroStore.gameResign(data);
         break;
       case "live_game_lot":
         data = LiveGameLost.parse(msg.data);
         if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.gameLot(data, user.user.username);
+          shuuroStore.gameLot(data);
         break;
       case "live_game_sfen":
         data = LiveGameSfen.parse(msg.data);
@@ -170,7 +172,7 @@ export const useWs = defineStore("useWsStore", () => {
         break;
       case "pause_confirmed":
         data = PauseConfirmed.parse(msg.data);
-        shuuroStore.pauseConfirmed(data);
+        shopStore.setConfirmed(data);
         break;
       case "redirect_deploy":
         data = RedirectDeploy.parse(msg.data);
