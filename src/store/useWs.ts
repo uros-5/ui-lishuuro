@@ -34,14 +34,14 @@ import { useShopStore } from "./game/useShopStore";
 
 export const useWs = defineStore("useWsStore", () => {
   const unsendMessages = ref([]);
-  const user = useUser()
+  const user = useUser();
   const chat = useChat();
   const homeLobby = useHomeLobby();
-  const shuuroStore = useGameStore();
-  const shopStore = useShopStore();
+  const { gameStore } = useGameStore();
+  const { shopStore } = useShopStore();
   const newsStore = useNews();
   const tvStore = useTvStore();
-  console.log(shuuroStore);
+  console.log(gameStore);
 
   function onopen(_e: Event) {
     user.onOpen();
@@ -49,7 +49,7 @@ export const useWs = defineStore("useWsStore", () => {
     unsendMessages.value.forEach((value) => {
       SEND(value);
     });
-    unsendMessages.value = []
+    unsendMessages.value = [];
     setInterval(() => {
       SEND("");
     }, 40 * 1000);
@@ -76,7 +76,7 @@ export const useWs = defineStore("useWsStore", () => {
         }
         break;
       case "live_chat_full":
-        let full = LiveChatFull.parse(msg.data);
+        const full = LiveChatFull.parse(msg.data);
         if (full.id == "home") {
           chat.homeChat = [...full.lines];
         } else {
@@ -112,7 +112,7 @@ export const useWs = defineStore("useWsStore", () => {
         user.onReconnect();
         break;
       case "home_news": {
-        let news = z.object({
+        const news = z.object({
           news: z.array(NewsItem),
         });
         data = news.parse(msg.data);
@@ -124,14 +124,14 @@ export const useWs = defineStore("useWsStore", () => {
         homeLobby.removeLobbyGameByUser(data.username);
         break;
       case "live_game_start":
-        let game = LiveGameStart.parse(msg.data);
+        const game = LiveGameStart.parse(msg.data);
         game["game_info"]["_id"] = game["game_id"];
-        shuuroStore.reset();
-        shuuroStore.fromServer(game["game_info"]);
+        gameStore.reset();
+        gameStore.fromServer(game["game_info"]);
         break;
       case "live_game_spectators_count":
         data = SpecCnt.parse(msg.data);
-        shuuroStore.updateWatchCount(data);
+        gameStore.updateWatchCount(data);
         break;
       case "live_game_hand":
         data = LiveGameHand.parse(msg.data);
@@ -139,33 +139,28 @@ export const useWs = defineStore("useWsStore", () => {
         break;
       case "live_game_place":
         data = LiveGamePlace.parse(msg.data);
-        if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.serverPlace(data);
+        if (gameStore.silentRedirect(data.game_id)) gameStore.serverPlace(data);
         break;
       case "live_game_play":
         data = LiveGameFight.parse(msg.data);
-        if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.serverMove2(data);
+        if (gameStore.silentRedirect(data.game_id)) gameStore.serverMove2(data);
         break;
       case "live_game_confirmed":
         data = LiveGameConfirmed.parse(msg.data);
-        if (shuuroStore.silentRedirect(data.game_id))
+        if (gameStore.silentRedirect(data.game_id))
           shopStore.setConfirmed(data.confirmed);
         break;
       case "live_game_draw":
         data = LiveGameDraw.parse(msg.data);
-        if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.gameDraw(data);
+        if (gameStore.silentRedirect(data.game_id)) gameStore.gameDraw(data);
         break;
       case "live_game_resign":
         data = LiveGameResign.parse(msg.data);
-        if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.gameResign(data);
+        if (gameStore.silentRedirect(data.game_id)) gameStore.gameResign(data);
         break;
       case "live_game_lot":
         data = LiveGameLost.parse(msg.data);
-        if (shuuroStore.silentRedirect(data.game_id))
-          shuuroStore.gameLot(data);
+        if (gameStore.silentRedirect(data.game_id)) gameStore.gameLot(data);
         break;
       case "live_game_sfen":
         data = LiveGameSfen.parse(msg.data);
@@ -177,7 +172,7 @@ export const useWs = defineStore("useWsStore", () => {
         break;
       case "redirect_deploy":
         data = RedirectDeploy.parse(msg.data);
-        shuuroStore.redirectDeploy(data);
+        gameStore.redirectDeploy(data);
         break;
     }
   }
@@ -186,9 +181,13 @@ export const useWs = defineStore("useWsStore", () => {
     user.onReconnect();
   }
 
-  const ws = ref(new Sockette(wsUrl(), {
-    onopen, onmessage, onreconnect
-  }));
+  const ws = ref(
+    new Sockette(wsUrl(), {
+      onopen,
+      onmessage,
+      onreconnect,
+    })
+  );
 
   function SEND(msg: any) {
     try {
@@ -197,5 +196,5 @@ export const useWs = defineStore("useWsStore", () => {
       unsendMessages.value.push(msg as never);
     }
   }
-  return { SEND }
+  return { SEND };
 });

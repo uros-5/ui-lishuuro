@@ -16,8 +16,8 @@ import { useHeaderSettings } from "@/store/headerSettings";
 import { useGameStore } from "@/store/game";
 import { useCgStore } from "@/store/game/useCgStore";
 
-const gameStore = useGameStore();
-const cgStore = useCgStore();
+const { gameStore } = useGameStore();
+const { cgStore } = useCgStore();
 const settings = useHeaderSettings();
 const element = ref(null);
 

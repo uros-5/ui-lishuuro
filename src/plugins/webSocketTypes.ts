@@ -200,7 +200,7 @@ export const ProfileGame = GameInfo.omit({
 
 export const UserLive = z.object({
   isPlayer: z.boolean(),
-  player: z.number()
+  player: z.number(),
 });
 
 export type UserLive = z.infer<typeof UserLive>;

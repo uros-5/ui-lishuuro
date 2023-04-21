@@ -29,7 +29,7 @@
 import { useClockStore } from "@/store/game/useClockStore";
 import { defineProps } from "vue";
 
-const clockStore = useClockStore();
+const { clockStore } = useClockStore();
 
 const props = defineProps<{
   color: string;

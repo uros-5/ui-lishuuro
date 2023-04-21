@@ -76,9 +76,9 @@ import { useGameStore } from "@/store/game";
 import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 import { useCgStore } from "@/store/game/useCgStore";
 
-const gameStore = useGameStore();
-const analyzeStore = useAnalyzeStore();
-const cgStore = useCgStore();
+const { gameStore } = useGameStore();
+const { analyzeStore } = useAnalyzeStore();
+const { cgStore } = useCgStore();
 
 function topPlayer(): string {
   if (cgStore.flipped) {

@@ -19,30 +19,40 @@ export enum FenBtn {
   First,
   Next,
   Previous,
-  Last
+  Last,
 }
 
-export function fenIndex(t: FenBtn, stage: number, index: number, fn: (stage: number) => string[]): number {
+export function fenIndex(
+  t: FenBtn,
+  stage: number,
+  index: number,
+  fn: (stage: number) => string[]
+): number {
   switch (t) {
     case FenBtn.First:
       return 0;
-   case FenBtn.Next:
-      return index + 1
+    case FenBtn.Next:
+      return index + 1;
     case FenBtn.Previous:
       return index - 1;
     case FenBtn.Last:
-      return fn(stage).length - 1
+      return fn(stage).length - 1;
   }
 }
 
-export function getFen(t: FenBtn, stage: number, index: number, fn: (stage: number) => string[]): undefined | string {
+export function getFen(
+  t: FenBtn,
+  stage: number,
+  index: number,
+  fn: (stage: number) => string[]
+): undefined | string {
   if (index <= 0) {
-    return undefined
+    return undefined;
   }
   let history = fn(stage);
   if (t == FenBtn.First && stage == 2) {
-    history = fn(1)
+    history = fn(1);
     index = -1;
   }
-  return history.at(index)
+  return history.at(index);
 }

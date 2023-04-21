@@ -8,16 +8,16 @@ import ShuuroChessground from "@/components/ShuuroChessground.vue";
 import { useGameStore } from "@/store/game";
 import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 
-const shuuroStore = useGameStore();
-const analyzeStore = useAnalyzeStore();
-shuuroStore.clientStage = 2;
+const { gameStore } = useGameStore();
+const { analyzeStore } = useAnalyzeStore();
+gameStore.clientStage = 2;
 
 onMounted(async () => {
-  if (shuuroStore.state._id == "") {
+  if (gameStore.state._id == "") {
   } else {
     analyzeStore.toggle();
     if (!analyzeStore.canAnalyze) {
-      // shuuroStore.redirect("/");
+      // gameStore.redirect("/");
     }
   }
 });

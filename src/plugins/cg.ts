@@ -11,13 +11,23 @@ export function userProfileCg(id: string, variant: string): Api {
   return cg;
 }
 
-export function deployCg(elem: HTMLElement, config: Config, top: HTMLElement, bot: HTMLElement, variant: string): Api {
+export function deployCg(
+  elem: HTMLElement,
+  config: Config,
+  top: HTMLElement,
+  bot: HTMLElement,
+  variant: string
+): Api {
   const cg = Chessground(elem, config, 800, top, bot);
   change_variant(cg, variant);
   return cg;
 }
 
-export function fightCg(elem: HTMLElement, config: Config, variant: string): Api {
+export function fightCg(
+  elem: HTMLElement,
+  config: Config,
+  variant: string
+): Api {
   const cg = Chessground(elem, config) as Api;
   change_variant(cg, variant);
   return cg;

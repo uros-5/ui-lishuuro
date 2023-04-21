@@ -6,7 +6,7 @@
   <div
     class="move"
     v-if="index != 1"
-    :class="{ active: shuuroStore.index().value == index! - 1 }"
+    :class="{ active: gameStore.index().value == index! - 1 }"
     :ply="index"
     @click="updateIndex"
   >
@@ -22,7 +22,7 @@ import { useGameStore } from "@/store/game";
 import { playAudio } from "@/plugins/audio";
 
 const props = defineProps<{ index: number; fen: string; move: string }>();
-const shuuroStore = useGameStore();
+const { gameStore } = useGameStore();
 
 function updateIndex(): void {
   audio();

@@ -33,7 +33,7 @@ export const useUser = defineStore("useUser", () => {
 
   const updateAnonCookie = () => {
     GET("vue_user").then((res) => {
-      let data: VueUser = res.data;
+      const data: VueUser = res.data;
       setUser(data);
     });
   };
@@ -107,6 +107,6 @@ export const useUser = defineStore("useUser", () => {
     onOpen,
     getTheme,
     setTheme,
-    toggleHeader
+    toggleHeader,
   };
 });

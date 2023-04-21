@@ -1,10 +1,19 @@
-import type { GameInfo, LiveGameDraw, LiveGameFight, LiveGameLost, LiveGamePlace, LiveGameResign, RedirectDeploy, SpecCnt, UserLive } from "@/plugins/webSocketTypes";
+import type {
+  GameInfo,
+  LiveGameDraw,
+  LiveGameFight,
+  LiveGameLost,
+  LiveGamePlace,
+  LiveGameResign,
+  RedirectDeploy,
+  SpecCnt,
+  UserLive,
+} from "@/plugins/webSocketTypes";
 import { ref } from "vue";
 import { useUser } from "../useUser";
 import { useWs } from "../useWs";
-import { anonConfig, liveConfig} from "chessground12/configs";
+import { anonConfig, liveConfig } from "chessground12/configs";
 import { useWasmStore } from "./useWasmStore";
-import { useCgStore } from "./useCgStore";
 import { useAnalyzeStore } from "./useAnalyzeStore";
 import { useClockStore } from "./useClockStore";
 import router from "@/router";
@@ -12,34 +21,34 @@ import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 import { useShopStore } from "./useShopStore";
 import { playAudio } from "@/plugins/audio";
 import { FenBtn } from "@/plugins/fen";
+import { defineStore } from "pinia";
 
-export const useGameStore = () => {
+export const useGameStore = defineStore("useGameStore", () => {
   const state = ref(emptyGame());
   const user = useUser();
-  const wasm = useWasmStore();
-  const analyze = useAnalyzeStore();
-  const cg = useCgStore();
-  const clock = useClockStore();
-  const shop = useShopStore();
+  const { wasmStore } = useWasmStore();
+  const { analyzeStore } = useAnalyzeStore();
+  const { clockStore } = useClockStore();
+  const { shopStore } = useShopStore();
   const watchCount = ref(0);
   const offeredDraw = ref(false);
   const server = ref(false);
-  const player = ref({ isPlayer: false, player: 2 } as UserLive)
+  const player = ref({ isPlayer: false, player: 2 } as UserLive);
   const clientStage = ref(0);
   const index = ref(0);
   const { SEND } = useWs();
 
-  return new class {
+  const gameStore = new (class {
     get state() {
-      return state.value
+      return state.value;
     }
 
     get server() {
-      return server
+      return server;
     }
 
     get player() {
-      return player.value
+      return player.value;
     }
 
     get playerColor(): string {
@@ -58,23 +67,22 @@ export const useGameStore = () => {
         if (clientStage.value == state.value.current_stage) {
           return liveConfig;
         }
-      }
-      else if (analyze.state.active) {
+      } else if (analyzeStore.state.active) {
         return liveConfig;
       }
       return anonConfig;
     }
 
     get clientStage() {
-      return clientStage.value
+      return clientStage.value;
     }
 
     get offeredDraw() {
-      return offeredDraw
+      return offeredDraw;
     }
 
     get history() {
-      return state.value.history[state.value.current_stage]
+      return state.value.history[state.value.current_stage];
     }
 
     rejectDraw() {
@@ -87,22 +95,18 @@ export const useGameStore = () => {
       state.value.incr = s.incr / 1000;
       state.value.last_clock = new Date(s.tc.last_click).toString();
       clientStage.value = s.current_stage;
-      clock.fromServer(s);
+      clockStore.fromServer(s);
       this.setPlayer();
       server.value = true;
-      this.updateHeadTitle()
+      this.updateHeadTitle();
       index.value = -1;
-      this.startPosFix()
+      this.startPosFix();
       if (s.current_stage == 0) {
-        shop.shopInfo();
+        shopStore.shopInfo();
+      } else if (s.current_stage == 1) {
+      } else if (s.current_stage == 2) {
       }
-      else if (s.current_stage == 1) {
-
-      }
-      else if (s.current_stage == 2) {
-
-      }
-      this.playLive()
+      this.playLive();
     }
 
     silentRedirect(id: string): boolean {
@@ -110,7 +114,7 @@ export const useGameStore = () => {
       if (id == undefined) {
         return true;
       } else if (id != state.value._id) {
-        let obj = {
+        const obj = {
           t: "live_game_start",
           game_id: id,
           color: "white",
@@ -126,7 +130,7 @@ export const useGameStore = () => {
       if (state.value.current_stage == 2) {
         const last = state.value.history[1].at(-1);
         if (last) {
-          state.value.history[2].unshift(last)
+          state.value.history[2].unshift(last);
         }
       }
     }
@@ -148,7 +152,6 @@ export const useGameStore = () => {
         player.value.isPlayer = false;
       }
     }
-
 
     setRedirect() {
       const r = router.currentRoute;
@@ -176,11 +179,11 @@ export const useGameStore = () => {
     }
 
     get watchCount() {
-      return watchCount
+      return watchCount;
     }
 
     index() {
-      return index
+      return index;
     }
 
     set clientStage(stage: number) {
@@ -188,26 +191,37 @@ export const useGameStore = () => {
     }
 
     get canPlay(): boolean {
-      if (this.state.side_to_move == this.player.player
-        && this.state.status < 1) {
+      if (
+        this.state.side_to_move == this.player.player &&
+        this.state.status < 1
+      ) {
         return true;
       }
       return false;
     }
 
     legal_moves(): Map<any, any> {
-      let wasm2 = analyze.state.active ? wasm.analyze() : wasm.fight();
-      let color = !analyze.state.active ? this.playerColor[0] as string : wasm2.side_to_move();
-      if (state.value.status < 0 || analyze.state.active) {
+      const wasm2 = analyzeStore.state.active
+        ? wasmStore.analyze()
+        : wasmStore.fight();
+      const color = !analyzeStore.state.active
+        ? (this.playerColor[0] as string)
+        : wasm2.side_to_move();
+      if (state.value.status < 0 || analyzeStore.state.active) {
         const moves = wasm2.legal_moves(color);
-        return moves
+        return moves;
       }
-      return new Map()
+      return new Map();
     }
 
     send(t: string, game_move?: string) {
-      if (analyze.state.active) return;
-      let msg = { game_id: state.value._id, variant: state.value.variant, t, game_move };
+      if (analyzeStore.state.active) return;
+      const msg = {
+        game_id: state.value._id,
+        variant: state.value.variant,
+        t,
+        game_move,
+      };
       SEND(msg);
     }
 
@@ -217,7 +231,7 @@ export const useGameStore = () => {
     }
 
     addMove(h: 0 | 1 | 2, move: string) {
-      state.value.history[h].push(move)
+      state.value.history[h].push(move);
     }
 
     addMoves(h: 0 | 1 | 2, moves: string[]) {
@@ -246,38 +260,26 @@ export const useGameStore = () => {
       }
       if (index.value <= 0) {
         index.value = 0;
+      } else if (index.value >= len) {
+        index.value = len;
       }
-      else if (index.value >= len) {
-        index.value = len
-      }
     }
 
-    serverPlace(msg: LiveGamePlace) {
-      
-    }
+    serverPlace(msg: LiveGamePlace) {}
 
-    serverMove2(msg: LiveGameFight) {
-      
-    }
+    serverMove2(msg: LiveGameFight) {}
 
-    gameDraw(msg: LiveGameDraw) {
-      
-    }
+    gameDraw(msg: LiveGameDraw) {}
 
-    gameResign(msg: LiveGameResign) {
-      
-    }
-    
-    gameLot(msg: LiveGameLost) {
+    gameResign(msg: LiveGameResign) {}
 
-    }
+    gameLot(msg: LiveGameLost) {}
 
-    redirectDeploy(s: RedirectDeploy) {
-    }
+    redirectDeploy(s: RedirectDeploy) {}
+  })();
 
-  }
-};
-
+  return { gameStore };
+});
 
 function emptyGame(): GameInfo {
   return {
@@ -287,7 +289,7 @@ function emptyGame(): GameInfo {
     players: ["", ""],
     status: 0,
     side_to_move: 0,
-    last_clock: { '$date': { "$numberLong": "" } },
+    last_clock: { $date: { $numberLong: "" } },
     current_stage: 0,
     result: "",
     variant: "",
@@ -297,8 +299,8 @@ function emptyGame(): GameInfo {
     history: [[], [], []],
     tc: {
       last_click: "",
-      clocks: [0, 0]
+      clocks: [0, 0],
     },
-    sub_variant: 100
-  }
+    sub_variant: 100,
+  };
 }

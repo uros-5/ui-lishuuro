@@ -1,18 +1,19 @@
-import { useWasmStore } from "@/store/game/useWasmStore"
+import { useWasmStore } from "@/store/game/useWasmStore";
 import { ref } from "vue";
 import { useGameStore } from ".";
 import { useClockStore } from "./useClockStore";
+import { defineStore } from "pinia";
 
-export const useShopStore = () => {
+export const useShopStore = defineStore("useShopStore", () => {
   const state = ref(empty());
-  const wasm = useWasmStore();
-  const game = useGameStore();
-  const clock = useClockStore();
+  const { wasmStore } = useWasmStore();
+  const { gameStore } = useGameStore();
+  const { clockStore } = useClockStore();
 
-  return new class {
+  const shopStore = new (class {
     shopInfo(): void {
-      game.send("live_game_hand");
-      game.send("live_game_confirmed");
+      gameStore.send("live_game_hand");
+      gameStore.send("live_game_confirmed");
     }
 
     setConfirmed(data: [boolean, boolean]) {
@@ -21,68 +22,69 @@ export const useShopStore = () => {
     }
 
     setHand(hand: string) {
-      wasm.shop().set_hand(hand);
-      state.value.pieceCounter = wasm.shop().shop_items(game.playerColor);
-      const moves: string[] = wasm.shop().history();
-      game.addMoves(0, moves);
-      state.value.credit = wasm.shop().get_credit(
-        game.playerColor
-      );
+      wasmStore.shop().set_hand(hand);
+      state.value.pieceCounter = wasmStore
+        .shop()
+        .shop_items(gameStore.playerColor);
+      const moves: string[] = wasmStore.shop().history();
+      gameStore.addMoves(0, moves);
+      state.value.credit = wasmStore.shop().get_credit(gameStore.playerColor);
     }
-
 
     buy(p: string, color: string) {
       if (this.canShop) {
         const game_move = `+${p}`;
-        state.value.pieceCounter = wasm.shop().buy(game_move);
+        state.value.pieceCounter = wasmStore.shop().buy(game_move);
 
         state.value.pieceCounter[0] = 1;
-        const new_credit = wasm.shop().get_credit(color);
-        const _ = wasm.shop().get_piece(p);
+        const new_credit = wasmStore.shop().get_credit(color);
+        const _ = wasmStore.shop().get_piece(p);
         if (new_credit != state.value.credit) {
-          game.addMove(0, game_move);
-          game.scrollToBottom();
+          gameStore.addMove(0, game_move);
+          gameStore.scrollToBottom();
         }
-        game.send("live_game_buy", game_move);
-        game.index().value = game.state.history[0].length - 1;
+        gameStore.send("live_game_buy", game_move);
+        gameStore.index().value = gameStore.state.history[0].length - 1;
         state.value.credit = new_credit;
       }
     }
 
-
     confirm() {
       if (this.canShop) {
-        wasm.shop().confirm(game.playerColor);
-        if (wasm.shop().is_confirmed(game.playerColor)) {
-          game.send("live_game_confirm", "cc");
-          clock.pause(game.player.player);
-          state.value.confirmed[game.player.player] = true;
+        wasmStore.shop().confirm(gameStore.playerColor);
+        if (wasmStore.shop().is_confirmed(gameStore.playerColor)) {
+          gameStore.send("live_game_confirm", "cc");
+          clockStore.pause(gameStore.player.player);
+          state.value.confirmed[gameStore.player.player] = true;
         }
       }
     }
 
     private startClock() {
-      const elapsed = clock.elapsed;
-      const confirmed = state.value.confirmed.findIndex(
-        (item) => item == true
-      );
+      const elapsed = clockStore.elapsed;
+      const confirmed = state.value.confirmed.findIndex((item) => item == true);
       if (confirmed != -1) {
-        clock.setTime(confirmed, game.state.tc.clocks[confirmed]-elapsed);
-        clock.pause(confirmed, false);
-        const other = clock.otherClock(confirmed);
-        clock.start(other)
-        return ;
+        clockStore.setTime(
+          confirmed,
+          gameStore.state.tc.clocks[confirmed] - elapsed
+        );
+        clockStore.pause(confirmed, false);
+        const other = clockStore.otherClock(confirmed);
+        clockStore.start(other);
+        return;
       }
-      clock.startBoth(elapsed, game.state.tc.clocks)
+      clockStore.startBoth(elapsed, gameStore.state.tc.clocks);
     }
 
-
     get amIConfirmed(): boolean {
-      return state.value.confirmed[game.player.player];
+      return state.value.confirmed[gameStore.player.player];
     }
 
     get canPlay(): boolean {
-      if (game.state.side_to_move == game.player.player && game.state.status < 1) {
+      if (
+        gameStore.state.side_to_move == gameStore.player.player &&
+        gameStore.state.status < 1
+      ) {
         return true;
       }
       return false;
@@ -90,34 +92,35 @@ export const useShopStore = () => {
 
     get canShop(): boolean {
       return (
-        game.player.isPlayer! &&
-        game.state.current_stage! == 0 &&
-        game.state.status < 0 &&
+        gameStore.player.isPlayer! &&
+        gameStore.state.current_stage! == 0 &&
+        gameStore.state.status < 0 &&
         !this.amIConfirmed
       );
     }
 
     get pieceCounter() {
-      return state.value.pieceCounter
+      return state.value.pieceCounter;
     }
 
     get credit() {
       return state.value.credit;
     }
-  }
+  })();
 
-};
+  return { shopStore };
+});
 
 function empty(): State {
   return {
     confirmed: [false, false],
     pieceCounter: new Uint8Array(),
-    credit: 800
-  }
+    credit: 800,
+  };
 }
 
 type State = {
-  confirmed: [boolean, boolean],
-  pieceCounter: Uint8Array,
-  credit: number
-}
+  confirmed: [boolean, boolean];
+  pieceCounter: Uint8Array;
+  credit: number;
+};

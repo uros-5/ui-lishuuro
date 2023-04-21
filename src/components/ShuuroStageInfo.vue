@@ -2,9 +2,9 @@
   <div class="game-info">
     <section>
       <ShuuroStageMatchInfo
-        :variant="store.state.variant"
-        :minute="store.state.min"
-        :sec="store.state.incr"
+        :variant="gameStore.state.variant"
+        :minute="gameStore.state.min"
+        :sec="gameStore.state.incr"
         :rated="false"
         date="*"
       />
@@ -22,7 +22,7 @@
     <section class="shuuro-navigator">
       <router-link
         class="user-link"
-        v-if="store.state.sub_variant == 100"
+        v-if="gameStore.state.sub_variant == 100"
         :to="navRoute('0')"
       >
         Shop
@@ -42,14 +42,14 @@
 import ShuuroLeftSideUsername from "./ShuuroLeftSideUsername.vue";
 import ShuuroStageMatchInfo from "@/components/ShuuroStageMatchInfo.vue";
 import { useGameStore } from "@/store/game";
-const store = useGameStore();
+const { gameStore } = useGameStore();
 
 function navRoute(stage: string): string {
-  return `/shuuro/${stage}/${store.state._id}`;
+  return `/shuuro/${stage}/${gameStore.state._id}`;
 }
 
 function player(index: number): string {
-  return store.state.players[index];
+  return gameStore.state.players[index];
 }
 
 function rating(username: string): number {
@@ -57,7 +57,7 @@ function rating(username: string): number {
 }
 
 function isFightSubVariant(): boolean {
-  let subVariant = store.state.sub_variant;
+  let subVariant = gameStore.state.sub_variant;
   return [0, 1, 2].includes(subVariant);
 }
 </script>

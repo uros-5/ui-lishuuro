@@ -18,13 +18,13 @@ import { useGameStore } from "@/store/game";
 import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 import router from "@/router";
 
-const shuuroStore = useGameStore();
-const analyzeStore = useAnalyzeStore();
+const { gameStore } = useGameStore();
+const { analyzeStore } = useAnalyzeStore();
 
 function analyze() {
   analyzeStore.toggle();
-  router.push(`/shuuro/3/${shuuroStore.state._id}`);
-  shuuroStore.scrollToBottom();
+  router.push(`/shuuro/3/${gameStore.state._id}`);
+  gameStore.scrollToBottom();
 }
 
 function isVisible() {}

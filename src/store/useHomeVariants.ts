@@ -1,5 +1,5 @@
-import { defineStore } from "pinia"
+import { defineStore } from "pinia";
 
-export const useHomeVariants = defineStore('useHomeVariants', () => {
-  return {}
-})
+export const useHomeVariants = defineStore("useHomeVariants", () => {
+  return {};
+});

@@ -16,7 +16,7 @@ import { defineProps } from "vue";
 import { timeago } from "@/plugins/timeago";
 import { useGameStore } from "@/store/game";
 
-const store = useGameStore();
+const { gameStore } = useGameStore();
 
 const props = defineProps<{
   variant: string;
@@ -50,17 +50,17 @@ function ratedGame(): string {
 }
 
 function gameDate(): string {
-  if (store.state.status < 0) {
+  if (gameStore.state.status < 0) {
     return "Playing right now";
   } else {
-    return timeago(store.state.last_clock);
+    return timeago(gameStore.state.last_clock);
   }
 }
 
 function toolTipDate(): string {
-  const d = store.state.last_clock;
+  const d = gameStore.state.last_clock;
   if (d) {
-    return store.state.last_clock.toString();
+    return gameStore.state.last_clock.toString();
   }
   return "";
 }

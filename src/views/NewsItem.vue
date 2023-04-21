@@ -35,7 +35,7 @@ import { updateHeadTitle } from "@/plugins/updateHeadTitle";
 const newsStore = useNews();
 
 const props: Ref<NewsItem> = ref({
-  _id: '',
+  _id: "",
   user: "",
   category: "",
   title: "",
@@ -43,8 +43,6 @@ const props: Ref<NewsItem> = ref({
   date: "",
   headline: "",
 });
-
-
 
 onMounted(() => {
   let id = useRoute().params.id;

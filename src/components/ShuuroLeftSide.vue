@@ -3,8 +3,8 @@
     <ShuuroStageInfo />
     <ChatRoom
       :messages="chatStore.gameChat"
-      :ws-type="store.state._id"
-      :finished="store.state.status"
+      :ws-type="gameStore.state._id"
+      :finished="gameStore.state.status"
       variant="shuuro"
     />
     <ShuuroSpectators />
@@ -17,7 +17,7 @@ import ShuuroSpectators from "./ShuuroSpectators.vue";
 import { useChat } from "@/store/useChat";
 import { useGameStore } from "@/store/game";
 
-const store = useGameStore();
+const { gameStore } = useGameStore();
 const chatStore = useChat();
 </script>
 <style></style>

@@ -1,10 +1,11 @@
 import { Clock } from "@/plugins/clock";
 import type { GameInfo } from "@/plugins/webSocketTypes";
 import { ref } from "vue";
+import { defineStore } from "pinia";
 
-export const useClockStore = () => {
+export const useClockStore = defineStore("useClockStore", () => {
   const state = ref(empty());
-  return new class {
+  const clockStore = new (class {
     start(id: number, duration = 0) {
       state.value.clocks[id].start(duration);
     }
@@ -18,13 +19,13 @@ export const useClockStore = () => {
     }
 
     pauseBoth() {
-      let self = this;
-      [0, 1].forEach(item => self.pause(item, false))
+      const self = this;
+      [0, 1].forEach((item) => self.pause(item, false));
     }
 
     startBoth(elapsed: number, clocks: [number, number]) {
-      let self = this;
-      [0, 1].forEach(item => self.start(item, clocks[item] - elapsed))
+      const self = this;
+      [0, 1].forEach((item) => self.start(item, clocks[item] - elapsed));
     }
 
     otherClock(id: number) {
@@ -32,7 +33,7 @@ export const useClockStore = () => {
     }
 
     setLastClock(last_clock: string) {
-      state.value.last_clock = new Date(last_clock).toString()
+      state.value.last_clock = new Date(last_clock).toString();
     }
 
     fromServer(s: GameInfo) {
@@ -43,7 +44,9 @@ export const useClockStore = () => {
     }
 
     fromMove(data: [number, number]) {
-      [0, 1].forEach(item => state.value.clocks[item].duration = data[item])
+      [0, 1].forEach(
+        (item) => (state.value.clocks[item].duration = data[item])
+      );
     }
 
     get elapsed(): number {
@@ -54,14 +57,15 @@ export const useClockStore = () => {
     }
 
     get state() {
-      return state.value
+      return state.value;
     }
-  };
-};
+  })();
+  return { clockStore };
+});
 
-function empty(): { clocks: [Clock, Clock], last_clock: string } {
+function empty(): { clocks: [Clock, Clock]; last_clock: string } {
   return {
     clocks: [new Clock(0, 0, 0, "1"), new Clock(0, 0, 0, "0")],
-    last_clock: new Date().toString()
-  }
+    last_clock: new Date().toString(),
+  };
 }

@@ -8,7 +8,7 @@ import { useGameStore } from "@/store/game";
 import ShuuroChessground from "@/components/ShuuroChessground.vue";
 
 const store = useBoardSize();
-const gameStore = useGameStore();
+const { gameStore } = useGameStore();
 
 store.updateRowsAndCols(12);
 

@@ -343,7 +343,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       }
       if (msg.first_move_error) {
         const self = this;
-        setTimeout(function() {
+        setTimeout(function () {
           self.playAudio("res");
           self.clockPause(self.side_to_move);
           self.result = self.stmS();
@@ -357,7 +357,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     setCheck(check: boolean) {
       const is_check = check;
       setCheck(this.cgs(this.cs()).state, is_check);
-      this.cgs(this.cs()).state.dom.redraw()
+      this.cgs(this.cs()).state.dom.redraw();
     },
 
     // deploy wasm placing piece
@@ -449,9 +449,8 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // select square
     selectSq(_key: Key) {
       if (this.canPlay()) {
-      }
-      else if (this.analyze) {
-        let dests = this.cgs(2).state.movable.dests;
+      } else if (this.analyze) {
+        const dests = this.cgs(2).state.movable.dests;
         if (dests?.size == 0 || dests == undefined) {
           this.legal_moves();
         }
@@ -460,13 +459,15 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // find legal moves for current player in stage 2
     legal_moves() {
-      let color = !this.analyze ? this.player_color![0] as string : this.wasm(2).side_to_move();
+      const color = !this.analyze
+        ? (this.player_color![0] as string)
+        : this.wasm(2).side_to_move();
       if (this.status < 0 || this.analyze) {
         const moves = this.wasm(2).legal_moves(color);
         this.cgs(2).state.movable.dests = moves;
         if (!this.analyze) return;
-        this.cgs(2).state.movable.color = color == "w" ? "white" : "black"
-        this.cgs(2).state.turnColor = color == "w" ? "white" : "black"
+        this.cgs(2).state.movable.color = color == "w" ? "white" : "black";
+        this.cgs(2).state.turnColor = color == "w" ? "white" : "black";
       }
     },
 
@@ -491,10 +492,9 @@ export const useShuuroStore = defineStore("shuuroStore", {
       if (_metadata.captured!) {
         this.playAudio("capture");
       }
-      let lm = this.wasm(2).last_move();
-      this.analysisMoves.push(lm)
+      const lm = this.wasm(2).last_move();
+      this.analysisMoves.push(lm);
       this.current_index = this.analysisMoves.length - 1;
-
     },
 
     // move piece from server
@@ -505,7 +505,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       this.setClocks2(msg.clocks);
       if (this.gameOver(msg.outcome)) {
         this.playAudio("res");
-        this.deactivateClocks()
+        this.deactivateClocks();
         this.status = msg.status;
         this.result = msg.outcome;
         this.scrollToBottom();
@@ -537,8 +537,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
         this.setTurnColor();
         this.setCheckFight();
         this.switchClock();
-        if (!this.analyze)
-          this.history[2].push(lastMove);
+        if (!this.analyze) this.history[2].push(lastMove);
         this.scrollToBottom();
         this.updateCurrentIndex(2);
         this.cgs(2).state.dom.redraw();
@@ -550,7 +549,9 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     // send move to server
     sendMove(s: string) {
-      if (!this.analyze) { this.SEND("live_game_play", s) }
+      if (!this.analyze) {
+        this.SEND("live_game_play", s);
+      }
     },
 
     // set turn color
@@ -629,34 +630,42 @@ export const useShuuroStore = defineStore("shuuroStore", {
     // fen buttons helpers
 
     getFen(index: number, stage?: number): string {
-      let client_stage = stage ? stage : this.client_stage!;
+      const client_stage = stage ? stage : this.client_stage!;
       switch (client_stage) {
         case 1:
-          let s = (this.myHistory(1)[index] as string).split("_");
+          const s = (this.myHistory(1)[index] as string).split("_");
           return `${s[1]} ${s[3]} ${s[2]}`;
         case 2:
-          let st = this.myHistory(2)![index] as string;
+          const st = this.myHistory(2)![index] as string;
           return st != undefined ? st : "";
         default:
           return "";
       }
     },
 
-    getLastMove(index: number, stage?: number): { from: string, to: string, san: string } {
-
-      let client_stage = stage ? stage : this.client_stage!;
+    getLastMove(
+      index: number,
+      stage?: number
+    ): { from: string; to: string; san: string } {
+      const client_stage = stage ? stage : this.client_stage!;
       let m: any = "";
-      let def = { from: "", to: "", san: "" };
-      if (index < 0) { return def }
+      const def = { from: "", to: "", san: "" };
+      if (index < 0) {
+        return def;
+      }
       switch (client_stage) {
         case 1:
-          let s = (this.myHistory(1)[index] as string).split("_");
-          m = s[0].split("@")
-          return { from: m[0], to: m[1], san: "" }
+          const s = (this.myHistory(1)[index] as string).split("_");
+          m = s[0].split("@");
+          return { from: m[0], to: m[1], san: "" };
         case 2:
-          let st = this.myHistory(2)![index] as string;
+          const st = this.myHistory(2)![index] as string;
           m = st.split(" ")[4].split("_");
-          return { from: m[0], to: m[1].replace("*", ""), san: st.split(" ")[5] }
+          return {
+            from: m[0],
+            to: m[1].replace("*", ""),
+            san: st.split(" ")[5],
+          };
         default:
           return def;
       }
@@ -673,50 +682,55 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     fenIndex(t: FenBtn): number {
-      let current_index = this.analyze ? this.analyzeIndex : this.current_index!;
-      let client_stage = this.analyze ? 2 : this.client_stage!;
-      let history = this.analyze ? this.analysisMoves : this.myHistory(client_stage);
+      const current_index = this.analyze
+        ? this.analyzeIndex
+        : this.current_index!;
+      const client_stage = this.analyze ? 2 : this.client_stage!;
+      const history = this.analyze
+        ? this.analysisMoves
+        : this.myHistory(client_stage);
       switch (t) {
         case FenBtn.First:
           return 0;
         case FenBtn.Next:
-          return current_index + 1
+          return current_index + 1;
         case FenBtn.Previous:
           return current_index - 1;
         case FenBtn.Last:
-          return history.length - 1
+          return history.length - 1;
       }
     },
 
     getFen2(t: FenBtn, index: number): [string | undefined, number] {
-      let client_stage = this.analyze ? 2 : this.client_stage!;
-      let history = this.analyze ? this.analysisMoves : this.myHistory(client_stage);
+      const client_stage = this.analyze ? 2 : this.client_stage!;
+      let history = this.analyze
+        ? this.analysisMoves
+        : this.myHistory(client_stage);
       if (index <= 0) {
-        return [undefined, index]
+        return [undefined, index];
       }
       if (t == FenBtn.First && client_stage) {
         history = this.myHistory(client_stage);
         index = -1;
       }
-      return [history.at(index), index]
+      return [history.at(index), index];
     },
 
     updateIndex(index: number) {
       this.current_index = index;
     },
 
-
     fastForward(): void {
-      let history = this.getHistory();
+      const history = this.getHistory();
       this.current_index = history.length - 1;
       if (this.fenExist(this.currentIndex())) {
-        let fen = this.getFen(this.currentIndex());
+        const fen = this.getFen(this.currentIndex());
         this.tempWasm(fen);
-        let ci = this.currentIndex();
-        let lm = this.getLastMove(ci);
+        const ci = this.currentIndex();
+        const lm = this.getLastMove(ci);
         this.cgs(2).setLastMove(lm.from, lm.to);
-        this.analysisMoves = []
-        this.selectSq("a7")
+        this.analysisMoves = [];
+        this.selectSq("a7");
         this.switchToLiveConfig();
       }
     },
@@ -795,7 +809,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       else {
         this.clock(0).setTime(this.clock_ms[0]);
         this.clock(1).setTime(this.clock_ms[1]);
-        this.deactivateClocks()
+        this.deactivateClocks();
       }
     },
 
@@ -805,7 +819,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     },
 
     // flag notification
-    flagNotif() { },
+    flagNotif() {},
 
     // low time notification
     lowTimeNotif() {
@@ -966,7 +980,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
     enablePremove(config: Config) {
       if (this.am_i_player && this.status < 1) {
         config.premovable = {
-          events: { set: (orig, dest) => { }, unset: () => { } },
+          events: { set: (orig, dest) => {}, unset: () => {} },
         };
         config.premovable.enabled = true;
         config.premovable!.events!.set = (orig, dest, metadata) => {
@@ -1019,7 +1033,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
 
     switchToLiveConfig() {
       if (!this.analyze) return;
-      this.cgs(2).set(liveConfig)
+      this.cgs(2).set(liveConfig);
       this.cgs(2).state.movable.events.after = this.movedPiece2;
       this.cgs(2).state.events.select = this.selectSq;
     },
@@ -1027,8 +1041,8 @@ export const useShuuroStore = defineStore("shuuroStore", {
     resetAnalyze(sfen: string) {
       if (this.analyze) {
         this.analysisMoves = [];
-        this.setFightWasm(sfen, true)
-        this.cgs(2).state.movable.showDests = true
+        this.setFightWasm(sfen, true);
+        this.cgs(2).state.movable.showDests = true;
         this.cgs(2).state.draggable.enabled = true;
       }
     },
@@ -1136,11 +1150,11 @@ export const useShuuroStore = defineStore("shuuroStore", {
     getHistory(): string[] {
       if (this.client_stage == 0) {
         if (this.am_i_player) {
-          let history = this.myHistory(0) as [string];
-          let color = this.player_color!;
-          let newest: string[] = [];
+          const history = this.myHistory(0) as [string];
+          const color = this.player_color!;
+          const newest: string[] = [];
           history.forEach((value) => {
-            let p = value[1];
+            const p = value[1];
             if (color == "white") {
               if (p == p.toUpperCase()) {
                 newest.push(p);
@@ -1197,7 +1211,7 @@ export const useShuuroStore = defineStore("shuuroStore", {
       if (id == undefined) {
         return true;
       } else if (id != this.game_id) {
-        let obj = {
+        const obj = {
           t: "live_game_start",
           game_id: id,
           color: "white",
@@ -1216,14 +1230,17 @@ export const useShuuroStore = defineStore("shuuroStore", {
       return false;
     },
 
-
     SEND(t: string, game_move?: string) {
       const { SEND } = useWs();
       if (this.analyze) return;
-      let msg = { game_id: this.game_id, variant: this.variant, t, game_move };
+      const msg = {
+        game_id: this.game_id,
+        variant: this.variant,
+        t,
+        game_move,
+      };
       SEND(msg);
     },
-
   },
 });
 
@@ -1267,7 +1284,7 @@ function emptyState(): ShuuroStore {
     premoveData: { active: false, orig: "", dest: "" },
     analyze: false,
     analysisMoves: [],
-    analyzeIndex: 0
+    analyzeIndex: 0,
   };
 }
 

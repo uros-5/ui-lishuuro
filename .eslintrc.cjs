@@ -14,6 +14,7 @@ module.exports = {
   },
   rules: {
     "prettier-vue/prettier": [
+      "error",
       {
         printWidth: 80,
       },

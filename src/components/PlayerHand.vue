@@ -44,8 +44,8 @@ const props = defineProps<{
 
 const boardSize = useBoardSize();
 const hs = useHeaderSettings();
-const gameStore = useGameStore();
-const shopStore = useShopStore();
+const { gameStore } = useGameStore();
+const { shopStore } = useShopStore();
 
 onMounted(() => {
   let element = document.querySelector("#mainboard") as HTMLElement;

@@ -1,4 +1,4 @@
-import  { Chessground}   from "chessground12";
+import { Chessground } from "chessground12";
 import type { Api } from "chessground12/api";
 import { setCheck } from "chessground12/board";
 import { userProfileConfig } from "chessground12/configs";
@@ -108,17 +108,17 @@ export const useTvStore = defineStore("tvStore", {
     // from server update
     tvGameUpdate(msg: TvGameUpdate) {
       if (msg.t.endsWith("place")) {
-        let place = LiveGamePlace.parse(msg.data);
+        const place = LiveGamePlace.parse(msg.data);
         this.tvPlace(place);
       } else if (msg.t.endsWith("play")) {
-        let play = LiveGameFight.parse(msg.data);
+        const play = LiveGameFight.parse(msg.data);
         this.tvMove(play);
       } else if (msg.t.endsWith("redirect_deploy")) {
         const game = this.newGame(RedirectDeploy.parse(msg.data));
         this.games.push(game);
       } else if (ENDED.includes(msg.t)) {
         const self = this;
-        let over = isGameOver(msg.data);
+        const over = isGameOver(msg.data);
         if (over[0]) {
           setTimeout(function () {
             self.removeGame(over[1]);

@@ -3,7 +3,7 @@ import { onMounted, onUnmounted } from "vue";
 import { useGameStore } from "@/store/game";
 import ShuuroChessground from "@/components/ShuuroChessground.vue";
 
-const gameStore = useGameStore();
+const { gameStore } = useGameStore();
 
 onMounted(async () => {
   gameStore.clientStage = 2;

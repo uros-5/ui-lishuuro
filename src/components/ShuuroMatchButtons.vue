@@ -15,11 +15,11 @@
 import { useGameStore } from "@/store/game";
 import { useWs } from "@/store/useWs";
 
-const store = useGameStore();
+const { gameStore } = useGameStore();
 const { SEND } = useWs();
 
 function canDR(): boolean {
-  return store.state.status < 0 && store.player.isPlayer;
+  return gameStore.state.status < 0 && gameStore.player.isPlayer;
 }
 
 function draw() {
@@ -27,8 +27,8 @@ function draw() {
   if (d) {
     SEND({
       t: "live_game_draw",
-      game_id: store.state._id,
-      variant: store.state.variant,
+      game_id: gameStore.state._id,
+      variant: gameStore.state.variant,
     });
   }
 }
@@ -38,8 +38,8 @@ function resign() {
   if (r) {
     SEND({
       t: "live_game_resign",
-      game_id: store.state._id,
-      variant: store.state.variant,
+      game_id: gameStore.state._id,
+      variant: gameStore.state.variant,
     });
   }
 }

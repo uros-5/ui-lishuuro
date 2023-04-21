@@ -1,22 +1,22 @@
 import { FenBtn } from "@/plugins/fen";
 import { ref } from "vue";
 import { useGameStore } from ".";
+import { defineStore } from "pinia";
 
-export const useAnalyzeStore = () => {
+export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
   const state = ref(empty());
-  const game = useGameStore();
-  return new class {
-
+  const { gameStore } = useGameStore();
+  const analyzeStore = new (class {
     get state() {
-      return state.value
+      return state.value;
     }
 
     toggle() {
-      state.value.active = !state.value.active
+      state.value.active = !state.value.active;
     }
 
     addAnalyzeMove(move: string) {
-      state.value.moves.push(move)
+      state.value.moves.push(move);
     }
 
     newIndex(index: number) {
@@ -45,22 +45,22 @@ export const useAnalyzeStore = () => {
       }
       if (state.value.index <= 0) {
         state.value.index = 0;
-      }
-      else if (state.value.index >= len) {
-        state.value.index = len
+      } else if (state.value.index >= len) {
+        state.value.index = len;
       }
     }
 
     get canAnalyze(): boolean {
-      if (game.state.current_stage == 2 && game.state.status > -1) {
+      if (gameStore.state.current_stage == 2 && gameStore.state.status > -1) {
         return true;
       }
       return false;
     }
+  })();
 
-  }
-};
+  return { analyzeStore };
+});
 
 function empty() {
-  return { active: false, moves: [] as string[], index: 0 }
+  return { active: false, moves: [] as string[], index: 0 };
 }

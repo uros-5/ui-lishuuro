@@ -1,12 +1,17 @@
 import { ShuuroPosition, ShuuroShop } from "shuuro-wasm";
 import init from "shuuro-wasm";
 import { ref } from "vue";
+import { defineStore } from "pinia";
 
-export const useWasmStore = () => {
-  const state = ref({ wasm: [undefined, undefined, undefined], analyzeWasm: undefined, init: false } as WasmStore)
-  return new class {
+export const useWasmStore = defineStore("useWasmStore", () => {
+  const state = ref({
+    wasm: [undefined, undefined, undefined],
+    analyzeWasm: undefined,
+    init: false,
+  } as WasmStore);
+  const wasmStore = new (class {
     async init() {
-      init().then(_exports => {
+      init().then((_exports) => {
         state.value.wasm[0] = new ShuuroShop();
         state.value.wasm[1] = new ShuuroPosition("shuuro");
         state.value.wasm[2] = new ShuuroPosition("shuuro");
@@ -15,7 +20,9 @@ export const useWasmStore = () => {
     }
 
     changeVariant(variant: string) {
-      [0, 1, 2].forEach(item => state.value.wasm[item]!.change_variant(variant))
+      [0, 1, 2].forEach((item) =>
+        state.value.wasm[item]!.change_variant(variant)
+      );
     }
 
     shop(): ShuuroShop {
@@ -33,13 +40,17 @@ export const useWasmStore = () => {
     analyze(): ShuuroPosition {
       return state.value.analyzeWasm!;
     }
+  })();
 
-  }
-
-};
+  return { wasmStore };
+});
 
 type WasmStore = {
-  wasm: [ShuuroShop | undefined, ShuuroPosition | undefined, ShuuroPosition | undefined];
+  wasm: [
+    ShuuroShop | undefined,
+    ShuuroPosition | undefined,
+    ShuuroPosition | undefined
+  ];
   analyzeWasm: ShuuroPosition | undefined;
   init: boolean;
-}
+};
