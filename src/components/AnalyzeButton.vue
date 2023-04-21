@@ -18,8 +18,8 @@ import { useGameStore } from "@/store/game";
 import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 import router from "@/router";
 
-const { gameStore } = useGameStore();
-const { analyzeStore } = useAnalyzeStore();
+const gameStore = useGameStore();
+const analyzeStore = useAnalyzeStore();
 
 function analyze() {
   analyzeStore.toggle();

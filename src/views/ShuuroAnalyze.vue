@@ -8,8 +8,8 @@ import ShuuroChessground from "@/components/ShuuroChessground.vue";
 import { useGameStore } from "@/store/game";
 import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 
-const { gameStore } = useGameStore();
-const { analyzeStore } = useAnalyzeStore();
+const gameStore = useGameStore();
+const analyzeStore = useAnalyzeStore();
 gameStore.clientStage = 2;
 
 onMounted(async () => {

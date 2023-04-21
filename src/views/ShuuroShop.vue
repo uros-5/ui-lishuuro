@@ -28,8 +28,8 @@ import { useGameStore } from "@/store/game";
 import { useShopStore } from "@/store/game/useShopStore";
 import { pieces, dataPrice } from "@/plugins/shop";
 
-const { gameStore } = useGameStore();
-const { shopStore } = useShopStore();
+const gameStore = useGameStore();
+const shopStore = useShopStore();
 
 const { user } = useUser();
 

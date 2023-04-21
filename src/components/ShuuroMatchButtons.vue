@@ -15,7 +15,7 @@
 import { useGameStore } from "@/store/game";
 import { useWs } from "@/store/useWs";
 
-const { gameStore } = useGameStore();
+const gameStore = useGameStore();
 const { SEND } = useWs();
 
 function canDR(): boolean {

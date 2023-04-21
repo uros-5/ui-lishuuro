@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 
-let { analyzeStore } = useAnalyzeStore();
+let analyzeStore = useAnalyzeStore();
 
 function sanFormat(fen: string) {
   let parts = fen.split(" ");

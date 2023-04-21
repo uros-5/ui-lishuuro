@@ -19,20 +19,15 @@ export const useCgStore = defineStore("useCgStore", () => {
     dest: "",
     active: false,
   });
-  const { gameStore } = useGameStore();
-  const { wasmStore } = useWasmStore();
-  const { analyzeStore } = useAnalyzeStore();
+  const wasmStore = useWasmStore();
+  const  analyzeStore  = useAnalyzeStore();
+  const gameStore = useGameStore();
+  // console.log(gameStore, analyzeStore, wasmStore);
 
   let stage = 0;
 
-  const cgStore = new class {
-    watcher: WatchStopHandle;
-
-    constructor() {
-      this.watcher = watch(state, (newstate, oldstate, _clean) => {
-        this.cgWatcher(newstate, oldstate);
-      });
-    }
+  return {
+    state, flippedBoard, premoveData,
 
     newElement(element: null | HTMLElement, id: 0 | 1 | 2) {
       switch (id) {
@@ -46,11 +41,7 @@ export const useCgStore = defineStore("useCgStore", () => {
           state.value.bot = element;
           break;
       }
-    }
-
-    state() {
-      return state.value;
-    }
+    },
 
     cgWatcher(newstate: State, _oldstate: State) {
       if (newstate.element && gameStore.server) {
@@ -89,16 +80,16 @@ export const useCgStore = defineStore("useCgStore", () => {
           state.value.cg.redrawAll();
         }
       }
-    }
+    },
 
     flipBoard() {
       state.value.cg!.toggleOrientation();
       flippedBoard.value = !flippedBoard.value;
-    }
+    },
 
     get flipped() {
       return flippedBoard;
-    }
+    },
 
     setPieces(cg: Api, sp: ShuuroPosition) {
       const pieces = sp.map_pieces();
@@ -106,25 +97,25 @@ export const useCgStore = defineStore("useCgStore", () => {
       cg.state.pieces = pieces;
       cg.state.dom.redraw();
       cg.state.dom.redraw();
-    }
+    },
 
     setPlinths(cg: Api, sp: ShuuroPosition, ignore?: boolean) {
       if (ignore == true) return;
       const plinths = sp.map_plinths();
       cg.state.plinths = plinths;
       cg.redrawAll();
-    }
+    },
 
     setCheck(cg: Api, check: boolean) {
       setCheck(cg.state, check);
       cg.state.dom.redraw();
-    }
+    },
 
     changePocketRoles() {
       if (gameStore.state.variant.endsWith("Fairy")) {
         state.value.cg!.state.pocketRoles = p2;
       }
-    }
+    },
 
     setPocket(hand: string | undefined) {
       if (hand == undefined) {
@@ -136,7 +127,7 @@ export const useCgStore = defineStore("useCgStore", () => {
         state.value.cg!.state.pocketRoles!
       );
       state.value.cg!.redrawAll();
-    }
+    },
 
     wasmPocket() {
       const hand = wasmStore.placement().count_hand_pieces();
@@ -144,7 +135,7 @@ export const useCgStore = defineStore("useCgStore", () => {
         `[${hand}]`,
         state.value.cg!.state.pocketRoles!
       );
-    }
+    },
 
     pocketSelect(piece: Piece) {
       if (!gameStore.canPlay) {
@@ -153,7 +144,7 @@ export const useCgStore = defineStore("useCgStore", () => {
       const ch = this.shuuroPiece(piece);
       const moves = wasmStore.placement().place_moves(ch);
       this.legal_moves = moves;
-    }
+    },
 
     shuuroPiece(piece: Piece): string {
       const p =
@@ -161,21 +152,21 @@ export const useCgStore = defineStore("useCgStore", () => {
           ? piece.role[0].toUpperCase()
           : piece.role[0].toLowerCase();
       return p;
-    }
+    },
 
     afterPlace(piece: Piece, key: Key) {
       if (!gameStore.canPlay) {
         return;
       }
-    }
+    },
 
-    afterMove(orig: Key, dest: Key, _metadata: MoveMetadata) {}
+    afterMove(orig: Key, dest: Key, _metadata: MoveMetadata) { },
 
     enablePremove() {
       if (gameStore.player.isPlayer && gameStore.state.status < 1) {
         state.value.cg!.state.premovable.events = {
-          set: (orig, dest) => {},
-          unset: () => {},
+          set: (orig, dest) => { },
+          unset: () => { },
         };
         state.value.cg!.state.premovable.enabled = true;
         state.value.cg!.state.premovable!.events!.set = (orig, dest, _) => {
@@ -187,7 +178,7 @@ export const useCgStore = defineStore("useCgStore", () => {
           premoveData.value.active = false;
         };
       }
-    }
+    },
 
     selectSq(_key: Key) {
       if (gameStore.canPlay) {
@@ -198,18 +189,25 @@ export const useCgStore = defineStore("useCgStore", () => {
           this.legal_moves = lm;
         }
       }
-    }
+    },
 
     set legal_moves(lm: Map<any, any>) {
       state.value.cg!.state.movable.dests = lm;
-    }
+    },
 
     set movable_color(color: string) {
       state.value.cg!.state.movable.color = color == "w" ? "white" : "black";
       state.value.cg!.state.turnColor = color == "w" ? "white" : "black";
-    }
-  }();
-  return { cgStore };
+    },
+
+  }
+
+  // constructor() {
+  //   this.watcher = watch(state, (newstate, oldstate, _clean) => {
+  //     this.cgWatcher(newstate, oldstate);
+  //   });
+  // }
+
 });
 
 function empty(): State {

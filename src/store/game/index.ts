@@ -22,34 +22,35 @@ import { useShopStore } from "./useShopStore";
 import { playAudio } from "@/plugins/audio";
 import { FenBtn } from "@/plugins/fen";
 import { defineStore } from "pinia";
+import { useCgStore } from "./useCgStore";
 
 export const useGameStore = defineStore("useGameStore", () => {
   const state = ref(emptyGame());
+  const other = ref(emptyOtherFields())
+  const wasmStore = useWasmStore();
+  const clockStore = useClockStore();
+  const shopStore = useShopStore();
+  const cgStore = useCgStore();
+  const analyzeStore = useAnalyzeStore();
   const user = useUser();
-  const { wasmStore } = useWasmStore();
-  const { analyzeStore } = useAnalyzeStore();
-  const { clockStore } = useClockStore();
-  const { shopStore } = useShopStore();
   const watchCount = ref(0);
   const offeredDraw = ref(false);
   const server = ref(false);
   const player = ref({ isPlayer: false, player: 2 } as UserLive);
   const clientStage = ref(0);
   const index = ref(0);
-  const { SEND } = useWs();
-
-  const gameStore = new class {
-    get state() {
-      return state.value;
-    }
-
+  const ws = useWs();
+  // console.log(wasmStore, analyzeStore, clockStore, shopStore, cgStore);
+  return {
+    state,
+    other,
     get server() {
       return server;
-    }
+    },
 
     get player() {
       return player.value;
-    }
+    },
 
     get playerColor(): string {
       switch (this.player.player) {
@@ -60,7 +61,7 @@ export const useGameStore = defineStore("useGameStore", () => {
         default:
           return "none";
       }
-    }
+    },
 
     get config() {
       if (player.value.isPlayer && state.value.status < 1) {
@@ -71,23 +72,23 @@ export const useGameStore = defineStore("useGameStore", () => {
         return liveConfig;
       }
       return anonConfig;
-    }
+    },
 
     get clientStage() {
       return clientStage.value;
-    }
+    },
 
     get offeredDraw() {
       return offeredDraw;
-    }
+    },
 
     get history() {
       return state.value.history[state.value.current_stage];
-    }
+    },
 
     rejectDraw() {
       offeredDraw.value = false;
-    }
+    },
 
     fromServer(s: GameInfo) {
       state.value = s;
@@ -101,13 +102,14 @@ export const useGameStore = defineStore("useGameStore", () => {
       this.updateHeadTitle();
       index.value = -1;
       this.startPosFix();
+      this.setRedirect();
       if (s.current_stage == 0) {
         shopStore.shopInfo();
       } else if (s.current_stage == 1) {
       } else if (s.current_stage == 2) {
       }
       this.playLive();
-    }
+    },
 
     silentRedirect(id: string): boolean {
       const { SEND } = useWs();
@@ -124,7 +126,7 @@ export const useGameStore = defineStore("useGameStore", () => {
         return false;
       }
       return true;
-    }
+    },
 
     startPosFix() {
       if (state.value.current_stage == 2) {
@@ -133,12 +135,12 @@ export const useGameStore = defineStore("useGameStore", () => {
           state.value.history[2].unshift(last);
         }
       }
-    }
+    },
 
     updateHeadTitle() {
       const players = state.value.players;
       updateHeadTitle(`${players[0]} vs ${players[1]}`);
-    }
+    },
 
     setPlayer() {
       if (user.user.username == state.value.players[0]) {
@@ -151,7 +153,7 @@ export const useGameStore = defineStore("useGameStore", () => {
         player.value.player = 2;
         player.value.isPlayer = false;
       }
-    }
+    },
 
     setRedirect() {
       const r = router.currentRoute;
@@ -164,41 +166,41 @@ export const useGameStore = defineStore("useGameStore", () => {
       router.push({
         path: `/shuuro/${state.value.current_stage}/${state.value._id}`,
       });
-    }
+    },
 
     playLive() {
       if (state.value.status <= 0) {
         playAudio("res");
       }
-    }
+    },
 
     updateWatchCount(msg: SpecCnt): void {
       if (msg.game_id == state.value._id) {
         watchCount.value = msg.count;
       }
-    }
+    },
 
     get watchCount() {
       return watchCount;
-    }
+    },
 
     index() {
       return index;
-    }
+    },
 
     set clientStage(stage: number) {
       clientStage.value = stage;
-    }
+    },
 
     get canPlay(): boolean {
       if (
-        this.state.side_to_move == this.player.player &&
-        this.state.status < 1
+        this.state.value.side_to_move == this.player.player &&
+        this.state.value.status < 1
       ) {
         return true;
       }
       return false;
-    }
+    },
 
     legal_moves(): Map<any, any> {
       const wasm2 = analyzeStore.state.active
@@ -212,7 +214,7 @@ export const useGameStore = defineStore("useGameStore", () => {
         return moves;
       }
       return new Map();
-    }
+    },
 
     send(t: string, game_move?: string) {
       if (analyzeStore.state.active) return;
@@ -222,25 +224,25 @@ export const useGameStore = defineStore("useGameStore", () => {
         t,
         game_move,
       };
-      SEND(msg);
-    }
+      ws.SEND(msg);
+    },
 
     scrollToBottom(): void {
       const container = document.querySelector("#movelist");
       container!.scrollTop = container!.scrollHeight;
-    }
+    },
 
     addMove(h: 0 | 1 | 2, move: string) {
       state.value.history[h].push(move);
-    }
+    },
 
     addMoves(h: 0 | 1 | 2, moves: string[]) {
       state.value.history[h] = moves;
-    }
+    },
 
     reset() {
       state.value = emptyGame();
-    }
+    },
 
     findFen(fenBtn: FenBtn) {
       const len = state.value.history[state.value.current_stage].length;
@@ -263,22 +265,22 @@ export const useGameStore = defineStore("useGameStore", () => {
       } else if (index.value >= len) {
         index.value = len;
       }
-    }
+    },
 
-    serverPlace(msg: LiveGamePlace) {}
+    serverPlace(msg: LiveGamePlace) { },
 
-    serverMove2(msg: LiveGameFight) {}
+    serverMove2(msg: LiveGameFight) { },
 
-    gameDraw(msg: LiveGameDraw) {}
+    gameDraw(msg: LiveGameDraw) { },
 
-    gameResign(msg: LiveGameResign) {}
+    gameResign(msg: LiveGameResign) { },
 
-    gameLot(msg: LiveGameLost) {}
+    gameLot(msg: LiveGameLost) { },
 
-    redirectDeploy(s: RedirectDeploy) {}
-  }();
+    redirectDeploy(s: RedirectDeploy) { },
 
-  return { gameStore };
+  };
+
 });
 
 function emptyGame(): GameInfo {
@@ -303,4 +305,16 @@ function emptyGame(): GameInfo {
     },
     sub_variant: 100,
   };
+}
+
+function emptyOtherFields() {
+
+  return {
+    watchCount: 0,
+    offeredDraw: false,
+    server: false,
+    player: { isPlayer: false, player: 2 } as UserLive,
+    clientStage: 0,
+    index: 0
+  }
 }

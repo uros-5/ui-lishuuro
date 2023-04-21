@@ -18,7 +18,7 @@ import { useGameStore } from "@/store/game";
 
 const { SEND } = useWs();
 
-const { gameStore } = useGameStore();
+const gameStore = useGameStore();
 
 function canDraw() {
   return gameStore.player.isPlayer && gameStore.offeredDraw;

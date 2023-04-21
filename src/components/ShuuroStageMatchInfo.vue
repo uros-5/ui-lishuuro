@@ -16,7 +16,7 @@ import { defineProps } from "vue";
 import { timeago } from "@/plugins/timeago";
 import { useGameStore } from "@/store/game";
 
-const { gameStore } = useGameStore();
+const gameStore = useGameStore();
 
 const props = defineProps<{
   variant: string;

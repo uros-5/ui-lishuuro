@@ -22,7 +22,7 @@ import { useGameStore } from "@/store/game";
 import { playAudio } from "@/plugins/audio";
 
 const props = defineProps<{ index: number; fen: string; move: string }>();
-const { gameStore } = useGameStore();
+const gameStore = useGameStore();
 
 function updateIndex(): void {
   audio();

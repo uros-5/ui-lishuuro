@@ -17,7 +17,7 @@ import { useChat } from "@/store/useChat";
 import { useGameStore } from "@/store/game";
 
 const { SEND } = useWs();
-const { gameStore } = useGameStore();
+const gameStore = useGameStore();
 const homeChat = useChat();
 
 onMounted(() => {

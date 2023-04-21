@@ -5,27 +5,28 @@ import { defineStore } from "pinia";
 
 export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
   const state = ref(empty());
-  const { gameStore } = useGameStore();
-  const analyzeStore = new class {
+  const gameStore = useGameStore();
+  // console.log(gameStore);
+  return {
     get state() {
       return state.value;
-    }
+    },
 
     toggle() {
       state.value.active = !state.value.active;
-    }
+    },
 
     addAnalyzeMove(move: string) {
       state.value.moves.push(move);
-    }
+    },
 
     newIndex(index: number) {
       state.value.index = index;
-    }
+    },
 
     reset() {
       state.value = empty();
-    }
+    },
 
     findFen(fenBtn: FenBtn) {
       const len = state.value.moves.length;
@@ -48,7 +49,7 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
       } else if (state.value.index >= len) {
         state.value.index = len;
       }
-    }
+    },
 
     get canAnalyze(): boolean {
       if (gameStore.state.current_stage == 2 && gameStore.state.status > -1) {
@@ -56,11 +57,11 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
       }
       return false;
     }
-  }();
+  };
 
-  return { analyzeStore };
 });
 
 function empty() {
   return { active: false, moves: [] as string[], index: 0 };
 }
+

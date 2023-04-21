@@ -9,7 +9,9 @@ export const useWasmStore = defineStore("useWasmStore", () => {
     analyzeWasm: undefined,
     init: false,
   } as WasmStore);
-  const wasmStore = new class {
+
+  return {
+    state,
     async init() {
       init().then((_exports) => {
         state.value.wasm[0] = new ShuuroShop();
@@ -17,32 +19,31 @@ export const useWasmStore = defineStore("useWasmStore", () => {
         state.value.wasm[2] = new ShuuroPosition("shuuro");
         state.value.analyzeWasm = new ShuuroPosition("shuuro");
       });
-    }
+    },
 
     changeVariant(variant: string) {
       [0, 1, 2].forEach((item) =>
         state.value.wasm[item]!.change_variant(variant)
       );
-    }
+    },
 
     shop(): ShuuroShop {
       return state.value.wasm[0]!;
-    }
+    },
 
     placement(): ShuuroPosition {
       return state.value.wasm[1]!;
-    }
+    },
 
     fight(): ShuuroPosition {
       return state.value.wasm[2]!;
-    }
+    },
 
     analyze(): ShuuroPosition {
       return state.value.analyzeWasm!;
     }
-  }();
+  };
 
-  return { wasmStore };
 });
 
 type WasmStore = {

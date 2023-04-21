@@ -21,9 +21,9 @@ import { useGameStore } from "@/store/game";
 import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 import { useCgStore } from "@/store/game/useCgStore";
 
-const { cgStore } = useCgStore();
-const { analyzeStore } = useAnalyzeStore();
-const { gameStore } = useGameStore();
+const cgStore = useCgStore();
+const analyzeStore = useAnalyzeStore();
+const gameStore = useGameStore();
 
 function materialTop(): string {
   if (analyzeStore.state.active) {

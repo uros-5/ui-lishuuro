@@ -28,8 +28,8 @@ import AnalyzeRow from "./AnalyzeRow.vue";
 import { useGameStore } from "@/store/game";
 import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 
-const { gameStore } = useGameStore();
-const { analyzeStore } = useAnalyzeStore();
+const gameStore = useGameStore();
+const analyzeStore = useAnalyzeStore();
 
 function fenItem(item: string): string {
   if (gameStore.clientStage == 0) {

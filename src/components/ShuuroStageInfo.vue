@@ -42,7 +42,7 @@
 import ShuuroLeftSideUsername from "./ShuuroLeftSideUsername.vue";
 import ShuuroStageMatchInfo from "@/components/ShuuroStageMatchInfo.vue";
 import { useGameStore } from "@/store/game";
-const { gameStore } = useGameStore();
+const gameStore = useGameStore();
 
 function navRoute(stage: string): string {
   return `/shuuro/${stage}/${gameStore.state._id}`;

@@ -5,21 +5,24 @@ import { useClockStore } from "./useClockStore";
 import { defineStore } from "pinia";
 
 export const useShopStore = defineStore("useShopStore", () => {
+  const wasmStore = useWasmStore();
+  const clockStore = useClockStore();
+  const gameStore = useGameStore();
   const state = ref(empty());
-  const { wasmStore } = useWasmStore();
-  const { gameStore } = useGameStore();
-  const { clockStore } = useClockStore();
 
-  const shopStore = new class {
+
+  return {
+    state,
+    // console.log(gameStore, wasmStore, clockStore);
     shopInfo(): void {
       gameStore.send("live_game_hand");
       gameStore.send("live_game_confirmed");
-    }
+    },
 
     setConfirmed(data: [boolean, boolean]) {
       state.value.confirmed = data;
       this.startClock();
-    }
+    },
 
     setHand(hand: string) {
       wasmStore.shop().set_hand(hand);
@@ -29,7 +32,7 @@ export const useShopStore = defineStore("useShopStore", () => {
       const moves: string[] = wasmStore.shop().history();
       gameStore.addMoves(0, moves);
       state.value.credit = wasmStore.shop().get_credit(gameStore.playerColor);
-    }
+    },
 
     buy(p: string, color: string) {
       if (this.canShop) {
@@ -47,7 +50,7 @@ export const useShopStore = defineStore("useShopStore", () => {
         gameStore.index().value = gameStore.state.history[0].length - 1;
         state.value.credit = new_credit;
       }
-    }
+    },
 
     confirm() {
       if (this.canShop) {
@@ -58,9 +61,9 @@ export const useShopStore = defineStore("useShopStore", () => {
           state.value.confirmed[gameStore.player.player] = true;
         }
       }
-    }
+    },
 
-    private startClock() {
+    startClock() {
       const elapsed = clockStore.elapsed;
       const confirmed = state.value.confirmed.findIndex((item) => item == true);
       if (confirmed != -1) {
@@ -74,11 +77,11 @@ export const useShopStore = defineStore("useShopStore", () => {
         return;
       }
       clockStore.startBoth(elapsed, gameStore.state.tc.clocks);
-    }
+    },
 
     get amIConfirmed(): boolean {
       return state.value.confirmed[gameStore.player.player];
-    }
+    },
 
     get canPlay(): boolean {
       if (
@@ -88,7 +91,7 @@ export const useShopStore = defineStore("useShopStore", () => {
         return true;
       }
       return false;
-    }
+    },
 
     get canShop(): boolean {
       return (
@@ -97,18 +100,17 @@ export const useShopStore = defineStore("useShopStore", () => {
         gameStore.state.status < 0 &&
         !this.amIConfirmed
       );
-    }
+    },
 
     get pieceCounter() {
       return state.value.pieceCounter;
-    }
+    },
 
     get credit() {
       return state.value.credit;
     }
-  }();
+  }
 
-  return { shopStore };
 });
 
 function empty(): State {

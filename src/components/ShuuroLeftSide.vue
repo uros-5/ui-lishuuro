@@ -17,7 +17,7 @@ import ShuuroSpectators from "./ShuuroSpectators.vue";
 import { useChat } from "@/store/useChat";
 import { useGameStore } from "@/store/game";
 
-const { gameStore } = useGameStore();
+const gameStore = useGameStore();
 const chatStore = useChat();
 </script>
 <style></style>

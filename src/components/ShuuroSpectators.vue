@@ -12,10 +12,10 @@
 </template>
 <script setup lang="ts">
 import { useGameStore } from "@/store/game";
-const { gameStore } = useGameStore();
+const gameStore = useGameStore();
 
 function fmtCount(): string {
-  let count = gameStore.watchCount.value;
+  let count = gameStore.watchCount;
   if (count <= 2) {
     return "";
   }
