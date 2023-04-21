@@ -25,7 +25,7 @@ export const useCgStore = defineStore("useCgStore", () => {
 
   let stage = 0;
 
-  const cgStore = new (class {
+  const cgStore = new class {
     watcher: WatchStopHandle;
 
     constructor() {
@@ -208,7 +208,7 @@ export const useCgStore = defineStore("useCgStore", () => {
       state.value.cg!.state.movable.color = color == "w" ? "white" : "black";
       state.value.cg!.state.turnColor = color == "w" ? "white" : "black";
     }
-  })();
+  }();
   return { cgStore };
 });
 

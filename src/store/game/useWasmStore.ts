@@ -9,7 +9,7 @@ export const useWasmStore = defineStore("useWasmStore", () => {
     analyzeWasm: undefined,
     init: false,
   } as WasmStore);
-  const wasmStore = new (class {
+  const wasmStore = new class {
     async init() {
       init().then((_exports) => {
         state.value.wasm[0] = new ShuuroShop();
@@ -40,7 +40,7 @@ export const useWasmStore = defineStore("useWasmStore", () => {
     analyze(): ShuuroPosition {
       return state.value.analyzeWasm!;
     }
-  })();
+  }();
 
   return { wasmStore };
 });

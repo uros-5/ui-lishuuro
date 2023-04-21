@@ -10,7 +10,7 @@ export const useShopStore = defineStore("useShopStore", () => {
   const { gameStore } = useGameStore();
   const { clockStore } = useClockStore();
 
-  const shopStore = new (class {
+  const shopStore = new class {
     shopInfo(): void {
       gameStore.send("live_game_hand");
       gameStore.send("live_game_confirmed");
@@ -106,7 +106,7 @@ export const useShopStore = defineStore("useShopStore", () => {
     get credit() {
       return state.value.credit;
     }
-  })();
+  }();
 
   return { shopStore };
 });

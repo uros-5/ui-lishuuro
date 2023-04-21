@@ -6,7 +6,7 @@ import { defineStore } from "pinia";
 export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
   const state = ref(empty());
   const { gameStore } = useGameStore();
-  const analyzeStore = new (class {
+  const analyzeStore = new class {
     get state() {
       return state.value;
     }
@@ -56,7 +56,7 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
       }
       return false;
     }
-  })();
+  }();
 
   return { analyzeStore };
 });

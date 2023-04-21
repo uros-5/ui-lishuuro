@@ -5,7 +5,7 @@ import { defineStore } from "pinia";
 
 export const useClockStore = defineStore("useClockStore", () => {
   const state = ref(empty());
-  const clockStore = new (class {
+  const clockStore = new class {
     start(id: number, duration = 0) {
       state.value.clocks[id].start(duration);
     }
@@ -59,7 +59,7 @@ export const useClockStore = defineStore("useClockStore", () => {
     get state() {
       return state.value;
     }
-  })();
+  }();
   return { clockStore };
 });
 

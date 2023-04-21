@@ -38,7 +38,7 @@ export const useGameStore = defineStore("useGameStore", () => {
   const index = ref(0);
   const { SEND } = useWs();
 
-  const gameStore = new (class {
+  const gameStore = new class {
     get state() {
       return state.value;
     }
@@ -276,7 +276,7 @@ export const useGameStore = defineStore("useGameStore", () => {
     gameLot(msg: LiveGameLost) {}
 
     redirectDeploy(s: RedirectDeploy) {}
-  })();
+  }();
 
   return { gameStore };
 });
