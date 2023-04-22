@@ -41,7 +41,6 @@ export const useWs = defineStore("useWsStore", () => {
   const shopStore = useShopStore();
   const newsStore = useNews();
   const tvStore = useTvStore();
-  console.log(gameStore, shopStore);
 
   function onopen(_e: Event) {
     user.onOpen();
@@ -55,7 +54,7 @@ export const useWs = defineStore("useWsStore", () => {
     }, 40 * 1000);
   }
 
-  function onmessage(e: MessageEvent) {
+  async function onmessage(e: MessageEvent) {
     const msg: { t: string; data: any } = JSON.parse(e.data);
     let data: any = {};
     switch (msg.t) {
@@ -127,7 +126,7 @@ export const useWs = defineStore("useWsStore", () => {
         const game = LiveGameStart.parse(msg.data);
         game["game_info"]["_id"] = game["game_id"];
         gameStore.reset();
-        gameStore.fromServer(game["game_info"]);
+        await gameStore.fromServer(game["game_info"]);
         break;
       case "live_game_spectators_count":
         data = SpecCnt.parse(msg.data);

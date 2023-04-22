@@ -13,24 +13,14 @@ import { defineStore } from "pinia";
 
 export const useCgStore = defineStore("useCgStore", () => {
   const state = ref(empty());
-  const flippedBoard = ref(false);
-  const premoveData = ref({
-    orig: "",
-    dest: "",
-    active: false,
-  });
+  const others = ref(emptyOthers());
   const wasmStore = useWasmStore();
   const analyzeStore = useAnalyzeStore();
   const gameStore = useGameStore();
-  console.log(gameStore, analyzeStore, wasmStore);
-
   let stage = 0;
-
   return {
     state,
-    flippedBoard,
-    premoveData,
-
+    others,
     newElement(element: null | HTMLElement, id: 0 | 1 | 2) {
       switch (id) {
         case 0:
@@ -86,11 +76,11 @@ export const useCgStore = defineStore("useCgStore", () => {
 
     flipBoard() {
       state.value.cg!.toggleOrientation();
-      flippedBoard.value = !flippedBoard.value;
+      others.value.flippedBoard = !others.value.flippedBoard;
     },
 
     flipped() {
-      return flippedBoard;
+      return others.value.flippedBoard;
     },
 
     setPieces(cg: Api, sp: ShuuroPosition) {
@@ -162,22 +152,22 @@ export const useCgStore = defineStore("useCgStore", () => {
       }
     },
 
-    afterMove(orig: Key, dest: Key, _metadata: MoveMetadata) {},
+    afterMove(orig: Key, dest: Key, _metadata: MoveMetadata) { },
 
     enablePremove() {
       if (gameStore.player().isPlayer && gameStore.state.status < 1) {
         state.value.cg!.state.premovable.events = {
-          set: (orig, dest) => {},
-          unset: () => {},
+          set: (orig, dest) => { },
+          unset: () => { },
         };
         state.value.cg!.state.premovable.enabled = true;
         state.value.cg!.state.premovable!.events!.set = (orig, dest, _) => {
-          premoveData.value.orig = orig;
-          premoveData.value.dest = dest;
-          premoveData.value.active = true;
+          others.value.premoveData.orig = orig;
+          others.value.premoveData.dest = dest;
+          others.value.premoveData.active = true;
         };
         state.value.cg!.state.premovable!.events!.unset! = () => {
-          premoveData.value.active = false;
+          others.value.premoveData.active = false;
         };
       }
     },
@@ -201,6 +191,12 @@ export const useCgStore = defineStore("useCgStore", () => {
       state.value.cg!.state.movable.color = color == "w" ? "white" : "black";
       state.value.cg!.state.turnColor = color == "w" ? "white" : "black";
     },
+
+    reset() {
+      state.value = empty();
+      others.value = emptyOthers();
+    }
+    
   };
 
   // constructor() {
@@ -220,6 +216,20 @@ function empty(): State {
     profileGames: [],
   };
 }
+
+function emptyOthers() {
+  return {
+    flippedBoard: false,
+    premoveData: {
+      orig: "",
+      dest: "",
+      active: false,
+    },
+    stage: 0
+  }
+}
+
+
 
 type State = {
   cg: Api | undefined;

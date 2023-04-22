@@ -26,25 +26,23 @@ import { useCgStore } from "./useCgStore";
 
 export const useGameStore = defineStore("useGameStore", () => {
   const state = ref(emptyGame());
-  const other = ref(emptyOtherFields());
+  const other = ref(emptyOther());
   const wasmStore = useWasmStore();
   const clockStore = useClockStore();
   const shopStore = useShopStore();
   const cgStore = useCgStore();
   const analyzeStore = useAnalyzeStore();
   const user = useUser();
-  const index = ref(0);
   const ws = useWs();
-  console.log(wasmStore, analyzeStore, clockStore, shopStore, cgStore);
   return {
     state,
     other,
     server() {
-      return this.other.value.server;
+      return other.value.server;
     },
 
     player() {
-      return this.other.value.player;
+      return other.value.player;
     },
 
     playerColor(): string {
@@ -70,11 +68,11 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     clientStage() {
-      return this.other.value.clientStage;
+      return other.value.clientStage;
     },
 
     offeredDraw() {
-      return this.other.value.offeredDraw;
+      return other.value.offeredDraw;
     },
 
     history() {
@@ -82,22 +80,23 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     rejectDraw() {
-      this.other.value.offeredDraw = false;
+      other.value.offeredDraw = false;
     },
 
-    fromServer(s: GameInfo) {
+    async fromServer(s: GameInfo) {
       state.value = s;
       state.value.min = s.min / 60000;
       state.value.incr = s.incr / 1000;
       state.value.last_clock = new Date(s.tc.last_click).toString();
-      this.other.value.clientStage = s.current_stage;
+      other.value.clientStage = s.current_stage;
       clockStore.fromServer(s);
       this.setPlayer();
-      this.other.value.server = true;
+      other.value.server = true;
       this.updateHeadTitle();
-      index.value = -1;
+      other.value.index = -1;
       this.startPosFix();
       this.setRedirect();
+      await wasmStore.init();
       if (s.current_stage == 0) {
         shopStore.shopInfo();
       } else if (s.current_stage == 1) {
@@ -155,7 +154,7 @@ export const useGameStore = defineStore("useGameStore", () => {
       if (state.value.status > 0) {
         const fullPath = r.value.fullPath;
         if (fullPath.startsWith(`/shuuro/${state.value.current_stage}`)) {
-          this.other.value.clientStage = state.value.current_stage;
+          other.value.clientStage = state.value.current_stage;
         }
       }
       router.push({
@@ -171,20 +170,20 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     updateWatchCount(msg: SpecCnt): void {
       if (msg.game_id == state.value._id) {
-        this.other.value.watchCount = msg.count;
+        other.value.watchCount = msg.count;
       }
     },
 
     watchCount() {
-      return this.other.value.watchCount;
+      return other.value.watchCount;
     },
 
     index() {
-      return index;
+      return other.value.index;
     },
 
     newClientStage(stage: number) {
-      this.other.value.clientStage = stage;
+      other.value.clientStage = stage;
     },
 
     canPlay(): boolean {
@@ -237,28 +236,34 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     reset() {
       state.value = emptyGame();
+      other.value = emptyOther();
+      cgStore.reset();
+      shopStore.reset();
+      wasmStore.reset();
+      clockStore.reset();
+      analyzeStore.reset();
     },
 
     findFen(fenBtn: FenBtn) {
       const len = state.value.history[state.value.current_stage].length;
       switch (fenBtn) {
         case FenBtn.First:
-          index.value = 0;
+          other.value.index = 0;
           break;
         case FenBtn.Previous:
-          index.value -= 1;
+          other.value.index -= 1;
           break;
         case FenBtn.Next:
-          index.value += 1;
+          other.value.index += 1;
           break;
         case FenBtn.Last:
-          index.value = len - 1;
+          other.value.index = len - 1;
           break;
       }
-      if (index.value <= 0) {
-        index.value = 0;
-      } else if (index.value >= len) {
-        index.value = len;
+      if (other.value.index <= 0) {
+        other.value.index = 0;
+      } else if (other.value.index >= len) {
+        other.value.index= len;
       }
     },
 
@@ -300,7 +305,7 @@ function emptyGame(): GameInfo {
   };
 }
 
-function emptyOtherFields() {
+function emptyOther() {
   return {
     watchCount: 0,
     offeredDraw: false,

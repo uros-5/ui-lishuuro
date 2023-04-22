@@ -1,12 +1,11 @@
 <template>
-  <div v-if="index! % 2 == 1 && index != 1" class="move counter">
-    {{ Math.floor(index! / 2 + 1) }}
+  <div v-if="index % 2 == 1" class="move counter">
+    {{ Math.floor(index / 2 + 1) }}
   </div>
 
   <div
     class="move"
-    v-if="index != 1"
-    :class="{ active: gameStore.index().value == index! - 1 }"
+    :class="{ active: gameStore.index() == index - 1 }"
     :ply="index"
     @click="updateIndex"
   >
@@ -25,6 +24,7 @@ const props = defineProps<{ index: number; fen: string; move: string }>();
 const gameStore = useGameStore();
 
 function updateIndex(): void {
+  gameStore.other.index = props.index - 1;
   audio();
 }
 

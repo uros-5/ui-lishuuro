@@ -39,10 +39,7 @@ function getColor(username: string): string {
 }
 
 function myCredit() {
-  computed(() => {
-    const credit = gameStore.state.credits[gameStore.player().player];
-    return credit == undefined ? 800 : credit;
-  });
+  return shopStore.state.credit;
 }
 
 onMounted(() => {

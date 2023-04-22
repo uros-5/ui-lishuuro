@@ -18,6 +18,7 @@ import { useGameStore } from "@/store/game";
 
 const { SEND } = useWs();
 const gameStore = useGameStore();
+
 const homeChat = useChat();
 
 onMounted(() => {

@@ -4,21 +4,16 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 
 export const useWasmStore = defineStore("useWasmStore", () => {
-  const state = ref({
-    wasm: [undefined, undefined, undefined],
-    analyzeWasm: undefined,
-    init: false,
-  } as WasmStore);
+  const state = ref(empty());
 
   return {
     state,
     async init() {
-      init().then((_exports) => {
-        state.value.wasm[0] = new ShuuroShop();
-        state.value.wasm[1] = new ShuuroPosition("shuuro");
-        state.value.wasm[2] = new ShuuroPosition("shuuro");
-        state.value.analyzeWasm = new ShuuroPosition("shuuro");
-      });
+      let i = await init();
+      state.value.wasm[0] = new ShuuroShop();
+      state.value.wasm[1] = new ShuuroPosition("shuuro");
+      state.value.wasm[2] = new ShuuroPosition("shuuro");
+      state.value.analyzeWasm = new ShuuroPosition("shuuro");
     },
 
     changeVariant(variant: string) {
@@ -42,6 +37,10 @@ export const useWasmStore = defineStore("useWasmStore", () => {
     analyze(): ShuuroPosition {
       return state.value.analyzeWasm!;
     },
+
+    reset() {
+      state.value = empty();
+    }
   };
 });
 
@@ -54,3 +53,11 @@ type WasmStore = {
   analyzeWasm: ShuuroPosition | undefined;
   init: boolean;
 };
+
+function empty(): WasmStore {
+  return {
+    wasm: [undefined, undefined, undefined],
+    analyzeWasm: undefined,
+    init: false
+  }
+}

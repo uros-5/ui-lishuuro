@@ -5,7 +5,7 @@
   >
     <div id="movelist" :class="{ movelist2: analyzeStore.state().active }">
       <ShuuroFenItem
-        v-for="(item, i) in gameStore.history"
+        v-for="(item, i) in getHistory()"
         v-if="analyzeStore.state().moves.length == 0"
         :key="i"
         :fen="fenItem(item)"
@@ -32,15 +32,12 @@ const gameStore = useGameStore();
 const analyzeStore = useAnalyzeStore();
 
 function fenItem(item: string): string {
-  if (gameStore.clientStage() == 0) {
-    return `+${item[0]}`;
-  }
   return item;
 }
 
 function moveItem(item: string): string {
   if (gameStore.clientStage() == 0) {
-    return `+${item}`;
+    return `${item}`;
   } else if (gameStore.clientStage() == 1) {
     let fen = item.split("_");
     return fen[0];
@@ -68,6 +65,21 @@ function showRes(): boolean {
     gameStore.state.status > 0 &&
     gameStore.clientStage() == gameStore.state.current_stage
   );
+}
+
+function getHistory(): string[] {
+  let history = gameStore.state.history[gameStore.state.current_stage];
+  let color = gameStore.player().player;
+  if (gameStore.state.current_stage == 0) {
+    history = history.filter((value) => {
+      let piece = value[1];
+      let comp = color == 0 ? piece.toUpperCase() : piece.toLowerCase();
+      if (piece == comp) {
+        return piece;
+      }
+    });
+  }
+  return history;
 }
 </script>
 <style scoped>

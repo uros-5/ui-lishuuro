@@ -65,7 +65,7 @@ function cgWidth(): string {
 function piece_counter(): number[] {
   if (props.handType == "shop") {
     // read from shop
-    return shopStore.pieceCounter as unknown as number[];
+    return shopStore.pieceCounter() as unknown as number[];
   } else {
     // read from props
     return props.counter.slice().splice(1);
@@ -88,7 +88,6 @@ function increment(_index: number, p: string): void {
     } else {
       p = p.toLowerCase();
     }
-
     shopStore.buy(p, props.color);
     scrollToBottom();
   }

@@ -6,7 +6,6 @@ import { defineStore } from "pinia";
 export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
   const state = ref(empty());
   const gameStore = useGameStore();
-  console.log(gameStore);
   return {
     state() {
       return state.value;
@@ -57,8 +56,6 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
         state.value.index = len;
       }
     },
-
-
   };
 });
 

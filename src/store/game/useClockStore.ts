@@ -49,20 +49,30 @@ export const useClockStore = defineStore("useClockStore", () => {
       );
     },
 
-    get elapsed(): number {
+    elapsed(): number {
       const now = new Date();
       const converted_date = new Date(state.value.last_clock);
       const elapsed = now.getTime() - converted_date.getTime();
       return elapsed;
     },
 
-    get state() {
+    state() {
       return state.value;
     },
+
+    reset() {
+      const old = empty();
+      state.value.last_clock = old.last_clock
+      this.pauseBoth();
+    }
   };
 });
 
-function empty(): { clocks: [Clock, Clock]; last_clock: string } {
+type State = {
+  clocks: [Clock, Clock]; last_clock: string
+}
+
+function empty(): State {
   return {
     clocks: [new Clock(0, 0, 0, "1"), new Clock(0, 0, 0, "0")],
     last_clock: new Date().toString(),
