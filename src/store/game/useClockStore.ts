@@ -58,8 +58,8 @@ export const useClockStore = defineStore("useClockStore", () => {
 
     get state() {
       return state.value;
-    }
-  }
+    },
+  };
 });
 
 function empty(): { clocks: [Clock, Clock]; last_clock: string } {

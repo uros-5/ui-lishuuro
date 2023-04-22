@@ -82,7 +82,7 @@ function dataNb(index: number): number | string {
 }
 
 function increment(_index: number, p: string): void {
-  if (props.handType == "shop" && gameStore.player.isPlayer == true) {
+  if (props.handType == "shop" && gameStore.player().isPlayer == true) {
     if (props.color == "white") {
       p = p.toUpperCase();
     } else {
@@ -104,7 +104,7 @@ function pocketCss(): string {
 }
 
 function isHand(): boolean {
-  let stage = gameStore.clientStage;
+  let stage = gameStore.clientStage();
   return stage == 0 || stage == 1;
 }
 

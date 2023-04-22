@@ -21,7 +21,7 @@ const { SEND } = useWs();
 const gameStore = useGameStore();
 
 function canDraw() {
-  return gameStore.player.isPlayer && gameStore.offeredDraw;
+  return gameStore.player().isPlayer && gameStore.offeredDraw;
 }
 
 function rejectDraw() {

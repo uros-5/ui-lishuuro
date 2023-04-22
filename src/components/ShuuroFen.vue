@@ -1,19 +1,19 @@
 <template>
   <div
     class="movelist-block"
-    :class="{ 'movelist-block2': analyzeStore.state.active }"
+    :class="{ 'movelist-block2': analyzeStore.state().active }"
   >
-    <div id="movelist" :class="{ movelist2: analyzeStore.state.active }">
+    <div id="movelist" :class="{ movelist2: analyzeStore.state().active }">
       <ShuuroFenItem
         v-for="(item, i) in gameStore.history"
-        v-if="analyzeStore.state.moves.length == 0"
+        v-if="analyzeStore.state().moves.length == 0"
         :key="i"
         :fen="fenItem(item)"
         :move="moveItem(item)"
         :index="i + 1"
       />
 
-      <AnalyzeRow v-if="analyzeStore.state.moves.length > 0" />
+      <AnalyzeRow v-if="analyzeStore.state().moves.length > 0" />
 
       <div id="result" v-if="showRes()">
         {{ resultMessage() }}
@@ -32,19 +32,19 @@ const gameStore = useGameStore();
 const analyzeStore = useAnalyzeStore();
 
 function fenItem(item: string): string {
-  if (gameStore.clientStage == 0) {
+  if (gameStore.clientStage() == 0) {
     return `+${item[0]}`;
   }
   return item;
 }
 
 function moveItem(item: string): string {
-  if (gameStore.clientStage == 0) {
+  if (gameStore.clientStage() == 0) {
     return `+${item}`;
-  } else if (gameStore.clientStage == 1) {
+  } else if (gameStore.clientStage() == 1) {
     let fen = item.split("_");
     return fen[0];
-  } else if (gameStore.clientStage == 2) {
+  } else if (gameStore.clientStage() == 2) {
     let fen = item.split(" ");
     return fen[5];
   }
@@ -66,7 +66,7 @@ function isFirst(index: number): boolean {
 function showRes(): boolean {
   return (
     gameStore.state.status > 0 &&
-    gameStore.clientStage == gameStore.state.current_stage
+    gameStore.clientStage() == gameStore.state.current_stage
   );
 }
 </script>

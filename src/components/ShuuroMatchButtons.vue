@@ -19,7 +19,7 @@ const gameStore = useGameStore();
 const { SEND } = useWs();
 
 function canDR(): boolean {
-  return gameStore.state.status < 0 && gameStore.player.isPlayer;
+  return gameStore.state.status < 0 && gameStore.player().isPlayer;
 }
 
 function draw() {

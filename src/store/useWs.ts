@@ -33,15 +33,15 @@ import { useGameStore } from "./game";
 import { useShopStore } from "./game/useShopStore";
 
 export const useWs = defineStore("useWsStore", () => {
-  const unsendMessages = ref([]);
   const gameStore = useGameStore();
+  const unsendMessages = ref([]);
   const user = useUser();
   const chat = useChat();
   const homeLobby = useHomeLobby();
-  const  shopStore = useShopStore();
+  const shopStore = useShopStore();
   const newsStore = useNews();
   const tvStore = useTvStore();
-  // console.log(gameStore, shopStore);
+  console.log(gameStore, shopStore);
 
   function onopen(_e: Event) {
     user.onOpen();

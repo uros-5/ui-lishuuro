@@ -10,13 +10,13 @@ import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 
 const gameStore = useGameStore();
 const analyzeStore = useAnalyzeStore();
-gameStore.clientStage = 2;
+gameStore.newClientStage(2);
 
 onMounted(async () => {
   if (gameStore.state._id == "") {
   } else {
     analyzeStore.toggle();
-    if (!analyzeStore.canAnalyze) {
+    if (!analyzeStore.canAnalyze()) {
       // gameStore.redirect("/");
     }
   }

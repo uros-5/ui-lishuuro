@@ -20,14 +20,16 @@ export const useCgStore = defineStore("useCgStore", () => {
     active: false,
   });
   const wasmStore = useWasmStore();
-  const  analyzeStore  = useAnalyzeStore();
+  const analyzeStore = useAnalyzeStore();
   const gameStore = useGameStore();
-  // console.log(gameStore, analyzeStore, wasmStore);
+  console.log(gameStore, analyzeStore, wasmStore);
 
   let stage = 0;
 
   return {
-    state, flippedBoard, premoveData,
+    state,
+    flippedBoard,
+    premoveData,
 
     newElement(element: null | HTMLElement, id: 0 | 1 | 2) {
       switch (id) {
@@ -44,36 +46,36 @@ export const useCgStore = defineStore("useCgStore", () => {
     },
 
     cgWatcher(newstate: State, _oldstate: State) {
-      if (newstate.element && gameStore.server) {
-        analyzeStore.state.active ? (stage = 3) : null;
-        if (gameStore.clientStage == 1) {
+      if (newstate.element && gameStore.server()) {
+        analyzeStore.state().active ? (stage = 3) : null;
+        if (gameStore.clientStage() == 1) {
           if (newstate.top && newstate.bot && stage != 1) {
             stage = 1;
             const cg = deployCg(
               newstate.element,
-              gameStore.config,
+              gameStore.config(),
               newstate.top,
               newstate.bot,
               gameStore.state.variant
             );
             state.value.cg = cg;
-            gameStore.player.player == 1 ? this.flipBoard() : null;
+            gameStore.player().player == 1 ? this.flipBoard() : null;
             this.changePocketRoles();
             state.value.cg.redrawAll();
             state.value.cg.state.events.dropNewPiece = this.afterPlace;
           }
         } else if (
-          (gameStore.clientStage == 2 || analyzeStore.state.active) &&
+          (gameStore.clientStage() == 2 || analyzeStore.state().active) &&
           stage != 2
         ) {
           stage = 2;
           const cg = fightCg(
             newstate.element,
-            gameStore.config,
+            gameStore.config(),
             gameStore.state.variant
           );
           state.value.cg = cg;
-          gameStore.player.player == 1 ? this.flipBoard() : null;
+          gameStore.player().player == 1 ? this.flipBoard() : null;
           this.enablePremove();
           state.value.cg.state.events.select = this.selectSq;
           state.value.cg.state.movable.events.after = this.afterMove;
@@ -87,7 +89,7 @@ export const useCgStore = defineStore("useCgStore", () => {
       flippedBoard.value = !flippedBoard.value;
     },
 
-    get flipped() {
+    flipped() {
       return flippedBoard;
     },
 
@@ -143,7 +145,7 @@ export const useCgStore = defineStore("useCgStore", () => {
       }
       const ch = this.shuuroPiece(piece);
       const moves = wasmStore.placement().place_moves(ch);
-      this.legal_moves = moves;
+      this.new_legal_moves(moves);
     },
 
     shuuroPiece(piece: Piece): string {
@@ -160,13 +162,13 @@ export const useCgStore = defineStore("useCgStore", () => {
       }
     },
 
-    afterMove(orig: Key, dest: Key, _metadata: MoveMetadata) { },
+    afterMove(orig: Key, dest: Key, _metadata: MoveMetadata) {},
 
     enablePremove() {
-      if (gameStore.player.isPlayer && gameStore.state.status < 1) {
+      if (gameStore.player().isPlayer && gameStore.state.status < 1) {
         state.value.cg!.state.premovable.events = {
-          set: (orig, dest) => { },
-          unset: () => { },
+          set: (orig, dest) => {},
+          unset: () => {},
         };
         state.value.cg!.state.premovable.enabled = true;
         state.value.cg!.state.premovable!.events!.set = (orig, dest, _) => {
@@ -181,33 +183,31 @@ export const useCgStore = defineStore("useCgStore", () => {
     },
 
     selectSq(_key: Key) {
-      if (gameStore.canPlay) {
-      } else if (analyzeStore.state.active) {
+      if (gameStore.canPlay()) {
+      } else if (analyzeStore.state().active) {
         const dests = state.value.cg!.state.movable.dests;
         if (dests?.size == 0 || dests == undefined) {
           const lm = gameStore.legal_moves();
-          this.legal_moves = lm;
+          this.new_legal_moves(lm);
         }
       }
     },
 
-    set legal_moves(lm: Map<any, any>) {
+    new_legal_moves(lm: Map<any, any>) {
       state.value.cg!.state.movable.dests = lm;
     },
 
-    set movable_color(color: string) {
+    movable_color(color: string) {
       state.value.cg!.state.movable.color = color == "w" ? "white" : "black";
       state.value.cg!.state.turnColor = color == "w" ? "white" : "black";
     },
-
-  }
+  };
 
   // constructor() {
   //   this.watcher = watch(state, (newstate, oldstate, _clean) => {
   //     this.cgWatcher(newstate, oldstate);
   //   });
   // }
-
 });
 
 function empty(): State {

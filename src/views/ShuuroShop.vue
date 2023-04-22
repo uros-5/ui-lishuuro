@@ -40,13 +40,13 @@ function getColor(username: string): string {
 
 function myCredit() {
   computed(() => {
-    const credit = gameStore.state.credits[gameStore.player.player];
+    const credit = gameStore.state.credits[gameStore.player().player];
     return credit == undefined ? 800 : credit;
   });
 }
 
 onMounted(() => {
-  gameStore.clientStage = 0;
+  gameStore.newClientStage(0);
 });
 </script>
 

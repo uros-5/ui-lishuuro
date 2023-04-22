@@ -26,34 +26,29 @@ import { useCgStore } from "./useCgStore";
 
 export const useGameStore = defineStore("useGameStore", () => {
   const state = ref(emptyGame());
-  const other = ref(emptyOtherFields())
+  const other = ref(emptyOtherFields());
   const wasmStore = useWasmStore();
   const clockStore = useClockStore();
   const shopStore = useShopStore();
   const cgStore = useCgStore();
   const analyzeStore = useAnalyzeStore();
   const user = useUser();
-  const watchCount = ref(0);
-  const offeredDraw = ref(false);
-  const server = ref(false);
-  const player = ref({ isPlayer: false, player: 2 } as UserLive);
-  const clientStage = ref(0);
   const index = ref(0);
   const ws = useWs();
-  // console.log(wasmStore, analyzeStore, clockStore, shopStore, cgStore);
+  console.log(wasmStore, analyzeStore, clockStore, shopStore, cgStore);
   return {
     state,
     other,
-    get server() {
-      return server;
+    server() {
+      return this.other.value.server;
     },
 
-    get player() {
-      return player.value;
+    player() {
+      return this.other.value.player;
     },
 
-    get playerColor(): string {
-      switch (this.player.player) {
+    playerColor(): string {
+      switch (this.player().player) {
         case 0:
           return "white";
         case 1:
@@ -63,31 +58,31 @@ export const useGameStore = defineStore("useGameStore", () => {
       }
     },
 
-    get config() {
-      if (player.value.isPlayer && state.value.status < 1) {
-        if (clientStage.value == state.value.current_stage) {
+    config() {
+      if (this.player().isPlayer && state.value.status < 1) {
+        if (this.clientStage() == state.value.current_stage) {
           return liveConfig;
         }
-      } else if (analyzeStore.state.active) {
+      } else if (analyzeStore.state().active) {
         return liveConfig;
       }
       return anonConfig;
     },
 
-    get clientStage() {
-      return clientStage.value;
+    clientStage() {
+      return this.other.value.clientStage;
     },
 
-    get offeredDraw() {
-      return offeredDraw;
+    offeredDraw() {
+      return this.other.value.offeredDraw;
     },
 
-    get history() {
+    history() {
       return state.value.history[state.value.current_stage];
     },
 
     rejectDraw() {
-      offeredDraw.value = false;
+      this.other.value.offeredDraw = false;
     },
 
     fromServer(s: GameInfo) {
@@ -95,10 +90,10 @@ export const useGameStore = defineStore("useGameStore", () => {
       state.value.min = s.min / 60000;
       state.value.incr = s.incr / 1000;
       state.value.last_clock = new Date(s.tc.last_click).toString();
-      clientStage.value = s.current_stage;
+      this.other.value.clientStage = s.current_stage;
       clockStore.fromServer(s);
       this.setPlayer();
-      server.value = true;
+      this.other.value.server = true;
       this.updateHeadTitle();
       index.value = -1;
       this.startPosFix();
@@ -144,14 +139,14 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     setPlayer() {
       if (user.user.username == state.value.players[0]) {
-        player.value.player = 0;
-        player.value.isPlayer = true;
+        this.player().player = 0;
+        this.player().isPlayer = true;
       } else if (user.user.username == state.value.players[1]) {
-        player.value.player = 1;
-        player.value.isPlayer = true;
+        this.player().player = 1;
+        this.player().isPlayer = true;
       } else {
-        player.value.player = 2;
-        player.value.isPlayer = false;
+        this.player().player = 2;
+        this.player().isPlayer = false;
       }
     },
 
@@ -160,7 +155,7 @@ export const useGameStore = defineStore("useGameStore", () => {
       if (state.value.status > 0) {
         const fullPath = r.value.fullPath;
         if (fullPath.startsWith(`/shuuro/${state.value.current_stage}`)) {
-          clientStage.value = state.value.current_stage;
+          this.other.value.clientStage = state.value.current_stage;
         }
       }
       router.push({
@@ -176,25 +171,25 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     updateWatchCount(msg: SpecCnt): void {
       if (msg.game_id == state.value._id) {
-        watchCount.value = msg.count;
+        this.other.value.watchCount = msg.count;
       }
     },
 
-    get watchCount() {
-      return watchCount;
+    watchCount() {
+      return this.other.value.watchCount;
     },
 
     index() {
       return index;
     },
 
-    set clientStage(stage: number) {
-      clientStage.value = stage;
+    newClientStage(stage: number) {
+      this.other.value.clientStage = stage;
     },
 
-    get canPlay(): boolean {
+    canPlay(): boolean {
       if (
-        this.state.value.side_to_move == this.player.player &&
+        this.state.value.side_to_move == this.player().player &&
         this.state.value.status < 1
       ) {
         return true;
@@ -203,13 +198,13 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     legal_moves(): Map<any, any> {
-      const wasm2 = analyzeStore.state.active
+      const wasm2 = analyzeStore.state().active
         ? wasmStore.analyze()
         : wasmStore.fight();
-      const color = !analyzeStore.state.active
-        ? (this.playerColor[0] as string)
+      const color = !analyzeStore.state().active
+        ? (this.playerColor()[0] as string)
         : wasm2.side_to_move();
-      if (state.value.status < 0 || analyzeStore.state.active) {
+      if (state.value.status < 0 || analyzeStore.state().active) {
         const moves = wasm2.legal_moves(color);
         return moves;
       }
@@ -217,7 +212,7 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     send(t: string, game_move?: string) {
-      if (analyzeStore.state.active) return;
+      if (analyzeStore.state().active) return;
       const msg = {
         game_id: state.value._id,
         variant: state.value.variant,
@@ -278,9 +273,7 @@ export const useGameStore = defineStore("useGameStore", () => {
     gameLot(msg: LiveGameLost) { },
 
     redirectDeploy(s: RedirectDeploy) { },
-
   };
-
 });
 
 function emptyGame(): GameInfo {
@@ -308,13 +301,12 @@ function emptyGame(): GameInfo {
 }
 
 function emptyOtherFields() {
-
   return {
     watchCount: 0,
     offeredDraw: false,
     server: false,
     player: { isPlayer: false, player: 2 } as UserLive,
     clientStage: 0,
-    index: 0
-  }
+    index: 0,
+  };
 }

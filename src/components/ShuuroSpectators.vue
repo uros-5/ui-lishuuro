@@ -15,7 +15,7 @@ import { useGameStore } from "@/store/game";
 const gameStore = useGameStore();
 
 function fmtCount(): string {
-  let count = gameStore.watchCount;
+  let count = gameStore.watchCount();
   if (count <= 2) {
     return "";
   }

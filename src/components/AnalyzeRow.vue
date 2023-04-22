@@ -3,10 +3,10 @@
     <vari-move @click="selectSan(-1)">-</vari-move>
     <vari-move
       @click="selectSan(index)"
-      v-for="(i, index) in analyzeStore.state.moves"
+      v-for="(i, index) in analyzeStore.state().moves"
       :key="i"
       ply=""
-      :class="{ active: index == analyzeStore.state.index }"
+      :class="{ active: index == analyzeStore.state().index }"
     >
       <san v-if="index != 0">{{ sanFormat(i) }}</san>
     </vari-move>

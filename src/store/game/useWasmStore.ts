@@ -41,9 +41,8 @@ export const useWasmStore = defineStore("useWasmStore", () => {
 
     analyze(): ShuuroPosition {
       return state.value.analyzeWasm!;
-    }
+    },
   };
-
 });
 
 type WasmStore = {

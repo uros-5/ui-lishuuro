@@ -9,11 +9,9 @@ export const useShopStore = defineStore("useShopStore", () => {
   const clockStore = useClockStore();
   const gameStore = useGameStore();
   const state = ref(empty());
-
-
+  console.log(gameStore, wasmStore, clockStore);
   return {
     state,
-    // console.log(gameStore, wasmStore, clockStore);
     shopInfo(): void {
       gameStore.send("live_game_hand");
       gameStore.send("live_game_confirmed");
@@ -28,10 +26,10 @@ export const useShopStore = defineStore("useShopStore", () => {
       wasmStore.shop().set_hand(hand);
       state.value.pieceCounter = wasmStore
         .shop()
-        .shop_items(gameStore.playerColor);
+        .shop_items(gameStore.playerColor());
       const moves: string[] = wasmStore.shop().history();
       gameStore.addMoves(0, moves);
-      state.value.credit = wasmStore.shop().get_credit(gameStore.playerColor);
+      state.value.credit = wasmStore.shop().get_credit(gameStore.playerColor());
     },
 
     buy(p: string, color: string) {
@@ -54,11 +52,11 @@ export const useShopStore = defineStore("useShopStore", () => {
 
     confirm() {
       if (this.canShop) {
-        wasmStore.shop().confirm(gameStore.playerColor);
-        if (wasmStore.shop().is_confirmed(gameStore.playerColor)) {
+        wasmStore.shop().confirm(gameStore.playerColor());
+        if (wasmStore.shop().is_confirmed(gameStore.playerColor())) {
           gameStore.send("live_game_confirm", "cc");
-          clockStore.pause(gameStore.player.player);
-          state.value.confirmed[gameStore.player.player] = true;
+          clockStore.pause(gameStore.player().player);
+          state.value.confirmed[gameStore.player().player] = true;
         }
       }
     },
@@ -80,12 +78,12 @@ export const useShopStore = defineStore("useShopStore", () => {
     },
 
     get amIConfirmed(): boolean {
-      return state.value.confirmed[gameStore.player.player];
+      return state.value.confirmed[gameStore.player().player];
     },
 
     get canPlay(): boolean {
       if (
-        gameStore.state.side_to_move == gameStore.player.player &&
+        gameStore.state.side_to_move == gameStore.player().player &&
         gameStore.state.status < 1
       ) {
         return true;
@@ -95,7 +93,7 @@ export const useShopStore = defineStore("useShopStore", () => {
 
     get canShop(): boolean {
       return (
-        gameStore.player.isPlayer! &&
+        gameStore.player().isPlayer! &&
         gameStore.state.current_stage! == 0 &&
         gameStore.state.status < 0 &&
         !this.amIConfirmed
@@ -108,9 +106,8 @@ export const useShopStore = defineStore("useShopStore", () => {
 
     get credit() {
       return state.value.credit;
-    }
-  }
-
+    },
+  };
 });
 
 function empty(): State {

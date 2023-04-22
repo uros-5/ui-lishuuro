@@ -1,10 +1,10 @@
 <template>
   <div
     class="btn-controls after"
-    v-if="analyzeStore.canAnalyze && analyzeStore.state.active == false"
+    v-if="analyzeStore.canAnalyze() && analyzeStore.state().active == false"
   >
     <button
-      v-if="analyzeStore.canAnalyze && analyzeStore.state.active == false"
+      v-if="analyzeStore.canAnalyze() && analyzeStore.state().active == false"
       @click="analyze"
       class="analysis"
     >
