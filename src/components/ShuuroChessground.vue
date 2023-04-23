@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { onUnmounted, onUpdated, ref, watch } from "vue";
 import { useHeaderSettings } from "@/store/headerSettings";
 import { useGameStore } from "@/store/game";
 import { useCgStore } from "@/store/game/useCgStore";
@@ -19,14 +19,18 @@ import { useCgStore } from "@/store/game/useCgStore";
 const gameStore = useGameStore();
 const cgStore = useCgStore();
 const settings = useHeaderSettings();
-const element = ref(null);
+const element = ref(null as HTMLElement | null);
 
-onMounted(() => {
-  cgStore.newElement(element.value, 0);
+watch(element, (state) => {
+  cgStore.newElement(state, 0);
 });
 
 onUnmounted(() => {
   element.value = null;
+  cgStore.newElement(element.value, 0);
+});
+
+onUpdated(() => {
   cgStore.newElement(element.value, 0);
 });
 </script>

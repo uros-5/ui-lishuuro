@@ -24,6 +24,7 @@ const homeChat = useChat();
 onMounted(() => {
   const id = useRoute().params["id"];
   const variant = useRoute().params["variant"];
+  gameStore.watchCg();
   if (id == "" || id == undefined) {
     router.push("/");
   } else {
@@ -36,7 +37,6 @@ onMounted(() => {
       };
       SEND(obj);
       SEND({ t: "live_chat_full", data: { game_id: id, variant: "shuuro" } });
-      gameStore.watchCg();
     }
     //fetchData();
   }

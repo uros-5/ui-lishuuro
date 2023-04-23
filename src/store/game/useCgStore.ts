@@ -18,10 +18,11 @@ export const useCgStore = defineStore("useCgStore", () => {
   const analyzeStore = useAnalyzeStore();
   const gameStore = useGameStore();
   let stage = 0;
+  let watcher: WatchStopHandle;
   return {
     state,
     others,
-    newElement(element: null | HTMLElement, id: 0 | 1 | 2) {
+    newElement(element: undefined | HTMLElement, id: 0 | 1 | 2) {
       switch (id) {
         case 0:
           state.value.element = element;
@@ -36,15 +37,13 @@ export const useCgStore = defineStore("useCgStore", () => {
     },
 
     watch() {
-      let watcher = watch(state, (n, o) => {
-        this.cgWatcher(n, o)
-      });
+      let self = this;
+      watcher = watch(state, (n, o) => {
+        self.cgWatcher(n, o)
+      }, { deep: true });
     },
 
-
-
     cgWatcher(newstate: State, _oldstate: State) {
-      console.log(state);
       if (newstate.element && gameStore.server()) {
         analyzeStore.state().active ? (stage = 3) : null;
         if (gameStore.clientStage() == 1) {
@@ -58,7 +57,7 @@ export const useCgStore = defineStore("useCgStore", () => {
               gameStore.state.variant
             );
             state.value.cg = cg;
-            gameStore.player().player == 1 ? this.flipBoard() : null;
+            gameStore.player().player == 1 ? this.flipBoard(false) : null;
             this.changePocketRoles();
             state.value.cg.redrawAll();
             state.value.cg.state.events.dropNewPiece = this.afterPlace;
@@ -83,10 +82,12 @@ export const useCgStore = defineStore("useCgStore", () => {
       }
     },
 
-    flipBoard() {
+    flipBoard(first = true) {
       const shop = gameStore.state.current_stage == 0 || gameStore.other.clientStage == 0;
       !shop ? state.value.cg?.toggleOrientation() : null;
-      others.value.flippedBoard = !others.value.flippedBoard;
+      if (first) {
+        others.value.flippedBoard = !others.value.flippedBoard;
+      }
     },
 
     flipped() {
@@ -219,9 +220,9 @@ export const useCgStore = defineStore("useCgStore", () => {
 function empty(): State {
   return {
     cg: undefined,
-    element: null,
-    top: null,
-    bot: null,
+    element: undefined,
+    top: undefined,
+    bot: undefined,
     tvCgs: [],
     profileGames: [],
   };

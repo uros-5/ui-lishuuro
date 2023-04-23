@@ -18,6 +18,10 @@ export const useShopStore = defineStore("useShopStore", () => {
 
     setConfirmed(data: [boolean, boolean]) {
       state.value.confirmed = data;
+      if (!data.includes(false)) {
+        return ;
+      }
+
       data.includes(true) ? this.startClock() : null;
     },
 

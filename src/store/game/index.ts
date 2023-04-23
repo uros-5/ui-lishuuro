@@ -297,7 +297,6 @@ export const useGameStore = defineStore("useGameStore", () => {
     redirectDeploy(s: RedirectDeploy) {
       clockStore.state.last_clock = new Date().toString();
       state.value.sfen = s.sfen;
-      cgStore.others.flippedBoard = false;
       router.push({ path: s.path });
       state.value.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
       clockStore.start(state.value.side_to_move);

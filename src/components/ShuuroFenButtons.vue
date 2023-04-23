@@ -1,6 +1,6 @@
 <template>
   <div id="btn-controls-top" class="btn-controls" :style="materialTop()">
-    <button id="flip" @click="cgStore.flipBoard()">
+    <button id="flip" @click="cgStore.flipBoard">
       <i class="icon icon-refresh" /></button
     ><button @click="fastBackward">
       <i class="icon icon-fast-backward" /></button

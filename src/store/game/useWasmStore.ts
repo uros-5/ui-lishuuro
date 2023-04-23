@@ -14,6 +14,7 @@ export const useWasmStore = defineStore("useWasmStore", () => {
       state.value.wasm[1] = new ShuuroPosition("shuuro");
       state.value.wasm[2] = new ShuuroPosition("shuuro");
       state.value.analyzeWasm = new ShuuroPosition("shuuro");
+      state.value.init = true;
     },
 
     changeVariant(variant: string) {
