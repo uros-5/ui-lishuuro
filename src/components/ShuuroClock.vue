@@ -47,13 +47,13 @@ function field(field: ClockField) {
   let id = props.color == "white" ? 0 : 1;
   switch (field) {
     case ClockField.Min:
-      return clockStore.state().clocks[id].currentMin;
+      return clockStore.state.clocks[id].currentMin;
     case ClockField.Sec:
-      return clockStore.state().clocks[id].currentSec;
+      return clockStore.state.clocks[id].currentSec;
     case ClockField.Running:
-      return clockStore.state().clocks[id].running;
+      return clockStore.state.clocks[id].running;
     case ClockField.Hurry:
-      return clockStore.state().clocks[id].hurry;
+      return clockStore.state.clocks[id].hurry;
   }
 }
 </script>

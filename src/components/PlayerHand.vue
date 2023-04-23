@@ -10,6 +10,7 @@
       style="flex-wrap: wrap"
       :style="pocketStyle()"
       :class="pocketCss()"
+      ref="element"
     >
       <piece
         v-for="(i, index) in pieces(gameStore.state)"
@@ -27,12 +28,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, defineProps } from "vue";
+import { onMounted, defineProps, ref, onUnmounted } from "vue";
 import { useBoardSize } from "@/store/useBoardSize";
 import { useHeaderSettings } from "@/store/headerSettings";
 import { useGameStore } from "@/store/game";
 import { pieces, dataMax } from "@/plugins/shop";
 import { useShopStore } from "@/store/game/useShopStore";
+import { useCgStore } from "@/store/game/useCgStore";
 
 const props = defineProps<{
   color: string;
@@ -46,14 +48,29 @@ const boardSize = useBoardSize();
 const hs = useHeaderSettings();
 const gameStore = useGameStore();
 const shopStore = useShopStore();
+const cgStore = useCgStore();
+
+const element = ref(null);
 
 onMounted(() => {
-  let element = document.querySelector("#mainboard") as HTMLElement;
-  boardSize.updateHeight(element.offsetWidth);
+  let mainElement = document.querySelector("#mainboard") as HTMLElement;
+  boardSize.updateHeight(mainElement.offsetWidth);
+  cgStore.others.flippedBoard =
+    gameStore.other.player.player == 1 ? true : false;
+  cgStore.newElement(element.value, id() as 0 | 1 | 2);
+});
+
+onUnmounted(() => {
+  element.value = null;
+  cgStore.newElement(element.value, id() as 0 | 1 | 2);
 });
 
 function divId() {
   return props.side == "top" ? "pocket0" : "pocket1";
+}
+
+function id(): number {
+  return props.side == "top" ? 1 : 2;
 }
 
 window.addEventListener("resize", boardSize.resize, true);

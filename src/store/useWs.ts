@@ -167,7 +167,7 @@ export const useWs = defineStore("useWsStore", () => {
         break;
       case "pause_confirmed":
         data = PauseConfirmed.parse(msg.data);
-        shopStore.setConfirmed(data);
+        shopStore.setConfirmed(data.confirmed);
         break;
       case "redirect_deploy":
         data = RedirectDeploy.parse(msg.data);

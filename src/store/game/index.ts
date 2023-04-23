@@ -9,7 +9,7 @@ import type {
   SpecCnt,
   UserLive,
 } from "@/plugins/webSocketTypes";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useUser } from "../useUser";
 import { useWs } from "../useWs";
 import { anonConfig, liveConfig } from "chessground12/configs";
@@ -83,6 +83,10 @@ export const useGameStore = defineStore("useGameStore", () => {
       other.value.offeredDraw = false;
     },
 
+    watchCg() {
+      cgStore.watch();
+    },
+
     async fromServer(s: GameInfo) {
       state.value = s;
       state.value.min = s.min / 60000;
@@ -96,6 +100,7 @@ export const useGameStore = defineStore("useGameStore", () => {
       other.value.index = -1;
       this.startPosFix();
       this.setRedirect();
+      clockStore.activateClock();
       await wasmStore.init();
       if (s.current_stage == 0) {
         shopStore.shopInfo();
@@ -131,6 +136,15 @@ export const useGameStore = defineStore("useGameStore", () => {
       }
     },
 
+    startClock() {
+      const elapsed = clockStore.elapsed();
+      const stm = state.value.side_to_move;
+      const other = clockStore.otherClock(stm);
+      clockStore.setTime(other, state.value.tc.clocks[other]);
+      clockStore.start(stm, state.value.tc.clocks[stm] - elapsed);
+      clockStore.pause(other);
+    },
+
     updateHeadTitle() {
       const players = state.value.players;
       updateHeadTitle(`${players[0]} vs ${players[1]}`);
@@ -143,6 +157,7 @@ export const useGameStore = defineStore("useGameStore", () => {
       } else if (user.user.username == state.value.players[1]) {
         this.player().player = 1;
         this.player().isPlayer = true;
+        cgStore.flipBoard();
       } else {
         this.player().player = 2;
         this.player().isPlayer = false;
@@ -257,13 +272,15 @@ export const useGameStore = defineStore("useGameStore", () => {
           other.value.index += 1;
           break;
         case FenBtn.Last:
-          other.value.index = len - 1;
+          other.value.index = state.value.current_stage == 0
+            ? len - 2 :
+            len - 1;
           break;
       }
       if (other.value.index <= 0) {
         other.value.index = 0;
       } else if (other.value.index >= len) {
-        other.value.index= len;
+        other.value.index = len;
       }
     },
 
@@ -277,7 +294,16 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     gameLot(msg: LiveGameLost) { },
 
-    redirectDeploy(s: RedirectDeploy) { },
+    redirectDeploy(s: RedirectDeploy) {
+      clockStore.state.last_clock = new Date().toString();
+      state.value.sfen = s.sfen;
+      cgStore.others.flippedBoard = false;
+      router.push({ path: s.path });
+      state.value.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
+      clockStore.start(state.value.side_to_move);
+      state.value.current_stage = 1;
+      playAudio("res");
+    },
   };
 });
 

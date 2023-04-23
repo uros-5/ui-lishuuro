@@ -35,7 +35,16 @@ export const useCgStore = defineStore("useCgStore", () => {
       }
     },
 
+    watch() {
+      let watcher = watch(state, (n, o) => {
+        this.cgWatcher(n, o)
+      });
+    },
+
+
+
     cgWatcher(newstate: State, _oldstate: State) {
+      console.log(state);
       if (newstate.element && gameStore.server()) {
         analyzeStore.state().active ? (stage = 3) : null;
         if (gameStore.clientStage() == 1) {
@@ -75,7 +84,8 @@ export const useCgStore = defineStore("useCgStore", () => {
     },
 
     flipBoard() {
-      state.value.cg!.toggleOrientation();
+      const shop = gameStore.state.current_stage == 0 || gameStore.other.clientStage == 0;
+      !shop ? state.value.cg?.toggleOrientation() : null;
       others.value.flippedBoard = !others.value.flippedBoard;
     },
 
@@ -196,7 +206,7 @@ export const useCgStore = defineStore("useCgStore", () => {
       state.value = empty();
       others.value = emptyOthers();
     }
-    
+
   };
 
   // constructor() {

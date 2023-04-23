@@ -18,7 +18,7 @@ export const useShopStore = defineStore("useShopStore", () => {
 
     setConfirmed(data: [boolean, boolean]) {
       state.value.confirmed = data;
-      this.startClock();
+      data.includes(true) ? this.startClock() : null;
     },
 
     setHand(hand: string) {
@@ -75,7 +75,9 @@ export const useShopStore = defineStore("useShopStore", () => {
         clockStore.start(other);
         return;
       }
-      clockStore.startBoth(elapsed, gameStore.state.tc.clocks);
+      else {
+        clockStore.startBoth(elapsed, gameStore.state.tc.clocks);
+      }
     },
 
     amIConfirmed(): boolean {

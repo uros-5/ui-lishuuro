@@ -36,6 +36,7 @@ onMounted(() => {
       };
       SEND(obj);
       SEND({ t: "live_chat_full", data: { game_id: id, variant: "shuuro" } });
+      gameStore.watchCg();
     }
     //fetchData();
   }
