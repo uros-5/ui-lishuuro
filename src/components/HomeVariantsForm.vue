@@ -84,7 +84,7 @@ const { SEND } = useWs();
 
 let time = ref(9);
 let incr = ref(5);
-let variant = ref("standard_3");
+let variant = ref("shuuro_100");
 let color = ref("white");
 let incrementDuration = [0].concat(allowedDuration);
 

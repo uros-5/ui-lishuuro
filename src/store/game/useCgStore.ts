@@ -44,7 +44,7 @@ export const useCgStore = defineStore("useCgStore", () => {
     },
 
     cgWatcher(newstate: State, _oldstate: State) {
-      if (newstate.element && gameStore.server()) {
+      if (newstate.element && gameStore.loaded()) {
         analyzeStore.state().active ? (stage = 3) : null;
         if (gameStore.clientStage() == 1) {
           if (newstate.top && newstate.bot && stage != 1) {
@@ -61,6 +61,8 @@ export const useCgStore = defineStore("useCgStore", () => {
             this.changePocketRoles();
             state.value.cg.redrawAll();
             state.value.cg.state.events.dropNewPiece = this.afterPlace;
+            state.value.cg.state.events.pocketSelect = this.pocketSelect;
+            state.value.cg.state.movable.color = gameStore.playerColor() as "white";
           }
         } else if (
           (gameStore.clientStage() == 2 || analyzeStore.state().active) &&
@@ -73,7 +75,7 @@ export const useCgStore = defineStore("useCgStore", () => {
             gameStore.state.variant
           );
           state.value.cg = cg;
-          gameStore.player().player == 1 ? this.flipBoard() : null;
+          gameStore.player().player == 1 ? this.flipBoard(false) : null;
           this.enablePremove();
           state.value.cg.state.events.select = this.selectSq;
           state.value.cg.state.movable.events.after = this.afterMove;
@@ -82,10 +84,10 @@ export const useCgStore = defineStore("useCgStore", () => {
       }
     },
 
-    flipBoard(first = true) {
+    flipBoard(force = true) {
       const shop = gameStore.state.current_stage == 0 || gameStore.other.clientStage == 0;
       !shop ? state.value.cg?.toggleOrientation() : null;
-      if (first) {
+      if (force) {
         others.value.flippedBoard = !others.value.flippedBoard;
       }
     },
@@ -105,8 +107,7 @@ export const useCgStore = defineStore("useCgStore", () => {
     setPlinths(cg: Api, sp: ShuuroPosition, ignore?: boolean) {
       if (ignore == true) return;
       const plinths = sp.map_plinths();
-      cg.state.plinths = plinths;
-      cg.redrawAll();
+      cg.setPlinths(plinths)
     },
 
     setCheck(cg: Api, check: boolean) {
@@ -138,6 +139,7 @@ export const useCgStore = defineStore("useCgStore", () => {
         `[${hand}]`,
         state.value.cg!.state.pocketRoles!
       );
+      state.value.cg!.redrawAll();
     },
 
     pocketSelect(piece: Piece) {
@@ -198,9 +200,23 @@ export const useCgStore = defineStore("useCgStore", () => {
       state.value.cg!.state.movable.dests = lm;
     },
 
-    movable_color(color: string) {
-      state.value.cg!.state.movable.color = color == "w" ? "white" : "black";
-      state.value.cg!.state.turnColor = color == "w" ? "white" : "black";
+    setMovable(movable: boolean) {
+      state.value.cg!.state.movable.showDests = movable;
+      state.value.cg!.state.draggable.enabled = movable;
+      state.value.cg!.state.movable.color =
+        analyzeStore.state().active ? "both" :
+          gameStore.playerColor() as "white";
+
+    },
+
+    setTurnColor(turnColor?: string) {
+      let pos = gameStore.state.current_stage == 1 ? wasmStore.placement() : wasmStore.fight();
+      if (turnColor == undefined) {
+        turnColor = analyzeStore.state().active ? wasmStore.state.analyzeWasm?.side_to_move() : pos.side_to_move();
+      }
+      else {
+        state.value.cg!.state.turnColor = turnColor as "white";
+      }
     },
 
     reset() {
@@ -210,11 +226,6 @@ export const useCgStore = defineStore("useCgStore", () => {
 
   };
 
-  // constructor() {
-  //   this.watcher = watch(state, (newstate, oldstate, _clean) => {
-  //     this.cgWatcher(newstate, oldstate);
-  //   });
-  // }
 });
 
 function empty(): State {

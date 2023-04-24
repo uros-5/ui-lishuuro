@@ -1,5 +1,5 @@
 <template>
-  <div v-if="index % 2 == 1" class="move counter">
+  <div v-if="index % 2 == 1 && !isFirst()" class="move counter">
     {{ Math.floor(index / 2 + 1) }}
   </div>
 
@@ -8,6 +8,7 @@
     :class="{ active: gameStore.index() == index - 1 }"
     :ply="index"
     @click="updateIndex"
+    v-if="!isFirst()"
   >
     <san>{{ m() }}</san>
     <eval :id="`ply${index!}`" />
@@ -26,6 +27,15 @@ const gameStore = useGameStore();
 function updateIndex(): void {
   gameStore.other.index = props.index - 1;
   audio();
+}
+
+function isFirst(): boolean {
+  if ([1, 2].includes(gameStore.clientStage())) {
+    if (props.index - 1 == 0) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function audio() {

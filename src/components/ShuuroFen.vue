@@ -68,7 +68,7 @@ function showRes(): boolean {
 }
 
 function getHistory(): string[] {
-  let history = gameStore.state.history[gameStore.state.current_stage];
+  let history = gameStore.history();
   let color = gameStore.player().player;
   if (gameStore.state.current_stage == 0) {
     history = history.filter((value) => {
