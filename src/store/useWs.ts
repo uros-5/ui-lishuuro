@@ -29,8 +29,8 @@ import {
 import { z } from "zod";
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { useGameStore } from "./game";
-import { useShopStore } from "./game/useShopStore";
+import { useGameStore } from "@/store/game";
+import { useShopStore } from "@/store/game/useShopStore";
 
 export const useWs = defineStore("useWsStore", () => {
   const gameStore = useGameStore();
@@ -151,7 +151,6 @@ export const useWs = defineStore("useWsStore", () => {
         break;
       case "live_game_draw":
         data = LiveGameDraw.parse(msg.data);
-        console.log(data);
         if (gameStore.silentRedirect(data.game_id)) gameStore.gameDraw(data);
         break;
       case "live_game_resign":

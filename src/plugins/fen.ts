@@ -18,11 +18,13 @@ export function fightSfen(f: string): string {
 export function formatSfen(fen: string): Sfen {
   if (fen.includes("_")) {
     fen = fen.replace("_", "|").split("|")[1].replaceAll("_", " ")
+    let parts = fen.split(" ")
+    fen = `${parts[0]} ${parts[2]} ${parts[1]} ${parts[3]}}`
   }
   let parts = fen.split(" ");
   return {
     sfen: fen,
-    stm: parts[1],
+    stm: parts[2],
     game_move: parts[4]
   }
 }

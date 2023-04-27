@@ -2,8 +2,9 @@ import { Clock } from "@/plugins/clock";
 import type { GameInfo } from "@/plugins/webSocketTypes";
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { useGameStore } from ".";
-import { useShopStore } from "./useShopStore";
+import { useGameStore } from "@/store/game";
+import { useShopStore } from "@/store/game/useShopStore";
+import { playAudio } from "@/plugins/audio";
 
 export const useClockStore = defineStore("useClockStore", () => {
   const gameStore = useGameStore();
@@ -80,15 +81,26 @@ export const useClockStore = defineStore("useClockStore", () => {
         }
       }
       else {
-        [0, 1].forEach(item => this.pause(item));
+        [0, 1].forEach(item => {this.renderTime(item); this.pause(item)});
         this.fromMove(gameStore.state.tc.clocks)
       }
+    },
+
+    renderTime(clock: number) {
+      const time = gameStore.state.tc.clocks[clock];
+      state.value.clocks[clock].renderTime(time);
     },
 
     reset() {
       const old = empty();
       state.value.last_clock = old.last_clock
       this.pauseBoth();
+    },
+
+    switchClock() {
+      const otherClock = this.otherClock(gameStore.state.side_to_move)
+      this.pause(otherClock, true);
+      this.start(gameStore.state.side_to_move);
     }
   };
 });
@@ -103,7 +115,3 @@ function empty(): State {
     last_clock: new Date().toString(),
   };
 }
-function playAudio(arg0: string) {
-  throw new Error("Function not implemented.");
-}
-

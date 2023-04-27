@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backend } from "./getBackend";
+import { backend } from "@/plugins/getBackend";
 
 const path = `${backend()}`;
 axios.defaults.withCredentials = true;

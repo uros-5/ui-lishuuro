@@ -39,11 +39,11 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useUser } from "@/store/useUser";
-import HeaderSettingsTheme from "./HeaderSettingsTheme.vue";
+import HeaderSettingsTheme from "@/components/HeaderSettingsTheme.vue";
 import { useHeaderSettings } from "@/store/headerSettings";
-import HeaderSettingsBoard from "./HeaderSettingsBoard.vue";
-import HeaderSettingsButton from "./HeaderSettingsButton.vue";
-import HeaderSettingsSaveAll from "./HeaderSettingsSaveAll.vue";
+import HeaderSettingsBoard from "@/components/HeaderSettingsBoard.vue";
+import HeaderSettingsButton from "@/components/HeaderSettingsButton.vue";
+import HeaderSettingsSaveAll from "@/components/HeaderSettingsSaveAll.vue";
 const { user } = useUser();
 const store = useHeaderSettings();
 

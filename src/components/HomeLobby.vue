@@ -43,7 +43,7 @@ import type { LobbyGame } from "@/plugins/webSocketTypes";
 import { useWs } from "@/store/useWs";
 
 import { getSubVariant } from "@/plugins/subVariant";
-import HomeLobbyDataIcon from "./HomeLobbyDataIcon.vue";
+import HomeLobbyDataIcon from "@/components/HomeLobbyDataIcon.vue";
 
 const store = useHomeLobby();
 const { SEND } = useWs();

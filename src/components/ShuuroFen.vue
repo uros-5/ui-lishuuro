@@ -5,7 +5,7 @@
   >
     <div id="movelist" :class="{ movelist2: analyzeStore.state().active }">
       <ShuuroFenItem
-        v-for="(item, i) in getHistory()"
+        v-for="(item, i) in getHistory().value"
         v-if="analyzeStore.state().moves.length == 0"
         :key="i"
         :fen="fenItem(item)"
@@ -22,11 +22,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import ShuuroFenItem from "./ShuuroFenItem.vue";
+import ShuuroFenItem from "@/components/ShuuroFenItem.vue";
 import { resultMessage as Rm } from "@/plugins/resultMessage";
-import AnalyzeRow from "./AnalyzeRow.vue";
+import AnalyzeRow from "@/components/AnalyzeRow.vue";
 import { useGameStore } from "@/store/game";
 import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
+import { computed } from "vue";
 
 const gameStore = useGameStore();
 const analyzeStore = useAnalyzeStore();
@@ -67,19 +68,23 @@ function showRes(): boolean {
   );
 }
 
-function getHistory(): string[] {
-  let history = gameStore.history();
-  let color = gameStore.player().player;
-  if (gameStore.state.current_stage == 0) {
-    history = history.filter((value) => {
-      let piece = value[1];
-      let comp = color == 0 ? piece.toUpperCase() : piece.toLowerCase();
-      if (piece == comp) {
-        return piece;
-      }
-    });
-  }
-  return history;
+function getHistory() {
+  return computed(() => {
+    let history = gameStore.history();
+    let color = gameStore.player().player;
+    if (gameStore.clientStage() == 0) {
+      history = history.filter((value) => {
+        let piece = value[1];
+        let comp = color == 0 ? piece.toUpperCase() : piece.toLowerCase();
+        if (piece == comp) {
+          return piece;
+        }
+      });
+    } else if (gameStore.clientStage() == 1) {
+      return history;
+    }
+    return history.slice(1);
+  });
 }
 </script>
 <style scoped>

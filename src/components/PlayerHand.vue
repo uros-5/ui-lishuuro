@@ -54,6 +54,7 @@ const cgStore = useCgStore();
 const element = ref(null as HTMLElement | null);
 
 let watcher:  WatchStopHandle;
+let counter = 0;
 
 watcher = watchElement()
 
@@ -61,7 +62,7 @@ function watchElement(): WatchStopHandle {
 return watch(
   element,
   (newer) => {
-    cgStore.newElement(newer, id() as 0 | 1 | 2);
+    cgStore.newElement(newer as HTMLElement, id() as 0 | 1 | 2);
   },
   { deep: true }
 )
@@ -75,12 +76,18 @@ onMounted(() => {
 
 onUnmounted(() => {
   element.value = null;
-  cgStore.newElement(element.value, id() as 0 | 1 | 2);
+  cgStore.newElement(undefined, id() as 0 | 1 | 2);
   watcher();
 });
 
 onUpdated( () => {
-  cgStore.newElement(element.value, id() as 0 | 1 | 2);
+  if (counter < 8) {
+    cgStore.newElement(element.value as HTMLElement, id() as 0 | 1 | 2);
+    counter += 1;
+  }
+  else {
+
+  }
 })
 
 function divId() {

@@ -1,6 +1,6 @@
 import { FenBtn } from "@/plugins/fen";
 import { ref } from "vue";
-import { useGameStore } from ".";
+import { useGameStore } from "@/store/game";
 import { defineStore } from "pinia";
 
 export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {

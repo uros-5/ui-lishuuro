@@ -1,5 +1,5 @@
-import { ShuuroPosition, ShuuroShop } from "shuuro-wasm";
-import init from "shuuro-wasm";
+import  {ShuuroPosition, ShuuroShop}  from "@/plugins/shuuro-wasm";
+import init from "@/plugins/shuuro-wasm";
 import { ref } from "vue";
 import { defineStore } from "pinia";
 

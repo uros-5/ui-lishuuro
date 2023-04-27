@@ -1,7 +1,7 @@
 import { useWasmStore } from "@/store/game/useWasmStore";
 import { ref } from "vue";
-import { useGameStore } from ".";
-import { useClockStore } from "./useClockStore";
+import { useGameStore } from "@/store/game";
+import { useClockStore } from "@/store/game/useClockStore";
 import { defineStore } from "pinia";
 
 export const useShopStore = defineStore("useShopStore", () => {

@@ -1,4 +1,4 @@
-import type { GameInfo } from "./webSocketTypes";
+import type { GameInfo } from "@/plugins/webSocketTypes";
 export const pieces = (game: GameInfo): string[] => {
   const pieces = [
     "k-piece",

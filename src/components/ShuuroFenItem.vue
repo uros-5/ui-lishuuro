@@ -1,5 +1,5 @@
 <template>
-  <div v-if="index % 2 == 1 && !isFirst()" class="move counter">
+  <div v-if="index % 2 == 1" class="move counter">
     {{ Math.floor(index / 2 + 1) }}
   </div>
 
@@ -8,7 +8,7 @@
     :class="{ active: gameStore.index() == index - 1 }"
     :ply="index"
     @click="updateIndex"
-    v-if="!isFirst()"
+    v-if="true"
   >
     <san>{{ m() }}</san>
     <eval :id="`ply${index!}`" />
@@ -17,16 +17,20 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
-import { deploySfen, fightSfen } from "@/plugins/fen";
+import { deploySfen, fightSfen, formatSfen } from "@/plugins/fen";
 import { useGameStore } from "@/store/game";
 import { playAudio } from "@/plugins/audio";
+import ShuuroPosition from "@/plugins/shuuro-wasm";
+import { useCgStore } from "@/store/game/useCgStore";
 
 const props = defineProps<{ index: number; fen: string; move: string }>();
 const gameStore = useGameStore();
+const cgStore = useCgStore();
 
 function updateIndex(): void {
   gameStore.other.index = props.index - 1;
   audio();
+  gameStore.getSfen();
 }
 
 function isFirst(): boolean {

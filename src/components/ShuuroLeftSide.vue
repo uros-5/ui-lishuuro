@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import ShuuroStageInfo from "@/components/ShuuroStageInfo.vue";
 import ChatRoom from "@/components/ChatRoom.vue";
-import ShuuroSpectators from "./ShuuroSpectators.vue";
+import ShuuroSpectators from "@/components/ShuuroSpectators.vue";
 import { useChat } from "@/store/useChat";
 import { useGameStore } from "@/store/game";
 

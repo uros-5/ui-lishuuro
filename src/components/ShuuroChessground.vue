@@ -19,14 +19,14 @@ import { useCgStore } from "@/store/game/useCgStore";
 const gameStore = useGameStore();
 const cgStore = useCgStore();
 const settings = useHeaderSettings();
-const element = ref(null as HTMLElement | null);
+const element = ref(undefined as HTMLElement | undefined);
 
 watch(element, (state) => {
   cgStore.newElement(state, 0);
 });
 
 onUnmounted(() => {
-  element.value = null;
+  element.value = undefined;
   cgStore.newElement(element.value, 0);
 });
 

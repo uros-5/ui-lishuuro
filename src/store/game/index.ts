@@ -9,21 +9,32 @@ import type {
   SpecCnt,
   UserLive,
 } from "@/plugins/webSocketTypes";
-import { ref, watch } from "vue";
-import { useUser } from "../useUser";
-import { useWs } from "../useWs";
+import { ref } from "vue";
+import { useUser } from "@/store/useUser";
+import { useWs } from "@/store/useWs";
 import { anonConfig, liveConfig } from "chessground12/configs";
-import { useWasmStore } from "./useWasmStore";
-import { useAnalyzeStore } from "./useAnalyzeStore";
-import { useClockStore } from "./useClockStore";
+import { useWasmStore } from "@/store/game/useWasmStore";
+import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
+import { useClockStore } from "@/store/game/useClockStore";
 import router from "@/router";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
-import { useShopStore } from "./useShopStore";
+import { useShopStore } from "@/store/game/useShopStore";
 import { playAudio } from "@/plugins/audio";
-import { FenBtn } from "@/plugins/fen";
+import { FenBtn, formatSfen } from "@/plugins/fen";
 import { defineStore } from "pinia";
-import { useCgStore } from "./useCgStore";
-import type { ShuuroPosition } from "shuuro-wasm";
+import { useCgStore } from "@/store/game/useCgStore";
+import { ShuuroPosition } from "@/plugins/shuuro-wasm";
+import type { Key } from "chessground12/types";
+
+
+const finished = [
+  "Checkmate",
+  "Draw",
+  "RepetitionDraw",
+  "MaterialDraw",
+  "Stalemate",
+];
+
 
 export const useGameStore = defineStore("useGameStore", () => {
   const state = ref(emptyGame());
@@ -83,7 +94,7 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     history() {
-      return state.value.history[state.value.current_stage];
+      return state.value.history[this.clientStage()];
     },
 
     rejectDraw() {
@@ -96,6 +107,7 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     async fromServer(s: GameInfo) {
       state.value = s;
+      other.value.server = true;
       this.setRedirect();
       state.value.min = s.min / 60000;
       state.value.incr = s.incr / 1000;
@@ -103,7 +115,6 @@ export const useGameStore = defineStore("useGameStore", () => {
       this.newClientStage(s.current_stage)
       clockStore.fromServer(s);
       this.setPlayer();
-      other.value.server = true;
       this.updateHeadTitle();
       other.value.index = -1;
       this.startPosFix();
@@ -210,8 +221,8 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     canPlay(): boolean {
       if (
-        this.state.value.side_to_move == this.player().player &&
-        this.state.value.status < 1
+        state.value.side_to_move == other.value.player.player &&
+        state.value.status < 1// && other.value.index == this.history().length - 1
       ) {
         return true;
       }
@@ -225,13 +236,57 @@ export const useGameStore = defineStore("useGameStore", () => {
         ? wasmStore.analyze()
         : wasmStore.fight();
       const color = !analyzeStore.state().active
-        ? wasmStore.analyze().side_to_move()
+        ? wasm.side_to_move()
         : wasm.side_to_move();
-      if (state.value.status < 0 || analyzeStore.state().active) {
+      const sfen = wasm.generate_sfen().split(" ")[0];
+      if (!sfen.includes("k") || !sfen.includes("K")) {
+        return new Map();
+      }
+      else if (state.value.status < 0 || analyzeStore.state().active) {
         const moves = wasm.legal_moves(color);
+        cgStore.new_legal_moves(moves)
         return moves;
       }
       return new Map();
+    },
+
+    wasmMove(game_move: string, isServer: boolean) {
+      const wasm = wasmStore.fight();
+      const beforeCount = wasm.pieces_count();
+      const played = wasm.make_move(game_move);
+      if (!played.toLowerCase().startsWith("illegal")) {
+        const lastMove = wasm.last_move();
+        const move = game_move.split("_");
+        const newCount = wasm.pieces_count();
+        if (isServer) {
+          cgStore.state.cg!.move(move[0] as Key, move[1] as Key);
+          if (newCount != beforeCount) {
+            playAudio("capture");
+          } else {
+            playAudio("move");
+          }
+          if (lastMove.includes("=")) {
+            cgStore.setPieces(cgStore.state.cg!, wasm);
+          }
+        }
+        if (lastMove.includes("=")) {
+          cgStore.setPieces(cgStore.state.cg!, wasm);
+        }
+        cgStore.setTurnColor();
+        cgStore.setCheck2(2);
+        clockStore.switchClock();
+        if (!analyzeStore.state().active) this.addMove(2, lastMove);
+        this.scrollToBottom();
+        other.value.index += 1;
+        cgStore.state.cg!.state.dom.redraw();
+        this.legal_moves();
+        this.playPremove();
+      } else {
+      }
+    },
+
+    playPremove() {
+
     },
 
     send(t: string, game_move?: string) {
@@ -268,6 +323,17 @@ export const useGameStore = defineStore("useGameStore", () => {
       analyzeStore.reset();
     },
 
+    getSfen() {
+      let history = this.history();
+      let sfen = history.at(other.value.index);
+      const position = new ShuuroPosition(state.value.variant);
+      let formatted = formatSfen(sfen!);
+      position.set_sfen(formatted.sfen);
+      cgStore.setPieces(cgStore.state.cg!, position, false);
+      this.clientStage() == 1 ? cgStore.readPocket(position) : null;
+      position.free();
+    },
+
     findFen(fenBtn: FenBtn) {
       const len = state.value.history[state.value.current_stage].length;
       switch (fenBtn) {
@@ -289,9 +355,11 @@ export const useGameStore = defineStore("useGameStore", () => {
       if (other.value.index <= 0) {
         other.value.index = 0;
       } else if (other.value.index >= len) {
-        other.value.index = len;
+        other.value.index = len - 1;
       }
       if (other.value.clientStage == 0) return;
+      this.getSfen();
+      cgStore.enableMovable(fenBtn)
     },
 
     isLiveSfen(sfen: string): boolean {
@@ -304,21 +372,68 @@ export const useGameStore = defineStore("useGameStore", () => {
       return false;
     },
 
-    serverPlace(msg: LiveGamePlace) { },
+    serverPlace(msg: LiveGamePlace) {
+      cgStore.wasmPlace(msg.game_move, true);
+      clockStore.fromMove(msg.clocks);
 
-    serverMove2(msg: LiveGameFight) { },
+      if (msg.to_fight) {
+        state.value.current_stage = 2;
+        this.newClientStage(2);
+        state.value.tc.last_click = new Date().toString();
+        clockStore.state.last_clock = new Date().toString();
+        playAudio("res");
+        router.push({ path: `/shuuro/2/${msg.game_id}` });
+      }
+      if (msg.first_move_error) {
+        setTimeout(function() {
+          playAudio("res");
+          clockStore.pause(state.value.side_to_move);
+          state.value.status = 1;
+          state.value.result = state.value.side_to_move == 0 ? "w" : "b";
+          cgStore.state.cg!.set(anonConfig);
+        }, 500);
+      }
+    },
+
+    serverMove2(msg: LiveGameFight) {
+
+
+      router.push({ path: `/shuuro/2/${msg.game_id}` });
+      this.newClientStage(2);
+      this.wasmMove(msg.game_move, true);
+      clockStore.fromMove(msg.clocks);
+      if (this.gameOver(msg.outcome)) {
+        playAudio("res");
+        clockStore.pauseBoth();
+        state.value.status = msg.status;
+        state.value.result = msg.outcome;
+        this.scrollToBottom();
+        cgStore.state.cg?.set(anonConfig);
+      }
+
+    },
+
+    gameOver(outcome: string) {
+      for (let i = 0; i < finished.length; i++) {
+        if (outcome.startsWith(finished[i])) {
+          return true;
+        }
+      }
+      return false;
+
+    },
 
     gameDraw(msg: LiveGameDraw) {
       if (msg.draw) {
         this.gameEnd(5, "Draw");
       }
-        else if (msg.player) {
-          if (this.player().isPlayer && msg.player != user.user.username) {
-            other.value.offeredDraw = true;
-          }
+      else if (msg.player) {
+        if (this.player().isPlayer && msg.player != user.user.username) {
+          other.value.offeredDraw = true;
         }
-      
-     },
+      }
+
+    },
 
     gameResign(msg: LiveGameResign) {
       if (msg.resign) {
@@ -339,7 +454,7 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     gameLot(msg: LiveGameLost) {
       if (msg.status == 8 || msg.status == 5) {
-        this.gameEnd(msg.status,msg.result);
+        this.gameEnd(msg.status, msg.result);
       }
     },
 
@@ -350,7 +465,6 @@ export const useGameStore = defineStore("useGameStore", () => {
       state.value.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
       clockStore.start(state.value.side_to_move);
       state.value.current_stage = 1;
-      state.value.history[1].push(s.sfen);
       playAudio("res");
     },
 
@@ -358,13 +472,31 @@ export const useGameStore = defineStore("useGameStore", () => {
       position.set_sfen(state.value.sfen);
       let interval = setInterval(() => {
         if (cgStore.state.cg) {
-          cgStore.setPlinths(cgStore.state.cg!, position);
-          cgStore.setPieces(cgStore.state.cg!, position);
-          cgStore.wasmPocket();
           clearInterval(interval);
+          this.clientStage() == 1 ? cgStore.wasmPocket(true) : null;
+          cgStore.setPieces(cgStore.state.cg!, position);
+          cgStore.setPlinths(cgStore.state.cg!, position);
+          cgStore.setTurnColor();
+          cgStore.setCheck2(state.value.current_stage as 1);
+          this.lastMoveIndex(this.clientStage())
+          this.clientStage() == 2
+            ? this.legal_moves()
+            : null;
         }
       }, 10)
+    },
+
+    lastMoveIndex(stage: number) {
+      other.value.index = state.value.history[stage].length - 1;
+    },
+
+
+    sendMove(s: string) {
+      if (!analyzeStore.state().active) {
+        this.send("live_game_play", s);
+      }
     }
+
   };
 });
 

@@ -39,7 +39,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import ShuuroLeftSideUsername from "./ShuuroLeftSideUsername.vue";
+import ShuuroLeftSideUsername from "@/components/ShuuroLeftSideUsername.vue";
 import ShuuroStageMatchInfo from "@/components/ShuuroStageMatchInfo.vue";
 import { useGameStore } from "@/store/game";
 const gameStore = useGameStore();

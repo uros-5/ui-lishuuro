@@ -16,7 +16,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import HeaderSettings from "./HeaderSettings.vue";
+import HeaderSettings from "@/components/HeaderSettings.vue";
 import { onMounted } from "vue";
 import { useUser } from "@/store/useUser";
 import { backend } from "@/plugins/getBackend";

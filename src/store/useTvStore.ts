@@ -4,8 +4,8 @@ import { setCheck } from "chessground12/board";
 import { userProfileConfig } from "chessground12/configs";
 import { dimensions, Geometry, type Role } from "chessground12/types";
 import { defineStore } from "pinia";
-import init, { ShuuroPosition } from "shuuro-wasm";
-import type { Color } from "./useShuuroStore";
+import init, { ShuuroPosition } from "@/plugins/shuuro-wasm";
+import type { Color } from "@/store/useShuuroStore";
 import type { Key, Piece } from "chessground12/types";
 import {
   LiveGameDraw,
