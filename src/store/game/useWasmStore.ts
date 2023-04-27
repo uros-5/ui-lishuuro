@@ -1,10 +1,13 @@
-import  {ShuuroPosition, ShuuroShop}  from "@/plugins/shuuro-wasm";
+import { ShuuroPosition, ShuuroShop } from "@/plugins/shuuro-wasm";
 import init from "@/plugins/shuuro-wasm";
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import { useGameStore } from "@/store/game";
+import type { Piece } from "chessground12/types";
 
 export const useWasmStore = defineStore("useWasmStore", () => {
   const state = ref(empty());
+  const gameStore = useGameStore();
 
   return {
     state,
@@ -37,6 +40,43 @@ export const useWasmStore = defineStore("useWasmStore", () => {
 
     analyze(): ShuuroPosition {
       return state.value.analyzeWasm!;
+    },
+
+    current(): ShuuroPosition | undefined {
+      return state.value.wasm[gameStore.clientStage() as 1]
+    },
+
+    wasmPiece(piece: Piece): string {
+      const p =
+        piece.color == "white"
+          ? piece.role[0].toUpperCase()
+          : piece.role[0].toLowerCase();
+      return p;
+    },
+
+    stm(): string {
+      return this.current()!.side_to_move() == "w" ? "white" : "black";
+    },
+
+    legal_moves(piece?: Piece, side?: 0 | 1) {
+      const wasm = this.current()!;
+      let lm;
+      if (piece) {
+        const shuuroPiece = this.wasmPiece(piece);
+        lm = wasm.place_moves(shuuroPiece);
+      }
+      else if(side) {
+        const color = this.color(side);
+        lm = wasm.legal_moves(color);
+      }
+      else {
+        lm = new Map();
+      }
+      return lm;
+    },
+
+    color(side: 0 | 1): string {
+      return side == 0 ? "w" : "b";
     },
 
     reset() {

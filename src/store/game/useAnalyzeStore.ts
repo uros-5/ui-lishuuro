@@ -11,6 +11,14 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
       return state.value;
     },
 
+    isActive(): boolean {
+      return state.value.active;
+    },
+
+    moves(): string[] {
+      return state.value.moves;
+    },
+
     canAnalyze() {
       if (gameStore.state.current_stage == 2 && gameStore.state.status > -1) {
         return true;

@@ -25,6 +25,18 @@ export const useCgStore = defineStore("useCgStore", () => {
   return {
     state,
     others,
+    cg(): Api | undefined {
+      return state.value.cg
+    },
+    isElementLoaded(): boolean {
+      return state.value.element && gameStore.loaded() ? true : false;
+    },
+    isPocketReady(): boolean {
+      return state.value.top && state.value.bot ? true : false;
+    },
+    isCurrentStage(stage: number): boolean {
+      return others.value.stage != stage;
+    },
     newElement(element: undefined | HTMLElement, id: 0 | 1 | 2) {
       switch (id) {
         case 0:
@@ -247,7 +259,7 @@ export const useCgStore = defineStore("useCgStore", () => {
     },
 
     playPremove() {
-      if(others.value.premoveData.active && gameStore.canPlay()) {
+      if (others.value.premoveData.active && gameStore.canPlay()) {
         state.value.cg!.playPremove();
         others.value.premoveData.active = false;
       }
