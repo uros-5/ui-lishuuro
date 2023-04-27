@@ -107,9 +107,18 @@ export const useCgStore = defineStore("useCgStore", () => {
       }
     },
 
-    flipBoard(force = true) {
+    getCg(cg?: Api): Api | undefined {
+      return !cg ? this.cg() : cg;
+    },
+
+    getPosition(pos?: ShuuroPosition): ShuuroPosition | undefined {
+      return !pos ? wasmStore.current() : pos;
+    },
+    
+    flipBoard(force = true, cg?: Api) {
       const shop = gameStore.state.current_stage == 0 || gameStore.other.clientStage == 0;
-      !shop ? state.value.cg?.toggleOrientation() : null;
+      cg = !cg ? this.cg() : cg;
+      !shop ? cg?.toggleOrientation() : null;
       if (force) {
         others.value.flippedBoard = !others.value.flippedBoard;
       }
@@ -119,26 +128,37 @@ export const useCgStore = defineStore("useCgStore", () => {
       return others.value.flippedBoard;
     },
 
-    setPieces(cg: Api, sp: ShuuroPosition, force = true) {
-      const pieces = sp.map_pieces();
-      cg.setPieces(pieces);
+    setPieces(cg?: Api, sp?: ShuuroPosition, force = true) {
+      sp = this.getPosition(sp)
+      cg = this.getCg(cg);
+      const pieces = sp?.map_pieces();
+      if (!pieces) return;
+      
+      cg?.setPieces(pieces);
       if (force) {
-        cg.state.pieces = pieces;
-        cg.state.dom.redraw();
-        cg.state.dom.redraw();
+        cg!.state.pieces = pieces;
+        cg!.state.dom.redraw();
+        cg!.state.dom.redraw();
       }
     },
 
-    setPlinths(cg: Api, sp: ShuuroPosition, ignore?: boolean) {
+    setPlinths(cg?: Api, sp?: ShuuroPosition, ignore?: boolean) {
       if (ignore == true) return;
-      const plinths = sp.map_plinths();
-      cg.setPlinths(plinths)
-      cg.state.plinths = plinths;
+      sp = this.getPosition(sp)
+      cg = this.getCg(cg);
+      const plinths = sp!.map_plinths();
+      cg!.setPlinths(plinths)
+      cg!.state.plinths = plinths;
     },
 
-    setCheck(cg: Api, check: boolean) {
-      setCheck(cg.state, check);
-      cg.state.dom.redraw();
+    setCheck(cg?: Api, sp?: ShuuroPosition) {
+      sp = this.getPosition(sp);
+      cg = this.getCg(cg);
+      if (cg) {
+        let check = sp!.is_check();
+        setCheck(cg.state, check);
+        cg.state.dom.redraw();
+      }
     },
 
     changePocketRoles() {
@@ -147,12 +167,17 @@ export const useCgStore = defineStore("useCgStore", () => {
       }
     },
 
-    readPocket(position: ShuuroPosition) {
-      const hand = position.count_hand_pieces();
-      state.value.cg!.state.pockets = readPockets(
+    readPocket(cg?: Api, sp?: ShuuroPosition, force = false) {
+      sp = this.getPosition(sp)
+      cg = this.getCg(cg);
+      const hand = sp!.count_hand_pieces();
+      cg!.state.pockets = readPockets(
         `[${hand}]`,
         state.value.cg!.state.pocketRoles!
       );
+      if (force) {
+        cg!.state.dom.redraw();
+      }
     },
 
     setPocket(hand: string | undefined) {
@@ -340,18 +365,19 @@ export const useCgStore = defineStore("useCgStore", () => {
       state.value.cg!.state.movable.dests = lm;
     },
 
-    setMovable(movable: boolean) {
-      state.value.cg!.state.movable.showDests = movable;
-      state.value.cg!.state.draggable.enabled = movable;
-      state.value.cg!.state.movable.color =
+    setMovable(movable: boolean, cg?: Api) {
+      cg = this.getCg(cg);
+      cg!.state.movable.showDests = movable;
+      cg!.state.draggable.enabled = movable;
+      cg!.state.movable.color =
         analyzeStore.state().active ? "both" :
           gameStore.playerColor() as "white";
     },
 
-    setDraggable(draggable: boolean) {
-      // if ()
-      state.value.cg!.state.draggable.enabled = draggable;
-      state.value.cg!.state.dropmode.active = draggable;
+    setDraggable(draggable: boolean, cg?: Api) {
+      cg = this.getCg(cg);
+      cg!.state.draggable.enabled = draggable;
+      cg!.state.dropmode.active = draggable;
     },
 
     enableMovable(fenBtn: FenBtn) {
@@ -378,6 +404,8 @@ export const useCgStore = defineStore("useCgStore", () => {
       gameStore.state.side_to_move = turnColor == "white" ? 0 : 1;
       state.value.cg!.state.turnColor = turnColor as "black";
     },
+
+    newPiece(to: string, cg?: Api ) {},
 
     reset() {
       state.value = empty();
