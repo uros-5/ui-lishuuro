@@ -24,7 +24,7 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
         return true;
       }
       return false;
-    },    
+    },
 
     toggle() {
       state.value.active = !state.value.active;
@@ -43,7 +43,7 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
     },
 
     findFen(fenBtn: FenBtn) {
-      const len = state.value.moves.length;
+      const len = this.moves().length;
       switch (fenBtn) {
         case FenBtn.First:
           state.value.index = 0;

@@ -8,10 +8,10 @@
       <router-view />
     </selection>
     <div
-      v-if="!analyzeStore.state().active"
+      v-if="!analyzeStore.isActive()"
       class="material material-top black standard disabled"
     />
-    <div v-if="!analyzeStore.state().active" class="pocket-top">
+    <div v-if="!analyzeStore.isActive()" class="pocket-top">
       <PlayerHand
         :in-center="false"
         side="top"
@@ -21,33 +21,33 @@
       />
     </div>
     <ShuuroClock
-      v-if="!analyzeStore.state().active"
+      v-if="!analyzeStore.isActive()"
       :color="getColor(topPlayer())"
       part="0"
     />
-    <div v-if="!analyzeStore.state().active" id="expiration-top" />
+    <div v-if="!analyzeStore.isActive()" id="expiration-top" />
     <ShuuroFenPlayer
-      v-if="!analyzeStore.state().active"
+      v-if="!analyzeStore.isActive()"
       :player_username="topPlayer()"
       :online="false"
     />
     <ShuuroFenButtons />
     <ShuuroFen />
-    <ShuuroMatchOfferDialog v-if="!analyzeStore.state().active" />
-    <ShuuroMatchButtons v-if="!analyzeStore.state().active" />
+    <ShuuroMatchOfferDialog v-if="!analyzeStore.isActive()" />
+    <ShuuroMatchButtons v-if="!analyzeStore.isActive()" />
     <ShuuroFenPlayer
-      v-if="!analyzeStore.state().active"
+      v-if="!analyzeStore.isActive()"
       :player_username="bottomPlayer()"
       :online="true"
       style="grid-area: user-bot"
     />
-    <div v-if="!analyzeStore.state().active" id="expiration-bottom" />
+    <div v-if="!analyzeStore.isActive()" id="expiration-bottom" />
     <ShuuroClock
-      v-if="!analyzeStore.state().active"
+      v-if="!analyzeStore.isActive()"
       :color="getColor(bottomPlayer())"
       part="1"
     />
-    <div v-if="!analyzeStore.state().active" class="pocket-bot">
+    <div v-if="!analyzeStore.isActive()" class="pocket-bot">
       <PlayerHand
         side="bottom"
         :in-center="false"
@@ -57,7 +57,7 @@
       />
     </div>
     <div
-      v-if="!analyzeStore.state().active"
+      v-if="!analyzeStore.isActive()"
       class="material material-bottom standard disabled"
     ></div>
     <AnalyzeButton />

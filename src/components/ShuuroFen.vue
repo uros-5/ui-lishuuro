@@ -1,19 +1,19 @@
 <template>
   <div
     class="movelist-block"
-    :class="{ 'movelist-block2': analyzeStore.state().active }"
+    :class="{ 'movelist-block2': analyzeStore.isActive() }"
   >
-    <div id="movelist" :class="{ movelist2: analyzeStore.state().active }">
+    <div id="movelist" :class="{ movelist2: analyzeStore.isActive() }">
       <ShuuroFenItem
         v-for="(item, i) in getHistory().value"
-        v-if="analyzeStore.state().moves.length == 0"
+        v-if="analyzeStore.moves().length == 0"
         :key="i"
         :fen="fenItem(item)"
         :move="moveItem(item)"
         :index="i + 1"
       />
 
-      <AnalyzeRow v-if="analyzeStore.state().moves.length > 0" />
+      <AnalyzeRow v-if="analyzeStore.moves().length > 0" />
 
       <div id="result" v-if="showRes()">
         {{ resultMessage() }}

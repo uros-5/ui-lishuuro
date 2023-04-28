@@ -7,31 +7,66 @@
     :data-board="settings.getBoard()"
     :data-piece="settings.getPiece()"
     :data-size="settings.getVariant(gameStore.state.variant)"
+    @wheel="wheel"
   />
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, onUpdated, ref, watch } from "vue";
+import {
+  onMounted,
+  onUnmounted,
+  onUpdated,
+  onBeforeUnmount,
+  ref,
+  watch,
+} from "vue";
 import { useHeaderSettings } from "@/store/headerSettings";
 import { useGameStore } from "@/store/game";
 import { useCgStore } from "@/store/game/useCgStore";
+import { FenBtn } from "@/plugins/fen";
 
 const gameStore = useGameStore();
 const cgStore = useCgStore();
 const settings = useHeaderSettings();
 const element = ref(undefined as HTMLElement | undefined);
 
+let counter = 0;
+let mounted = false;
+
+function wheel(event: WheelEvent) {
+  const btn = event.deltaY >= 0 ? FenBtn.Next : FenBtn.Previous;
+  gameStore.findFen(btn);
+}
+
+function updateElement(force?: boolean) {
+  if ((counter < 6 && mounted) || force == true) {
+    cgStore.newElement(element.value, 0);
+    counter += 1;
+  }
+}
+
+onMounted(() => {
+  mounted = true;
+  updateElement(true);
+});
+
 watch(element, (state) => {
-  cgStore.newElement(state, 0);
+  updateElement();
 });
 
 onUnmounted(() => {
   element.value = undefined;
-  cgStore.newElement(element.value, 0);
+  cgStore.newElement(undefined, 0);
+  cgStore.state.cg = undefined;
+  mounted = false;
+});
+
+onBeforeUnmount(() => {
+  // cgStore.newElement(undefined, 0);
 });
 
 onUpdated(() => {
-  cgStore.newElement(element.value, 0);
+  updateElement();
 });
 </script>
 

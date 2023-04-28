@@ -4,38 +4,33 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useGameStore } from "@/store/game";
 import type { Piece } from "chessground12/types";
+import { useCgStore } from "./useCgStore";
+import { useClockStore } from "./useClockStore";
 
 export const useWasmStore = defineStore("useWasmStore", () => {
   const state = ref(empty());
   const gameStore = useGameStore();
+  const cgStore = useCgStore();
+  const clockStore = useClockStore();
 
   return {
     state,
     async init() {
-      let i = await init();
-      state.value.wasm[0] = new ShuuroShop();
-      state.value.wasm[1] = new ShuuroPosition("shuuro");
-      state.value.wasm[2] = new ShuuroPosition("shuuro");
+      await init();
+      state.value.shop = new ShuuroShop();
+      state.value.position = new ShuuroPosition("shuuro");
       state.value.analyzeWasm = new ShuuroPosition("shuuro");
       state.value.init = true;
     },
 
     changeVariant(variant: string) {
-      [0, 1, 2].forEach((item) =>
-        state.value.wasm[item]!.change_variant(variant)
+      ["shop", "position"].forEach((item) =>
+        state.value[item as "shop" | "position"]!.change_variant(variant)
       );
     },
 
     shop(): ShuuroShop {
-      return state.value.wasm[0]!;
-    },
-
-    placement(): ShuuroPosition {
-      return state.value.wasm[1]!;
-    },
-
-    fight(): ShuuroPosition {
-      return state.value.wasm[2]!;
+      return state.value.shop!;
     },
 
     analyze(): ShuuroPosition {
@@ -43,7 +38,7 @@ export const useWasmStore = defineStore("useWasmStore", () => {
     },
 
     current(): ShuuroPosition | undefined {
-      return state.value.wasm[gameStore.clientStage() as 1]
+      return state.value.position;
     },
 
     wasmPiece(piece: Piece): string {
@@ -64,12 +59,10 @@ export const useWasmStore = defineStore("useWasmStore", () => {
       if (piece) {
         const shuuroPiece = this.wasmPiece(piece);
         lm = wasm.place_moves(shuuroPiece);
-      }
-      else if(side) {
+      } else if (side) {
         const color = this.color(side);
         lm = wasm.legal_moves(color);
-      }
-      else {
+      } else {
         lm = new Map();
       }
       return lm;
@@ -79,26 +72,54 @@ export const useWasmStore = defineStore("useWasmStore", () => {
       return side == 0 ? "w" : "b";
     },
 
+    wasmPlace(gameMove: string, isServer: boolean) {
+      const placed = this.current()!.place(gameMove);
+      if (placed) {
+        this.addWasmMove(1);
+        this.wasmStm(1);
+        if (isServer) {
+        }
+        cgStore.setCheck();
+      }
+    },
+
+    addWasmMove(stage: 1 | 2) {
+      const wasm = this.current()!;
+      const last_move = wasm.last_move();
+      gameStore.addMove(stage, last_move);
+      gameStore.scrollToBottom();
+      gameStore.lastMoveIndex(stage);
+      stage == 1 ? cgStore.readPocket() : null;
+      gameStore.state.sfen = wasm.generate_sfen();
+      gameStore.audio("move");
+    },
+
+    wasmStm(stage: 1 | 2) {
+      const wasm = this.current();
+      clockStore.pause(gameStore.state.side_to_move);
+      cgStore.setPieces(cgStore.cg()!, wasm);
+      cgStore.setTurnColor();
+      clockStore.switchClock();
+    },
+    
     reset() {
       state.value = empty();
-    }
+    },
   };
 });
 
 type WasmStore = {
-  wasm: [
-    ShuuroShop | undefined,
-    ShuuroPosition | undefined,
-    ShuuroPosition | undefined
-  ];
+  shop: ShuuroShop | undefined;
+  position: ShuuroPosition | undefined;
   analyzeWasm: ShuuroPosition | undefined;
   init: boolean;
 };
 
 function empty(): WasmStore {
   return {
-    wasm: [undefined, undefined, undefined],
+    shop: undefined,
+    position: undefined,
     analyzeWasm: undefined,
-    init: false
-  }
+    init: false,
+  };
 }

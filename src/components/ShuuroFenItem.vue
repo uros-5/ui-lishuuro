@@ -5,7 +5,7 @@
 
   <div
     class="move"
-    :class="{ active: gameStore.index() == index - 1 }"
+    :class="{ active: isActive() }"
     :ply="index"
     @click="updateIndex"
     v-if="true"
@@ -17,10 +17,7 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
-import { deploySfen, fightSfen, formatSfen } from "@/plugins/fen";
 import { useGameStore } from "@/store/game";
-import { playAudio } from "@/plugins/audio";
-import ShuuroPosition from "@/plugins/shuuro-wasm";
 import { useCgStore } from "@/store/game/useCgStore";
 
 const props = defineProps<{ index: number; fen: string; move: string }>();
@@ -28,7 +25,8 @@ const gameStore = useGameStore();
 const cgStore = useCgStore();
 
 function updateIndex(): void {
-  gameStore.other.index = props.index - 1;
+  gameStore.other.index =
+    gameStore.clientStage() != 2 ? props.index - 1 : props.index;
   audio();
   gameStore.getSfen();
 }
@@ -42,11 +40,16 @@ function isFirst(): boolean {
   return false;
 }
 
+function isActive(): boolean {
+  let index = gameStore.clientStage() != 2 ? props.index - 1 : props.index;
+  return gameStore.index() == index;
+}
+
 function audio() {
   if (props.move.includes("x")) {
-    playAudio("capture");
+    gameStore.audio("capture");
   } else {
-    playAudio("move");
+    gameStore.audio("move");
   }
 }
 

@@ -19,7 +19,7 @@ export const useShopStore = defineStore("useShopStore", () => {
     setConfirmed(data: [boolean, boolean]) {
       state.value.confirmed = data;
       if (!data.includes(false)) {
-        return ;
+        return;
       }
 
       data.includes(true) ? this.startClock() : null;
@@ -37,7 +37,6 @@ export const useShopStore = defineStore("useShopStore", () => {
     },
 
     buy(p: string, color: string) {
-
       if (this.canShop()) {
         const game_move = `+${p}`;
         state.value.pieceCounter = wasmStore.shop().buy(game_move);
@@ -78,8 +77,7 @@ export const useShopStore = defineStore("useShopStore", () => {
         const other = clockStore.otherClock(confirmed);
         clockStore.start(other);
         return;
-      }
-      else {
+      } else {
         clockStore.startBoth(elapsed, gameStore.state.tc.clocks);
       }
     },
@@ -117,7 +115,7 @@ export const useShopStore = defineStore("useShopStore", () => {
 
     reset() {
       state.value = empty();
-    }
+    },
   };
 });
 

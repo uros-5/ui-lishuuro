@@ -28,7 +28,15 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, defineProps, ref, onUnmounted, watch, type WatchStopHandle, onUpdated} from "vue";
+import {
+  onMounted,
+  defineProps,
+  ref,
+  onUnmounted,
+  watch,
+  type WatchStopHandle,
+  onUpdated,
+} from "vue";
 import { useBoardSize } from "@/store/useBoardSize";
 import { useHeaderSettings } from "@/store/headerSettings";
 import { useGameStore } from "@/store/game";
@@ -44,7 +52,6 @@ const props = defineProps<{
   side: string;
 }>();
 
-
 const boardSize = useBoardSize();
 const hs = useHeaderSettings();
 const gameStore = useGameStore();
@@ -53,19 +60,19 @@ const cgStore = useCgStore();
 
 const element = ref(null as HTMLElement | null);
 
-let watcher:  WatchStopHandle;
+let watcher: WatchStopHandle;
 let counter = 0;
 
-watcher = watchElement()
+watcher = watchElement();
 
 function watchElement(): WatchStopHandle {
-return watch(
-  element,
-  (newer) => {
-    cgStore.newElement(newer as HTMLElement, id() as 0 | 1 | 2);
-  },
-  { deep: true }
-)
+  return watch(
+    element,
+    (newer) => {
+      cgStore.newElement(newer as HTMLElement, id() as 0 | 1 | 2);
+    },
+    { deep: true }
+  );
 }
 
 onMounted(() => {
@@ -80,15 +87,13 @@ onUnmounted(() => {
   watcher();
 });
 
-onUpdated( () => {
+onUpdated(() => {
   if (counter < 8) {
     cgStore.newElement(element.value as HTMLElement, id() as 0 | 1 | 2);
     counter += 1;
+  } else {
   }
-  else {
-
-  }
-})
+});
 
 function divId() {
   return props.side == "top" ? "pocket0" : "pocket1";
@@ -96,12 +101,11 @@ function divId() {
 
 function id(): number {
   if (props.side == "top") {
-    return 1
-  }
-  else if (props.side == "bottom") {
+    return 1;
+  } else if (props.side == "bottom") {
     return 2;
   }
-  return 4
+  return 4;
 }
 
 window.addEventListener("resize", boardSize.resize, true);

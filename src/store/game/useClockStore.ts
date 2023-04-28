@@ -4,7 +4,6 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useGameStore } from "@/store/game";
 import { useShopStore } from "@/store/game/useShopStore";
-import { playAudio } from "@/plugins/audio";
 
 export const useClockStore = defineStore("useClockStore", () => {
   const gameStore = useGameStore();
@@ -64,25 +63,26 @@ export const useClockStore = defineStore("useClockStore", () => {
     },
 
     lowTimeNotif() {
-      playAudio("low_time");
+      gameStore.audio("low_time");
     },
 
     activateClock() {
-      [0, 1].forEach(item => {
+      [0, 1].forEach((item) => {
         state.value.clocks[item].onTick(state.value.clocks[item].renderTime);
         state.value.clocks[item].onHurryCallback(this.lowTimeNotif);
       });
       if (gameStore.state.status < 0) {
         if (gameStore.state.current_stage == 0) {
           shopStore.startClock();
-        }
-        else {
+        } else {
           gameStore.startClock();
         }
-      }
-      else {
-        [0, 1].forEach(item => {this.renderTime(item); this.pause(item)});
-        this.fromMove(gameStore.state.tc.clocks)
+      } else {
+        [0, 1].forEach((item) => {
+          this.renderTime(item);
+          this.pause(item);
+        });
+        this.fromMove(gameStore.state.tc.clocks);
       }
     },
 
@@ -93,21 +93,22 @@ export const useClockStore = defineStore("useClockStore", () => {
 
     reset() {
       const old = empty();
-      state.value.last_clock = old.last_clock
+      state.value.last_clock = old.last_clock;
       this.pauseBoth();
     },
 
     switchClock() {
-      const otherClock = this.otherClock(gameStore.state.side_to_move)
+      const otherClock = this.otherClock(gameStore.state.side_to_move);
       this.pause(otherClock, true);
       this.start(gameStore.state.side_to_move);
-    }
+    },
   };
 });
 
 type State = {
-  clocks: [Clock, Clock]; last_clock: string
-}
+  clocks: [Clock, Clock];
+  last_clock: string;
+};
 
 function empty(): State {
   return {

@@ -40,6 +40,10 @@ export const useHeaderSettings = defineStore("headerSettings", {
         this.piece = `${image}`;
       }
     },
+    setVolume(sound: string) {
+      localStorage.setItem("volume", sound);
+      this.volume = sound;
+    },
     getTheme(): string {
       return this.theme;
     },
@@ -51,6 +55,9 @@ export const useHeaderSettings = defineStore("headerSettings", {
     },
     getVariant(variant: string): string {
       return variant.startsWith("shuuro") ? `${12}` : `${8}`;
+    },
+    getSound(): string {
+      return this.volume;
     },
     zoom() {
       document
@@ -67,24 +74,28 @@ interface HeaderSettings {
   board: string;
   piece: string;
   currentZoom: string;
+  volume: string;
 }
-type Clicked = "" | "background" | "board";
+type Clicked = "" | "background" | "board" | "sound";
 
 function hs(): HeaderSettings {
   let theme = localStorage.getItem("theme");
   theme = theme == null ? "dark" : theme;
   let board = localStorage.getItem("board");
   board = board == null ? "0" : board;
-  let zoom = localStorage.getItem("zoom");
-  zoom = zoom == null ? "100" : zoom;
+  let currentZoom = localStorage.getItem("zoom");
+  currentZoom = currentZoom == null ? "100" : currentZoom;
   let piece = localStorage.getItem("piece");
   piece = piece == null ? "0" : piece;
+  let sound = localStorage.getItem("sound");
+  sound = sound == null ? "1" : sound;
   return {
     show: false,
     clicked: "",
-    board: board,
-    piece: piece,
-    theme: theme,
-    currentZoom: zoom,
+    board,
+    piece,
+    theme,
+    currentZoom,
+    volume: sound
   };
 }

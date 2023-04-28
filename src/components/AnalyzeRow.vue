@@ -3,7 +3,7 @@
     <vari-move @click="selectSan(-1)">-</vari-move>
     <vari-move
       @click="selectSan(index)"
-      v-for="(i, index) in analyzeStore.state().moves"
+      v-for="(i, index) in analyzeStore.moves()"
       :key="i"
       ply=""
       :class="{ active: index == analyzeStore.state().index }"

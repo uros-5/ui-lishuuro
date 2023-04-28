@@ -22,14 +22,16 @@
 
 <script setup lang="ts">
 import PlayerHand from "@/components/PlayerHand.vue";
-import { computed, onMounted } from "vue";
+import { onMounted } from "vue";
 import { useUser } from "@/store/useUser";
 import { useGameStore } from "@/store/game";
 import { useShopStore } from "@/store/game/useShopStore";
 import { pieces, dataPrice } from "@/plugins/shop";
+import { useCgStore } from "@/store/game/useCgStore";
 
 const gameStore = useGameStore();
 const shopStore = useShopStore();
+const cgStore = useCgStore();
 
 const { user } = useUser();
 
@@ -44,6 +46,7 @@ function myCredit() {
 
 onMounted(() => {
   gameStore.newClientStage(0);
+  cgStore.others.stage = 0;
 });
 </script>
 

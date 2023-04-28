@@ -15,8 +15,6 @@ onMounted(async () => {
 onUnmounted(() => {});
 </script>
 
-<style scoped></style>
-
 <template>
   <ShuuroChessground />
 </template>

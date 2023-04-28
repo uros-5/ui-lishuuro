@@ -25,7 +25,7 @@ import { defineStore } from "pinia";
 import { useCgStore } from "@/store/game/useCgStore";
 import { ShuuroPosition } from "@/plugins/shuuro-wasm";
 import type { Key } from "chessground12/types";
-
+import { useHeaderSettings } from "../headerSettings";
 
 const finished = [
   "Checkmate",
@@ -35,7 +35,6 @@ const finished = [
   "Stalemate",
 ];
 
-
 export const useGameStore = defineStore("useGameStore", () => {
   const state = ref(emptyGame());
   const other = ref(emptyOther());
@@ -44,8 +43,10 @@ export const useGameStore = defineStore("useGameStore", () => {
   const shopStore = useShopStore();
   const cgStore = useCgStore();
   const analyzeStore = useAnalyzeStore();
+  const headerSettingsStore = useHeaderSettings();
   const user = useUser();
   const ws = useWs();
+
   return {
     state,
     other,
@@ -58,20 +59,26 @@ export const useGameStore = defineStore("useGameStore", () => {
       return other.value.player;
     },
 
-    playerColor(): string {
-      switch (this.player().player) {
+    playerColor(username?: string): string {
+      let player = username
+        ? this.findPlayer(username)
+        : this.player().player;
+      switch (player) {
         case 0:
           return "white";
         case 1:
           return "black";
         default:
+          if (analyzeStore.isActive()) {
+            return "both";
+          }
           return "none";
       }
     },
 
-    getColor(username: string): string {
+    findPlayer(username: string): number {
       const index = state.value.players.findIndex((item) => item == username)!;
-      return index == 0 ? "white" : "black";
+      return index;
     },
 
     config() {
@@ -79,14 +86,14 @@ export const useGameStore = defineStore("useGameStore", () => {
         if (this.clientStage() == state.value.current_stage) {
           return liveConfig;
         }
-      } else if (analyzeStore.state().active) {
+      } else if (analyzeStore.isActive()) {
         return liveConfig;
       }
       return anonConfig;
     },
 
-    clientStage() {
-      return other.value.clientStage;
+    clientStage(): number | 0 | 1 | 2 {
+      return other.value.clientStage as 0 | 1 | 2;
     },
 
     offeredDraw() {
@@ -108,24 +115,24 @@ export const useGameStore = defineStore("useGameStore", () => {
     async fromServer(s: GameInfo) {
       state.value = s;
       other.value.server = true;
+      this.startPosFix();
       this.setRedirect();
       state.value.min = s.min / 60000;
       state.value.incr = s.incr / 1000;
       state.value.last_clock = new Date(s.tc.last_click).toString();
-      this.newClientStage(s.current_stage)
+      this.newClientStage(s.current_stage);
       clockStore.fromServer(s);
       this.setPlayer();
       this.updateHeadTitle();
       other.value.index = -1;
-      this.startPosFix();
       clockStore.activateClock();
       await wasmStore.init();
       if (s.current_stage == 0) {
         shopStore.shopInfo();
       } else if (s.current_stage == 1) {
-        this.setSfen(wasmStore.placement())
+        this.setSfen(wasmStore.current()!);
       } else if (s.current_stage == 2) {
-        this.setSfen(wasmStore.fight())
+        this.setSfen(wasmStore.current()!);
       }
       this.resSound();
     },
@@ -155,6 +162,9 @@ export const useGameStore = defineStore("useGameStore", () => {
           state.value.history[2].unshift(last);
         }
       }
+      // if (state.value.history[1].length > 0 || state.value.current_stage == 1) {
+      //   state.value.history[2].unshift("");
+      // }
     },
 
     // start normal clock
@@ -173,7 +183,7 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     setPlayer() {
-      [0, 1].forEach(item => {
+      [0, 1].forEach((item) => {
         if (user.user.username == state.value.players[item]) {
           this.player().player = item;
           this.player().isPlayer = true;
@@ -197,7 +207,7 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     resSound() {
       if (state.value.status <= 0) {
-        playAudio("res");
+        this.audio("res");
       }
     },
 
@@ -222,36 +232,34 @@ export const useGameStore = defineStore("useGameStore", () => {
     canPlay(): boolean {
       if (
         state.value.side_to_move == other.value.player.player &&
-        state.value.status < 1// && other.value.index == this.history().length - 1
+        state.value.status < 1 // && other.value.index == this.history().length - 1
       ) {
         return true;
       }
       return false;
     },
 
-
     // legal moves for fight or analyze
     legal_moves(): Map<any, any> {
-      const wasm = analyzeStore.state().active
+      const wasm = analyzeStore.isActive()
         ? wasmStore.analyze()
-        : wasmStore.fight();
-      const color = !analyzeStore.state().active
+        : wasmStore.current()!;
+      const color = !analyzeStore.isActive()
         ? wasm.side_to_move()
         : wasm.side_to_move();
       const sfen = wasm.generate_sfen().split(" ")[0];
       if (!sfen.includes("k") || !sfen.includes("K")) {
         return new Map();
-      }
-      else if (state.value.status < 0 || analyzeStore.state().active) {
+      } else if (state.value.status < 0 || analyzeStore.isActive()) {
         const moves = wasm.legal_moves(color);
-        cgStore.new_legal_moves(moves)
+        cgStore.new_legal_moves(moves);
         return moves;
       }
       return new Map();
     },
 
     wasmMove(game_move: string, isServer: boolean) {
-      const wasm = wasmStore.fight();
+      const wasm = wasmStore.current()!;
       const beforeCount = wasm.pieces_count();
       const played = wasm.make_move(game_move);
       if (!played.toLowerCase().startsWith("illegal")) {
@@ -259,26 +267,26 @@ export const useGameStore = defineStore("useGameStore", () => {
         const move = game_move.split("_");
         const newCount = wasm.pieces_count();
         if (isServer) {
-          cgStore.state.cg!.move(move[0] as Key, move[1] as Key);
+          cgStore.cg()!.move(move[0] as Key, move[1] as Key);
           if (newCount != beforeCount) {
-            playAudio("capture");
+            this.audio("capture");
           } else {
-            playAudio("move");
+            this.audio("move");
           }
           if (lastMove.includes("=")) {
-            cgStore.setPieces(cgStore.state.cg!, wasm);
+            cgStore.setPieces(cgStore.cg()!, wasm);
           }
         }
         if (lastMove.includes("=")) {
-          cgStore.setPieces(cgStore.state.cg!, wasm);
+          cgStore.setPieces(cgStore.cg()!, wasm);
         }
         cgStore.setTurnColor();
-        cgStore.setCheck2(2);
+        cgStore.setCheck();
         clockStore.switchClock();
-        if (!analyzeStore.state().active) this.addMove(2, lastMove);
+        if (!analyzeStore.isActive()) this.addMove(2, lastMove);
         this.scrollToBottom();
         other.value.index += 1;
-        cgStore.state.cg!.state.dom.redraw();
+        cgStore.cg()!.state.dom.redraw();
         this.legal_moves();
         this.playPremove();
       } else {
@@ -286,11 +294,14 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     playPremove() {
-
+      if (cgStore.others.premoveData.active && this.canPlay()) {
+        cgStore.cg()?.playPremove();
+        cgStore.others.premoveData.active = false;
+      }
     },
 
     send(t: string, game_move?: string) {
-      if (analyzeStore.state().active) return;
+      if (analyzeStore.isActive()) return;
       const msg = {
         game_id: state.value._id,
         variant: state.value.variant,
@@ -326,16 +337,32 @@ export const useGameStore = defineStore("useGameStore", () => {
     getSfen() {
       let history = this.history();
       let sfen = history.at(other.value.index);
+      if (sfen == undefined) return;
       const position = new ShuuroPosition(state.value.variant);
       let formatted = formatSfen(sfen!);
       position.set_sfen(formatted.sfen);
-      cgStore.setPieces(cgStore.state.cg!, position, false);
-      this.clientStage() == 1 ? cgStore.readPocket(position) : null;
+      cgStore.setPieces(cgStore.cg()!, position, true);
+      cgStore.setCheck(cgStore.cg(), position);
+      const sound = formatted.capture ? "capture" : "move";
+      this.audio(sound);
+      this.clientStage() == 1
+        ? cgStore.readPocket(false, cgStore.cg(), position)
+        : null;
       position.free();
+      if (formatted.game_move) {
+        const parts = formatted.game_move.split("_");
+        const from = parts[0];
+        const to = parts[1];
+        cgStore.cg()?.setLastMove(from, to);
+      }
+      else {
+        cgStore.cg()?.setLastMove("", "")
+      }
     },
 
     findFen(fenBtn: FenBtn) {
       const len = state.value.history[state.value.current_stage].length;
+      const previous = other.value.index;
       switch (fenBtn) {
         case FenBtn.First:
           other.value.index = 0;
@@ -347,9 +374,8 @@ export const useGameStore = defineStore("useGameStore", () => {
           other.value.index += 1;
           break;
         case FenBtn.Last:
-          other.value.index = state.value.current_stage == 0
-            ? len - 2 :
-            len - 1;
+          other.value.index =
+            state.value.current_stage == 0 ? len - 2 : len - 1;
           break;
       }
       if (other.value.index <= 0) {
@@ -358,15 +384,16 @@ export const useGameStore = defineStore("useGameStore", () => {
         other.value.index = len - 1;
       }
       if (other.value.clientStage == 0) return;
+      else if (previous == other.value.index) return;
       this.getSfen();
-      cgStore.enableMovable(fenBtn)
+      cgStore.enableMovable(fenBtn);
     },
 
     isLiveSfen(sfen: string): boolean {
       if (state.value.status < 0) {
         let historySfen = state.value.history[state.value.current_stage].at(-1);
         if (historySfen == sfen) {
-          return true
+          return true;
         }
       }
       return false;
@@ -381,36 +408,33 @@ export const useGameStore = defineStore("useGameStore", () => {
         this.newClientStage(2);
         state.value.tc.last_click = new Date().toString();
         clockStore.state.last_clock = new Date().toString();
-        playAudio("res");
+        this.audio("res");
         router.push({ path: `/shuuro/2/${msg.game_id}` });
       }
       if (msg.first_move_error) {
-        setTimeout(function() {
-          playAudio("res");
+        setTimeout(() => {
+          this.audio("res");
           clockStore.pause(state.value.side_to_move);
           state.value.status = 1;
           state.value.result = state.value.side_to_move == 0 ? "w" : "b";
-          cgStore.state.cg!.set(anonConfig);
+          cgStore.cg()!.set(anonConfig);
         }, 500);
       }
     },
 
     serverMove2(msg: LiveGameFight) {
-
-
       router.push({ path: `/shuuro/2/${msg.game_id}` });
       this.newClientStage(2);
       this.wasmMove(msg.game_move, true);
       clockStore.fromMove(msg.clocks);
       if (this.gameOver(msg.outcome)) {
-        playAudio("res");
+        this.audio("res");
         clockStore.pauseBoth();
         state.value.status = msg.status;
         state.value.result = msg.outcome;
         this.scrollToBottom();
-        cgStore.state.cg?.set(anonConfig);
+        cgStore.cg()?.set(anonConfig);
       }
-
     },
 
     gameOver(outcome: string) {
@@ -420,36 +444,31 @@ export const useGameStore = defineStore("useGameStore", () => {
         }
       }
       return false;
-
     },
 
     gameDraw(msg: LiveGameDraw) {
       if (msg.draw) {
         this.gameEnd(5, "Draw");
-      }
-      else if (msg.player) {
+      } else if (msg.player) {
         if (this.player().isPlayer && msg.player != user.user.username) {
           other.value.offeredDraw = true;
         }
       }
-
     },
 
     gameResign(msg: LiveGameResign) {
       if (msg.resign) {
-        this.gameEnd(7, this.getColor(msg.player));
+        this.gameEnd(7, this.playerColor(msg.player));
       }
-
     },
 
     gameEnd(status: number, result: string) {
-      playAudio('res')
+      this.audio("res");
       clockStore.pauseBoth();
       state.value.status = status;
       state.value.result = result;
       this.scrollToBottom();
-      if (this.clientStage() != 0) cgStore.state.cg?.set(anonConfig);
-
+      if (this.clientStage() != 0) cgStore.cg()?.set(anonConfig);
     },
 
     gameLot(msg: LiveGameLost) {
@@ -461,42 +480,43 @@ export const useGameStore = defineStore("useGameStore", () => {
     redirectDeploy(s: RedirectDeploy) {
       clockStore.state.last_clock = new Date().toString();
       state.value.sfen = s.sfen;
-      router.push({ path: s.path });
       state.value.side_to_move = s.side_to_move[0] == "w" ? 0 : 1;
       clockStore.start(state.value.side_to_move);
       state.value.current_stage = 1;
-      playAudio("res");
+      router.push({ path: s.path });
+      this.audio("res");
     },
 
     setSfen(position: ShuuroPosition) {
       position.set_sfen(state.value.sfen);
       let interval = setInterval(() => {
-        if (cgStore.state.cg) {
+        if (cgStore.cg()) {
           clearInterval(interval);
-          this.clientStage() == 1 ? cgStore.wasmPocket(true) : null;
-          cgStore.setPieces(cgStore.state.cg!, position);
-          cgStore.setPlinths(cgStore.state.cg!, position);
+          this.clientStage() == 1 ? cgStore.readPocket(true) : null;
+          cgStore.setPieces(cgStore.cg()!, position);
+          cgStore.setPlinths(cgStore.cg()!, position);
           cgStore.setTurnColor();
-          cgStore.setCheck2(state.value.current_stage as 1);
-          this.lastMoveIndex(this.clientStage())
-          this.clientStage() == 2
-            ? this.legal_moves()
-            : null;
+          cgStore.setCheck();
+          this.lastMoveIndex(this.clientStage());
+          this.clientStage() == 2 ? this.legal_moves() : null;
         }
-      }, 10)
+      }, 10);
     },
 
     lastMoveIndex(stage: number) {
       other.value.index = state.value.history[stage].length - 1;
     },
 
-
     sendMove(s: string) {
-      if (!analyzeStore.state().active) {
+      if (!analyzeStore.isActive()) {
         this.send("live_game_play", s);
       }
-    }
+    },
 
+    audio(s: string) {
+      const volume = headerSettingsStore.getSound();
+      playAudio(s, volume);
+    }
   };
 });
 

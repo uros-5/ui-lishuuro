@@ -26,7 +26,7 @@ const analyzeStore = useAnalyzeStore();
 const gameStore = useGameStore();
 
 function materialTop(): string {
-  if (analyzeStore.state().active) {
+  if (analyzeStore.isActive()) {
     return "grid-area: mat-top;";
   } else {
     return "";
@@ -34,25 +34,25 @@ function materialTop(): string {
 }
 
 function fastBackward(): void {
-  analyzeStore.state().active
+  analyzeStore.isActive()
     ? analyzeStore.findFen(FenBtn.First)
     : gameStore.findFen(FenBtn.First);
 }
 
 function stepBackward(): void {
-  analyzeStore.state().active
+  analyzeStore.isActive()
     ? analyzeStore.findFen(FenBtn.Previous)
     : gameStore.findFen(FenBtn.Previous);
 }
 
 function stepForward(): void {
-  analyzeStore.state().active
+  analyzeStore.isActive()
     ? analyzeStore.findFen(FenBtn.Next)
     : gameStore.findFen(FenBtn.Next);
 }
 
 function fastForward(): void {
-  analyzeStore.state().active
+  analyzeStore.isActive()
     ? analyzeStore.findFen(FenBtn.Last)
     : gameStore.findFen(FenBtn.Last);
 }
