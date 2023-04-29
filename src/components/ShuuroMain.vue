@@ -8,9 +8,14 @@
       <router-view />
     </selection>
     <ShuuroClock :color="getColor(topPlayer())" part="0" />
-    <ShuuroFenPlayer :player_username="topPlayer()" :online="false" />
+    <ShuuroFenPlayer
+      v-if="analyzeStore.isActive() == false"
+      :player_username="topPlayer()"
+      :online="false"
+    />
     <ShuuroClock :color="getColor(bottomPlayer())" part="1" />
     <ShuuroFenPlayer
+      v-if="analyzeStore.isActive() == false"
       :player_username="bottomPlayer()"
       :online="true"
       style="grid-area: user-bot"

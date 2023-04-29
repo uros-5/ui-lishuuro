@@ -34,25 +34,25 @@ function materialTop(): string {
 }
 
 function fastBackward(): void {
-  analyzeStore.isActive()
+  analyzeStore.isActive() && analyzeStore.moves().length > 0
     ? analyzeStore.findFen(FenBtn.First)
     : gameStore.findFen(FenBtn.First);
 }
 
 function stepBackward(): void {
-  analyzeStore.isActive()
+  analyzeStore.isActive() && analyzeStore.moves().length > 0
     ? analyzeStore.findFen(FenBtn.Previous)
     : gameStore.findFen(FenBtn.Previous);
 }
 
 function stepForward(): void {
-  analyzeStore.isActive()
+  analyzeStore.isActive() && analyzeStore.moves().length > 0
     ? analyzeStore.findFen(FenBtn.Next)
     : gameStore.findFen(FenBtn.Next);
 }
 
 function fastForward(): void {
-  analyzeStore.isActive()
+  analyzeStore.isActive() && analyzeStore.moves().length > 0
     ? analyzeStore.findFen(FenBtn.Last)
     : gameStore.findFen(FenBtn.Last);
 }

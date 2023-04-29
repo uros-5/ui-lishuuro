@@ -32,6 +32,16 @@ const element = ref(undefined as HTMLElement | undefined);
 
 let counter = 0;
 let mounted = false;
+const keys = getKeys();
+
+function getKeys() {
+  let keys = new Map<string, FenBtn>();
+  keys.set("ArrowLeft", FenBtn.Previous);
+  keys.set("ArrowRight", FenBtn.Next);
+  keys.set("ArrowUp", FenBtn.First);
+  keys.set("ArrowDown", FenBtn.Last);
+  return keys;
+}
 
 function wheel(event: WheelEvent) {
   const btn = event.deltaY >= 0 ? FenBtn.Next : FenBtn.Previous;
@@ -45,12 +55,20 @@ function updateElement(force?: boolean) {
   }
 }
 
+function navigate(event: KeyboardEvent) {
+  const btn = keys.get(event.key);
+  if (btn != undefined) {
+    gameStore.findFen(btn);
+  }
+}
+
 onMounted(() => {
   mounted = true;
   updateElement(true);
+  document.addEventListener("keydown", navigate);
 });
 
-watch(element, (state) => {
+watch(element, (_) => {
   updateElement();
 });
 
@@ -59,6 +77,7 @@ onUnmounted(() => {
   cgStore.newElement(undefined, CgElement.Main);
   cgStore.state.cg = undefined;
   mounted = false;
+  document.removeEventListener("keydown", navigate);
 });
 
 onBeforeUnmount(() => {

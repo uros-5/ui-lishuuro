@@ -2,15 +2,18 @@ import { FenBtn } from "@/plugins/fen";
 import { ref } from "vue";
 import { useGameStore } from "@/store/game";
 import { defineStore } from "pinia";
+import type { Key } from "chessground12/types";
+import { useWasmStore } from "./useWasmStore";
+import { useCgStore } from "./useCgStore";
 
 export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
   const state = ref(empty());
   const gameStore = useGameStore();
-  return {
-    state() {
-      return state.value;
-    },
+  const wasmStore = useWasmStore();
+  const cgStore = useCgStore();
 
+  return {
+    state,
     isActive(): boolean {
       return state.value.active;
     },
@@ -31,11 +34,24 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
     },
 
     addAnalyzeMove(move: string) {
-      state.value.moves.push(move);
+      if (state.value.index == this.moves().length - 1) {
+          state.value.moves.push(move);
+          this.newIndex();
+      }
+      else {
+        console.log("ok")
+        state.value.moves = state.value.moves.slice(0, state.value.index + 1);
+        state.value.moves.push(move);
+        this.newIndex();
+      }
     },
 
-    newIndex(index: number) {
-      state.value.index = index;
+    newIndex(index?: number) {
+      if(index != undefined)
+        state.value.index = index;
+      else {
+        state.value.index = this.moves().length - 1;
+      }
     },
 
     reset() {
@@ -61,9 +77,21 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
       if (state.value.index <= 0) {
         state.value.index = 0;
       } else if (state.value.index >= len) {
-        state.value.index = len;
+        state.value.index = len - 1;
       }
+      this.selectSfen();
     },
+    selectSfen() {
+      gameStore.getSfen(this.moves().at(state.value.index));
+      cgStore.enableMovable(FenBtn.Next);
+    },
+    afterMove(orig: Key, dest: Key) {
+      const gameMove = `${orig}_${dest}`;
+      wasmStore.analyze().make_move(gameMove);
+    },
+    deleteMoves() {
+     state.value.moves = [] 
+    }
   };
 });
 

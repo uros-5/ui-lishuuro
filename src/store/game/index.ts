@@ -130,7 +130,7 @@ export const useGameStore = defineStore("useGameStore", () => {
       if (s.current_stage == 0) {
         shopStore.shopInfo();
       }
-      else if ([1,2].includes(s.current_stage)) {
+      else if ([1, 2].includes(s.current_stage)) {
         this.setSfen(wasmStore.current()!);
       }
       this.resSound();
@@ -152,6 +152,26 @@ export const useGameStore = defineStore("useGameStore", () => {
         return false;
       }
       return true;
+    },
+
+    currentSfen(): string {
+      if (state.value.status > 0) {
+        if (this.clientStage() == 1) {
+          let sfen = state.value.history.at(1)!.at(0);
+          other.value.index = 0;
+          if (sfen) {
+            return sfen;
+          }
+        }
+        else {
+          let sfen = state.value.history.at(2)!.at(0);
+          other.value.index = 0;
+          if (sfen) {
+            return sfen;
+          }
+        }
+      }
+      return state.value.sfen;
     },
 
     startPosFix(stage?: Stage) {
@@ -264,6 +284,7 @@ export const useGameStore = defineStore("useGameStore", () => {
       } else if (state.value.status < 0 || analyzeStore.isActive()) {
         const moves = wasm.legal_moves(color);
         cgStore.new_legal_moves(moves);
+        cgStore.setTurnColor(color)
         return moves;
       }
       return new Map();
@@ -345,14 +366,18 @@ export const useGameStore = defineStore("useGameStore", () => {
       analyzeStore.reset();
     },
 
-    getSfen() {
+    getSfen(sfen?: string) {
       let history = this.history();
-      let sfen = history.at(other.value.index);
+      sfen = sfen == undefined ? history.at(other.value.index) : sfen;
       if (sfen == undefined) return;
       const position = new ShuuroPosition(state.value.variant);
       position.change_variant(state.value.variant)
       let formatted = formatSfen(sfen!);
       position.set_sfen(formatted.sfen);
+      if (analyzeStore.isActive()) {
+        wasmStore.state.position = position;
+        this.legal_moves();
+      }
       cgStore.setPieces(cgStore.cg()!, position, true);
       cgStore.setCheck(cgStore.cg(), position);
       const sound = formatted.capture ? "capture" : "move";
@@ -360,7 +385,7 @@ export const useGameStore = defineStore("useGameStore", () => {
       this.clientStage() == 1
         ? cgStore.readPocket(false, cgStore.cg(), position)
         : null;
-      position.free();
+      !analyzeStore.isActive() ? position.free() : null;
       if (formatted.game_move) {
         const parts = formatted.game_move.split("_");
         const from = parts[0];
@@ -502,7 +527,9 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     setSfen(position: ShuuroPosition) {
-      position.set_sfen(state.value.sfen);
+      const sfen = formatSfen(this.currentSfen());
+      console.log(sfen)
+      position.set_sfen(sfen.sfen);
       let interval = setInterval(() => {
         if (cgStore.cg()) {
           clearInterval(interval);
@@ -519,7 +546,12 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     lastMoveIndex(stage: number) {
-      other.value.index = state.value.history[stage].length - 1;
+      if(state.value.status<0) {
+        other.value.index = state.value.history[stage].length - 1;
+      }
+      else {
+        other.value.index = 0;
+      }
     },
 
     sendMove(s: string) {

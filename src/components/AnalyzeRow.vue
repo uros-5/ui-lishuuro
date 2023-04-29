@@ -1,22 +1,25 @@
 <template>
   <vari id="vari69">
-    <vari-move @click="selectSan(-1)">-</vari-move>
+    <vari-move @click="selectSan(-1)">---</vari-move>
     <vari-move
       @click="selectSan(index)"
-      v-for="(i, index) in analyzeStore.moves()"
+      v-for="(i, index) in history()"
       :key="i"
       ply=""
-      :class="{ active: index == analyzeStore.state().index }"
+      :class="{ active: index == analyzeStore.state.index }"
     >
-      <san v-if="index != 0">{{ sanFormat(i) }}</san>
+      <san>{{ sanFormat(i) }}</san>
     </vari-move>
   </vari>
 </template>
 
 <script setup lang="ts">
+import { FenBtn } from "@/plugins/fen";
+import { useGameStore } from "@/store/game";
 import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 
-let analyzeStore = useAnalyzeStore();
+const analyzeStore = useAnalyzeStore();
+const gameStore = useGameStore();
 
 function sanFormat(fen: string) {
   let parts = fen.split(" ");
@@ -25,9 +28,16 @@ function sanFormat(fen: string) {
 
 function selectSan(index: number) {
   if (index == -1) {
-    analyzeStore.reset();
+    analyzeStore.deleteMoves();
+    gameStore.findFen(FenBtn.Last);
   } else {
+    analyzeStore.newIndex(index);
+    analyzeStore.selectSfen();
   }
+}
+
+function history() {
+  return analyzeStore.moves();
 }
 </script>
 

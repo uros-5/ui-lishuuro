@@ -20,14 +20,13 @@ export const useWasmStore = defineStore("useWasmStore", () => {
       const variant = gameStore.state.variant;
       state.value.shop = new ShuuroShop();
       state.value.position = new ShuuroPosition(variant);
-      state.value.analyzeWasm = new ShuuroPosition(variant);
       state.value.init = true;
       this.changeVariant()
     },
 
     changeVariant(variant?: string) {
       variant = variant ? variant : gameStore.state.variant;
-      ["shop", "position", "analyzeWasm"].forEach((item) =>
+      ["shop", "position"].forEach((item) =>
         state.value[item as "shop" | "position"]!.change_variant(variant!)
       );
     },
@@ -37,7 +36,7 @@ export const useWasmStore = defineStore("useWasmStore", () => {
     },
 
     analyze(): ShuuroPosition {
-      return state.value.analyzeWasm!;
+      return state.value.position!;
     },
 
     current(): ShuuroPosition | undefined {
@@ -114,7 +113,6 @@ export const useWasmStore = defineStore("useWasmStore", () => {
 type WasmStore = {
   shop: ShuuroShop | undefined;
   position: ShuuroPosition | undefined;
-  analyzeWasm: ShuuroPosition | undefined;
   init: boolean;
 };
 
@@ -122,7 +120,6 @@ function empty(): WasmStore {
   return {
     shop: undefined,
     position: undefined,
-    analyzeWasm: undefined,
     init: false,
   };
 }

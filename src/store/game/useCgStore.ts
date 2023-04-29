@@ -67,7 +67,7 @@ export const useCgStore = defineStore("useCgStore", () => {
         analyzeStore.isActive() ? (others.value.stage = 3) : null;
         if (gameStore.clientStage() == 1) {
           if (this.isPocketReady() && this.isDifferentStage(1)) {
-          if (state.value.cg != undefined) return ;
+            if (state.value.cg != undefined) return;
             others.value.stage = 1;
             const cg = deployCg(
               newstate.element!,
@@ -90,7 +90,7 @@ export const useCgStore = defineStore("useCgStore", () => {
         } else if (
           (gameStore.clientStage() == 2 || analyzeStore.isActive()) &&
           this.isDifferentStage(2)) {
-          if (state.value.cg != undefined) return ;
+          if (state.value.cg != undefined) return;
           others.value.stage = 2;
           const cg = fightCg(
             newstate.element!,
@@ -110,7 +110,7 @@ export const useCgStore = defineStore("useCgStore", () => {
         }
       }
     },
-    
+
     getCg(cg?: Api): Api | undefined {
       return !cg ? this.cg() : cg;
     },
@@ -244,6 +244,9 @@ export const useCgStore = defineStore("useCgStore", () => {
         clockStore.switchClock();
         if (!analyzeStore.isActive())
           gameStore.addMove(gameStore.state.current_stage as Stage, lastMove);
+        else {
+          analyzeStore.addAnalyzeMove(lastMove)
+        }
         gameStore.scrollToBottom();
         gameStore.lastMoveIndex(gameStore.state.current_stage);
         state.value.cg!.state.dom.redraw();
@@ -351,6 +354,7 @@ export const useCgStore = defineStore("useCgStore", () => {
       };
       if (analyzeStore.isActive()) {
         enable(true);
+        this.setTurnColor()
         return;
       }
       const checks = [
@@ -365,13 +369,14 @@ export const useCgStore = defineStore("useCgStore", () => {
     setTurnColor(turnColor?: string) {
       let pos = wasmStore.current()!;
       if (turnColor == undefined) {
-        turnColor = analyzeStore.isActive()
-          ? wasmStore.state.analyzeWasm?.side_to_move()
-          : pos.side_to_move();
+        turnColor = pos.side_to_move();
       }
       turnColor = turnColor == "w" ? "white" : "black";
-      gameStore.state.side_to_move = turnColor == "white" ? 0 : 1;
+      if (!analyzeStore.isActive()) {
+        gameStore.state.side_to_move = turnColor == "white" ? 0 : 1;
+      }
       state.value.cg!.state.turnColor = turnColor as Color;
+      state.value.cg!.state.movable.color = turnColor as Color;
     },
 
     newPiece(to: string, cg?: Api) { },
@@ -418,10 +423,10 @@ type State = {
 
 
 export enum CgElement {
-Main = 0,
-Top,
-Bot,
-None
+  Main = 0,
+  Top,
+  Bot,
+  None
 };
 
 type premoveData = {
