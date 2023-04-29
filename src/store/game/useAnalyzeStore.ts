@@ -39,7 +39,6 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
           this.newIndex();
       }
       else {
-        console.log("ok")
         state.value.moves = state.value.moves.slice(0, state.value.index + 1);
         state.value.moves.push(move);
         this.newIndex();

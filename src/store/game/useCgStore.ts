@@ -283,7 +283,7 @@ export const useCgStore = defineStore("useCgStore", () => {
 
     wasmStm(stage: 1 | 2) {
       const wasm = wasmStore.current()!;
-      clockStore.pause(gameStore.state.side_to_move);
+      clockStore.pause(gameStore.state.side_to_move, false);
       this.setPieces(state.value.cg!, wasm);
       this.setTurnColor();
       clockStore.switchClock();
@@ -376,7 +376,9 @@ export const useCgStore = defineStore("useCgStore", () => {
         gameStore.state.side_to_move = turnColor == "white" ? 0 : 1;
       }
       state.value.cg!.state.turnColor = turnColor as Color;
-      state.value.cg!.state.movable.color = turnColor as Color;
+      if(analyzeStore.isActive()) {
+        state.value.cg!.state.movable.color = turnColor as Color;
+      }
     },
 
     newPiece(to: string, cg?: Api) { },
