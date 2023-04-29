@@ -72,17 +72,19 @@
 </template>
 <script setup lang="ts">
 import { allowedDuration } from "@/store/useHomeLobby";
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
 import { useUser } from "@/store/useUser";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import type { LobbyGame } from "@/plugins/webSocketTypes";
 import { ALL_VARIANTS } from "@/plugins/all_variants";
 
-const userStore = useUser();
+const { user } = useUser();
+const { SEND } = useWs();
 
-let time = ref(14);
-let incr = ref(14);
-let variant = ref("");
+let time = ref(9);
+let incr = ref(5);
+let variant = ref("shuuro_100");
 let color = ref("white");
 let incrementDuration = [0].concat(allowedDuration);
 
@@ -94,7 +96,7 @@ function createGame() {
     variant: choice[0],
     sub_variant: choice[1],
     color: color.value,
-    username: userStore.username,
+    username: user.username,
   };
   let obj = {
     t: "home_lobby_add",
@@ -109,10 +111,6 @@ function inputVariant(): [string, number] {
   let subVariant = parts[1];
   return [selectedVariant, Number(subVariant)];
 }
-
-onMounted(() => {
-  variant.value = "standard_3";
-});
 </script>
 
 <style scoped>

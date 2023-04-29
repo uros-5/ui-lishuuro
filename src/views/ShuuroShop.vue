@@ -1,39 +1,52 @@
 <template>
   <div class="shuuro-shop">
     <div class="shop-table">
-      <p v-for="(i, index) in shuuroStore.pieces()" v-bind:key="index">
+      <p v-for="(i, index) in pieces(gameStore.state)" v-bind:key="index">
         <span class="local-piece">{{ i[0] }}</span>
-        <span class="local-price"> {{ shuuroStore.dataPrice()[index] }} </span>
+        <span class="local-price">
+          {{ dataPrice(gameStore.state)[index] }}
+        </span>
       </p>
     </div>
     <PlayerHand
       side=""
       :in-center="true"
       :counter="[1, 0, 0, 0, 0, 0, 0, 0]"
-      :color="shuuroStore.getColor(userStore.username)"
+      :color="getColor(user.username)"
       hand-type="shop"
     />
-    <p class="local-credit">Credit: {{ shuuroStore.credit }}</p>
-    <button
-      class="shuuro-confirm"
-      @click="shuuroStore.confirm(userStore.username)"
-    >
-      Confirm
-    </button>
+    <p class="local-credit">Credit: {{ myCredit() }}</p>
+    <button class="shuuro-confirm" @click="shopStore.confirm()">Confirm</button>
   </div>
 </template>
 
 <script setup lang="ts">
 import PlayerHand from "@/components/PlayerHand.vue";
 import { onMounted } from "vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
 import { useUser } from "@/store/useUser";
+import { useGameStore } from "@/store/game";
+import { useShopStore } from "@/store/game/useShopStore";
+import { pieces, dataPrice } from "@/plugins/shop";
+import { useCgStore } from "@/store/game/useCgStore";
 
-const shuuroStore = useShuuroStore();
-const userStore = useUser();
+const gameStore = useGameStore();
+const shopStore = useShopStore();
+const cgStore = useCgStore();
+
+const { user } = useUser();
+
+function getColor(username: string): string {
+  const index = gameStore.state.players.findIndex((item) => item == username)!;
+  return index == 0 ? "white" : "black";
+}
+
+function myCredit() {
+  return shopStore.state.credit;
+}
 
 onMounted(() => {
-  shuuroStore.updateClientStage(0);
+  gameStore.newClientStage(0);
+  cgStore.others.stage = 0;
 });
 </script>
 

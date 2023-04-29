@@ -72,16 +72,17 @@
 <script setup lang="ts">
 import { resultMessage } from "@/plugins/resultMessage";
 import { timeago } from "@/plugins/timeago";
-import type { ShuuroStore } from "@/store/useShuuroStore";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useTvStore } from "@/store/useTvStore";
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
 import { ServerDate } from "@/plugins/serverDate";
 import { useHeaderSettings } from "@/store/headerSettings";
 import type { ProfileGame } from "@/plugins/webSocketTypes";
 const tv = useTvStore();
 const settings = useHeaderSettings();
+const { SEND } = useWs();
 const sword = '"';
 
 const props = defineProps<{ game: ProfileGame }>();
@@ -159,10 +160,7 @@ function userColor(p: string): string {
   return props.game.players[0] == p ? "w" : "b";
 }
 
-function setShuuroStore() {
-  //props.game.game_id = props.game._id.$oid;
-  //useShuuroStore().fromServer(props.game, useUser().username);
-}
+function setShuuroStore() {}
 
 function gameUrl(id: string, stage: number, status: number): string {
   if (status < 0) {

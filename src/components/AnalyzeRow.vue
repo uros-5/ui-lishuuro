@@ -1,11 +1,12 @@
 <template>
   <vari id="vari69">
+    <vari-move @click="selectSan(-1)">---</vari-move>
     <vari-move
       @click="selectSan(index)"
-      v-for="(i, index) in store.analysisMoves"
+      v-for="(i, index) in history()"
       :key="i"
       ply=""
-      :class="{ active: index == store.currentIndex() }"
+      :class="{ active: index == analyzeStore.state.index }"
     >
       <san>{{ sanFormat(i) }}</san>
     </vari-move>
@@ -13,9 +14,12 @@
 </template>
 
 <script setup lang="ts">
-import { useShuuroStore } from "@/store/useShuuroStore";
+import { FenBtn } from "@/plugins/fen";
+import { useGameStore } from "@/store/game";
+import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 
-let store = useShuuroStore();
+const analyzeStore = useAnalyzeStore();
+const gameStore = useGameStore();
 
 function sanFormat(fen: string) {
   let parts = fen.split(" ");
@@ -23,15 +27,17 @@ function sanFormat(fen: string) {
 }
 
 function selectSan(index: number) {
-  if (index == 0) {
-    store.analysisMoves = [];
-    store.fastForward();
+  if (index == -1) {
+    analyzeStore.deleteMoves();
+    gameStore.findFen(FenBtn.Last);
   } else {
-    // store.analysisMoves.splice(index + 1);
-    let fen = store.analysisMoves[index];
-    store.setFightWasm(fen, true);
-    store.current_index = index;
+    analyzeStore.newIndex(index);
+    analyzeStore.selectSfen();
   }
+}
+
+function history() {
+  return analyzeStore.moves();
 }
 </script>
 

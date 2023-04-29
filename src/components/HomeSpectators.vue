@@ -1,17 +1,17 @@
 <template>
   <div class="under-right">
     <router-link to="/players">
-      <span id="u_cnt">{{ store.plCount }} players</span>
+      <span id="u_cnt">{{ user.plCount }} players</span>
     </router-link>
     <router-link to="/tv">
-      <span id="g_cnt">{{ store.gamesCount }} games in play</span>
+      <span id="g_cnt">{{ user.gamesCount }} games in play</span>
     </router-link>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useUser } from "@/store/useUser";
-const store = useUser();
+const { user } = useUser();
 </script>
 
 <style scoped>

@@ -10,12 +10,12 @@
 </template>
 
 <script setup lang="ts">
-import TvGameUsername from "./TvGameUsername.vue";
+import TvGameUsername from "@/components/TvGameUsername.vue";
 
-import TvGameIcon from "./TvGameIcon.vue";
-import TvGameCg from "./TvGameCg.vue";
+import TvGameIcon from "@/components/TvGameIcon.vue";
+import TvGameCg from "@/components/TvGameCg.vue";
 
-const props = defineProps<{
+defineProps<{
   w: string;
   b: string;
   id: string;

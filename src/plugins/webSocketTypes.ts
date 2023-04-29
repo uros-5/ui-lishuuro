@@ -1,4 +1,4 @@
-import { ChatMessage } from "@/store/useHomeChat";
+import { ChatMessage } from "@/store/useChat";
 import { z } from "zod";
 
 export const LiveChatFull = z.object({
@@ -171,7 +171,7 @@ export const GameInfo = z.object({
   players: z.tuple([z.string(), z.string()]),
   side_to_move: z.number(),
   last_clock: z.any(),
-  current_stage: z.number(),
+  current_stage: z.number().gte(0).lt(3),
   result: z.string(),
   status: z.number(),
   variant: z.string(),
@@ -197,6 +197,13 @@ export const ProfileGame = GameInfo.omit({
   credits: true,
   hands: true,
 });
+
+export const UserLive = z.object({
+  isPlayer: z.boolean(),
+  player: z.number(),
+});
+
+export type UserLive = z.infer<typeof UserLive>;
 
 export type ProfileGame = z.infer<typeof ProfileGame>;
 

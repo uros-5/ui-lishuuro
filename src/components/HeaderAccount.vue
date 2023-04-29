@@ -1,12 +1,12 @@
 <template>
   <div class="site-buttons">
     <div id="username">
-      <router-link class="user-link" :to="`/@/${store.username}`">{{
-        store.username
+      <router-link class="user-link" :to="`/@/${user.username}`">{{
+        user.username
       }}</router-link>
     </div>
     <a
-      v-if="store.reg == false"
+      v-if="user.reg == false"
       class="login nav-link"
       :href="loginUrl"
       title="Login with Lichess"
@@ -16,12 +16,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import HeaderSettings from "./HeaderSettings.vue";
+import HeaderSettings from "@/components/HeaderSettings.vue";
 import { onMounted } from "vue";
 import { useUser } from "@/store/useUser";
 import { backend } from "@/plugins/getBackend";
 
-const store = useUser();
+const { user } = useUser();
 const loginUrl = `${backend()}login`;
 
 onMounted(function () {});

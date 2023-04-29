@@ -1,7 +1,22 @@
 import { defineStore } from "pinia";
+import { z } from "zod";
+
+export const HeaderSettings = z.object(
+  {
+    theme: z.string(),
+    board: z.string(),
+    piece: z.string(),
+    currentZoom: z.string(),
+    volume: z.string(),
+  }
+).default(
+  { theme: "dark", board: "0", piece: "0", currentZoom: "100", volume: "1" }
+);
+
+export type HeaderSettings = z.infer<typeof HeaderSettings>;
 
 export const useHeaderSettings = defineStore("headerSettings", {
-  state: (): HeaderSettings => {
+  state: (): Store => {
     return hs();
   },
   actions: {
@@ -20,71 +35,78 @@ export const useHeaderSettings = defineStore("headerSettings", {
         close();
       }
     },
+    str() {
+      localStorage.setItem("settings", JSON.stringify(this.settings))
+    },
+
     click(c: Clicked) {
       this.clicked = c;
     },
     setTheme(theme: string) {
       document.querySelector("html")?.setAttribute("data-theme", theme);
-      this.theme = theme;
-      localStorage.setItem("theme", theme);
+      this.settings.theme = theme;
+      this.str();
     },
     setBoardImg(image: number) {
       if ([0, 1, 2, 3, 4, 5].includes(image)) {
-        localStorage.setItem("board", `${image}`);
-        this.board = `${image}`;
+        this.str();
+        this.settings.board = `${image}`;
       }
     },
     setPieceImg(image: number) {
       if ([0, 1, 2].includes(image)) {
-        localStorage.setItem("piece", `${image}`);
-        this.piece = `${image}`;
+        this.str();
+        this.settings.piece = `${image}`;
       }
     },
+    setVolume(sound: string) {
+      this.str();
+      this.settings.volume = sound;
+    },
     getTheme(): string {
-      return this.theme;
+      return this.settings.theme;
     },
     getBoard(): string {
-      return `board-${this.board}`;
+      return `board-${this.settings.board}`;
     },
     getPiece(): string {
-      return `piece-${this.piece}`;
+      return `piece-${this.settings.piece}`;
     },
     getVariant(variant: string): string {
       return variant.startsWith("shuuro") ? `${12}` : `${8}`;
     },
+    getSound(): string {
+      return this.settings.volume;
+    },
     zoom() {
       document
         .querySelector(".round")
-        ?.setAttribute("style", `--zoom: ${this.currentZoom}`);
+        ?.setAttribute("style", `--zoom: ${this.settings.currentZoom}`);
     },
   },
 });
 
-interface HeaderSettings {
-  show: boolean;
-  clicked: Clicked;
-  theme: string;
-  board: string;
-  piece: string;
-  currentZoom: string;
+interface Store {
+  show: boolean,
+  clicked: Clicked,
+  settings: HeaderSettings
 }
-type Clicked = "" | "background" | "board";
 
-function hs(): HeaderSettings {
-  let theme = localStorage.getItem("theme");
-  theme = theme == null ? "dark" : theme;
-  let board = localStorage.getItem("board");
-  board = board == null ? "0" : board;
-  let zoom = localStorage.getItem("zoom");
-  zoom = zoom == null ? "100" : zoom;
-  let piece = localStorage.getItem("piece");
-  piece = piece == null ? "0" : piece;
+type Clicked = "" | "background" | "board" | "sound";
+
+function hs(): Store {
+  const storage = localStorage.getItem("settings");
+  let settings: HeaderSettings = HeaderSettings.parse(undefined);
+  if (storage != undefined) {
+    let data = HeaderSettings.safeParse(JSON.parse(storage));
+    if (data) {
+      settings = JSON.parse(storage)
+    }
+  }
+
   return {
     show: false,
     clicked: "",
-    board: board,
-    piece: piece,
-    theme: theme,
-    currentZoom: zoom,
+    settings
   };
 }

@@ -3,8 +3,8 @@
     <ShuuroStageInfo />
     <ChatRoom
       :messages="chatStore.gameChat"
-      :ws-type="store.game_id"
-      :finished="store.status"
+      :ws-type="gameStore.state._id"
+      :finished="gameStore.state.status"
       variant="shuuro"
     />
     <ShuuroSpectators />
@@ -13,13 +13,11 @@
 <script setup lang="ts">
 import ShuuroStageInfo from "@/components/ShuuroStageInfo.vue";
 import ChatRoom from "@/components/ChatRoom.vue";
-import ShuuroSpectators from "./ShuuroSpectators.vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
-import { useHomeChat } from "@/store/useHomeChat";
-import { onMounted } from "vue";
-const store = useShuuroStore();
-const chatStore = useHomeChat();
+import ShuuroSpectators from "@/components/ShuuroSpectators.vue";
+import { useChat } from "@/store/useChat";
+import { useGameStore } from "@/store/game";
 
-onMounted(() => {});
+const gameStore = useGameStore();
+const chatStore = useChat();
 </script>
 <style></style>

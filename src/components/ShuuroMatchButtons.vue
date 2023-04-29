@@ -12,11 +12,14 @@
 </template>
 
 <script setup lang="ts">
-import { useShuuroStore } from "@/store/useShuuroStore";
-import { SEND } from "@/plugins/webSockets";
+import { useGameStore } from "@/store/game";
+import { useWs } from "@/store/useWs";
+
+const gameStore = useGameStore();
+const { SEND } = useWs();
 
 function canDR(): boolean {
-  return store.status < 0 && store.am_i_player!;
+  return gameStore.state.status < 0 && gameStore.player().isPlayer;
 }
 
 function draw() {
@@ -24,8 +27,8 @@ function draw() {
   if (d) {
     SEND({
       t: "live_game_draw",
-      game_id: store.game_id,
-      variant: store.getVariant(),
+      game_id: gameStore.state._id,
+      variant: gameStore.state.variant,
     });
   }
 }
@@ -35,13 +38,11 @@ function resign() {
   if (r) {
     SEND({
       t: "live_game_resign",
-      game_id: store.game_id,
-      variant: store.getVariant(),
+      game_id: gameStore.state._id,
+      variant: gameStore.state.variant,
     });
   }
 }
-
-const store = useShuuroStore();
 </script>
 
 <style></style>

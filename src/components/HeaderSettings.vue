@@ -9,6 +9,9 @@
           <button id="btn-logout">Log out</button>
         </div>
         <div id="settings-buttons">
+          <button id="btn-background" @click="store.clicked = 'sound'">
+            Sound
+          </button>
           <button id="btn-background" @click="store.clicked = 'background'">
             Background
           </button>
@@ -31,6 +34,7 @@
 
           <HeaderSettingsTheme v-if="store.clicked == 'background'" />
           <HeaderSettingsBoard v-else-if="store.clicked == 'board'" />
+          <HeaderSettingsSound v-else-if="store.clicked == 'sound'" />
         </div>
       </div>
     </div>
@@ -39,12 +43,13 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useUser } from "@/store/useUser";
-import HeaderSettingsTheme from "./HeaderSettingsTheme.vue";
+import HeaderSettingsTheme from "@/components/HeaderSettingsTheme.vue";
 import { useHeaderSettings } from "@/store/headerSettings";
-import HeaderSettingsBoard from "./HeaderSettingsBoard.vue";
-import HeaderSettingsButton from "./HeaderSettingsButton.vue";
-import HeaderSettingsSaveAll from "./HeaderSettingsSaveAll.vue";
-const user = useUser();
+import HeaderSettingsBoard from "@/components/HeaderSettingsBoard.vue";
+import HeaderSettingsButton from "@/components/HeaderSettingsButton.vue";
+import HeaderSettingsSaveAll from "@/components/HeaderSettingsSaveAll.vue";
+import HeaderSettingsSound from "@/components/HeaderSettingsSound.vue";
+const { user } = useUser();
 const store = useHeaderSettings();
 
 onMounted(() => {

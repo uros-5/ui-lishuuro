@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ChatRoom from "@/components/ChatRoom.vue";
-import { useHomeChat } from "@/store/useHomeChat";
-const store = useHomeChat();
+import { useChat } from "@/store/useChat";
+const store = useChat();
 </script>
 
 <template>

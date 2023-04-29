@@ -22,10 +22,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
 import { useNews } from "@/store/useNews";
 import { onMounted } from "vue";
 const store = useNews();
+const { SEND } = useWs();
 onMounted(() => {
   if (!store.finished) SEND({ t: "home_news" });
 });

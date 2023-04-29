@@ -46,17 +46,19 @@
 import UserProfileHeader from "@/components/UserProfileHeader.vue";
 import UserProfileSocial from "@/components/UserProfileSocial.vue";
 import UserProfileGame from "@/components/UserProfileGame.vue";
-import { onMounted, ref, watch, reactive, type Ref, onUnmounted } from "vue";
+import { onMounted, ref, watch, type Ref, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import GET from "@/plugins/axios";
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
-import type { ProfileGame } from "@/plugins/webSocketTypes";
+import { ProfileGame } from "@/plugins/webSocketTypes";
+import { z } from "zod";
 
-type Response = {
-  data: {
-    games: ProfileGame[]
-  }
-}
+const Response = z.object({
+  exist: z.boolean(),
+  games: z.optional(z.array(ProfileGame)),
+});
+
+type Response = z.infer<typeof Response>;
 
 const route = useRoute();
 const games: Ref<ProfileGame[]> = ref([]);
@@ -69,23 +71,25 @@ function username(): string {
 }
 
 function newGames(id: string, page: number) {
-  if (!exist.value) {return;}
-  GET(`games/${id}/${page}`).then((value: Response) => {
-    if (value.data.games.length > 0) {
+  if (!exist.value) {
+    return;
+  }
+  GET(`games/${id}/${page}`).then((value: any) => {
+    let data = Response.parse(value.data);
+    if (data.exist == true) {
       games.value.push(...value.data.games);
       exist.value = true;
-    }
-    else {
+    } else {
       exist.value = false;
     }
   });
 }
 
 function handleScroll(e: Event) {
-  let element = (scrollComponent.value as unknown) as HTMLDivElement;
+  let element = scrollComponent.value as unknown as HTMLDivElement;
   if (element.getBoundingClientRect().bottom < window.innerHeight) {
     currentPage.value += 1;
-    newGames(username(), currentPage.value)
+    newGames(username(), currentPage.value);
   }
 }
 

@@ -28,10 +28,12 @@
 
 <script setup lang="ts">
 import { updateHeadTitle } from "@/plugins/updateHeadTitle";
-import { SEND } from "@/plugins/webSockets";
+import { useWs } from "@/store/useWs";
+
 import { useHomeLobby } from "@/store/useHomeLobby";
 import { onMounted } from "vue";
 
+const { SEND } = useWs();
 const store = useHomeLobby();
 
 onMounted(() => {
@@ -50,13 +52,13 @@ onMounted(() => {
   font-size: 1.3em;
 }
 
-table {
+.players-view table {
   /* width: 100%; */
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-tr.player-data {
+.players-view tr.player-data {
   display: table-row;
 }
 </style>

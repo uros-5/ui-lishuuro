@@ -50,5 +50,5 @@ const CUSTOM_ELEMENTS = [
   "back",
   "mini-game",
   "vari",
-  "vari-move"
+  "vari-move",
 ];

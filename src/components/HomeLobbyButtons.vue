@@ -4,7 +4,6 @@
       <router-link to="/news/Introduction" class="lobby-button"
         >Introduction</router-link
       >
-      <!-- <a target="blank" href="https://www.lichess.org" class="lobby-button">Lichess</a> -->
     </div>
   </aside>
 </template>

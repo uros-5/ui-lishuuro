@@ -105,6 +105,11 @@ cg-board square.current-premove {
   background-color: rgba(20, 30, 85, 0.5);
 }
 
+div[data-size="8"] piece {
+  width: 12.5%;
+  height: 12.5%;
+}
+
 .cg-wrap piece {
   position: absolute;
   top: 0;

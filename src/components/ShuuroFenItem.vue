@@ -1,13 +1,14 @@
 <template>
-  <div v-if="index! % 2 == 1" class="move counter">
-    {{ Math.floor(index! / 2 + 1) }}
+  <div v-if="index % 2 == 1" class="move counter">
+    {{ Math.floor(index / 2 + 1) }}
   </div>
 
   <div
     class="move"
-    :class="{ active: shuuroStore.current_index == index! - 1 }"
+    :class="{ active: isActive() }"
     :ply="index"
     @click="updateIndex"
+    v-if="true"
   >
     <san>{{ m() }}</san>
     <eval :id="`ply${index!}`" />
@@ -16,36 +17,41 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
-import { useShuuroStore } from "@/store/useShuuroStore";
-import { deploySfen, fightSfen } from "@/plugins/fen";
+import { useGameStore } from "@/store/game";
+import { useCgStore } from "@/store/game/useCgStore";
 
 const props = defineProps<{ index: number; fen: string; move: string }>();
-const shuuroStore = useShuuroStore();
+const gameStore = useGameStore();
+const cgStore = useCgStore();
 
 function updateIndex(): void {
-  shuuroStore.current_index = props.index - 1;
-  if (shuuroStore.client_stage == 1) {
-    let sfen = deploySfen(props.fen);
-    shuuroStore.tempWasm(sfen);
-  } else if (shuuroStore.client_stage == 2) {
-    if (shuuroStore.analyze) {
-      shuuroStore.setFightWasm(props.fen, true);
-    } else {
-      let sfen = fightSfen(props.fen);
-      shuuroStore.tempWasm(sfen);
-    }
-    let ci = shuuroStore.currentIndex();
-    let lm = shuuroStore.getLastMove(ci);
-    shuuroStore.cgs(2).setLastMove(lm.from, lm.to);
-  }
-  playAudio();
+  gameStore.other.index =
+    gameStore.clientStage() != 2 ? props.index : props.index;
+  audio();
+  gameStore.getSfen();
 }
 
-function playAudio() {
+function isFirst(): boolean {
+  if ([1, 2].includes(gameStore.clientStage())) {
+    if (props.index - 1 == 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isActive(): boolean {
+  let index = [1, 2].includes(gameStore.clientStage())
+    ? props.index
+    : props.index;
+  return gameStore.index() == index;
+}
+
+function audio() {
   if (props.move.includes("x")) {
-    shuuroStore.playAudio("capture");
+    gameStore.audio("capture");
   } else {
-    shuuroStore.playAudio("move");
+    gameStore.audio("move");
   }
 }
 
