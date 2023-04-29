@@ -42,7 +42,7 @@ import { useHeaderSettings } from "@/store/headerSettings";
 import { useGameStore } from "@/store/game";
 import { pieces, dataMax } from "@/plugins/shop";
 import { useShopStore } from "@/store/game/useShopStore";
-import { useCgStore } from "@/store/game/useCgStore";
+import { CgElement, useCgStore } from "@/store/game/useCgStore";
 
 const props = defineProps<{
   color: string;
@@ -69,7 +69,7 @@ function watchElement(): WatchStopHandle {
   return watch(
     element,
     (newer) => {
-      cgStore.newElement(newer as HTMLElement, id() as 0 | 1 | 2);
+      cgStore.newElement(newer as HTMLElement, id());
     },
     { deep: true }
   );
@@ -83,13 +83,13 @@ onMounted(() => {
 
 onUnmounted(() => {
   element.value = null;
-  cgStore.newElement(undefined, id() as 0 | 1 | 2);
+  cgStore.newElement(undefined, id());
   watcher();
 });
 
 onUpdated(() => {
   if (counter < 8) {
-    cgStore.newElement(element.value as HTMLElement, id() as 0 | 1 | 2);
+    cgStore.newElement(element.value as HTMLElement, id());
     counter += 1;
   } else {
   }
@@ -99,13 +99,13 @@ function divId() {
   return props.side == "top" ? "pocket0" : "pocket1";
 }
 
-function id(): number {
+function id(): CgElement {
   if (props.side == "top") {
-    return 1;
+    return CgElement.Top;
   } else if (props.side == "bottom") {
-    return 2;
+    return CgElement.Bot;
   }
-  return 4;
+  return CgElement.None;
 }
 
 window.addEventListener("resize", boardSize.resize, true);

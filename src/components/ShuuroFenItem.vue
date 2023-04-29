@@ -26,7 +26,7 @@ const cgStore = useCgStore();
 
 function updateIndex(): void {
   gameStore.other.index =
-    gameStore.clientStage() != 2 ? props.index - 1 : props.index;
+    gameStore.clientStage() != 2 ? props.index : props.index;
   audio();
   gameStore.getSfen();
 }
@@ -41,7 +41,9 @@ function isFirst(): boolean {
 }
 
 function isActive(): boolean {
-  let index = gameStore.clientStage() != 2 ? props.index - 1 : props.index;
+  let index = [1, 2].includes(gameStore.clientStage())
+    ? props.index
+    : props.index;
   return gameStore.index() == index;
 }
 

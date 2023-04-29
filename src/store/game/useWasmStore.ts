@@ -17,15 +17,18 @@ export const useWasmStore = defineStore("useWasmStore", () => {
     state,
     async init() {
       await init();
+      const variant = gameStore.state.variant;
       state.value.shop = new ShuuroShop();
-      state.value.position = new ShuuroPosition("shuuro");
-      state.value.analyzeWasm = new ShuuroPosition("shuuro");
+      state.value.position = new ShuuroPosition(variant);
+      state.value.analyzeWasm = new ShuuroPosition(variant);
       state.value.init = true;
+      this.changeVariant()
     },
 
-    changeVariant(variant: string) {
-      ["shop", "position"].forEach((item) =>
-        state.value[item as "shop" | "position"]!.change_variant(variant)
+    changeVariant(variant?: string) {
+      variant = variant ? variant : gameStore.state.variant;
+      ["shop", "position", "analyzeWasm"].forEach((item) =>
+        state.value[item as "shop" | "position"]!.change_variant(variant!)
       );
     },
 

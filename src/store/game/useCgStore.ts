@@ -4,10 +4,10 @@ import { setCheck } from "chessground12/board";
 import { p2 } from "chessground12/configs";
 import type { ShuuroPosition } from "@/plugins/shuuro-wasm";
 import { ref, watch, type WatchStopHandle } from "vue";
-import { useGameStore } from "@/store/game";
+import { useGameStore, type Stage } from "@/store/game";
 import { useWasmStore } from "@/store/game/useWasmStore";
 import { readPockets } from "chessground12/pocket";
-import type { Key, MoveMetadata, Piece } from "chessground12/types";
+import type { Key, MoveMetadata, Piece, Color } from "chessground12/types";
 import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 import { defineStore } from "pinia";
 import { useClockStore } from "@/store/game/useClockStore";
@@ -36,15 +36,15 @@ export const useCgStore = defineStore("useCgStore", () => {
     isDifferentStage(stage: number): boolean {
       return others.value.stage != stage;
     },
-    newElement(element: undefined | HTMLElement, id: 0 | 1 | 2) {
+    newElement(element: undefined | HTMLElement, id: CgElement) {
       switch (id) {
-        case 0:
+        case CgElement.Main:
           state.value.element = element;
           break;
-        case 1:
+        case CgElement.Top:
           state.value.top = element;
           break;
-        case 2:
+        case CgElement.Bot:
           state.value.bot = element;
           break;
       }
@@ -81,7 +81,7 @@ export const useCgStore = defineStore("useCgStore", () => {
             this.changePocketRoles();
             cg.state.events.pocketSelect = this.pocketSelect;
             cg.state.events.dropNewPiece = this.afterPlace;
-            cg.state.movable.color = gameStore.playerColor() as "white";
+            cg.state.movable.color = gameStore.playerColor() as Color;
             const placement = wasmStore.current();
             if (placement) {
               gameStore.setSfen(placement);
@@ -102,7 +102,7 @@ export const useCgStore = defineStore("useCgStore", () => {
           this.enablePremove();
           state.value.cg.state.events.select = this.selectSq;
           state.value.cg.state.movable.events.after = this.afterMove;
-          cg.state.movable.color = gameStore.playerColor() as "white";
+          cg.state.movable.color = gameStore.playerColor();
           const fight = wasmStore.current();
           if (fight) {
             gameStore.setSfen(fight);
@@ -243,7 +243,7 @@ export const useCgStore = defineStore("useCgStore", () => {
         this.setCheck();
         clockStore.switchClock();
         if (!analyzeStore.isActive())
-          gameStore.addMove(gameStore.state.current_stage as 0, lastMove);
+          gameStore.addMove(gameStore.state.current_stage as Stage, lastMove);
         gameStore.scrollToBottom();
         gameStore.lastMoveIndex(gameStore.state.current_stage);
         state.value.cg!.state.dom.redraw();
@@ -335,7 +335,7 @@ export const useCgStore = defineStore("useCgStore", () => {
       cg!.state.draggable.enabled = movable;
       cg!.state.movable.color = analyzeStore.isActive()
         ? "both"
-        : (gameStore.playerColor() as "white");
+        : (gameStore.playerColor());
     },
 
     setDraggable(draggable: boolean, cg?: Api) {
@@ -371,7 +371,7 @@ export const useCgStore = defineStore("useCgStore", () => {
       }
       turnColor = turnColor == "w" ? "white" : "black";
       gameStore.state.side_to_move = turnColor == "white" ? 0 : 1;
-      state.value.cg!.state.turnColor = turnColor as "black";
+      state.value.cg!.state.turnColor = turnColor as Color;
     },
 
     newPiece(to: string, cg?: Api) { },
@@ -379,6 +379,7 @@ export const useCgStore = defineStore("useCgStore", () => {
     reset() {
       state.value = empty();
       others.value = emptyOthers();
+      // watcher();
     },
   };
 });
@@ -413,6 +414,14 @@ type State = {
   bot: HTMLElement | null | undefined;
   tvCgs: Api[];
   profileGames: Api[];
+};
+
+
+export enum CgElement {
+Main = 0,
+Top,
+Bot,
+None
 };
 
 type premoveData = {

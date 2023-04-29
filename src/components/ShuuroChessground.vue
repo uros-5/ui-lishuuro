@@ -7,7 +7,7 @@
     :data-board="settings.getBoard()"
     :data-piece="settings.getPiece()"
     :data-size="settings.getVariant(gameStore.state.variant)"
-    @wheel="wheel"
+    @wheel.prevent="wheel"
   />
 </template>
 
@@ -22,7 +22,7 @@ import {
 } from "vue";
 import { useHeaderSettings } from "@/store/headerSettings";
 import { useGameStore } from "@/store/game";
-import { useCgStore } from "@/store/game/useCgStore";
+import { CgElement, useCgStore } from "@/store/game/useCgStore";
 import { FenBtn } from "@/plugins/fen";
 
 const gameStore = useGameStore();
@@ -40,7 +40,7 @@ function wheel(event: WheelEvent) {
 
 function updateElement(force?: boolean) {
   if ((counter < 6 && mounted) || force == true) {
-    cgStore.newElement(element.value, 0);
+    cgStore.newElement(element.value, CgElement.Main);
     counter += 1;
   }
 }
@@ -56,7 +56,7 @@ watch(element, (state) => {
 
 onUnmounted(() => {
   element.value = undefined;
-  cgStore.newElement(undefined, 0);
+  cgStore.newElement(undefined, CgElement.Main);
   cgStore.state.cg = undefined;
   mounted = false;
 });

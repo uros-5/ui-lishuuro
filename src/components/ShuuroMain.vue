@@ -7,71 +7,27 @@
     >
       <router-view />
     </selection>
-    <div
-      v-if="!analyzeStore.isActive()"
-      class="material material-top black standard disabled"
-    />
-    <div v-if="!analyzeStore.isActive()" class="pocket-top">
-      <PlayerHand
-        :in-center="false"
-        side="top"
-        :counter="[0, 0, 0, 0, 0, 0, 0, 0]"
-        :color="getColor(topPlayer())"
-        hand-type="pocket"
-      />
-    </div>
-    <ShuuroClock
-      v-if="!analyzeStore.isActive()"
-      :color="getColor(topPlayer())"
-      part="0"
-    />
-    <div v-if="!analyzeStore.isActive()" id="expiration-top" />
+    <ShuuroClock :color="getColor(topPlayer())" part="0" />
+    <ShuuroFenPlayer :player_username="topPlayer()" :online="false" />
+    <ShuuroClock :color="getColor(bottomPlayer())" part="1" />
     <ShuuroFenPlayer
-      v-if="!analyzeStore.isActive()"
-      :player_username="topPlayer()"
-      :online="false"
-    />
-    <ShuuroFenButtons />
-    <ShuuroFen />
-    <ShuuroMatchOfferDialog v-if="!analyzeStore.isActive()" />
-    <ShuuroMatchButtons v-if="!analyzeStore.isActive()" />
-    <ShuuroFenPlayer
-      v-if="!analyzeStore.isActive()"
       :player_username="bottomPlayer()"
       :online="true"
       style="grid-area: user-bot"
     />
-    <div v-if="!analyzeStore.isActive()" id="expiration-bottom" />
-    <ShuuroClock
-      v-if="!analyzeStore.isActive()"
-      :color="getColor(bottomPlayer())"
-      part="1"
-    />
-    <div v-if="!analyzeStore.isActive()" class="pocket-bot">
-      <PlayerHand
-        side="bottom"
-        :in-center="false"
-        :counter="[0, 0, 0, 0, 0, 0, 0, 0]"
-        :color="getColor(bottomPlayer())"
-        hand-type="pocket"
-      />
-    </div>
-    <div
-      v-if="!analyzeStore.isActive()"
-      class="material material-bottom standard disabled"
-    ></div>
+    <ShuuroMainData v-if="analyzeStore.isActive() == false" />
+    <ShuuroFenButtons />
+    <ShuuroFen />
     <AnalyzeButton />
   </div>
 </template>
 <script setup lang="ts">
-import ShuuroClock from "@/components/ShuuroClock.vue";
-import ShuuroFenPlayer from "@/components/ShuuroFenPlayer.vue";
 import ShuuroFenButtons from "@/components/ShuuroFenButtons.vue";
 import ShuuroFen from "@/components/ShuuroFen.vue";
-import ShuuroMatchButtons from "@/components/ShuuroMatchButtons.vue";
-import PlayerHand from "@/components/PlayerHand.vue";
-import ShuuroMatchOfferDialog from "@/components/ShuuroMatchOfferDialog.vue";
+import ShuuroClock from "@/components/ShuuroClock.vue";
+import ShuuroFenPlayer from "@/components/ShuuroFenPlayer.vue";
 import AnalyzeButton from "@/components/AnalyzeButton.vue";
+import ShuuroMainData from "@/components/ShuuroMainData.vue";
 import { useGameStore } from "@/store/game";
 import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 import { useCgStore } from "@/store/game/useCgStore";
@@ -79,6 +35,10 @@ import { useCgStore } from "@/store/game/useCgStore";
 const gameStore = useGameStore();
 const analyzeStore = useAnalyzeStore();
 const cgStore = useCgStore();
+
+function isStandard(): boolean {
+  return gameStore.state.variant.startsWith("standard");
+}
 
 function topPlayer(): string {
   if (cgStore.flipped()) {
@@ -99,10 +59,6 @@ function bottomPlayer(): string {
 function getColor(username: string): string {
   const index = gameStore.state.players.findIndex((item) => item == username)!;
   return index == 0 ? "white" : "black";
-}
-
-function isStandard(): boolean {
-  return gameStore.state.variant.startsWith("standard");
 }
 </script>
 <style>

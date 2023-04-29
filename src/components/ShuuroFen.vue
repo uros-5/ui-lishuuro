@@ -81,7 +81,7 @@ function getHistory() {
         }
       });
     } else if (gameStore.clientStage() == 1) {
-      return history;
+      return history.slice(1);
     }
     return history.slice(1);
   });
