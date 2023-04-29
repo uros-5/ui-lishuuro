@@ -25,7 +25,6 @@ const cgStore = useCgStore();
 
 function analyze() {
   cgStore.others.stage = 0;
-  analyzeStore.toggle();
   router.push(`/shuuro/3/${gameStore.state._id}`);
   gameStore.scrollToBottom();
 }
