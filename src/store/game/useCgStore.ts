@@ -86,6 +86,9 @@ export const useCgStore = defineStore("useCgStore", () => {
             if (placement) {
               gameStore.setSfen(placement);
             }
+            else {
+              wasmStore.watch();
+            }
           }
         } else if (
           (gameStore.clientStage() == 2 || analyzeStore.isActive()) &&
@@ -106,6 +109,9 @@ export const useCgStore = defineStore("useCgStore", () => {
           const fight = wasmStore.current();
           if (fight) {
             gameStore.setSfen(fight);
+          }
+          else {
+            wasmStore.watch();
           }
         }
       }
@@ -376,7 +382,7 @@ export const useCgStore = defineStore("useCgStore", () => {
         gameStore.state.side_to_move = turnColor == "white" ? 0 : 1;
       }
       state.value.cg!.state.turnColor = turnColor as Color;
-      if(analyzeStore.isActive()) {
+      if (analyzeStore.isActive()) {
         state.value.cg!.state.movable.color = turnColor as Color;
       }
     },

@@ -116,9 +116,7 @@ export const useGameStore = defineStore("useGameStore", () => {
       state.value = s;
       other.value.server = true;
       this.setRedirect();
-      state.value.min = s.min / 60000;
-      state.value.incr = s.incr / 1000;
-      state.value.last_clock = new Date(s.tc.last_click).toString();
+      this.setTime(s);
       this.newClientStage(s.current_stage as Stage);
       clockStore.fromServer(s);
       this.setPlayer();
@@ -133,6 +131,12 @@ export const useGameStore = defineStore("useGameStore", () => {
         this.setSfen(wasmStore.current()!);
       }
       this.resSound();
+    },
+
+    setTime(s: GameInfo) {
+      state.value.min = s.min / 60000;
+      state.value.incr = s.incr / 1000;
+      state.value.last_clock = new Date(s.tc.last_click).toString();
     },
 
     // redirect from ws
@@ -381,7 +385,7 @@ export const useGameStore = defineStore("useGameStore", () => {
         wasmStore.state.position = position;
         this.legal_moves();
       }
-      
+
       !analyzeStore.isActive() ? position.free() : null;
       if (formatted.game_move) {
         const parts = formatted.game_move.split("_");
@@ -391,7 +395,6 @@ export const useGameStore = defineStore("useGameStore", () => {
       }
       else {
         cgStore.cg()!.state.lastMove! = []
-        // cgStore.cg()?.setLastMove("", "")
       }
     },
 
@@ -441,7 +444,7 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     serverPlace(msg: LiveGamePlace) {
       if (!this.isIndexLive(1)) this.findFen(FenBtn.Last)
-      
+
       cgStore.wasmPlace(msg.game_move, true);
       clockStore.fromMove(msg.clocks);
 
@@ -535,22 +538,22 @@ export const useGameStore = defineStore("useGameStore", () => {
     setSfen(position: ShuuroPosition) {
       const sfen = formatSfen(this.currentSfen());
       position.set_sfen(sfen.sfen);
-      let interval = setInterval(() => {
-        if (cgStore.cg()) {
-          clearInterval(interval);
-          this.clientStage() == 1 ? cgStore.readPocket(true) : null;
-          cgStore.setPieces(cgStore.cg()!, position);
-          cgStore.setPlinths(cgStore.cg()!, position);
-          cgStore.setTurnColor();
-          cgStore.setCheck();
-          this.lastMoveIndex(this.clientStage());
-          this.clientStage() == 2 ? this.legal_moves() : null;
-        }
-      }, 10);
-    },
+      if (cgStore.cg()) {
+        this.clientStage() == 1 ? cgStore.readPocket(true) : null;
+        cgStore.setPieces(cgStore.cg()!, position);
+        cgStore.setPlinths(cgStore.cg()!, position);
+        cgStore.setTurnColor();
+        cgStore.setCheck();
+        this.lastMoveIndex(this.clientStage());
+        this.clientStage() == 2 ? this.legal_moves() : null;
+      }
+      else {
+      }
+    }
+    ,
 
     lastMoveIndex(stage: number) {
-      if(state.value.status<0) {
+      if (state.value.status < 0) {
         other.value.index = state.value.history[stage].length - 1;
       }
       else {

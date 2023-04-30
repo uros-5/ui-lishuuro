@@ -1,6 +1,6 @@
 import { ShuuroPosition, ShuuroShop } from "shuuro-wasm";
 import init from "shuuro-wasm";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { defineStore } from "pinia";
 import { useGameStore } from "@/store/game";
 import type { Piece } from "chessground12/types";
@@ -103,10 +103,19 @@ export const useWasmStore = defineStore("useWasmStore", () => {
       cgStore.setTurnColor();
       clockStore.switchClock();
     },
-    
+
     reset() {
       state.value = empty();
     },
+
+    watch() {
+      let watcher = watch(state, (s) => {
+        if(state.value.init) {
+          gameStore.setSfen(state.value.position!);
+          watcher();
+        }
+      }, { deep: true })
+    }
   };
 });
 

@@ -57,9 +57,11 @@ function wheel(event: WheelEvent) {
 }
 
 function updateElement(force?: boolean) {
-  if ((counter < 6 && mounted) || force == true) {
-    cgStore.newElement(element.value, CgElement.Main);
+  if (counter < 3 || force) {
     counter += 1;
+    if (counter == 3 || force) {
+      cgStore.newElement(element.value, CgElement.Main);
+    }
   }
 }
 
@@ -77,10 +79,6 @@ onMounted(() => {
   document.addEventListener("keydown", navigate);
 });
 
-watch(element, (_) => {
-  updateElement();
-});
-
 onUnmounted(() => {
   element.value = undefined;
   cgStore.newElement(undefined, CgElement.Main);
@@ -94,7 +92,7 @@ onBeforeUnmount(() => {
 });
 
 onUpdated(() => {
-  updateElement();
+  updateElement(true);
 });
 </script>
 
