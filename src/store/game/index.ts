@@ -23,7 +23,7 @@ import { playAudio } from "@/plugins/audio";
 import { FenBtn, formatSfen } from "@/plugins/fen";
 import { defineStore } from "pinia";
 import { useCgStore } from "@/store/game/useCgStore";
-import { ShuuroPosition } from "@/plugins/shuuro-wasm";
+import { ShuuroPosition } from "shuuro-wasm";
 import type { Color, Key } from "chessground12/types";
 import { useHeaderSettings } from "../headerSettings";
 

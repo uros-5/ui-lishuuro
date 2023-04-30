@@ -2,7 +2,7 @@ import { deployCg, fightCg } from "@/plugins/cg";
 import type { Api } from "chessground12/api";
 import { setCheck } from "chessground12/board";
 import { p2 } from "chessground12/configs";
-import type { ShuuroPosition } from "@/plugins/shuuro-wasm";
+import type { ShuuroPosition } from "shuuro-wasm";
 import { ref, watch, type WatchStopHandle } from "vue";
 import { useGameStore, type Stage } from "@/store/game";
 import { useWasmStore } from "@/store/game/useWasmStore";

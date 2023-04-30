@@ -2,10 +2,9 @@ import { Chessground } from "chessground12";
 import type { Api } from "chessground12/api";
 import { setCheck } from "chessground12/board";
 import { userProfileConfig } from "chessground12/configs";
-import { dimensions, Geometry, type Role } from "chessground12/types";
+import { dimensions, Geometry, type Color, type Role } from "chessground12/types";
 import { defineStore } from "pinia";
-import init, { ShuuroPosition } from "@/plugins/shuuro-wasm";
-import type { Color } from "@/store/useShuuroStore";
+import init, { ShuuroPosition } from "shuuro-wasm";
 import type { Key, Piece } from "chessground12/types";
 import {
   LiveGameDraw,
