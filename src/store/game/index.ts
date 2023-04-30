@@ -126,7 +126,6 @@ export const useGameStore = defineStore("useGameStore", () => {
       other.value.index = -1;
       clockStore.activateClock();
       await wasmStore.init();
-      this.startPosFix();
       if (s.current_stage == 0) {
         shopStore.shopInfo();
       }
@@ -180,19 +179,14 @@ export const useGameStore = defineStore("useGameStore", () => {
       const item = state.value.history.at(1)!.at(index);
       switch (stage) {
         case 1:
-          if (item?.includes("_") || item == undefined) {
-            const temp = new ShuuroPosition(state.value.variant);
-            temp.change_variant(state.value.variant);
-            const fen = temp.generate_sfen();
-            state.value.history[1].unshift(fen);
+          if (item == undefined) {
+            state.value.history[1].unshift(state.value.sfen);
           }
           break;
         case 2:
           const fightItem = state.value.history.at(2)!.at(0);
-          if (!fightItem?.includes("@") || fightItem == undefined) {
-            if (item) {
-              state.value.history[2].unshift(item!);
-            }
+          if (fightItem == undefined) {
+            state.value.history[2].unshift(item!);
           }
           break;
       }
@@ -396,7 +390,8 @@ export const useGameStore = defineStore("useGameStore", () => {
         cgStore.cg()?.setLastMove(from, to);
       }
       else {
-        cgStore.cg()?.setLastMove("", "")
+        cgStore.cg()!.state.lastMove! = []
+        // cgStore.cg()?.setLastMove("", "")
       }
     },
 
@@ -420,8 +415,9 @@ export const useGameStore = defineStore("useGameStore", () => {
       }
       if (other.value.index <= 0) {
         other.value.index = 0;
-      } else if (other.value.index >= len) {
+      } else if (other.value.index >= len - 1) {
         other.value.index = len - 1;
+        fenBtn = FenBtn.Last;
       }
       if (other.value.clientStage == 0) return;
       else if (previous == other.value.index) return;
@@ -439,7 +435,13 @@ export const useGameStore = defineStore("useGameStore", () => {
       return false;
     },
 
+    isIndexLive(stage: Stage): boolean {
+      return other.value.index == state.value.history[stage].length - 1
+    },
+
     serverPlace(msg: LiveGamePlace) {
+      if (!this.isIndexLive(1)) this.findFen(FenBtn.Last)
+      
       cgStore.wasmPlace(msg.game_move, true);
       clockStore.fromMove(msg.clocks);
 
@@ -464,6 +466,7 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     serverMove2(msg: LiveGameFight) {
+      if (!this.isIndexLive(2)) this.findFen(FenBtn.Last)
       router.push({ path: `/shuuro/2/${msg.game_id}` });
       this.newClientStage(2);
       this.wasmMove(msg.game_move, true);
@@ -542,7 +545,6 @@ export const useGameStore = defineStore("useGameStore", () => {
           cgStore.setCheck();
           this.lastMoveIndex(this.clientStage());
           this.clientStage() == 2 ? this.legal_moves() : null;
-          this.startPosFix();
         }
       }, 10);
     },

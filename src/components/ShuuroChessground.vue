@@ -24,12 +24,14 @@ import { useHeaderSettings } from "@/store/headerSettings";
 import { useGameStore } from "@/store/game";
 import { CgElement, useCgStore } from "@/store/game/useCgStore";
 import { FenBtn } from "@/plugins/fen";
+import { useAnalyzeStore } from "@/store/game/useAnalyzeStore";
 
 const gameStore = useGameStore();
+const analyzeStore = useAnalyzeStore();
 const cgStore = useCgStore();
 const settings = useHeaderSettings();
-const element = ref(undefined as HTMLElement | undefined);
 
+const element = ref(undefined as HTMLElement | undefined);
 let counter = 0;
 let mounted = false;
 const keys = getKeys();
@@ -43,9 +45,15 @@ function getKeys() {
   return keys;
 }
 
+function findFen(btn: FenBtn) {
+  analyzeStore.isActive() && analyzeStore.moves().length > 0
+    ? analyzeStore.findFen(btn)
+    : gameStore.findFen(btn);
+}
+
 function wheel(event: WheelEvent) {
   const btn = event.deltaY >= 0 ? FenBtn.Next : FenBtn.Previous;
-  gameStore.findFen(btn);
+  findFen(btn);
 }
 
 function updateElement(force?: boolean) {
@@ -56,9 +64,10 @@ function updateElement(force?: boolean) {
 }
 
 function navigate(event: KeyboardEvent) {
+  event.preventDefault();
   const btn = keys.get(event.key);
   if (btn != undefined) {
-    gameStore.findFen(btn);
+    findFen(btn);
   }
 }
 
