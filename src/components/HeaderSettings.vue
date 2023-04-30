@@ -55,7 +55,7 @@ const store = useHeaderSettings();
 onMounted(() => {
   let theme = store.getTheme();
   document.querySelector("html")?.setAttribute("data-theme", theme);
-  setTimeout(store.currentZoom, 450);
+  setTimeout(store.settings.currentZoom, 450);
 });
 </script>
 <style>

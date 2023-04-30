@@ -5,7 +5,7 @@ const settings = useHeaderSettings();
 
 settings.$subscribe((_mutation, _state) => {
   settings.zoom();
-  localStorage.setItem("zoom", `${settings.currentZoom}`);
+  settings.str();
 });
 
 function selected(t: string, img: number): string {
@@ -20,7 +20,7 @@ function selected(t: string, img: number): string {
 <template>
   <div id="settings-background">
     <input
-      v-model="settings.currentZoom"
+      v-model="settings.settings.currentZoom"
       id="zoom"
       class="slider"
       name="zoom"
