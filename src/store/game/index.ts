@@ -25,7 +25,7 @@ import { defineStore } from "pinia";
 import { useCgStore } from "@/store/game/useCgStore";
 import { ShuuroPosition } from "shuuro-wasm";
 import type { Color, Key } from "chessground12/types";
-import { useHeaderSettings } from "../headerSettings";
+import { useHeaderSettings } from "@/store/headerSettings";
 
 const finished = [
   "Checkmate",

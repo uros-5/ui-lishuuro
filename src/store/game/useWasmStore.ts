@@ -4,8 +4,8 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useGameStore } from "@/store/game";
 import type { Piece } from "chessground12/types";
-import { useCgStore } from "./useCgStore";
-import { useClockStore } from "./useClockStore";
+import { useCgStore } from "@/store/game/useCgStore";
+import { useClockStore } from "@/store/game/useClockStore";
 
 export const useWasmStore = defineStore("useWasmStore", () => {
   const state = ref(empty());

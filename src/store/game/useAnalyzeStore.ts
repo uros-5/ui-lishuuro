@@ -3,8 +3,8 @@ import { ref } from "vue";
 import { useGameStore } from "@/store/game";
 import { defineStore } from "pinia";
 import type { Key } from "chessground12/types";
-import { useWasmStore } from "./useWasmStore";
-import { useCgStore } from "./useCgStore";
+import { useWasmStore } from "@/store/game/useWasmStore";
+import { useCgStore } from "@/store/game/useCgStore";
 
 export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
   const state = ref(empty());
