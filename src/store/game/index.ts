@@ -115,9 +115,8 @@ export const useGameStore = defineStore("useGameStore", () => {
     async fromServer(s: GameInfo) {
       state.value = s;
       other.value.server = true;
-      this.setRedirect();
+      this.redirectLive();
       this.setTime(s);
-      this.newClientStage(s.current_stage as Stage);
       clockStore.fromServer(s);
       this.setPlayer();
       this.updateHeadTitle();
@@ -128,7 +127,7 @@ export const useGameStore = defineStore("useGameStore", () => {
         shopStore.shopInfo();
       }
       else if ([1, 2].includes(s.current_stage)) {
-        this.setSfen(wasmStore.current()!);
+        // this.setSfen(wasmStore.current()!);
       }
       this.resSound();
     },
@@ -221,7 +220,7 @@ export const useGameStore = defineStore("useGameStore", () => {
       });
     },
 
-    setRedirect() {
+    redirectLive() {
       const r = router.currentRoute;
       if (state.value.status > 0) {
         const fullPath = r.value.fullPath;
@@ -229,6 +228,7 @@ export const useGameStore = defineStore("useGameStore", () => {
           this.newClientStage(state.value.current_stage as Stage);
         }
       }
+      this.newClientStage(state.value.current_stage as Stage);
       router.push({
         path: `/shuuro/${state.value.current_stage}/${state.value._id}`,
       });

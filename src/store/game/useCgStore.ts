@@ -158,8 +158,8 @@ export const useCgStore = defineStore("useCgStore", () => {
       sp = this.getPosition(sp);
       cg = this.getCg(cg);
       const plinths = sp!.map_plinths();
-      cg!.setPlinths(plinths);
       cg!.state.plinths = plinths;
+      cg!.setPlinths(plinths);
     },
 
     setCheck(cg?: Api, sp?: ShuuroPosition) {
