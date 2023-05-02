@@ -35,10 +35,9 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
 
     addAnalyzeMove(move: string) {
       if (state.value.index == this.moves().length - 1) {
-          state.value.moves.push(move);
-          this.newIndex();
-      }
-      else {
+        state.value.moves.push(move);
+        this.newIndex();
+      } else {
         state.value.moves = state.value.moves.slice(0, state.value.index + 1);
         state.value.moves.push(move);
         this.newIndex();
@@ -46,8 +45,7 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
     },
 
     newIndex(index?: number) {
-      if(index != undefined)
-        state.value.index = index;
+      if (index != undefined) state.value.index = index;
       else {
         state.value.index = this.moves().length - 1;
       }
@@ -89,8 +87,8 @@ export const useAnalyzeStore = defineStore("useAnalyzeStore", () => {
       wasmStore.analyze().make_move(gameMove);
     },
     deleteMoves() {
-     state.value.moves = [] 
-    }
+      state.value.moves = [];
+    },
   };
 });
 

@@ -1,17 +1,21 @@
 import { defineStore } from "pinia";
 import { z } from "zod";
 
-export const HeaderSettings = z.object(
-  {
+export const HeaderSettings = z
+  .object({
     theme: z.string(),
     board: z.string(),
     piece: z.string(),
     currentZoom: z.string(),
     volume: z.string(),
-  }
-).default(
-  { theme: "dark", board: "0", piece: "0", currentZoom: "100", volume: "1" }
-);
+  })
+  .default({
+    theme: "dark",
+    board: "0",
+    piece: "0",
+    currentZoom: "100",
+    volume: "1",
+  });
 
 export type HeaderSettings = z.infer<typeof HeaderSettings>;
 
@@ -36,7 +40,7 @@ export const useHeaderSettings = defineStore("headerSettings", {
       }
     },
     str() {
-      localStorage.setItem("settings", JSON.stringify(this.settings))
+      localStorage.setItem("settings", JSON.stringify(this.settings));
     },
 
     click(c: Clicked) {
@@ -87,9 +91,9 @@ export const useHeaderSettings = defineStore("headerSettings", {
 });
 
 interface Store {
-  show: boolean,
-  clicked: Clicked,
-  settings: HeaderSettings
+  show: boolean;
+  clicked: Clicked;
+  settings: HeaderSettings;
 }
 
 type Clicked = "" | "background" | "board" | "sound";
@@ -100,13 +104,13 @@ function hs(): Store {
   if (storage != undefined) {
     let data = HeaderSettings.safeParse(JSON.parse(storage));
     if (data) {
-      settings = JSON.parse(storage)
+      settings = JSON.parse(storage);
     }
   }
 
   return {
     show: false,
     clicked: "",
-    settings
+    settings,
   };
 }

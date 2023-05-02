@@ -21,7 +21,7 @@ export const useWasmStore = defineStore("useWasmStore", () => {
       state.value.shop = new ShuuroShop();
       state.value.position = new ShuuroPosition(variant);
       state.value.init = true;
-      this.changeVariant()
+      this.changeVariant();
     },
 
     changeVariant(variant?: string) {
@@ -109,13 +109,17 @@ export const useWasmStore = defineStore("useWasmStore", () => {
     },
 
     watch() {
-      let watcher = watch(state, (s) => {
-        if(state.value.init) {
-          gameStore.setSfen(state.value.position!);
-          watcher();
-        }
-      }, { deep: true })
-    }
+      let watcher = watch(
+        state,
+        (s) => {
+          if (state.value.init) {
+            gameStore.setSfen(state.value.position!);
+            watcher();
+          }
+        },
+        { deep: true }
+      );
+    },
   };
 });
 

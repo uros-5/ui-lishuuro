@@ -85,14 +85,14 @@ export const useCgStore = defineStore("useCgStore", () => {
             const placement = wasmStore.current();
             if (placement) {
               gameStore.setSfen(placement);
-            }
-            else {
+            } else {
               wasmStore.watch();
             }
           }
         } else if (
           (gameStore.clientStage() == 2 || analyzeStore.isActive()) &&
-          this.isDifferentStage(2)) {
+          this.isDifferentStage(2)
+        ) {
           if (state.value.cg != undefined) return;
           others.value.stage = 2;
           const cg = fightCg(
@@ -109,8 +109,7 @@ export const useCgStore = defineStore("useCgStore", () => {
           const fight = wasmStore.current();
           if (fight) {
             gameStore.setSfen(fight);
-          }
-          else {
+          } else {
             wasmStore.watch();
           }
         }
@@ -251,7 +250,7 @@ export const useCgStore = defineStore("useCgStore", () => {
         if (!analyzeStore.isActive())
           gameStore.addMove(gameStore.state.current_stage as Stage, lastMove);
         else {
-          analyzeStore.addAnalyzeMove(lastMove)
+          analyzeStore.addAnalyzeMove(lastMove);
         }
         gameStore.scrollToBottom();
         gameStore.lastMoveIndex(gameStore.state.current_stage);
@@ -308,8 +307,8 @@ export const useCgStore = defineStore("useCgStore", () => {
     enablePremove() {
       if (gameStore.player().isPlayer && gameStore.state.status < 1) {
         state.value.cg!.state.premovable.events = {
-          set: (orig, dest) => { },
-          unset: () => { },
+          set: (orig, dest) => {},
+          unset: () => {},
         };
         state.value.cg!.state.premovable.enabled = true;
         state.value.cg!.state.premovable!.events!.set = (orig, dest, _) => {
@@ -344,7 +343,7 @@ export const useCgStore = defineStore("useCgStore", () => {
       cg!.state.draggable.enabled = movable;
       cg!.state.movable.color = analyzeStore.isActive()
         ? "both"
-        : (gameStore.playerColor());
+        : gameStore.playerColor();
     },
 
     setDraggable(draggable: boolean, cg?: Api) {
@@ -360,7 +359,7 @@ export const useCgStore = defineStore("useCgStore", () => {
       };
       if (analyzeStore.isActive()) {
         enable(true);
-        this.setTurnColor()
+        this.setTurnColor();
         return;
       }
       const checks = [
@@ -387,7 +386,7 @@ export const useCgStore = defineStore("useCgStore", () => {
       }
     },
 
-    newPiece(to: string, cg?: Api) { },
+    newPiece(to: string, cg?: Api) {},
 
     reset() {
       state.value = empty();
@@ -429,13 +428,12 @@ type State = {
   profileGames: Api[];
 };
 
-
 export enum CgElement {
   Main = 0,
   Top,
   Bot,
-  None
-};
+  None,
+}
 
 type premoveData = {
   orig: string;

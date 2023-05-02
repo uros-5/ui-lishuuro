@@ -19,7 +19,7 @@ export function formatSfen(fen: string): Sfen {
     sfen: fen,
     stm: parts[1],
     game_move: parts[4],
-    capture
+    capture,
   };
 }
 

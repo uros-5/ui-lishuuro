@@ -60,9 +60,7 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     playerColor(username?: string): Color | "both" {
-      let player = username
-        ? this.findPlayer(username)
-        : this.player().player;
+      let player = username ? this.findPlayer(username) : this.player().player;
       switch (player) {
         case 0:
           return "white";
@@ -125,8 +123,7 @@ export const useGameStore = defineStore("useGameStore", () => {
       await wasmStore.init();
       if (s.current_stage == 0) {
         shopStore.shopInfo();
-      }
-      else if ([1, 2].includes(s.current_stage)) {
+      } else if ([1, 2].includes(s.current_stage)) {
         // this.setSfen(wasmStore.current()!);
       }
       this.resSound();
@@ -164,8 +161,7 @@ export const useGameStore = defineStore("useGameStore", () => {
           if (sfen) {
             return sfen;
           }
-        }
-        else {
+        } else {
           let sfen = state.value.history.at(2)!.at(0);
           other.value.index = 0;
           if (sfen) {
@@ -282,7 +278,7 @@ export const useGameStore = defineStore("useGameStore", () => {
       } else if (state.value.status < 0 || analyzeStore.isActive()) {
         const moves = wasm.legal_moves(color);
         cgStore.new_legal_moves(moves);
-        cgStore.setTurnColor(color)
+        cgStore.setTurnColor(color);
         return moves;
       }
       return new Map();
@@ -369,7 +365,7 @@ export const useGameStore = defineStore("useGameStore", () => {
       sfen = sfen == undefined ? history.at(other.value.index) : sfen;
       if (sfen == undefined) return;
       const position = new ShuuroPosition(state.value.variant);
-      position.change_variant(state.value.variant)
+      position.change_variant(state.value.variant);
       let formatted = formatSfen(sfen!);
       position.set_sfen(formatted.sfen);
       cgStore.setPieces(cgStore.cg()!, position, true);
@@ -392,9 +388,8 @@ export const useGameStore = defineStore("useGameStore", () => {
         const from = parts[0];
         const to = parts[1];
         cgStore.cg()?.setLastMove(from, to);
-      }
-      else {
-        cgStore.cg()!.state.lastMove! = []
+      } else {
+        cgStore.cg()!.state.lastMove! = [];
       }
     },
 
@@ -439,11 +434,11 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     isIndexLive(stage: Stage): boolean {
-      return other.value.index == state.value.history[stage].length - 1
+      return other.value.index == state.value.history[stage].length - 1;
     },
 
     serverPlace(msg: LiveGamePlace) {
-      if (!this.isIndexLive(1)) this.findFen(FenBtn.Last)
+      if (!this.isIndexLive(1)) this.findFen(FenBtn.Last);
 
       cgStore.wasmPlace(msg.game_move, true);
       clockStore.fromMove(msg.clocks);
@@ -469,7 +464,7 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     serverMove2(msg: LiveGameFight) {
-      if (!this.isIndexLive(2)) this.findFen(FenBtn.Last)
+      if (!this.isIndexLive(2)) this.findFen(FenBtn.Last);
       router.push({ path: `/shuuro/2/${msg.game_id}` });
       this.newClientStage(2);
       this.wasmMove(msg.game_move, true);
@@ -546,17 +541,13 @@ export const useGameStore = defineStore("useGameStore", () => {
         cgStore.setCheck();
         this.lastMoveIndex(this.clientStage());
         this.clientStage() == 2 ? this.legal_moves() : null;
+      } else {
       }
-      else {
-      }
-    }
-    ,
-
+    },
     lastMoveIndex(stage: number) {
       if (state.value.status < 0) {
         other.value.index = state.value.history[stage].length - 1;
-      }
-      else {
+      } else {
         other.value.index = 0;
       }
     },
@@ -570,7 +561,7 @@ export const useGameStore = defineStore("useGameStore", () => {
     audio(s: string) {
       const volume = headerSettingsStore.getSound();
       playAudio(s, volume);
-    }
+    },
   };
 });
 
@@ -615,8 +606,8 @@ type Other = {
   server: boolean;
   player: UserLive;
   clientStage: Stage;
-  index: number,
-}
+  index: number;
+};
 
 export type Stage = 0 | 1 | 2;
 export type Player = 0 | 1 | 2;

@@ -98,7 +98,7 @@ export const useClockStore = defineStore("useClockStore", () => {
     },
 
     switchClock() {
-      if(gameStore.state.status >= 0) return;
+      if (gameStore.state.status >= 0) return;
       const otherClock = this.otherClock(gameStore.state.side_to_move);
       this.pause(otherClock, true);
       this.start(gameStore.state.side_to_move);

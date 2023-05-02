@@ -20,6 +20,6 @@ export function playAudio(sound: string, volume?: string) {
       break;
   }
   const a = new Audio(audio);
-  volume ? a.volume = Number(volume) : null;
+  volume ? (a.volume = Number(volume)) : null;
   a.play();
 }
