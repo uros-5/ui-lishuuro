@@ -1,35 +1,15 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.web.json",
-  "target": "esnext",
-  "module": "esnext",
-  "moduleResolution": "node",
-  "strict": true,
-  "jsx": "preserve",
-  "sourceMap": true,
-  "resolveJsonModule": true,
-  "esModuleInterop": true,
-  "lib": ["esnext", "dom"],
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  // https://nuxt.com/docs/guide/concepts/typescript
+  "extends": "./.nuxt/tsconfig.json",
+  "lib": [
+    "ES2021.String",
+    "dom"
+  ],
   "compilerOptions": {
-    "baseUrl": ".",
-    "ignoreDeprecations": "5.0",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "plugins": [
       {
         "name": "typescript-vue-plugin"
       }
     ],
-    "types": ["node"],
-    "isolatedModules": true,
-    "lib": ["ES2021.String", "dom"]
-  },
-  "references": [
-    {
-      "path": "./tsconfig.config.json"
-    }
-  ],
-  "preserveValueImports": true,
-  "isolatedModules": true
+  }
 }
