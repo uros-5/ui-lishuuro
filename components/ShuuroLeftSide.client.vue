@@ -11,12 +11,6 @@
   </aside>
 </template>
 <script setup lang="ts">
-
-
-
-import { useChat } from "stores/useChat";
-import { useGameStore } from "stores/game";
-
 const gameStore = useGameStore();
 const chatStore = useChat();
 </script>

@@ -91,7 +91,6 @@ onUnmounted(() => {
 
 watch(route, (newRoute, _oldRoute) => {
   let username = newRoute.params.username;
-  console.log(newRoute.params.username);
   if (!username || newRoute.params.username == undefined) return;
   games.value = [];
   exist.value = true;

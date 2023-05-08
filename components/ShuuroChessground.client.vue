@@ -8,23 +8,11 @@
     :data-piece="settings.getPiece()"
     :data-size="settings.getVariant(gameStore.state.variant)"
     @wheel.prevent="wheel"
-  />
+  ></div>
 </template>
 
 <script setup lang="ts">
-import {
-  onMounted,
-  onUnmounted,
-  onUpdated,
-  onBeforeUnmount,
-  ref,
-  watch,
-} from "vue";
-import { useHeaderSettings } from "stores/headerSettings";
-import { useGameStore } from "stores/game";
-import { CgElement, useCgStore } from "stores/game/useCgStore";
 import { FenBtn } from "utils/fen";
-import { useAnalyzeStore } from "stores/game/useAnalyzeStore";
 
 const gameStore = useGameStore();
 const analyzeStore = useAnalyzeStore();
@@ -33,7 +21,6 @@ const settings = useHeaderSettings();
 
 const element = ref(undefined as HTMLElement | undefined);
 let counter = 0;
-let mounted = false;
 const keys = getKeys();
 
 function getKeys() {
@@ -74,7 +61,6 @@ function navigate(event: KeyboardEvent) {
 }
 
 onMounted(() => {
-  mounted = true;
   updateElement(true);
   document.addEventListener("keydown", navigate);
 });
@@ -83,12 +69,7 @@ onUnmounted(() => {
   element.value = undefined;
   cgStore.newElement(undefined, CgElement.Main);
   cgStore.state.cg = undefined;
-  mounted = false;
   document.removeEventListener("keydown", navigate);
-});
-
-onBeforeUnmount(() => {
-  // cgStore.newElement(undefined, 0);
 });
 
 onUpdated(() => {
@@ -100,7 +81,6 @@ onUpdated(() => {
 .chessground12 {
   padding-bottom: 100%;
 }
-
 .chessground12 cg-board {
   background-image: url("@/assets/board/12x12brown.svg");
 }

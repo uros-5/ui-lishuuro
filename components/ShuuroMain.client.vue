@@ -5,7 +5,7 @@
       class="standard"
       :class="{ standard8: isStandard() }"
     >
-      <router-view />
+      <slot></slot>
     </selection>
     <ShuuroClock :color="getColor(topPlayer())" part="0" />
     <ShuuroFenPlayer
@@ -27,12 +27,6 @@
   </div>
 </template>
 <script setup lang="ts">
-
-
-
-
-
-
 import { useGameStore } from "stores/game";
 import { useAnalyzeStore } from "stores/game/useAnalyzeStore";
 import { useCgStore } from "stores/game/useCgStore";

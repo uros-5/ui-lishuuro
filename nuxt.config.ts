@@ -2,12 +2,23 @@ import { fileURLToPath } from "url";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  nitro: {
+    experimental: {
+      wasm: true
+    }
+  },
+
+  vite: {
+    optimizeDeps: { exclude: ["shuuro-wasm"] },
+    assetsInclude: ["**/*.ogg"],
+  },
+
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => CUSTOM_ELEMENTS.includes(tag),
     }
-  }
-  ,
+  },
+
   app: {
     head: {
       charset: "utf-8",
@@ -15,18 +26,23 @@ export default defineNuxtConfig({
     },
     pageTransition: { name: 'list', mode: 'in-out' }
   },
+
   modules: [
     "@pinia/nuxt"
   ],
+
   routeRules: {
     'index': { ssr: false }
   },
+
   css: ['~/assets/css/main.css'],
+
   imports: {
     dirs: [
       "stores/**"
     ]
   },
+
   alias: {
     "@": fileURLToPath(new URL(".", import.meta.url)),
     "assets": fileURLToPath(new URL("./assets", import.meta.url)),
@@ -41,6 +57,10 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+
+  devtools: {
+    enabled: false
+  }
 });
 
 

@@ -46,6 +46,7 @@ export const useGameStore = defineStore("useGameStore", () => {
   const user = useUser();
   const ws = useWs();
   const router = useRouter();
+  const homeChat = useChat();
 
   return {
     state,
@@ -108,6 +109,38 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     watchCg() {
       cgStore.watch();
+    },
+
+    mounted(id: string | undefined | unknown) {
+      let variant = useRoute().params["variant"];
+      variant == undefined ? (variant = "shuuro") : null;
+      this.watchCg();
+      if (id == "" || id == undefined) {
+        router.push("/");
+      } else {
+        if (state.value._id == "") {
+          let obj = {
+            t: "live_game_start",
+            game_id: id,
+            color: "white",
+            variant: variant,
+          };
+          ws.SEND(obj);
+          ws.SEND({ t: "live_chat_full", data: { game_id: id, variant: "shuuro" } });
+        }
+      }
+    },
+
+    unMounted() {
+      const id = state.value._id;
+      const obj = {
+        t: "live_game_remove_spectator",
+        game_id: id,
+        variant: "shuuro",
+      };
+      ws.SEND(obj);
+      this.reset();
+      homeChat.gameChat = [];
     },
 
     async fromServer(s: GameInfo) {

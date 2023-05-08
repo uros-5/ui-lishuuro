@@ -1,12 +1,10 @@
 <template>
   <tr>
-    <NuxtLink
-      :to="gameUrl(game._id, game.current_stage, game.status)"
-      @click="setShuuroStore"
-    >
+    <NuxtLink :to="gameUrl(game._id, game.current_stage, game.status)">
       <td class="board invisible">
         <div class="standard" :class="`${isStandard()}`">
           <div
+            ref="element"
             :class="`chessground12 mini ${game._id}`"
             :id="game._id"
             :data-board="settings.getBoard()"
@@ -70,21 +68,12 @@
   </tr>
 </template>
 <script setup lang="ts">
-import { resultMessage } from "utils/resultMessage";
-import { timeago } from "utils/timeago";
-import { onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { useTvStore } from "stores/useTvStore";
-import { useWs } from "stores/useWs";
-
-import { ServerDate } from "utils/serverDate";
-import { useHeaderSettings } from "stores/headerSettings";
 import type { ProfileGame } from "utils/webSocketTypes";
 const tv = useTvStore();
 const settings = useHeaderSettings();
 const { SEND } = useWs();
 const sword = '"';
-
+const element = ref(undefined as HTMLElement | undefined);
 const props = defineProps<{ game: ProfileGame }>();
 
 function isStandard(): string {
@@ -95,6 +84,22 @@ function isStandard(): string {
   }
 }
 
+watch(
+  element,
+  (n) => {
+    if (n != undefined) {
+      let stage = props.game.current_stage;
+      if (stage == 0) {
+        return;
+      }
+      let cg = tv.setCg(props.game._id, props.game.variant);
+      let sfen = props.game.sfen;
+      tv.tempWasm(cg, sfen, "", props.game.variant);
+    }
+  },
+  { deep: true }
+);
+
 onMounted(() => {
   if (props.game.status <= 0) {
     SEND({
@@ -102,19 +107,10 @@ onMounted(() => {
       game_id: props.game._id,
       variant: props.game.variant!,
     });
-  } else {
-    let stage = props.game.current_stage;
-    if (stage == 0) {
-      return;
-    }
-    let cg = tv.setCg(props.game._id, props.game.variant);
-    let sfen = props.game.sfen;
-    tv.tempWasm(cg, sfen, "", props.game.variant);
   }
 });
 
 function ldate() {
-  let ld = ServerDate(props.game.tc.last_click);
   return timeago(new Date(props.game.tc.last_click).toString());
 }
 
@@ -159,8 +155,6 @@ function styleRes(): string {
 function userColor(p: string): string {
   return props.game.players[0] == p ? "w" : "b";
 }
-
-function setShuuroStore() {}
 
 function gameUrl(id: string, stage: number, status: number): string {
   if (status < 0) {

@@ -20,6 +20,7 @@
     "zod": "^3.20.6"
   },
   "devDependencies": {
+    "@nuxt/devtools": "^0.4.6",
     "@types/node": "^18",
     "autoprefixer": "^10.4.14",
     "nuxt": "^3.4.3",

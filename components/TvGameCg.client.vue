@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="element"
     :class="`mini ${id}`"
     :data-board="settings.getBoard()"
     :data-size="dataSize()"
@@ -17,6 +18,17 @@ import { onMounted } from "vue";
 const props = defineProps<{ id: string; variant: string }>();
 const store = useTvStore();
 const settings = useHeaderSettings();
+const element = ref((undefined as undefined) || HTMLElement);
+
+watch(
+  element,
+  (n) => {
+    if (n != undefined) {
+      store.setTvGame(props.id, props.variant);
+    }
+  },
+  { deep: true }
+);
 
 function dataSize(): string {
   if (props.variant.startsWith("shuuro")) {
@@ -26,9 +38,7 @@ function dataSize(): string {
   }
 }
 
-onMounted(() => {
-  store.setTvGame(props.id, props.variant);
-});
+onMounted(() => {});
 </script>
 
 <style>

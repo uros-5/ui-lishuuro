@@ -26,8 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { useUser } from "stores/useUser";
-
+const { SEND } = useWs();
 const user = useUser();
 let nav = [
   { url: "/tv", text: "Current games" },

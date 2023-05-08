@@ -17,10 +17,32 @@ useHead({
     { rel: "stylesheet", href: "/news.css" },
   ],
 });
+
+const route = useRoute();
+
+function cssVariable(): string {
+  let c;
+  if (route == undefined) return "";
+  else if (route.fullPath.includes("/0")) {
+    c = "1300px";
+    return `--main-max-width: ${c};`;
+  } else if (route.fullPath.startsWith("/shuuro")) {
+    return "";
+  } else {
+    c = "1300px";
+  }
+  return `--main-max-width: ${c};`;
+}
 </script>
 
 <template>
-  <MyApp />
+  <MainHeader />
+  <ClientOnly>
+    <div id="main-wrap" :style="cssVariable()">
+      <NuxtLayout><NuxtPage /></NuxtLayout>
+    </div>
+  </ClientOnly>
+  <ServerConnection />
 </template>
 
 <style>

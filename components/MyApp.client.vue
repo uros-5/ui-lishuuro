@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { useWs } from "#imports";
-
-const { SEND } = useWs();
 const route = useRoute();
 
 function cssVariable(): string {
@@ -23,7 +20,7 @@ function cssVariable(): string {
   <ClientOnly>
     <MainHeader />
     <div id="main-wrap" :style="cssVariable()">
-      <NuxtPage />
+      <slot />
     </div>
     <ServerConnection />
   </ClientOnly>
