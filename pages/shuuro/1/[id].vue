@@ -6,7 +6,6 @@
 definePageMeta({
   layout: "shuuro",
   middleware: "is-game-ts",
-
   pageTransition: false,
   layoutTransition: false,
 });
