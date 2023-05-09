@@ -8,7 +8,6 @@ const { user, updateAnonCookie } = useUser();
 const router = useRouter();
 onMounted(() => {
   updateAnonCookie();
-  updateHeadTitle(`Logged as ${user.username}`);
   router.push("/");
 });
 </script>

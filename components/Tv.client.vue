@@ -22,7 +22,6 @@ const { SEND } = useWs();
 
 onMounted(() => {
   SEND({ t: "live_tv" });
-  updateHeadTitle("Live games");
 });
 
 onUnmounted(() => {

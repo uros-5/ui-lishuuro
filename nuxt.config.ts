@@ -23,17 +23,12 @@ export default defineNuxtConfig({
     head: {
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1"
-    },
-    pageTransition: { name: 'list', mode: 'in-out' }
+    }, pageTransition: { name: 'list', mode: 'in-out' }
   },
 
   modules: [
     "@pinia/nuxt"
   ],
-
-  routeRules: {
-    'index': { ssr: false }
-  },
 
   css: ['~/assets/css/main.css'],
 

@@ -81,7 +81,6 @@ function handleScroll() {
 onMounted(() => {
   currentPage.value += 1;
   newGames(username, currentPage.value);
-  updateHeadTitle(username);
   window.addEventListener("scroll", handleScroll);
 });
 

@@ -46,7 +46,14 @@ onMounted(() => {
       if (value.data.exist) {
         let data = NewsItem.parse(value.data.news);
         props.value = data;
-        updateHeadTitle(props.value.title);
+        useHead({
+          title: "Article",
+          meta: [
+            { name: "description", content: "" },
+            { name: "keywords", content: "" },
+            { name: "author", content: "" },
+          ],
+        });
       }
     });
   } else {

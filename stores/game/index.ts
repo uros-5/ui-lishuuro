@@ -16,7 +16,6 @@ import { anonConfig, liveConfig } from "chessground12/configs";
 import { useWasmStore } from "#imports";
 import { useAnalyzeStore } from "#imports";
 import { useClockStore } from "#imports";
-import { updateHeadTitle } from "#imports";
 import { useShopStore } from "#imports";
 import { playAudio } from "#imports";
 import { FenBtn, formatSfen } from "#imports";
@@ -236,7 +235,6 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     updateHeadTitle() {
       const players = state.value.players;
-      updateHeadTitle(`${players[0]} vs ${players[1]}`);
     },
 
     setPlayer() {

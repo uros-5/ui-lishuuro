@@ -5,8 +5,12 @@
 </template>
 
 <script setup lang="ts">
-onMounted(() => {
-  updateHeadTitle("Tournaments");
+useHead({
+  title: headTitle("Tournaments"),
+  meta: [
+    { name: "description", content: "Active tournaments at lishuuro.org" },
+    { name: "keywords", content: "tournaments shuuro" },
+  ],
 });
 </script>
 

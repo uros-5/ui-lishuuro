@@ -13,6 +13,14 @@
 const id = useState("gameid");
 const gameStore = useGameStore();
 
+useHead({
+  title: headTitle(`Player1 vs Player2 - Live Shuuro Game - ${id}`),
+  meta: [
+    { name: "description", content: `Shuuro game` },
+    { name: "author", content: "Uros" },
+  ],
+});
+
 onMounted(() => {
   gameStore.mounted(id.value);
 });

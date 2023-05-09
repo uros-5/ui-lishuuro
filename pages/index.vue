@@ -11,8 +11,17 @@
 </template>
 
 <script setup lang="ts">
-onMounted(() => {
-  updateHeadTitle("Home");
+const keywords =
+  "lishuuro, shuuro chess, play shuuro, how to play shuuro, lichess, lichess fork";
+useHead({
+  title: headTitle("Home"),
+  meta: [
+    {
+      name: "description",
+      content: "Play Shuuro game - interesting chess variant",
+    },
+    { name: "keywords", content: keywords },
+  ],
 });
 </script>
 

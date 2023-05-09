@@ -32,7 +32,14 @@ const store = useHomeLobby();
 
 onMounted(() => {
   SEND({ t: "active_players_full" });
-  updateHeadTitle("Active players");
+  useHead({
+    title: "Active players",
+    meta: [
+      { name: "description", content: "" },
+      { name: "keywords", content: "" },
+      { name: "author", content: "" },
+    ],
+  });
 });
 </script>
 

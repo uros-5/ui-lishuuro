@@ -1,3 +1,3 @@
-export function updateHeadTitle(title: string) {
-  document.title = `${title} - lishuuro.org`;
+export function headTitle(title: string) {
+  return `${title} - lishuuro.org`;
 }
