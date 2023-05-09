@@ -37,11 +37,9 @@ function cssVariable(): string {
 
 <template>
   <MainHeader />
-  <ClientOnly>
-    <div id="main-wrap" :style="cssVariable()">
-      <NuxtLayout><NuxtPage /></NuxtLayout>
-    </div>
-  </ClientOnly>
+  <div id="main-wrap" :style="cssVariable()">
+    <NuxtLayout><NuxtPage /></NuxtLayout>
+  </div>
   <ServerConnection />
 </template>
 
