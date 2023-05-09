@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-onMounted(() => {
-  updateHeadTitle("Page not found");
+useHead({
+  title: headTitle("Page not found"),
 });
 </script>
