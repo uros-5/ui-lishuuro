@@ -74,75 +74,75 @@ div #allpieces {
 }
 
 .piece-0 {
-  background-image: url("@/../public/assets/pieces/merida/wN.svg");
+  background-image: url("public/pieces/merida/wN.svg");
 }
 
 .board-0,
 div[data-size="8"][data-board$="0"] cg-board {
-  background-image: url("@/assets/board/8x8brown.svg");
+  background-image: url("public/board/8x8brown.svg");
 }
 
 .board-1,
 div[data-size="8"][data-board$="1"] cg-board {
-  background-image: url("@/assets/board/8x8blue.svg");
+  background-image: url("public/board/8x8blue.svg");
 }
 
 .board-2,
 div[data-size="8"][data-board$="2"] cg-board {
-  background-image: url("@/assets/board/8x8green.svg");
+  background-image: url("public/board/8x8green.svg");
 }
 
 .board-3,
 div[data-size="8"][data-board$="3"] cg-board {
-  background-image: url("@/assets/board/8x8gray.svg");
+  background-image: url("public/board/8x8gray.svg");
 }
 
 .board-4,
 div[data-size="8"][data-board$="4"] cg-board {
-  background-image: url("@/assets/board/8x8brown_sand.svg");
+  background-image: url("public/board/8x8brown_sand.svg");
 }
 
 .board-5,
 div[data-size="8"][data-board$="5"] cg-board {
-  background-image: url("@/assets/board/8x8brown_yellow.svg");
+  background-image: url("public/board/8x8brown_yellow.svg");
 }
 
 .board-0,
 div[data-board$="0"][data-size$="12"] cg-board {
-  background-image: url("@/assets/board/12x12brown.svg");
+  background-image: url("public/board/12x12brown.svg");
 }
 
 .board-1,
 div[data-board$="1"][data-size$="12"] cg-board {
-  background-image: url("@/assets/board/12x12blue.svg");
+  background-image: url("public/board/12x12blue.svg");
 }
 
 .board-2,
 div[data-board$="2"][data-size$="12"] cg-board {
-  background-image: url("@/assets/board/12x12green.svg");
+  background-image: url("public/board/12x12green.svg");
 }
 
 .board-3,
 div[data-board$="3"][data-size$="12"] cg-board {
-  background-image: url("@/assets/board/12x12gray.svg");
+  background-image: url("public/board/12x12gray.svg");
 }
 
 .board-4,
 div[data-board$="4"][data-size$="12"] cg-board {
-  background-image: url("@/assets/board/12x12brown_sand.svg");
+  background-image: url("public/board/12x12brown_sand.svg");
 }
 
 .board-5,
 div[data-board$="5"][data-size$="12"] cg-board {
-  background-image: url("@/assets/board/12x12brown_yellow.svg");
+  background-image: url("public/board/12x12brown_yellow.svg");
 }
 
 .piece-1 {
-  background-image: url("@/../public/assets/pieces/kaneo/wN.svg");
+  background-image: url("public/pieces/kaneo/wN.svg");
 }
 
 .piece-2 {
-  background-image: url("@/../public/assets/pieces/maestro/wN.svg");
+  background-image: url("public/pieces/maestro/wN.svg");
 }
 
 .selected-board,

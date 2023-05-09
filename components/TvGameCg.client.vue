@@ -47,6 +47,6 @@ onMounted(() => {});
 }
 
 .chessground12 cg-board {
-  background-image: url("@/assets/board/12x12brown.svg");
+  background-image: url("public/board/12x12brown.svg");
 }
 </style>

@@ -13,10 +13,10 @@ onMounted(() => gameStore.newClientStage(2));
 }
 
 .chessground12 cg-board {
-  background-image: url("@/assets/board/12x12brown.svg");
+  background-image: url("public/board/12x12brown.svg");
 }
 
 .chessground12 .standard8 cg-board {
-  background-image: url("@/assets/board/8x8brown.svg");
+  background-image: url("public/board/8x8brown.svg");
 }
 </style>
