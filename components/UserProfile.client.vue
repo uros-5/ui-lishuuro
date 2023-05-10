@@ -37,7 +37,6 @@
   </main>
 </template>
 <script setup lang="ts">
-import { useRoute } from "vue-router";
 import { z } from "zod";
 import { ProfileGame } from "#imports";
 

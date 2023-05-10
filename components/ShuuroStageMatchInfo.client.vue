@@ -12,7 +12,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import { defineProps } from "vue";
 import { timeago } from "utils/timeago";
 import { useGameStore } from "stores/game";
 

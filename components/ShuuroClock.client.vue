@@ -27,7 +27,6 @@
 </template>
 <script setup lang="ts">
 import { useClockStore } from "stores/game/useClockStore";
-import { defineProps } from "vue";
 
 const clockStore = useClockStore();
 

@@ -16,7 +16,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
 import { useGameStore } from "stores/game";
 import { useCgStore } from "stores/game/useCgStore";
 

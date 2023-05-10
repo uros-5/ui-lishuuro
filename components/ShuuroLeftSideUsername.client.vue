@@ -12,7 +12,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
 const props = defineProps<{
   player_username: string;
   rating: number;
