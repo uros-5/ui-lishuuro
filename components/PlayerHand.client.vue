@@ -29,13 +29,7 @@
 
 <script setup lang="ts">
 import {
-  onMounted,
-  defineProps,
-  ref,
-  onUnmounted,
-  watch,
   type WatchStopHandle,
-  onUpdated,
 } from "vue";
 import { useBoardSize } from "stores/useBoardSize";
 import { useHeaderSettings } from "stores/headerSettings";

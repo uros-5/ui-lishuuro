@@ -1,37 +1,41 @@
 <template>
-  <header>
-    <div class="site-title-nav">
-      <HomeHamburgerIcon />
-      <div class="topnav">
-        <NuxtLink
-          @click="user.toggleHeader"
-          to="/"
-          class="nav-link active home"
-        >
-          lishuuro
-        </NuxtLink>
-        <NuxtLink
-          @click="user.toggleHeader"
-          v-for="i in nav"
-          v-bind:key="i.url"
-          :to="i.url"
-          class="nav-link"
-        >
-          {{ i.text }}
-        </NuxtLink>
+  <ClientOnly>
+    <header>
+      <div class="site-title-nav">
+        <HomeHamburgerIcon />
+        <div class="topnav">
+          <NuxtLink
+            @click="user.toggleHeader"
+            to="/"
+            class="nav-link active home"
+          >
+            lishuuro
+          </NuxtLink>
+          <NuxtLink
+            @click="user.toggleHeader"
+            v-for="i in nav"
+            v-bind:key="i.url"
+            :to="i.url"
+            class="nav-link"
+          >
+            {{ i.text }}
+          </NuxtLink>
+        </div>
       </div>
-    </div>
-    <HeaderAccount />
-  </header>
+      <HeaderAccount />
+    </header>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
-const { SEND } = useWs();
 const user = useUser();
 let nav = [
   { url: "/tv", text: "Current games" },
   { url: "/tournaments", text: "Tournaments" },
 ];
+onMounted(() => {
+  const { SEND } = useWs();
+});
 </script>
 <style>
 header {

@@ -23,6 +23,7 @@ useHead({
   grid-area: main;
   font-size: 1.3em;
 }
+
 .tournaments-view h1 {
   border: 1px solid var(--hover-green);
 }

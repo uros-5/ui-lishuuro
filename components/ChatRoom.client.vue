@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps } from "vue";
+import { ref } from "vue";
 import { useCookies } from "vue3-cookies";
 import { useUser } from "stores/useUser";
 import { useWs } from "stores/useWs";

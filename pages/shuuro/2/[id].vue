@@ -9,4 +9,5 @@ definePageMeta({
   pageTransition: false,
   layoutTransition: false,
 });
+useHead(useShuuroHead());
 </script>
