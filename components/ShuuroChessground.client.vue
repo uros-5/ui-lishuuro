@@ -44,6 +44,7 @@ function wheel(event: WheelEvent) {
 }
 
 function updateElement(force?: boolean) {
+  console.log("jea");
   if (counter < 3 || force) {
     counter += 1;
     if (counter == 3 || force) {

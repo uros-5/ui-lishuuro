@@ -1,30 +1,28 @@
 <template>
-  <ClientOnly>
-    <header>
-      <div class="site-title-nav">
-        <HomeHamburgerIcon />
-        <div class="topnav">
-          <NuxtLink
-            @click="user.toggleHeader"
-            to="/"
-            class="nav-link active home"
-          >
-            lishuuro
-          </NuxtLink>
-          <NuxtLink
-            @click="user.toggleHeader"
-            v-for="i in nav"
-            v-bind:key="i.url"
-            :to="i.url"
-            class="nav-link"
-          >
-            {{ i.text }}
-          </NuxtLink>
-        </div>
+  <header>
+    <div class="site-title-nav">
+      <HomeHamburgerIcon />
+      <div class="topnav">
+        <NuxtLink
+          @click="user.toggleHeader"
+          to="/"
+          class="nav-link active home"
+        >
+          lishuuro
+        </NuxtLink>
+        <NuxtLink
+          @click="user.toggleHeader"
+          v-for="i in nav"
+          v-bind:key="i.url"
+          :to="i.url"
+          class="nav-link"
+        >
+          {{ i.text }}
+        </NuxtLink>
       </div>
-      <HeaderAccount />
-    </header>
-  </ClientOnly>
+    </div>
+    <HeaderAccount />
+  </header>
 </template>
 
 <script setup lang="ts">

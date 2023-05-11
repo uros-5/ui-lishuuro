@@ -1,5 +1,5 @@
 <template>
-  <span> <ShuuroChessground /></span>
+  <ShuuroChessground />
 </template>
 
 <script setup lang="ts">

@@ -36,13 +36,11 @@ function cssVariable(): string {
 </script>
 
 <template>
-  <ClientOnly
-    ><MainHeader />
-    <div id="main-wrap" :style="cssVariable()">
-      <NuxtLayout><NuxtPage /></NuxtLayout>
-    </div>
-    <ServerConnection />
-  </ClientOnly>
+  <MainHeader />
+  <div id="main-wrap" :style="cssVariable()">
+    <NuxtLayout><NuxtPage /></NuxtLayout>
+  </div>
+  <ServerConnection />
 </template>
 
 <style>

@@ -9,15 +9,9 @@
 
 <script setup lang="ts">
 const id = useState("gameid");
-const gameStore = useGameStore();
-
-onMounted(() => {
-  gameStore.mounted(id.value);
-});
-
-onUnmounted(() => {
-  gameStore.unMounted();
-});
+const headData = await useFetch(`/api/game/?id=${id.value}`);
+useHead(useShuuroHead(headData.data.value as string));
+onMounted(() => {});
 </script>
 
 <style>

@@ -31,6 +31,7 @@ import { useGameStore } from "stores/game";
 import { useAnalyzeStore } from "stores/game/useAnalyzeStore";
 import { useCgStore } from "stores/game/useCgStore";
 
+const id = useState("gameid");
 const gameStore = useGameStore();
 const analyzeStore = useAnalyzeStore();
 const cgStore = useCgStore();
@@ -59,6 +60,14 @@ function getColor(username: string): string {
   const index = gameStore.state.players.findIndex((item) => item == username)!;
   return index == 0 ? "white" : "black";
 }
+
+onMounted(() => {
+  gameStore.mounted(id.value);
+});
+
+onUnmounted(() => {
+  gameStore.unMounted();
+});
 </script>
 <style>
 .round-app {

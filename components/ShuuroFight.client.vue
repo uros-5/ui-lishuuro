@@ -4,7 +4,7 @@ onMounted(() => gameStore.newClientStage(2));
 </script>
 
 <template>
-  <span> <ShuuroChessground /></span>
+  <ShuuroChessground />
 </template>
 
 <style>

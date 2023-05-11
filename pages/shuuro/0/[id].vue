@@ -1,10 +1,8 @@
 <template>
-  <ShuuroShop />
+  <span><ShuuroShop /></span>
 </template>
 
 <script setup lang="ts">
-useHead(useShuuroHead());
-useServerHeadSafe(useShuuroHead());
 definePageMeta({
   layout: "shuuro",
   middleware: "is-game-ts",
