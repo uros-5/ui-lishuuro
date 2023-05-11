@@ -234,7 +234,7 @@ div.info-middle {
 }
 
 .chessground12 cg-board {
-  background-image: url("public/board/12x12brown.svg");
+  background-image: url("board/12x12brown.svg");
 }
 
 .cg-wrap.mini {

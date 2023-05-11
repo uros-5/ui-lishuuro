@@ -44,7 +44,6 @@ function wheel(event: WheelEvent) {
 }
 
 function updateElement(force?: boolean) {
-  console.log("jea");
   if (counter < 3 || force) {
     counter += 1;
     if (counter == 3 || force) {
@@ -82,11 +81,12 @@ onUpdated(() => {
 .chessground12 {
   padding-bottom: 100%;
 }
+
 .chessground12 cg-board {
-  background-image: url("public/board/12x12brown.svg");
+  background-image: url("/board/12x12brown.svg");
 }
 
 .chessground12 .standard8 cg-board {
-  background-image: url("public/board/8x8brown.svg");
+  background-image: url("/board/8x8brown.svg");
 }
 </style>
