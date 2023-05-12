@@ -31,7 +31,7 @@ import { useGameStore } from "stores/game";
 import { useAnalyzeStore } from "stores/game/useAnalyzeStore";
 import { useCgStore } from "stores/game/useCgStore";
 
-const id = useState("gameid");
+const game: Ref<{ id: string; stage: string }> = useState("game");
 const gameStore = useGameStore();
 const analyzeStore = useAnalyzeStore();
 const cgStore = useCgStore();
@@ -62,7 +62,7 @@ function getColor(username: string): string {
 }
 
 onMounted(() => {
-  gameStore.mounted(id.value);
+  gameStore.mounted(game.value.id);
 });
 
 onUnmounted(() => {

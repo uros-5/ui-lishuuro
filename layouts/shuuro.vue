@@ -8,8 +8,8 @@
 </template>
 
 <script setup lang="ts">
-const id = useState("gameid");
-const headData = await useFetch(`/api/game/?id=${id.value}`);
+const game: Ref<{ id: string; stage: string }> = useState("game");
+const headData = await useFetch(`/api/game/?id=${game.value.id}`);
 useHead(useShuuroHead(headData.data.value as string));
 onMounted(() => {});
 </script>
