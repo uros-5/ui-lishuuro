@@ -43,7 +43,7 @@ import { useGameStore } from "stores/game";
 const gameStore = useGameStore();
 
 function navRoute(stage: string): string {
-  return `/shuuro/${stage}/${gameStore.state._id}`;
+  return `/shuuro/${gameStore.state._id}-${stage}`;
 }
 
 function player(index: number): string {

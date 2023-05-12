@@ -251,14 +251,12 @@ export const useGameStore = defineStore("useGameStore", () => {
       const r = router.currentRoute;
       if (state.value.status > 0) {
         const fullPath = r.value.fullPath;
-        if (fullPath.startsWith(`/shuuro/${state.value.current_stage}`)) {
+        if (fullPath.startsWith(`/shuuro/${state.value._id}-${state.value.current_stage}`)) {
           this.newClientStage(state.value.current_stage as Stage);
         }
       }
       this.newClientStage(state.value.current_stage as Stage);
-      router.push({
-        path: `/shuuro/${state.value.current_stage}/${state.value._id}`,
-      });
+      router.push(`/shuuro/${state.value._id}-${state.value.current_stage}`);
     },
 
     resSound() {
@@ -480,7 +478,7 @@ export const useGameStore = defineStore("useGameStore", () => {
         state.value.tc.last_click = new Date().toString();
         clockStore.state.last_clock = new Date().toString();
         this.audio("res");
-        router.push({ path: `/shuuro/2/${msg.game_id}` });
+        router.push(`/shuuro/${state.value._id}-2`);
         this.startPosFix(2);
       }
       if (msg.first_move_error) {
@@ -496,7 +494,7 @@ export const useGameStore = defineStore("useGameStore", () => {
 
     serverMove2(msg: LiveGameFight) {
       if (!this.isIndexLive(2)) this.findFen(FenBtn.Last);
-      router.push({ path: `/shuuro/2/${msg.game_id}` });
+      router.push({ path: `/shuuro/${msg.game_id}-2` });
       this.newClientStage(2);
       this.wasmMove(msg.game_move, true);
       clockStore.fromMove(msg.clocks);

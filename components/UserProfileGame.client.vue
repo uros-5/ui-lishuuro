@@ -158,9 +158,9 @@ function userColor(p: string): string {
 
 function gameUrl(id: string, stage: number, status: number): string {
   if (status < 0) {
-    return `/shuuro/${tv.profile_game.cs!}/${id}`;
+    return `/shuuro/${id}-${tv.profile_game.cs!}`;
   }
-  return `/shuuro/${stage}/${id}`;
+  return `/shuuro/${id}-${stage}`;
 }
 
 function variantTitle(): string {

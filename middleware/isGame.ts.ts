@@ -1,4 +1,5 @@
 export default defineNuxtRouteMiddleware((to, from) => {
+  console.log(to.fullPath)
   useState("game", () => {
     if(to.params.id && to.params.stage) {
       return {id: to.params.id, stage: to.params.stage};
