@@ -9,7 +9,7 @@
 }
 
 .shuuro-board cg-board {
-  background-image: url(./assets/board/12x12brown.svg);
+  background-image: url("./board/12x12brown.svg");
 }
 
 .cg-wrap.cg-512.mini {
