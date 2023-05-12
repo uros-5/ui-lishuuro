@@ -18,6 +18,12 @@ useHead({
   ],
 });
 
+useSeoMeta({
+  ogImage: "/lishuuro-tile-wide.png",
+  twitterImage: "/lishuuro-tile.png",
+  twitterCard: "summary",
+});
+
 const route = useRoute();
 
 function cssVariable(): string {
