@@ -7,9 +7,9 @@
         <div class="meta">
           <span class="text"> {{ props.date }}</span>
           <span class="text">
-            <router-link :to="`/@/${props.user}`">
+            <NuxtLink :to="`/@/${props.user}`">
               @{{ props.user }}
-            </router-link></span
+            </NuxtLink></span
           >
           <span class="text"> {{ props.category }} </span>
         </div>

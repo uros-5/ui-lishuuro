@@ -14,10 +14,10 @@
             v-bind:key="i"
           >
             <i-side class="online icon icon-online">
-              <router-link class="user-link" :to="`/@/${i}`">
+              <NuxtLink class="user-link" :to="`/@/${i}`">
                 <player-title></player-title>
                 {{ i }}
-              </router-link>
+              </NuxtLink>
             </i-side>
           </td>
         </tr>
