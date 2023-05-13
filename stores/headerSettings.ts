@@ -47,6 +47,7 @@ export const useHeaderSettings = defineStore("headerSettings", {
     },
     setTheme(theme: string) {
       document.querySelector("html")?.setAttribute("data-theme", theme);
+      document.querySelector("body")?.setAttribute("data-theme", theme);
       this.settings.theme = theme;
       this.str();
     },

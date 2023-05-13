@@ -3,7 +3,7 @@ import { ChatMessage, useChat } from "#imports";
 import { useHomeLobby } from "#imports";
 import { NewsItem, useNews } from "#imports";
 import { useTvStore } from "#imports";
-import Sockette from "sockette";
+
 import { wsUrl } from "#imports";
 import {
   ActivePlayersFull,
@@ -41,18 +41,6 @@ export const useWs = defineStore("useWsStore", () => {
   const shopStore = useShopStore();
   const newsStore = useNews();
   const tvStore = useTvStore();
-
-  function onopen(_e: Event) {
-    user.onOpen();
-    user.checkCookie();
-    unsendMessages.value.forEach((value) => {
-      SEND(value);
-    });
-    unsendMessages.value = [];
-    setInterval(() => {
-      SEND("");
-    }, 40 * 1000);
-  }
 
   async function onmessage(e: MessageEvent) {
     const msg: { t: string; data: any } = JSON.parse(e.data);
@@ -176,17 +164,31 @@ export const useWs = defineStore("useWsStore", () => {
     }
   }
 
-  function onreconnect(_e: Event) {
-    user.onReconnect();
-  }
-
-  const ws = ref(
-    new Sockette(wsUrl(), {
-      onopen,
-      onmessage,
-      onreconnect,
-    })
-  );
+  const ws = ref(useWebSocket(wsUrl(), {
+    autoReconnect: true,
+    onConnected: () => {
+      user.onOpen();
+      user.checkCookie();
+      unsendMessages.value.forEach((value) => {
+        SEND(value);
+      });
+      unsendMessages.value = [];
+      setInterval(() => {
+        SEND("")
+      }, 40*1000);
+    },
+    // heartbeat: {
+    //   message: '',
+    //   interval: 1000,
+    //   pongTimeout: 0,
+    // },
+    onDisconnected: () => {
+      user.onReconnect();
+    },
+    onMessage: (_, event) => {
+      onmessage(event)
+    }
+  }))
 
   function SEND(msg: any) {
     try {
