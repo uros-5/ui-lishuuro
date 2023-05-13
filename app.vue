@@ -1,8 +1,5 @@
 <script setup lang="ts">
 useHead({
-  bodyAttrs: {
-    "data-theme": "dark",
-  },
   link: [
     {
       rel: "stylesheet",

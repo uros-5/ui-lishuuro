@@ -38,11 +38,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useCookies } from "vue3-cookies";
 import { useUser } from "stores/useUser";
 import { useWs } from "stores/useWs";
-
 import type { ChatMessage } from "stores/useChat";
+import { useCookies } from "@vueuse/integrations";
 
 const { SEND } = useWs();
 
@@ -54,7 +53,7 @@ const props = defineProps<{
 }>();
 const message = ref("");
 const hiddenChat = ref(true);
-const cookie = useCookies().cookies;
+const cookie = useCookies();
 const { user } = useUser();
 
 function onEnter(): void {

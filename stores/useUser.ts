@@ -1,13 +1,12 @@
-import {GET} from "#imports";
+import { GET } from "#imports";
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { useCookies } from "vue3-cookies";
-
-const cookie = useCookies().cookies;
-const _cookieData = { expire: "365d", sameSite: "" };
-const themes = ["dark", "light"];
+import { useCookies } from "@vueuse/integrations/useCookies"
+import { CookieSetOptions } from "universal-cookie/cjs/types";
 
 type VueUser = { username: string; logged: boolean };
+const cookie = useCookies();
+const themes = ["dark", "light"];
 
 export const useUser = defineStore("useUser", () => {
   const user = ref({
@@ -32,8 +31,8 @@ export const useUser = defineStore("useUser", () => {
 
   const updateAnonCookie = () => {
     GET("vue_user").then((res) => {
-      const data: VueUser = res.data;
-      setUser(data);
+      const data = res.data.value as string;
+      setUser(JSON.parse(data) as VueUser);
     });
   };
 
@@ -46,20 +45,12 @@ export const useUser = defineStore("useUser", () => {
     cookie.set(
       "username",
       user.value.username,
-      d.toUTCString(),
-      "",
-      "",
-      prod,
-      "Lax"
+      setOptions(d, prod)
     );
     cookie.set(
       "reg",
       user.value.reg.toString(),
-      d.toUTCString(),
-      "",
-      "",
-      prod,
-      "Lax"
+      setOptions(d, prod)
     );
   };
 
@@ -109,3 +100,9 @@ export const useUser = defineStore("useUser", () => {
     toggleHeader,
   };
 });
+
+export function setOptions(expires: Date, secure: boolean): CookieSetOptions {
+  return {
+    expires, path: "", domain: "", secure, sameSite: "lax"
+  }
+}

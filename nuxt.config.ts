@@ -28,7 +28,8 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    "@pinia/nuxt"
+    "@pinia/nuxt",
+    "@vueuse/nuxt"
   ],
 
   css: ['~/assets/css/main.css'],

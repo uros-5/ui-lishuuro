@@ -9,9 +9,8 @@ export function backend(): string {
 
 export function wsUrl(): string {
   const prod = import.meta.env.PROD;
-  const ws = prod ? "wss" : "ws";
-  const h = prod ? "https" : "http";
+  const [ws, _] = prod ? ["wss", "https"] : ["ws", "http"];
   const b = (backend() as string).toString();
-  const s = b.split(`${h}://`)[1];
-  return `${ws}://${s}ws/`;
+  const name = b.split(`://`)[1];
+  return `${ws}://${name}ws/`;
 }

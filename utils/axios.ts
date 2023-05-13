@@ -1,17 +1,26 @@
-import axios from "axios";
 import { backend } from "~/utils/getBackend";
+import {createFetch}from "@vueuse/core"
 
-const path = `${backend()}`;
-axios.defaults.withCredentials = true;
+const path = backend();
 
-export function GET(query: string): Promise<any> {
-  return axios.get(`${path}${query}`);
+const myFetch = createFetch({
+  baseUrl: backend(),
+  options: {
+    timeout: 3000,
+    async beforeFetch(ctx) {
+      ctx.options.credentials = "include"
+    },
+  }
+});
+
+export function GET(query: string) {
+  return myFetch(query);
 }
 
-export default function GET2(query: string): Promise<any> {
-  return axios.get(`${path}${query}`);
+export function GET2(query: string) {
+  return $fetch(`${path}${query}`)
 }
 
-export function POST(query: string, data: any): Promise<any> {
-  return axios.post(`${path}${query}`, data);
+export function POST(query: string, data: any) {
+  return myFetch(query).post(data);
 }
