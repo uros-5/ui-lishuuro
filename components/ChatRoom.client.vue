@@ -41,7 +41,7 @@ import { ref } from "vue";
 import { useUser } from "stores/useUser";
 import { useWs } from "stores/useWs";
 import type { ChatMessage } from "stores/useChat";
-import { useCookies } from "@vueuse/integrations";
+import { useCookies } from "@vueuse/integrations/useCookies";
 
 const { SEND } = useWs();
 

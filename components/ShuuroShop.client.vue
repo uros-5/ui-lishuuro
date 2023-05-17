@@ -8,13 +8,8 @@
         </span>
       </p>
     </div>
-    <PlayerHand
-      side=""
-      :in-center="true"
-      :counter="[1, 0, 0, 0, 0, 0, 0, 0]"
-      :color="getColor(user.username)"
-      hand-type="shop"
-    />
+    <PlayerHand side="" :in-center="true" :counter="[1, 0, 0, 0, 0, 0, 0, 0]" :color="getColor(user.username)"
+      hand-type="shop" />
     <p class="local-credit">Credit: {{ myCredit() }}</p>
     <button class="shuuro-confirm" @click="shopStore.confirm()">Confirm</button>
   </div>

@@ -1,8 +1,9 @@
 {
   "name": "ui-lishuuro",
   "private": false,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "UI part for lishuuro.org",
+  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -11,11 +12,12 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxtjs/i18n": "npm:@nuxtjs/i18-edge",
     "@pinia/nuxt": "^0.4.9",
     "@vueuse/integrations": "^10.1.2",
     "chessground12": "^0.1.7",
     "pinia": "^2.0.35",
-    "shuuro-wasm": "^0.2.4",
+    "shuuro-wasm": "^0.2.5",
     "typescript-vue-plugin": "^1.6.4",
     "universal-cookie": "^4.0.4",
     "zod": "^3.20.6"
