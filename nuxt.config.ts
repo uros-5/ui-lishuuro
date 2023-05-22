@@ -4,13 +4,13 @@ import { fileURLToPath } from "url";
 export default defineNuxtConfig({
   nitro: {
     experimental: {
-      wasm: true
-    }
+      wasm: true,
+    },
   },
 
   vite: {
     optimizeDeps: { exclude: ["shuuro-wasm"] },
-    assetsInclude: ["**/*.ogg"],
+    assetsInclude: ["**/*.ogg"]
   },
 
   vue: {

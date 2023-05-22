@@ -3,14 +3,8 @@
     <NuxtLink :to="gameUrl(game._id, game.current_stage, game.status)">
       <td class="board invisible">
         <div class="standard" :class="`${isStandard()}`">
-          <div
-            ref="element"
-            :class="`chessground12 mini ${game._id}`"
-            :id="game._id"
-            :data-board="settings.getBoard()"
-            :data-piece="settings.getPiece()"
-            :data-size="settings.getVariant(game.variant)"
-          />
+          <div ref="element" :class="`chessground12 mini ${game._id}`" :id="game._id" :data-board="settings.getBoard()"
+            :data-piece="settings.getPiece()" :data-size="settings.getVariant(game.variant)" />
         </div>
       </td>
       <td class="games-info">
@@ -30,25 +24,15 @@
         <div class="info-middle">
           <div class="versus">
             <player>
-              <NuxtLink
-                :key="useRoute().fullPath"
-                class="user-link"
-                :to="`/@/${props.game.players[0]}`"
-                ><player-title> </player-title
-                >{{ props.game.players[0] }}</NuxtLink
-              >
+              <NuxtLink :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.players[0]}`"><player-title>
+                </player-title>{{ props.game.players[0] }}</NuxtLink>
               <br />
               1500?
             </player>
             <vs-swords class="icon" :data-icon="sword"></vs-swords>
             <player>
-              <NuxtLink
-                :key="useRoute().fullPath"
-                class="user-link"
-                :to="`/@/${props.game.players[1]}`"
-                ><player-title> </player-title
-                >{{ props.game.players[1] }}</NuxtLink
-              >
+              <NuxtLink :key="useRoute().fullPath" class="user-link" :to="`/@/${props.game.players[1]}`"><player-title>
+                </player-title>{{ props.game.players[1] }}</NuxtLink>
               <br />
               1500?
             </player>
@@ -234,7 +218,7 @@ div.info-middle {
 }
 
 .chessground12 cg-board {
-  background-image: url("board/12x12brown.svg");
+  background-image: url("/board/12x12brown.svg");
 }
 
 .cg-wrap.mini {
