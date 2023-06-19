@@ -1,5 +1,5 @@
 <template>
-  <div class="site-buttons">
+  <div class="site-buttons text-2xl">
     <div id="username">
       <NuxtLink class="user-link" :to="`/@/${user.username}`">{{
         user.username
