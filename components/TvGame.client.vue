@@ -10,11 +10,6 @@
 </template>
 
 <script setup lang="ts">
-
-
-
-
-
 defineProps<{
   w: string;
   b: string;
