@@ -9,8 +9,8 @@
           <span class="text">
             <NuxtLink :to="`/@/${props.user}`">
               @{{ props.user }}
-            </NuxtLink></span
-          >
+            </NuxtLink>
+          </span>
           <span class="text"> {{ props.category }} </span>
         </div>
         <div class="headline">
@@ -42,9 +42,9 @@ onMounted(() => {
   let id = useRoute().params.id;
   let item = newsStore.exist(id as string);
   if (!item) {
-    GET(`news/${id}`).then((value: any) => {
-      if (value.data.exist) {
-        let data = NewsItem.parse(value.data.news);
+    GET(`news/${id}`).then((res: any) => {
+      if (res.data.exist) {
+        let data = NewsItem.parse(res.data.news);
         props.value = data;
         useHead({
           title: "Lishuuro",

@@ -6,7 +6,7 @@ definePageMeta({
 const game: Ref<{ id: string; stage: string }> = useState("game");
 
 onMounted(() => {
-  const gameStore = useGameStore();
+  // const gameStore = useGameStore();
   const route = useRoute();
   const stage = route.params.stage;
   const id = route.params.id;

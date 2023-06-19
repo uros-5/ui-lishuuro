@@ -1,0 +1,56 @@
+{
+  "header": {
+    "currentGames": "Current games",
+    "tournaments": "Tournaments",
+    "login": "log in",
+    "sound": "Sound",
+    "background": "Background",
+    "boardSettings": "Board Settings",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "home": {
+    "introduction": "Introduction",
+    "lobbyTable": {
+      "player": "Player",
+      "rating": "Rating",
+      "time": "Time",
+      "variant": "Variant"
+    },
+    "variant": "Variant",
+    "minutesPerSide": "Minutes per side",
+    "incrementInSeconds": "Increment in seconds",
+    "donate": "Donate",
+    "players": "players",
+    "gamesInPlay": "games in play",
+    "latestUpdated": "Latest updated"
+  },
+  "tv": {
+    "empty": "There are no available games at the moment."
+  },
+  "tournaments": {
+    "empty": "There are no available tournaments at the moment."
+  },
+  "userProfile": {
+    "games": "Games",
+    "gamesWithYou": "Games with you",
+    "rated": "Rated",
+    "imported": "Imported",
+    "moves": "moves"
+  },
+  "game": {
+    "analysisBoard": "Analysis Board",
+    "Selection": "Selection",
+    "Deploy": "Deploy",
+    "Fight": "Fight",
+    "shop": {
+      "credit": "Credit",
+      "Confirm": "Confirm"
+    }
+  },
+  "chat": {
+    "chatRoom": "Chat room",
+    "signInToChat": "Sign in to chat",
+    "oldGames": "Chat disabled for old games"
+  }
+}

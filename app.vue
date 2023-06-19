@@ -3,7 +3,8 @@ useHead({
   link: [
     {
       rel: "stylesheet",
-      href: "https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap",
+      href:
+        "https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
     },
     { rel: "stylesheet", href: "/chessground.css" },
     { rel: "stylesheet", href: "/standard.css" },
@@ -11,14 +12,14 @@ useHead({
     { rel: "stylesheet", href: "/style.css" },
     { rel: "stylesheet", href: "/site.css" },
     { rel: "stylesheet", href: "/lobby.css" },
-    { rel: "stylesheet", href: "/news.css" },
-  ],
+    { rel: "stylesheet", href: "/news.css" }
+  ]
 });
 
 useSeoMeta({
   ogImage: "/lishuuro-tile-wide.png",
   twitterImage: "/lishuuro-tile.png",
-  twitterCard: "summary",
+  twitterCard: "summary"
 });
 
 const route = useRoute();

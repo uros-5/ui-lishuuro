@@ -24,11 +24,7 @@
           </div>
           <table id="games">
             <tbody ref="scrollComponent">
-              <UserProfileGame
-                v-for="g in games"
-                v-bind:key="g._id"
-                :game="g"
-              />
+              <UserProfileGame v-for="g in games" v-bind:key="g._id" :game="g" />
             </tbody>
           </table>
         </div>
@@ -58,10 +54,10 @@ function newGames(id: string, page: number) {
   if (!exist.value) {
     return;
   }
-  GET(`games/${id}/${page}`).then((value: any) => {
-    let data = Response.parse(value.data);
+  GET(`games/${id}/${page}`).then((res: any) => {
+    let data = Response.parse(JSON.parse(res.data.value));
     if (data.exist == true) {
-      games.value.push(...value.data.games);
+      games.value.push(...data.games!);
       exist.value = true;
     } else {
       exist.value = false;

@@ -1,37 +1,16 @@
 <template>
   <div class="game-info">
     <section>
-      <ShuuroStageMatchInfo
-        :variant="gameStore.state.variant"
-        :minute="gameStore.state.min"
-        :sec="gameStore.state.incr"
-        :rated="false"
-        date="*"
-      />
-      <ShuuroLeftSideUsername
-        :player_username="player(0)"
-        :rating="rating(player(0))"
-        color="white"
-      />
-      <ShuuroLeftSideUsername
-        :player_username="player(1)"
-        :rating="rating(player(1))"
-        color="black"
-      />
+      <ShuuroStageMatchInfo :variant="gameStore.state.variant" :minute="gameStore.state.min" :sec="gameStore.state.incr"
+        :rated="false" date="*" />
+      <ShuuroLeftSideUsername :player_username="player(0)" :rating="rating(player(0))" color="white" />
+      <ShuuroLeftSideUsername :player_username="player(1)" :rating="rating(player(1))" color="black" />
     </section>
     <section class="shuuro-navigator">
-      <NuxtLink
-        class="user-link"
-        v-if="gameStore.state.sub_variant == 100"
-        :to="navRoute('0')"
-      >
-        Shop
+      <NuxtLink class="user-link" v-if="gameStore.state.sub_variant == 100" :to="navRoute('0')">
+        Selection
       </NuxtLink>
-      <NuxtLink
-        class="user-link"
-        v-if="!isFightSubVariant()"
-        :to="navRoute('1')"
-      >
+      <NuxtLink class="user-link" v-if="!isFightSubVariant()" :to="navRoute('1')">
         Deploy
       </NuxtLink>
       <NuxtLink class="user-link" :to="navRoute('2')"> Fight </NuxtLink>
