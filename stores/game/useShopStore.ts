@@ -51,6 +51,7 @@ export const useShopStore = defineStore("useShopStore", () => {
         gameStore.send("live_game_buy", game_move);
         gameStore.other.index = gameStore.state.history[0].length - 2;
         state.value.credit = new_credit;
+        gameStore.audio("buy")
       }
     },
 
