@@ -1,23 +1,23 @@
-import placementStandard from "../assets/boards-live/placement-standard.png"
-import selectionFairy from "../assets/boards-live/selection-fairy.png"
-import selectionStandard from "../assets/boards-live/selection-standard.png"
-import shuuroLiveFairy from "../assets/boards-live/shuuro-live-fairy.png"
-import shuuroLive from "../assets/boards-live/shuuro-live.png"
-import mini from "../assets/boards-live/mini.png"
-import miniFairy from "../assets/boards-live/miniFairy.png"
-import standardFairyLive from "../assets/boards-live/standard-fairy-live.png"
-import standardLive from "../assets/boards-live/standard-live.png"
-import standard from "../assets/boards-live/standard.png"
+import placementStandard from '../assets/boards-live/placement-standard.png'
+import selectionFairy from '../assets/boards-live/selection-fairy.png'
+import selectionStandard from '../assets/boards-live/selection-standard.png'
+import shuuroLiveFairy from '../assets/boards-live/shuuro-live-fairy.png'
+import shuuroLive from '../assets/boards-live/shuuro-live.png'
+import mini from '../assets/boards-live/mini.png'
+import miniFairy from '../assets/boards-live/miniFairy.png'
+import standardFairyLive from '../assets/boards-live/standard-fairy-live.png'
+import standardLive from '../assets/boards-live/standard-live.png'
+import standard from '../assets/boards-live/standard.png'
 
 export type Description = {
-  name: string,
-  points: number,
-  selection: boolean,
-  placement: boolean,
-  fairyPieces: boolean,
-  picture?: string[],
-  category: BoardSize,
-  variant: Variant,
+  name: string
+  points: number
+  selection: boolean
+  placement: boolean
+  fairyPieces: boolean
+  picture?: string[]
+  category: BoardSize
+  variant: Variant
   subVariant: SubVariant | 100
 }
 
@@ -30,7 +30,6 @@ export enum Variant {
   ShuuroMiniFairy,
 }
 
-
 export enum SubVariant {
   Standard = 0,
   StandardFairy1 = 1,
@@ -41,32 +40,31 @@ export enum SubVariant {
 export enum BoardSize {
   Mini,
   Standard,
-  Large
+  Large,
 }
 
 export function variantStr(variant: Variant): string {
   switch (variant) {
     case Variant.Shuuro:
-      return "shuuro"
+      return 'shuuro'
     case Variant.ShuuroFairy:
-      return "shuuroFairy"
+      return 'shuuroFairy'
     case Variant.Standard:
-      return "standard"
+      return 'standard'
     case Variant.StandardFairy:
-      return "standardFairy"
+      return 'standardFairy'
     case Variant.ShuuroMini:
-      return "shuuroMini"
+      return 'shuuroMini'
     case Variant.ShuuroMiniFairy:
-      return "shuuroMiniFairy"
-    default: return "shuuro"
+      return 'shuuroMiniFairy'
+    default:
+      return 'shuuro'
   }
-
 }
 
 export const variants: Description[] = [
-
   {
-    name: "mini",
+    name: 'mini',
     points: 200,
     selection: true,
     placement: true,
@@ -74,10 +72,10 @@ export const variants: Description[] = [
     picture: [mini],
     category: BoardSize.Mini,
     variant: Variant.ShuuroMini,
-    subVariant: 100
+    subVariant: 100,
   },
   {
-    name: "fairy",
+    name: 'fairy',
     points: 250,
     selection: true,
     placement: true,
@@ -85,10 +83,10 @@ export const variants: Description[] = [
     picture: [selectionFairy, miniFairy],
     category: BoardSize.Mini,
     variant: Variant.ShuuroMiniFairy,
-    subVariant: 100
+    subVariant: 100,
   },
   {
-    name: "shuuro",
+    name: 'shuuro',
     points: 800,
     selection: true,
     placement: true,
@@ -97,9 +95,10 @@ export const variants: Description[] = [
     category: BoardSize.Large,
     variant: Variant.Shuuro,
 
-    subVariant: 100
-  }, {
-    name: "fairy",
+    subVariant: 100,
+  },
+  {
+    name: 'fairy',
     points: 870,
     selection: true,
     placement: true,
@@ -107,10 +106,10 @@ export const variants: Description[] = [
     picture: [selectionFairy, shuuroLiveFairy],
     category: BoardSize.Large,
     variant: Variant.ShuuroFairy,
-    subVariant: 100
+    subVariant: 100,
   },
   {
-    name: "standard v1",
+    name: 'standard v1',
     points: 350,
     selection: true,
     placement: true,
@@ -118,10 +117,10 @@ export const variants: Description[] = [
     picture: [standardLive],
     category: BoardSize.Standard,
     variant: Variant.Standard,
-    subVariant: 100
+    subVariant: 100,
   },
   {
-    name: "fairy v1",
+    name: 'fairy v1',
     points: 400,
     selection: true,
     placement: true,
@@ -129,10 +128,10 @@ export const variants: Description[] = [
     picture: [selectionFairy, standardFairyLive],
     category: BoardSize.Standard,
     variant: Variant.StandardFairy,
-    subVariant: 100
+    subVariant: 100,
   },
   {
-    name: "standard v2",
+    name: 'standard v2',
     points: 0,
     selection: false,
     placement: false,
@@ -140,10 +139,10 @@ export const variants: Description[] = [
     picture: [standard],
     category: BoardSize.Standard,
     variant: Variant.Standard,
-    subVariant: SubVariant.Standard
+    subVariant: SubVariant.Standard,
   },
   {
-    name: "fairy v2",
+    name: 'fairy v2',
     points: 0,
     selection: false,
     placement: false,
@@ -151,9 +150,10 @@ export const variants: Description[] = [
     picture: [standardFairyLive],
     category: BoardSize.Standard,
     variant: Variant.StandardFairy,
-    subVariant: SubVariant.StandardFairy1
-  }, {
-    name: "fairy v3",
+    subVariant: SubVariant.StandardFairy1,
+  },
+  {
+    name: 'fairy v3',
     points: 0,
     selection: false,
     placement: false,
@@ -161,10 +161,10 @@ export const variants: Description[] = [
     picture: [standardFairyLive],
     category: BoardSize.Standard,
     variant: Variant.StandardFairy,
-    subVariant: SubVariant.StandardFairy2
+    subVariant: SubVariant.StandardFairy2,
   },
   {
-    name: "placement",
+    name: 'placement',
     points: 0,
     selection: false,
     placement: true,
@@ -172,6 +172,6 @@ export const variants: Description[] = [
     picture: [selectionStandard, placementStandard],
     category: BoardSize.Standard,
     variant: Variant.Standard,
-    subVariant: SubVariant.StandardPlacement
-  }
+    subVariant: SubVariant.StandardPlacement,
+  },
 ]

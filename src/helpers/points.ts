@@ -1,4 +1,4 @@
-import { Variant } from "./variantDescription";
+import { Variant } from './variantDescription'
 
 type Piece = {
   piece: string
@@ -14,46 +14,30 @@ export function updateCounter(variant: Variant, price: number[], limit: number[]
     case Variant.Standard:
       price[5] = 10
       limit[5] = 12
-      break;
+      break
     case Variant.StandardFairy:
       price[5] = 10
       limit[5] = 12
-      break;
+      break
     case Variant.ShuuroMini:
       price[5] = 10
       limit[5] = 8
-      break;
+      break
     case Variant.ShuuroMiniFairy:
       price[5] = 10
       limit[5] = 8
-      break;
-    default: undefined
+      break
+    default:
+      undefined
   }
 }
 
+export const pieces = ['k', 'q', 'r', 'b', 'n', 'p', 'c', 'a', 'g']
 
-export const pieces = [
-
-  'k',
-
-  'q',
-
-
-  'r',
-
-  'b',
-
-  'n',
-
-  'p',
-
-  'c',
-  'a',
-
-
-  'g',
-]
-
-export function isFairy(variant: Variant) : boolean {
-  return variant == Variant.ShuuroFairy || variant == Variant.ShuuroMiniFairy || variant == Variant.StandardFairy
+export function isFairy(variant: Variant): boolean {
+  return (
+    variant == Variant.ShuuroFairy ||
+    variant == Variant.ShuuroMiniFairy ||
+    variant == Variant.StandardFairy
+  )
 }

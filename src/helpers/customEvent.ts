@@ -1,4 +1,4 @@
-import type { MessageType } from "./messageType"
+import type { MessageType } from './messageType'
 
 export function ev2<K extends string, T>(
   type: K,
@@ -12,10 +12,9 @@ export function ev2<K extends string, T>(
   return wrapped
 }
 export function rmEv2(listener: (ev: Event) => void) {
-  removeEventListener("wsMessage", listener)
+  removeEventListener('wsMessage', listener)
 }
 
 export interface Event2 extends Event {
   detail: { t: MessageType; d: any }
 }
-
