@@ -1,37 +1,46 @@
-import { ref } from "vue";
-import { anonConfig, liveConfig } from "chessground12/configs";
-import { defineStore } from "pinia";
-import { ShuuroPosition } from "shuuro-wasm";
-import { type Color, type Key } from "chessground12/types";
-import { useWasmStore } from "./useWasmStore";
-import { useClockStore } from "./useClockStore";
-import { useShopStore } from "./useShopStore";
-import { useCgStore } from "./useCgStore";
-import { useAnalyzeStore } from "./useAnalyzeStore";
+import { ref } from 'vue'
+import { anonConfig, liveConfig } from 'chessground12/configs'
+import { defineStore } from 'pinia'
+import { ShuuroPosition } from 'shuuro-wasm'
+import { type Color, type Key } from 'chessground12/types'
+import { useWasmStore } from './useWasmStore'
+import { useClockStore } from './useClockStore'
+import { useShopStore } from './useShopStore'
+import { useCgStore } from './useCgStore'
+import { useAnalyzeStore } from './useAnalyzeStore'
 
-import { useWs } from "../ws";
-import { ConfirmSelection, GameEnd, GetHandServer, MovePiece, OfferDraw, PlaceMove, RedirectToPlacement, StartClock, type GameState, type UserLive } from "@/helpers/wsTypes";
-import { FenBtn, formatSfen } from "@/helpers/fen";
-import { variantStr } from "@/helpers/variantDescription";
-import { playAudio } from "@/helpers/audio";
-import { ev2, rmEv2, type Event2 } from "@/helpers/customEvent";
-import { MessageType } from "@/helpers/messageType";
-import * as v from "valibot"
-import { newTitle } from "@/helpers/backend";
+import { useWs } from '../ws'
+import {
+  ConfirmSelection,
+  GameEnd,
+  GetHandServer,
+  MovePiece,
+  OfferDraw,
+  PlaceMove,
+  RedirectToPlacement,
+  StartClock,
+  type GameState,
+  type UserLive,
+} from '@/helpers/wsTypes'
+import { FenBtn, formatSfen } from '@/helpers/fen'
+import { variantStr } from '@/helpers/variantDescription'
+import { playAudio } from '@/helpers/audio'
+import { ev2, rmEv2, type Event2 } from '@/helpers/customEvent'
+import { MessageType } from '@/helpers/messageType'
+import * as v from 'valibot'
+import { newTitle } from '@/helpers/backend'
 
-
-export const useGameStore = defineStore("useGameStore", () => {
-  const state = ref(emptyGame());
-  const user = ref(defaultClientState());
-  const wasmStore = useWasmStore();
-  const clockStore = useClockStore();
-  const shopStore = useShopStore();
-  const cgStore = useCgStore();
-  const analyzeStore = useAnalyzeStore();
-  const ws = useWs();
+export const useGameStore = defineStore('useGameStore', () => {
+  const state = ref(emptyGame())
+  const user = ref(defaultClientState())
+  const wasmStore = useWasmStore()
+  const clockStore = useClockStore()
+  const shopStore = useShopStore()
+  const cgStore = useCgStore()
+  const analyzeStore = useAnalyzeStore()
+  const ws = useWs()
 
   let listener
-
 
   return {
     state,
@@ -47,61 +56,60 @@ export const useGameStore = defineStore("useGameStore", () => {
       let message
 
       if (detail.t == MessageType.NewPlayer) {
-        this.setPlayer();
+        this.setPlayer()
         return
       }
-      message = v.safeParse(StartClock, detail);
+      message = v.safeParse(StartClock, detail)
       if (message.success) {
         let output = message.output
-        state.value.players = output.players;
-        this.setPlayer();
+        state.value.players = output.players
+        this.setPlayer()
         state.value.tc.last_click = output.click
         clockStore.setLastClock(output.click)
         clockStore.activateClock()
-        shopStore.setHand("").then(() => { })
+        shopStore.setHand('').then(() => {})
         ws.redirectToastOpen = false
-        return;
+        return
       }
 
-      message = v.safeParse(OfferDraw, detail);
+      message = v.safeParse(OfferDraw, detail)
       if (message.success) {
-        let output = message.output;
+        let output = message.output
         user.value.offeredDraw = output.draw_offer
-        return;
+        return
       }
 
-      message = v.safeParse(GameEnd, detail);
+      message = v.safeParse(GameEnd, detail)
       if (message.success) {
-        let output = message.output;
+        let output = message.output
         this.gameEnd({ t: 111, result: output.result, status: output.status })
-        return;
+        return
       }
 
       message = v.safeParse(GetHandServer, detail)
       if (message.success) {
         let output = message.output
-        shopStore.setHand(output.hand).then(() => { })
-        return;
+        shopStore.setHand(output.hand).then(() => {})
+        return
       }
 
-      message = v.safeParse(ConfirmSelection, detail);
+      message = v.safeParse(ConfirmSelection, detail)
       if (message.success) {
-        let output = message.output;
+        let output = message.output
         if (!output.confirmed.includes(false)) {
           clockStore.pauseBoth()
-        }
-        else {
-          let player = output.confirmed.indexOf(true);
+        } else {
+          let player = output.confirmed.indexOf(true)
           clockStore.pause(player)
         }
-        return;
+        return
       }
 
-      message = v.safeParse(RedirectToPlacement, detail);
+      message = v.safeParse(RedirectToPlacement, detail)
       if (message.success) {
-        let output = message.output;
+        let output = message.output
         this.redirectDeploy(output)
-        return;
+        return
       }
 
       message = v.safeParse(PlaceMove, detail)
@@ -120,42 +128,42 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     loaded() {
-      return user.value.server;
+      return user.value.server
     },
 
     player() {
-      return user.value.player;
+      return user.value.player
     },
 
-    playerColor(username?: string): Color | "both" {
-      let player = username ? this.findPlayer(username) : this.player().player;
+    playerColor(username?: string): Color | 'both' {
+      let player = username ? this.findPlayer(username) : this.player().player
       switch (player) {
         case 0:
-          return "white";
+          return 'white'
         case 1:
-          return "black";
+          return 'black'
         default:
           if (analyzeStore.isActive()) {
-            return "both";
+            return 'both'
           }
-          return "none";
+          return 'none'
       }
     },
 
     findPlayer(username: string): number {
-      const index = state.value.players.findIndex((item) => item == username)!;
-      return index;
+      const index = state.value.players.findIndex((item) => item == username)!
+      return index
     },
 
     config() {
       if (this.player().isPlayer && state.value.status < 0) {
         if (this.clientStage() == state.value.current_stage) {
-          return liveConfig;
+          return liveConfig
         }
       } else if (analyzeStore.isActive()) {
-        return liveConfig;
+        return liveConfig
       }
-      return anonConfig;
+      return anonConfig
     },
 
     setConfig() {
@@ -163,24 +171,24 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     clientStage(): Stage {
-      return user.value.clientStage as Stage;
+      return user.value.clientStage as Stage
     },
 
     offeredDraw() {
-      return user.value.offeredDraw;
+      return user.value.offeredDraw
     },
 
     history() {
-      return state.value.history[this.clientStage()];
+      return state.value.history[this.clientStage()]
     },
 
     generateSfenHistory() {
       if (state.value.current_stage < 1) return
-      let history: [string[], string[], string[]] = [[], [], []];
-      let position = new ShuuroPosition(variantStr(state.value.variant));
-      position.change_variant(state.value.variant);
-      position.set_sfen(state.value.placement_start);
-      state.value.placement_start != "" ? history[1].push(state.value.placement_start) : null
+      let history: [string[], string[], string[]] = [[], [], []]
+      let position = new ShuuroPosition(variantStr(state.value.variant))
+      position.change_variant(state.value.variant)
+      position.set_sfen(state.value.placement_start)
+      state.value.placement_start != '' ? history[1].push(state.value.placement_start) : null
       for (let i = 0; i < state.value.history[1].length; i++) {
         let placed = position.place(state.value.history[1][i])
         if (placed != undefined) {
@@ -188,16 +196,16 @@ export const useGameStore = defineStore("useGameStore", () => {
         }
       }
       state.value.history[1] = history[1]
-      position.free();
-      user.value.historyIndex = history[1].length - 1;
+      position.free()
+      user.value.historyIndex = history[1].length - 1
       user.value.generatedSfen = true
 
       if (state.value.current_stage < 2) return
 
-      position = new ShuuroPosition(variantStr(state.value.variant));
-      position.change_variant(state.value.variant);
-      position.set_sfen(state.value.game_start);
-      history[2].push(state.value.game_start);
+      position = new ShuuroPosition(variantStr(state.value.variant))
+      position.change_variant(state.value.variant)
+      position.set_sfen(state.value.game_start)
+      history[2].push(state.value.game_start)
       for (let i = 0; i < state.value.history[2].length; i++) {
         let move = position.make_move(state.value.history[2][i])
         if (move != undefined) {
@@ -206,345 +214,336 @@ export const useGameStore = defineStore("useGameStore", () => {
       }
       position.free()
       state.value.history = history
-      user.value.historyIndex = history[user.value.clientStage].length - 1;
+      user.value.historyIndex = history[user.value.clientStage].length - 1
       user.value.generatedSfen = true
       if (state.value.status > 0) {
-        this.setSfen(wasmStore.state.position!);
+        this.setSfen(wasmStore.state.position!)
       }
     },
 
     rejectDraw() {
-      user.value.offeredDraw = false;
+      user.value.offeredDraw = false
     },
 
     watchCg() {
-      cgStore.watch();
+      cgStore.watch()
     },
 
     unMounted() {
-      this.reset();
+      this.reset()
     },
 
     async fromServer(s: GameState) {
-      user.value.clientStage = s.current_stage as Stage;
-      ws.SEND({ t: MessageType.ChangeRoom, d: `/game/${s._id}` });
-      state.value = s;
-      user.value.server = true;
-      this.setTime(s);
-      clockStore.fromServer(s);
-      this.setPlayer();
-      this.updateHeadTitle();
-      user.value.historyIndex = -1;
-      clockStore.activateClock();
-      await wasmStore.init();
+      user.value.clientStage = s.current_stage as Stage
+      ws.SEND({ t: MessageType.ChangeRoom, d: `/game/${s._id}` })
+      state.value = s
+      user.value.server = true
+      this.setTime(s)
+      clockStore.fromServer(s)
+      this.setPlayer()
+      this.updateHeadTitle()
+      user.value.historyIndex = -1
+      clockStore.activateClock()
+      await wasmStore.init()
       if (s.current_stage == 0) {
-        shopStore.shopInfo();
+        shopStore.shopInfo()
       } else if ([1, 2].includes(s.current_stage)) {
         // this.setSfen(wasmStore.current()!);
         this.watchCg()
       }
-      this.resSound();
+      this.resSound()
       this.generateSfenHistory()
     },
 
     setTime(s: GameState) {
-      state.value.min = s.min / 60000;
-      state.value.incr = s.incr / 1000;
-      state.value.last_clock = new Date(s.tc.last_click).toString();
+      state.value.min = s.min / 60000
+      state.value.incr = s.incr / 1000
+      state.value.last_clock = new Date(s.tc.last_click).toString()
     },
-
 
     currentSfen(): string {
       if (state.value.status > 0) {
-        let sfen = state.value.history.at(this.clientStage())!.at(0);
-        user.value.historyIndex = 0;
+        let sfen = state.value.history.at(this.clientStage())!.at(0)
+        user.value.historyIndex = 0
         if (sfen) {
-          return sfen;
+          return sfen
         }
       }
-      let fen = state.value.sfen.split(" ")
+      let fen = state.value.sfen.split(' ')
       return `${fen[0]} ${fen[1]} ${fen[2]} ${fen[3]}`
     },
 
     addFirstMove(stage?: Stage) {
-      stage = stage ? stage : this.clientStage();
-      const firstItem = stage == 1 ? 0 : -1;
-      const item = state.value.history.at(1)!.at(firstItem);
+      stage = stage ? stage : this.clientStage()
+      const firstItem = stage == 1 ? 0 : -1
+      const item = state.value.history.at(1)!.at(firstItem)
       switch (stage) {
         case 1:
-          if (item == undefined || item == "") {
-            state.value.history[1].unshift(state.value.sfen);
+          if (item == undefined || item == '') {
+            state.value.history[1].unshift(state.value.sfen)
           }
-          break;
+          break
         case 2:
-          const fightItem = state.value.history.at(2)!.at(0);
-          if (fightItem == undefined || fightItem == "") {
-            state.value.history[2].unshift(item!);
+          const fightItem = state.value.history.at(2)!.at(0)
+          if (fightItem == undefined || fightItem == '') {
+            state.value.history[2].unshift(item!)
           }
-          break;
+          break
       }
     },
 
     // start normal clock
     startClock() {
-      const elapsed = clockStore.elapsed();
-      const stm = state.value.side_to_move;
-      const other = clockStore.otherClock(stm);
-      clockStore.setTime(other, state.value.tc.clocks[other]);
-      clockStore.start(stm, state.value.tc.clocks[stm] - elapsed);
-      clockStore.pause(other);
+      const elapsed = clockStore.elapsed()
+      const stm = state.value.side_to_move
+      const other = clockStore.otherClock(stm)
+      clockStore.setTime(other, state.value.tc.clocks[other])
+      clockStore.start(stm, state.value.tc.clocks[stm] - elapsed)
+      clockStore.pause(other)
     },
 
     setPlayer() {
-      let index = state.value.players.findIndex(item => {
+      let index = state.value.players.findIndex((item) => {
         return item == ws.username
-      });
+      })
       if (index != -1) {
-        this.player().player = index;
-        this.player().isPlayer = true;
-        if (index == 1) cgStore.flipBoard();
+        this.player().player = index
+        this.player().isPlayer = true
+        if (index == 1) cgStore.flipBoard()
       }
       if (ws.username.length > 3) {
         user.value.player.resolve(true)
         user.value.historyIndex = -1
       }
-      newTitle(state.value.players[0] + " vs " + state.value.players[1])
+      newTitle(state.value.players[0] + ' vs ' + state.value.players[1])
     },
-
 
     resSound() {
       if (state.value.status <= 0) {
-        this.audio("res");
+        this.audio('res')
       }
     },
 
-
     index() {
-      return user.value.historyIndex;
+      return user.value.historyIndex
     },
 
     newClientStage(stage: Stage) {
-      user.value.clientStage = stage;
+      user.value.clientStage = stage
     },
 
     canPlay(): boolean {
       if (
         state.value.side_to_move == user.value.player.player &&
-        state.value.status < 0 && user.value.historyIndex == this.history().length - 1
-        && user.value.generatedSfen
+        state.value.status < 0 &&
+        user.value.historyIndex == this.history().length - 1 &&
+        user.value.generatedSfen
       ) {
-        return true;
+        return true
       }
-      return false;
+      return false
     },
 
     // legal moves for fight or analyze
     legal_moves(): Map<any, any> {
-      const wasm = analyzeStore.isActive()
-        ? wasmStore.analyze()
-        : wasmStore.current()!;
-      const color = !analyzeStore.isActive()
-        ? wasm.side_to_move()
-        : wasm.side_to_move();
-      const sfen = wasm.generate_sfen().split(" ")[0];
-      if (!sfen.includes("k") || !sfen.includes("K")) {
-        return new Map();
+      const wasm = analyzeStore.isActive() ? wasmStore.analyze() : wasmStore.current()!
+      const color = !analyzeStore.isActive() ? wasm.side_to_move() : wasm.side_to_move()
+      const sfen = wasm.generate_sfen().split(' ')[0]
+      if (!sfen.includes('k') || !sfen.includes('K')) {
+        return new Map()
       } else if (state.value.status < 0 || analyzeStore.isActive()) {
-        const moves = wasm.legal_moves(cgColor2(color));
-        cgStore.new_legal_moves(moves);
-        cgStore.setTurnColor(cgColor(color));
-        return moves;
+        const moves = wasm.legal_moves(cgColor2(color))
+        cgStore.new_legal_moves(moves)
+        cgStore.setTurnColor(cgColor(color))
+        return moves
       }
-      return new Map();
+      return new Map()
     },
 
     wasmMove(game_move: string) {
-      const wasm = wasmStore.current()!;
-      const beforeCount = wasm.pieces_count();
-      const played = wasm.make_move(game_move);
-      if (played == undefined) { return }
+      const wasm = wasmStore.current()!
+      const beforeCount = wasm.pieces_count()
+      const played = wasm.make_move(game_move)
+      if (played == undefined) {
+        return
+      }
 
-      const lastMove = wasm.last_move();
-      const move = game_move.split("_");
-      const newCount = wasm.pieces_count();
+      const lastMove = wasm.last_move()
+      const move = game_move.split('_')
+      const newCount = wasm.pieces_count()
 
-      cgStore.cg()!.move(move[0] as Key, move[1] as Key);
+      cgStore.cg()!.move(move[0] as Key, move[1] as Key)
       if (newCount != beforeCount) {
-        this.audio("capture");
+        this.audio('capture')
       } else {
-        this.audio("move");
+        this.audio('move')
       }
-      if (lastMove.includes("=")) {
-        cgStore.setPieces(cgStore.cg()!, wasm);
+      if (lastMove.includes('=')) {
+        cgStore.setPieces(cgStore.cg()!, wasm)
       }
-      cgStore.setTurnColor();
-      cgStore.setCheck();
-      clockStore.switchClock();
-      if (!analyzeStore.isActive()) this.addMove(2, lastMove);
-      this.scrollToBottom();
-      user.value.historyIndex += 1;
-      cgStore.cg()!.state.dom.redraw();
-      this.legal_moves();
-      this.playPremove();
-      cgStore.others.last_move = game_move;
-
+      cgStore.setTurnColor()
+      cgStore.setCheck()
+      clockStore.switchClock()
+      if (!analyzeStore.isActive()) this.addMove(2, lastMove)
+      this.scrollToBottom()
+      user.value.historyIndex += 1
+      cgStore.cg()!.state.dom.redraw()
+      this.legal_moves()
+      this.playPremove()
+      cgStore.others.last_move = game_move
     },
 
     playPremove() {
       if (cgStore.others.premoveData.active && this.canPlay()) {
-        cgStore.cg()?.playPremove();
-        cgStore.others.premoveData.active = false;
+        cgStore.cg()?.playPremove()
+        cgStore.others.premoveData.active = false
       }
     },
 
     scrollToBottom(): void {
-      const container = document.querySelector("#movelist");
+      const container = document.querySelector('#movelist')
       container!.scrollTop = container!.scrollHeight
     },
 
     addMove(h: 0 | 1 | 2, move: string) {
-      state.value.history[h].push(move);
+      state.value.history[h].push(move)
     },
 
     addMoves(h: 0 | 1 | 2, moves: string[]) {
-      state.value.history[h] = moves;
+      state.value.history[h] = moves
     },
 
     reset() {
-      state.value = emptyGame();
-      user.value = defaultClientState();
-      cgStore.reset();
-      shopStore.reset();
-      wasmStore.reset();
-      clockStore.reset();
-      analyzeStore.reset();
+      state.value = emptyGame()
+      user.value = defaultClientState()
+      cgStore.reset()
+      shopStore.reset()
+      wasmStore.reset()
+      clockStore.reset()
+      analyzeStore.reset()
     },
 
     tempPosition(sfen?: string) {
-      let history = this.history();
-      sfen = sfen == undefined ? history.at(user.value.historyIndex) : sfen;
-      if (sfen == undefined) return;
-      const position = new ShuuroPosition(variantStr(state.value.variant));
-      position.change_variant(state.value.variant);
-      let formatted = formatSfen(sfen!, true);
-      position.set_sfen(formatted.sfen);
-      cgStore.setPieces(cgStore.cg()!, position, true);
-      cgStore.setTurnColor((position.side_to_move()));
-      cgStore.setCheck(cgStore.cg(), position);
-      const sound = formatted.capture ? "capture" : "move";
-      this.audio(sound);
-      this.clientStage() == 1
-        ? cgStore.readPocket(cgStore.cg(), position)
-        : null;
+      let history = this.history()
+      sfen = sfen == undefined ? history.at(user.value.historyIndex) : sfen
+      if (sfen == undefined) return
+      const position = new ShuuroPosition(variantStr(state.value.variant))
+      position.change_variant(state.value.variant)
+      let formatted = formatSfen(sfen!, true)
+      position.set_sfen(formatted.sfen)
+      cgStore.setPieces(cgStore.cg()!, position, true)
+      cgStore.setTurnColor(position.side_to_move())
+      cgStore.setCheck(cgStore.cg(), position)
+      const sound = formatted.capture ? 'capture' : 'move'
+      this.audio(sound)
+      this.clientStage() == 1 ? cgStore.readPocket(cgStore.cg(), position) : null
 
       if (analyzeStore.isActive()) {
-        wasmStore.state.position = position;
-        this.legal_moves();
+        wasmStore.state.position = position
+        this.legal_moves()
       }
 
-      !analyzeStore.isActive() ? position.free() : null;
+      !analyzeStore.isActive() ? position.free() : null
       if (formatted.game_move) {
-        let isPlacement = formatted.game_move.includes("@")
-        const parts = formatted.game_move.split(isPlacement ? "@" : "_");
-        const from = parts[0];
-        const to = parts[1];
-        cgStore.cg()?.setLastMove(from, to);
+        let isPlacement = formatted.game_move.includes('@')
+        const parts = formatted.game_move.split(isPlacement ? '@' : '_')
+        const from = parts[0]
+        const to = parts[1]
+        cgStore.cg()?.setLastMove(from, to)
       } else {
-        cgStore.cg()!.state.lastMove! = [];
+        cgStore.cg()!.state.lastMove! = []
       }
     },
 
     findFen(fenBtn: FenBtn) {
-      const len = state.value.history[this.clientStage()].length;
-      const previous = user.value.historyIndex;
+      const len = state.value.history[this.clientStage()].length
+      const previous = user.value.historyIndex
       switch (fenBtn) {
         case FenBtn.First:
-          user.value.historyIndex = 0;
-          break;
+          user.value.historyIndex = 0
+          break
         case FenBtn.Previous:
-          user.value.historyIndex -= 1;
-          break;
+          user.value.historyIndex -= 1
+          break
         case FenBtn.Next:
-          user.value.historyIndex += 1;
-          break;
+          user.value.historyIndex += 1
+          break
         case FenBtn.Last:
-          user.value.historyIndex =
-            state.value.current_stage == 0 ? len - 2 : len - 1;
-          break;
+          user.value.historyIndex = state.value.current_stage == 0 ? len - 2 : len - 1
+          break
       }
       if (user.value.historyIndex <= 0) {
-        user.value.historyIndex = 0;
+        user.value.historyIndex = 0
       } else if (user.value.historyIndex >= len - 1) {
-        user.value.historyIndex = len - 1;
-        fenBtn = FenBtn.Last;
+        user.value.historyIndex = len - 1
+        fenBtn = FenBtn.Last
       }
       if (fenBtn != FenBtn.Last) {
         cgStore.new_legal_moves(new Map())
       }
-      if (user.value.clientStage == 0) return;
-      else if (previous == user.value.historyIndex) return;
-      this.tempPosition();
-      cgStore.enableMovable(fenBtn);
+      if (user.value.clientStage == 0) return
+      else if (previous == user.value.historyIndex) return
+      this.tempPosition()
+      cgStore.enableMovable(fenBtn)
     },
 
     isLiveSfen(sfen: string): boolean {
       if (state.value.status < 0) {
-        let historySfen = state.value.history[state.value.current_stage].at(-1);
+        let historySfen = state.value.history[state.value.current_stage].at(-1)
         if (historySfen == sfen) {
-          return true;
+          return true
         }
       }
-      return false;
+      return false
     },
 
     isIndexLive(stage: Stage): boolean {
-      return user.value.historyIndex == state.value.history[stage].length - 1;
+      return user.value.historyIndex == state.value.history[stage].length - 1
     },
 
     serverPlace(msg: PlaceMove) {
-      if (!this.isIndexLive(1)) this.findFen(FenBtn.Last);
-      cgStore.wasmPlace(msg.sfen, true);
-      clockStore.fromMove(msg.clocks);
+      if (!this.isIndexLive(1)) this.findFen(FenBtn.Last)
+      cgStore.wasmPlace(msg.sfen, true)
+      clockStore.fromMove(msg.clocks)
 
       if (msg.next_stage) {
         user.value.generatedSfen = true
-        state.value.current_stage = 2;
-        user.value.clientStage = 2;
-        state.value.tc.last_click = new Date().toString();
-        clockStore.state.last_clock = new Date().toString();
-        this.audio("res");
-        this.addFirstMove(2);
+        state.value.current_stage = 2
+        user.value.clientStage = 2
+        state.value.tc.last_click = new Date().toString()
+        clockStore.state.last_clock = new Date().toString()
+        this.audio('res')
+        this.addFirstMove(2)
         this.setSfen(wasmStore.current()!)
 
-        cgStore.enablePremove();
-        cgStore.state.cg!.state.events!.select = cgStore.selectSq;
-        cgStore.state.cg!.state.movable.events.after = cgStore.afterMove;
-        cgStore.state.cg!.state.movable.color = this.playerColor();
-
+        cgStore.enablePremove()
+        cgStore.state.cg!.state.events!.select = cgStore.selectSq
+        cgStore.state.cg!.state.movable.events.after = cgStore.afterMove
+        cgStore.state.cg!.state.movable.color = this.playerColor()
       }
       if (msg.first_move_error) {
         setTimeout(() => {
-          this.audio("res");
-          clockStore.pauseBoth();
-          state.value.status = 1;
-          state.value.result = state.value.side_to_move;
-          cgStore.cg()!.set(anonConfig);
-        }, 500);
+          this.audio('res')
+          clockStore.pauseBoth()
+          state.value.status = 1
+          state.value.result = state.value.side_to_move
+          cgStore.cg()!.set(anonConfig)
+        }, 500)
       }
     },
 
     serverMove(msg: MovePiece) {
-      if (!this.isIndexLive(2)) this.findFen(FenBtn.Last);
-      this.newClientStage(2);
-      this.wasmMove(msg.game_move);
-      clockStore.fromMove(msg.clocks);
+      if (!this.isIndexLive(2)) this.findFen(FenBtn.Last)
+      this.newClientStage(2)
+      this.wasmMove(msg.game_move)
+      clockStore.fromMove(msg.clocks)
       if (msg.status > 0) {
-        this.audio("res");
-        clockStore.pauseBoth();
-        state.value.status = msg.status;
-        state.value.result = msg.result;
-        this.scrollToBottom();
-        cgStore.cg()?.set(anonConfig);
+        this.audio('res')
+        clockStore.pauseBoth()
+        state.value.status = msg.status
+        state.value.result = msg.result
+        this.scrollToBottom()
+        cgStore.cg()?.set(anonConfig)
       }
     },
 
@@ -558,131 +557,129 @@ export const useGameStore = defineStore("useGameStore", () => {
     },
 
     gameEnd(obj: GameEnd) {
-      this.audio("res");
-      clockStore.pauseBoth();
-      state.value.status = obj.status;
-      state.value.result = obj.result;
-      user.value.offeredDraw = false;
-      this.scrollToBottom();
-      if (this.clientStage() != 0) cgStore.cg()?.set(anonConfig);
+      this.audio('res')
+      clockStore.pauseBoth()
+      state.value.status = obj.status
+      state.value.result = obj.result
+      user.value.offeredDraw = false
+      this.scrollToBottom()
+      if (this.clientStage() != 0) cgStore.cg()?.set(anonConfig)
       cgStore.new_legal_moves(new Map())
     },
 
     redirectDeploy(s: RedirectToPlacement) {
-      clockStore.state.last_clock = new Date().toString();
-      state.value.sfen = s.sfen;
-      state.value.side_to_move = 0;
-      clockStore.start(state.value.side_to_move);
-      state.value.current_stage = 1;
-      user.value.clientStage = 1;
-      user.value.historyIndex = 0;
+      clockStore.state.last_clock = new Date().toString()
+      state.value.sfen = s.sfen
+      state.value.side_to_move = 0
+      clockStore.start(state.value.side_to_move)
+      state.value.current_stage = 1
+      user.value.clientStage = 1
+      user.value.historyIndex = 0
       user.value.generatedSfen = true
-      this.audio("res");
-      this.addFirstMove(1);
+      this.audio('res')
+      this.addFirstMove(1)
     },
 
     setSfen(position: ShuuroPosition) {
-      const sfen = this.currentSfen();
+      const sfen = this.currentSfen()
       // const sfen = this.currentSfen().replace("   ", " ");
       position.set_sfen(sfen)
 
-      this.clientStage() == 1 ? cgStore.readPocket() : null;
-      cgStore.setPieces(cgStore.cg()!, position);
-      cgStore.setPlinths(cgStore.cg()!, position);
-      cgStore.setTurnColor();
-      cgStore.setCheck();
-      this.lastMoveIndex(this.clientStage());
-      this.clientStage() == 2 ? this.legal_moves() : null;
+      this.clientStage() == 1 ? cgStore.readPocket() : null
+      cgStore.setPieces(cgStore.cg()!, position)
+      cgStore.setPlinths(cgStore.cg()!, position)
+      cgStore.setTurnColor()
+      cgStore.setCheck()
+      this.lastMoveIndex(this.clientStage())
+      this.clientStage() == 2 ? this.legal_moves() : null
     },
 
     lastMoveIndex(stage: number) {
       if (state.value.status < 0) {
-        user.value.historyIndex = state.value.history[stage].length - 1;
+        user.value.historyIndex = state.value.history[stage].length - 1
       } else {
-        user.value.historyIndex = 0;
+        user.value.historyIndex = 0
       }
     },
 
-
     audio(s: string) {
-      playAudio(s, "100");
+      playAudio(s, '100')
     },
 
-    updateHeadTitle() { },
-
-  };
-});
+    updateHeadTitle() {},
+  }
+})
 
 function emptyGame(): GameState {
   return {
-    _id: "",
+    _id: '',
     min: 0,
     incr: 0,
-    players: ["", ""],
+    players: ['', ''],
     status: 0,
     side_to_move: 0,
-    last_clock: { $date: { $numberLong: "" } },
+    last_clock: { $date: { $numberLong: '' } },
     current_stage: 0,
     result: 2,
     variant: 0,
     credits: [800, 800],
-    hands: ["", ""],
-    sfen: "",
+    hands: ['', ''],
+    sfen: '',
     history: [[], [], []],
     tc: {
-      last_click: "",
+      last_click: '',
       clocks: [0, 0],
     },
     sub_variant: 100,
-    game_start: "",
-    placement_start: ""
-  };
+    game_start: '',
+    placement_start: '',
+  }
 }
 
 function defaultClientState(): ClientState {
-  let resolve = (_: boolean) => { return }
-  let loaded: Promise<boolean> = new Promise(v => {
+  let resolve = (_: boolean) => {
+    return
+  }
+  let loaded: Promise<boolean> = new Promise((v) => {
     resolve = v
-  });
+  })
   let state: ClientState = {
     offeredDraw: false,
     server: false,
     player: { isPlayer: false, player: 2, loaded, resolve },
     clientStage: 0,
     historyIndex: 0,
-    generatedSfen: false
-  };
+    generatedSfen: false,
+  }
   return state
 }
 
 type ClientState = {
-  offeredDraw: boolean;
-  server: boolean;
-  player: UserLive;
-  clientStage: Stage;
-  historyIndex: number;
-  generatedSfen: boolean;
-};
+  offeredDraw: boolean
+  server: boolean
+  player: UserLive
+  clientStage: Stage
+  historyIndex: number
+  generatedSfen: boolean
+}
 
-export type Stage = 0 | 1 | 2;
-export type Player = 0 | 1 | 2;
-export type PlayStr = "white" | "black" | "none" | "both";
+export type Stage = 0 | 1 | 2
+export type Player = 0 | 1 | 2
+export type PlayStr = 'white' | 'black' | 'none' | 'both'
 
 function cgColor(color: string) {
-
-  if (color == "w") {
-    return "white";
-  } else if (color == "b") {
-    return "black";
+  if (color == 'w') {
+    return 'white'
+  } else if (color == 'b') {
+    return 'black'
   }
-  "none"
+  ;('none')
 }
 function cgColor2(color: string) {
-
-  if (color == "w") {
-    return 0;
-  } else if (color == "b") {
-    return 1;
+  if (color == 'w') {
+    return 0
+  } else if (color == 'b') {
+    return 1
   }
   return 2
 }

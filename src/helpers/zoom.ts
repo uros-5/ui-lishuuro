@@ -1,16 +1,14 @@
-import { ntw } from "@/not-tailwind"
-import { useGameSettings } from "@/stores/gameSettings"
-import type { Elements, MouchEvent } from "chessground12/types"
-import { eventPosition } from "chessground12/util"
-
+import { ntw } from '@/not-tailwind'
+import { useGameSettings } from '@/stores/gameSettings'
+import type { Elements, MouchEvent } from 'chessground12/types'
+import { eventPosition } from 'chessground12/util'
 
 export function zoom(elements: Elements) {
-
   const el = document.createElement('cg-resize')
   elements.container.appendChild(el)
 
   const zoomVar = ntw.get('--zoom')
-  const settings = useGameSettings();
+  const settings = useGameSettings()
   document.body.style.setProperty(zoomVar, `${settings.zoom}`)
 
   const startResize = (start: MouchEvent) => {
@@ -19,7 +17,7 @@ export function zoom(elements: Elements) {
     const mousemoveEvent = start.type === 'touchstart' ? 'touchmove' : 'mousemove',
       mouseupEvent = start.type === 'touchstart' ? 'touchend' : 'mouseup',
       startPos = eventPosition(start)!
-    let initialZoom = settings.zoom;
+    let initialZoom = settings.zoom
 
     const resize = (move: MouchEvent) => {
       const pos = eventPosition(move)!,
@@ -28,7 +26,6 @@ export function zoom(elements: Elements) {
       let zoom = Math.round(Math.min(100, Math.max(0, initialZoom + delta / 10)))
 
       document.body.style.setProperty(zoomVar, `${zoom}`)
-
 
       document.body.classList.add('resizing')
     }
@@ -47,5 +44,4 @@ export function zoom(elements: Elements) {
 
   el.addEventListener('touchstart', startResize, { passive: false })
   el.addEventListener('mousedown', startResize, { passive: false })
-
 }

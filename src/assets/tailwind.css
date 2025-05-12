@@ -1,74 +1,74 @@
-@import "tailwindcss";
-
+@import 'tailwindcss';
 
 @font-face {
-  font-family: "Ubuntu Regular";
+  font-family: 'Ubuntu Regular';
   font-style: normal;
   font-weight: 200 700;
   font-display: swap;
-  src: url("/fonts/Ubuntu/Ubuntu-Regular.ttf");
+  src: url('/fonts/Ubuntu/Ubuntu-Regular.ttf');
 }
 
 @font-face {
-  font-family: "Ubuntu Regular Bold";
+  font-family: 'Ubuntu Regular Bold';
   font-style: normal;
   font-weight: 200 700;
   font-display: swap;
-  src: url("/fonts/Ubuntu/Ubuntu-Bold.ttf");
+  src: url('/fonts/Ubuntu/Ubuntu-Bold.ttf');
 }
 
 @font-face {
-  font-family: "Josefin Sans";
+  font-family: 'Josefin Sans';
   font-style: normal;
   font-weight: 200 700;
   font-display: swap;
-  src: url("/fonts/Josefin_Sans/static/JosefinSans-Medium.ttf");
+  src: url('/fonts/Josefin_Sans/static/JosefinSans-Medium.ttf');
 }
 
 @font-face {
-  font-family: "TitilliumWebBold";
+  font-family: 'TitilliumWebBold';
   font-style: normal;
   font-weight: 200 700;
   font-display: swap;
-  src: url("/fonts/Titillium/TitilliumWeb-Bold.ttf");
-}
-
-
-@font-face {
-  font-family: "TitilliumWeb";
-  font-style: normal;
-  font-weight: 200 700;
-  font-display: swap;
-  src: url("/fonts/Titillium/TitilliumWeb-Light.ttf");
+  src: url('/fonts/Titillium/TitilliumWeb-Bold.ttf');
 }
 
 @font-face {
-  font-family: "lichess";
+  font-family: 'TitilliumWeb';
   font-style: normal;
   font-weight: 200 700;
   font-display: swap;
-  src: url("/fonts/lichess.woff2");
+  src: url('/fonts/Titillium/TitilliumWeb-Light.ttf');
+}
+
+@font-face {
+  font-family: 'lichess';
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url('/fonts/lichess.woff2');
 }
 
 @font-face {
   font-display: block;
-  font-family: "lishuuro";
+  font-family: 'lishuuro';
   font-style: normal;
   font-weight: 400;
-  src: url("/fonts/lishuuro.eot?xhveaq");
-  src: url("/fonts/lishuuro.eot?xhveaq#iefix") format("embedded-opentype"), url("/fonts/lishuuro.ttf?xhveaq") format("truetype"), url("/fonts/lishuuro.woff?xhveaq") format("woff"), url("/fonts/lishuuro.svg?xhveaq#lishuuro") format("svg")
+  src: url('/fonts/lishuuro.eot?xhveaq');
+  src:
+    url('/fonts/lishuuro.eot?xhveaq#iefix') format('embedded-opentype'),
+    url('/fonts/lishuuro.ttf?xhveaq') format('truetype'),
+    url('/fonts/lishuuro.woff?xhveaq') format('woff'),
+    url('/fonts/lishuuro.svg?xhveaq#lishuuro') format('svg');
 }
 
 @theme {
-
-  --font-sec: "Ubuntu Regular";
-  --font-main: "TitilliumWeb";
-  --font-lichess: "lichess";
-  --font-sec-bold: "Ubuntu Regular Bold";
-  --font-main-bold: "TitilliumWebBold";
-  --font-lishuuro: "lishuuro";
+  --font-sec: 'Ubuntu Regular';
+  --font-main: 'TitilliumWeb';
+  --font-lichess: 'lichess';
+  --font-sec-bold: 'Ubuntu Regular Bold';
+  --font-main-bold: 'TitilliumWebBold';
+  --font-lishuuro: 'lishuuro';
   --breakpoint-mdd: 54rem;
-
 
   --color-main-50: #fefaec;
   --color-main-100: #fcefc9;
@@ -94,8 +94,6 @@
   --color-sec-900: #801c1c;
   --color-sec-950: #460909;
 
-
-
   /* --color-copper-rust-50: #fbf5f5; */
   /* --color-copper-rust-100: #f7edec; */
   /* --color-copper-rust-200: #efdcdc; */
@@ -109,43 +107,47 @@
   /* --color-copper-rust-950: #361b1f; */
 }
 
-
-body[data-page="home"],
-body[data-page="profile"],
-body[data-page="tv"],
-body[data-page="rules"]
- {
+body[data-page='home'],
+body[data-page='profile'],
+body[data-page='tv'],
+body[data-page='rules'] {
   --main-max-width: 1400px !important;
 }
 
-
-body[data-page="game"] {
+body[data-page='game'] {
   --main-max-width: auto;
-  --board-scale: calc((var(--zoom,100) / 100) * 0.75 + 0.25);
+  --board-scale: calc((var(--zoom, 100) / 100) * 0.75 + 0.25);
 }
 
-body[data-page="game"] #main-wrap {
+body[data-page='game'] #main-wrap {
   /* --empty-item-height: 0vh; */
   /* --header-height: 0px; */
   /* --clock-height: 0px; */
   /* --placement-height: 0px; */
-	--main-max-width: calc(100vh - calc(var(--header-height, 0px) + var(--clock-height, 0px) + 1.75rem + var(--empty-item-height, 0px) + var(--placement-height, 0px)));
-	/* --board-scale: 1; */
+  --main-max-width: calc(
+    100vh -
+      calc(
+        var(--header-height, 0px) + var(--clock-height, 0px) + 1.75rem +
+          var(--empty-item-height, 0px) + var(--placement-height, 0px)
+      )
+  );
+  /* --board-scale: 1; */
 }
-@media(min-width: 640px) and (orientation: landscape) {
+@media (min-width: 640px) and (orientation: landscape) {
   #main-wrap {
-   --empty-item-height: 7vh; 
+    --empty-item-height: 7vh;
   }
 }
 
 @media (max-width: 799.29px) and (orientation: landscape) {
   #main-wrap {
-    --main-content: calc( 100vh - calc(var(--header-height, 10px) + var(---site-header-margin, 8px) + 1.75rem) + 100px + 4em + var(--placement-height)  );
-   --empty-item-height: 7vh; 
-    
+    --main-content: calc(
+      100vh - calc(var(--header-height, 10px) + var(---site-header-margin, 8px) + 1.75rem) + 100px +
+        4em + var(--placement-height)
+    );
+    --empty-item-height: 7vh;
   }
 }
-
 
 input[type='range']::-webkit-slider-runnable-track {
   background: var(--color-main-300);
@@ -188,9 +190,6 @@ input[type='range']::-moz-range-thumb {
   width: 1.5rem;
 }
 
-
-
-
 #app ::-webkit-scrollbar {
   width: 10px;
 }
@@ -222,16 +221,15 @@ input[type='range']::-moz-range-thumb {
     background: var(--color-main-950);
   }
 
-
   @supports (-moz-appearance: none) {
-    #app>* {
+    #app > * {
       scrollbar-color: var(--color-main-200) var(--color-main-300);
       scrollbar-width: thin;
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    #app>* {
+    #app > * {
       scrollbar-color: var(--color-main-700) var(--color-main-950);
       scrollbar-width: thin;
     }

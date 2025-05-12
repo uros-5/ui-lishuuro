@@ -1,7 +1,7 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-import { ntw } from "@/not-tailwind";
+import { ntw } from '@/not-tailwind'
 
 export const useMaxWidthStore = defineStore('maxwidth', () => {
   const header = ref<HTMLElement>()
@@ -13,16 +13,24 @@ export const useMaxWidthStore = defineStore('maxwidth', () => {
   const clockHeight = ntw.get('--clock-height')
   const placementHeight = ntw.get('--placement-height')
 
-
   function resize() {
     if (header.value) {
-      document.body.style.setProperty(headerHeight, `${header.value.getBoundingClientRect().height}px`)
+      document.body.style.setProperty(
+        headerHeight,
+        `${header.value.getBoundingClientRect().height}px`,
+      )
     }
     if (clock.value) {
-      document.body.style.setProperty(clockHeight, `${clock.value.getBoundingClientRect().height}px`)
+      document.body.style.setProperty(
+        clockHeight,
+        `${clock.value.getBoundingClientRect().height}px`,
+      )
     }
     if (placement.value) {
-      document.body.style.setProperty(placementHeight, `${placement.value.getBoundingClientRect().height}px`)
+      document.body.style.setProperty(
+        placementHeight,
+        `${placement.value.getBoundingClientRect().height}px`,
+      )
     }
     // if(firstItem.value) {
     //   document.body.style.setPropertyy('--empty-item-height',`${firstItem.value.getBoundingClientRect().height}px`)
