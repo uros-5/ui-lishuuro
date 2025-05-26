@@ -24,8 +24,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3))
       shuuro-wasm:
-        specifier: ^0.8.4
-        version: 0.8.4
+        specifier: ^0.8.8
+        version: 0.8.8
       valibot:
         specifier: ^1.0.0
         version: 1.0.0(typescript@5.8.3)
@@ -1709,8 +1709,8 @@ packages:
     resolution: {integrity: sha512-AzqKpGKjrj7EM6rKVQEPpB288oCfnrEIuyoT9cyF4nmGa7V8Zk6f7RRqYisX8X9m+Q7bd632aZW4ky7EhbQztA==}
     engines: {node: '>= 0.4'}
 
-  shuuro-wasm@0.8.4:
-    resolution: {integrity: sha512-8LOEsatyXA2m1U2WDHQVvlZghVcwGuZsy84GBF8gGL5zZDXlxolzqiH+qP7n5TiNkZjiW2hOIc7nKu01kGH/yg==}
+  shuuro-wasm@0.8.8:
+    resolution: {integrity: sha512-pL5SePTHo2uAaldiPZ90ohSqH3/dq2pEeGdu1CTcADVkuzmiAanxvT9+U/ykbF/adSfthrjX1g8vk2RsVq4kEQ==}
 
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
@@ -3528,7 +3528,7 @@ snapshots:
 
   shell-quote@1.8.2: {}
 
-  shuuro-wasm@0.8.4: {}
+  shuuro-wasm@0.8.8: {}
 
   signal-exit@4.1.0: {}
 

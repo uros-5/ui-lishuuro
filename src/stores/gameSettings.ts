@@ -42,8 +42,11 @@ type Schema = v.InferOutput<typeof schema>
 function defaultSettings(): Schema {
   const board = localStorage.getItem('board')
   const piece = localStorage.getItem('piece')
-  const zoom = Number(localStorage.getItem('zoom'))
+  let zoom = Number(localStorage.getItem('zoom'))
   const sound = Number(localStorage.getItem('sound'))
+  if (zoom == 0) {
+    zoom = 100
+  }
   const obj = v.safeParse(schema, {
     board,
     sound,

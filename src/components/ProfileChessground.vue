@@ -37,6 +37,7 @@ onMounted(() => {
   }
   let cg = tvCg(root.value, meta)
   cg.state.drawable.enabled = false
+  cg.state.coordinates = false
   meta.cg = cg
   tempPosition(meta)
 })

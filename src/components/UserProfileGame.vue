@@ -55,7 +55,7 @@ function result() {
 <template>
   <RouterLink
     :to="`/game/${props.game._id}`"
-    class="grid grid-cols-2 lg:col-start-2 lg:col-end-3 sm:gap-3 sm:grid-cols-[auto_1fr] lg:grid-cols-[auto_1fr] sm:grid-rows-[300px_auto] lg:grid-rows-[256px_auto] inset-ring-teal-50 shadow shadow-main-500 dark:shadow-main-700 font-sec bg-linear-to-r from-main-400/50 dark:from-main-700 to-60% to-main-200/80 dark:to-main-800/70 hover:cursor-pointer hover:bg-main-400/90 hover:dark:bg-main-700 hover:scale-105 transition-[background_transform] duration-400 rounded sm:p-3 lg:p-6"
+    class="grid grid-cols-2 lg:col-start-2 lg:col-end-3 sm:gap-3 sm:grid-cols-[auto_1fr] lg:grid-cols-[auto_1fr] sm:grid-rows-[300px_auto] lg:grid-rows-[256px_auto] inset-ring-teal-50 shadow shadow-main-500 dark:shadow-main-700 font-sec bg-linear-to-r from-main-400/50 dark:from-main-700 to-60% to-main-200/80 dark:to-main-800/70 hover:cursor-pointer hover:bg-main-400/90 hover:dark:bg-main-700 hover:scale-101 transition-[background_transform] duration-400 rounded sm:p-3 lg:p-6"
   >
     <ProfileChessground :game="props.game" />
     <div
