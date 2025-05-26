@@ -1,4 +1,6 @@
 
+# minimize tailwind classes
+
 # get tailwind file
 npm run build
 tailwindfile=$(fd --search-path=dist "tailwind.*\.css" --exec echo)	

@@ -26,6 +26,7 @@ export function zoom(elements: Elements) {
       let zoom = Math.round(Math.min(100, Math.max(0, initialZoom + delta / 10)))
 
       document.body.style.setProperty(zoomVar, `${zoom}`)
+      localStorage.setItem('zoom', `${zoom}`)
 
       document.body.classList.add('resizing')
     }

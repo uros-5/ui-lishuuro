@@ -6,10 +6,8 @@
   "scripts": {
     "dev": "vite --host",
     "build": "run-p type-check \"build-only {@}\" --",
-    "build2": "run-p type-check \"build-only2 {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "build-only2": "vite build --config vite.config.ntw.ts",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
     "format": "prettier --write src/"
@@ -20,7 +18,7 @@
     "js-cookie": "^3.0.5",
     "pinia": "^3.0.1",
     "reka-ui": "^2.2.0",
-    "shuuro-wasm": "^0.8.4",
+    "shuuro-wasm": "^0.8.8",
     "valibot": "^1.0.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"

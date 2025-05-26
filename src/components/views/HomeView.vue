@@ -280,8 +280,10 @@ onUnmounted(() => {
     <div
       class="row-span-1 md:row-start-4 md:row-end-4 col-start-1 col-end-2 sm:col-start-2 md:col-start-3 md:col-end-4 flex justify-around gap-5 items-center text-main-950 dark:text-main-100 font-sec md:text-lg"
     >
-      <RouterLink to="" class="shadow shadow-main-200 dark:shadow-main-700 px-3" href=""
-        >Improve servers and source code</RouterLink
+      <a
+        href="https://github.com/uros-5/lishuuro"
+        class="shadow shadow-main-200 dark:shadow-main-700 px-3"
+        >Improve servers and source code</a
       >
     </div>
 
