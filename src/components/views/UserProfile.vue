@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import router from '@/router'
 import { GET } from '@/helpers/fetch'
-import * as z from 'valibot'
+import * as v from 'valibot'
 import { GameState, UserProfileGames } from '@/helpers/wsTypes'
 import { newTitle } from '@/helpers/backend'
 import UserProfileGame from '../UserProfileGame.vue'
@@ -36,7 +36,7 @@ function handleScroll() {
 async function newGames(page: number) {
   let req = await GET(`/vue/@/${route.params.id}/${page}`)
   if (req.statusCode.value != 200) return
-  let response = z.safeParse(UserProfileGames, JSON.parse(req.data.value as string))
+  let response = v.safeParse(UserProfileGames, JSON.parse(req.data.value as string))
   if (!response.success) {
     router.push('/')
     return

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
-import * as z from 'valibot'
+import * as v from 'valibot'
 import Clock from '../Clock.vue'
 import ChessgroundView from '../ChessgroundView.vue'
 import FinishGameButtons from '../FinishGameButtons.vue'
@@ -82,7 +82,7 @@ onMounted(async () => {
   let state = gameProps()
   if (state == undefined || state == false) {
     let state = await GET(`/vue/game/${gameId}`)
-    let newstate = z.safeParse(GameState, JSON.parse(state.data.value as string))
+    let newstate = v.safeParse(GameState, JSON.parse(state.data.value as string))
     if (!newstate.success) {
       router.push('/')
       return

@@ -1,150 +1,150 @@
-import * as z from 'valibot'
+import * as v from 'valibot'
 import { MessageType } from './messageType'
 
-export const PlayerCount = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.PlayerCount)),
-  count: z.number(),
+export const PlayerCount = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.PlayerCount)),
+  count: v.number(),
 })
 
-export const GameCount = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.GameCount)),
-  count: z.number(),
+export const GameCount = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.GameCount)),
+  count: v.number(),
 })
 
-export type GameCount = z.InferOutput<typeof GameCount>
+export type GameCount = v.InferOutput<typeof GameCount>
 
-export const RedirectToGame = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.RedirectToGame)),
-  game: z.string(),
+export const RedirectToGame = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.RedirectToGame)),
+  game: v.string(),
 })
 
-export const GetHandServer = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.GetHand)),
-  hand: z.string(),
+export const GetHandServer = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.GetHand)),
+  hand: v.string(),
 })
 
-export type GetHandServer = z.InferInput<typeof GetHandServer>
+export type GetHandServer = v.InferInput<typeof GetHandServer>
 
-export const GameState = z.object({
-  _id: z.string(),
-  min: z.number(),
-  incr: z.number(),
-  players: z.tuple([z.string(), z.string()]),
-  side_to_move: z.number(),
-  last_clock: z.any(),
-  current_stage: z.pipe(z.number(), z.minValue(0), z.maxValue(3)),
-  result: z.number(),
-  status: z.number(),
-  variant: z.number(),
-  credits: z.tuple([z.number(), z.number()]),
-  hands: z.tuple([z.string(), z.string()]),
-  sfen: z.string(),
-  history: z.tuple([z.array(z.string()), z.array(z.string()), z.array(z.string())]),
-  tc: z.object({
-    last_click: z.string(),
-    clocks: z.tuple([z.number(), z.number()]),
+export const GameState = v.object({
+  _id: v.string(),
+  min: v.number(),
+  incr: v.number(),
+  players: v.tuple([v.string(), v.string()]),
+  side_to_move: v.number(),
+  last_clock: v.any(),
+  current_stage: v.pipe(v.number(), v.minValue(0), v.maxValue(3)),
+  result: v.number(),
+  status: v.number(),
+  variant: v.number(),
+  credits: v.tuple([v.number(), v.number()]),
+  hands: v.tuple([v.string(), v.string()]),
+  sfen: v.string(),
+  history: v.tuple([v.array(v.string()), v.array(v.string()), v.array(v.string())]),
+  tc: v.object({
+    last_click: v.string(),
+    clocks: v.tuple([v.number(), v.number()]),
   }),
-  sub_variant: z.number(),
-  game_start: z.string(),
-  placement_start: z.string(),
+  sub_variant: v.number(),
+  game_start: v.string(),
+  placement_start: v.string(),
 })
 
-export type GameState = z.InferOutput<typeof GameState>
+export type GameState = v.InferOutput<typeof GameState>
 
-export const StartClock = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.StartClock)),
-  players: z.tuple([z.string(), z.string()]),
-  click: z.string(),
+export const StartClock = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.StartClock)),
+  players: v.tuple([v.string(), v.string()]),
+  click: v.string(),
 })
 
-export type StartClock = z.InferInput<typeof StartClock>
+export type StartClock = v.InferInput<typeof StartClock>
 
-export const ConfirmSelection = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.ConfirmSelection)),
-  confirmed: z.array(z.boolean()),
+export const ConfirmSelection = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.ConfirmSelection)),
+  confirmed: v.array(v.boolean()),
 })
 
-export const RedirectToPlacement = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.RedirectToGame)),
-  id: z.string(),
-  last_clock: z.string(),
-  players: z.pipe(z.array(z.string()), z.maxLength(2)),
-  sfen: z.string(),
-  variant: z.number(),
-  cg: z.optional(z.any()),
+export const RedirectToPlacement = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.RedirectToGame)),
+  id: v.string(),
+  last_clock: v.string(),
+  players: v.pipe(v.array(v.string()), v.maxLength(2)),
+  sfen: v.string(),
+  variant: v.number(),
+  cg: v.optional(v.any()),
 })
 
-export type RedirectToPlacement = z.InferInput<typeof RedirectToPlacement>
+export type RedirectToPlacement = v.InferInput<typeof RedirectToPlacement>
 
-export const NewTvGame = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.AddTvGame)),
+export const NewTvGame = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.AddTvGame)),
   game: RedirectToPlacement,
 })
 
-export type NewTvGame = z.InferInput<typeof NewTvGame>
+export type NewTvGame = v.InferInput<typeof NewTvGame>
 
-export const NewTvMove = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.NewTvMove)),
-  game: z.string(),
-  game_move: z.string(),
+export const NewTvMove = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.NewTvMove)),
+  game: v.string(),
+  game_move: v.string(),
 })
 
-export type NewTvMove = z.InferInput<typeof NewTvMove>
+export type NewTvMove = v.InferInput<typeof NewTvMove>
 
-export const PlaceMove = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.PlacePiece)),
-  clocks: z.tuple([z.number(), z.number()]),
-  first_move_error: z.boolean(),
-  next_stage: z.boolean(),
-  sfen: z.string(),
+export const PlaceMove = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.PlacePiece)),
+  clocks: v.tuple([v.number(), v.number()]),
+  first_move_error: v.boolean(),
+  next_stage: v.boolean(),
+  sfen: v.string(),
 })
 
-export const MovePiece = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.MovePiece)),
-  clocks: z.tuple([z.number(), z.number()]),
-  status: z.number(),
-  result: z.number(),
-  game_move: z.string(),
+export const MovePiece = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.MovePiece)),
+  clocks: v.tuple([v.number(), v.number()]),
+  status: v.number(),
+  result: v.number(),
+  game_move: v.string(),
 })
 
-export type MovePiece = z.InferInput<typeof MovePiece>
+export type MovePiece = v.InferInput<typeof MovePiece>
 
-export type PlaceMove = z.InferInput<typeof PlaceMove>
+export type PlaceMove = v.InferInput<typeof PlaceMove>
 
-export const RemoveTvGame = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.RemoveTVGame)),
-  game: z.string(),
+export const RemoveTvGame = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.RemoveTVGame)),
+  game: v.string(),
 })
 
-export type RemoveTvGame = z.InferInput<typeof RemoveTvGame>
+export type RemoveTvGame = v.InferInput<typeof RemoveTvGame>
 
-export const GameEnd = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.GameEnd)),
-  result: z.number(),
-  status: z.number(),
+export const GameEnd = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.GameEnd)),
+  result: v.number(),
+  status: v.number(),
 })
 
-export const OfferDraw = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.Draw)),
-  draw_offer: z.boolean(),
-  end: z.number(),
+export const OfferDraw = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.Draw)),
+  draw_offer: v.boolean(),
+  end: v.number(),
 })
 
-export type GameEnd = z.InferInput<typeof GameEnd>
+export type GameEnd = v.InferInput<typeof GameEnd>
 
-export const TvGames = z.object({
-  t: z.pipe(z.number(), z.value(MessageType.GetTv)),
-  games: z.array(RedirectToPlacement),
+export const TvGames = v.object({
+  t: v.pipe(v.number(), v.value(MessageType.GetTv)),
+  games: v.array(RedirectToPlacement),
 })
 
-export type TvGames = z.InferInput<typeof TvGames>
+export type TvGames = v.InferInput<typeof TvGames>
 
-export const UserProfileGames = z.object({
-  player: z.optional(z.any()),
-  games: z.optional(z.array(GameState)),
+export const UserProfileGames = v.object({
+  player: v.optional(v.any()),
+  games: v.optional(v.array(GameState)),
 })
 
-export type UserProfileGames = z.InferInput<typeof UserProfileGames>
+export type UserProfileGames = v.InferInput<typeof UserProfileGames>
 
 export type UserLive = {
   isPlayer: boolean
