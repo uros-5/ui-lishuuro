@@ -4,7 +4,6 @@ import { ref, type Ref } from 'vue'
 import { NewTvGame, NewTvMove, RedirectToPlacement, RemoveTvGame, TvGames } from '@/helpers/wsTypes'
 import { ev2, rmEv2, type Event2 } from '@/helpers/customEvent'
 import { MessageType } from '@/helpers/messageType'
-import * as v from 'valibot'
 import { ShuuroPosition } from 'shuuro-wasm'
 import init from 'shuuro-wasm'
 import { Variant, variantStr } from '@/helpers/variantDescription'
@@ -18,37 +17,36 @@ import { setCheck } from 'chessground12/board'
 export const useTvStore = defineStore('tv', () => {
   const ws = useWs()
   const games = ref([] as RedirectToPlacement[]) as Ref<RedirectToPlacement[]>
+  const msg = new Map<MessageType, any>();
+  msg.set(MessageType.GetTv, (tv: TvGames) => games.value = tv.games);
+  msg.set(MessageType.RemoveTVGame, (message: RemoveTvGame) => {
+    let game = message.game
+    games.value = games.value.filter((item) => item.id != game)
+  });
+  msg.set(MessageType.AddTvGame, (message: NewTvGame) => {
+    games.value.push(message.game)
+  });
+  msg.set(MessageType.NewTvMove, (message: NewTvMove) => {
+    let game = games.value.find((game) => game.id == message.game)
+    if (game) {
+      game.sfen = message.game_move
+      tempPosition(game)
+    }
+  })
+
   let listener
   let s = {
     games,
     onMessage(event: Event2) {
       let detail = event.detail
-      let message
       if (detail.t == MessageType.NewPlayer) {
         return
       }
-      message = v.safeParse(TvGames, detail)
-      if (message.success) {
-        games.value = message.output.games
-        return
+      let fn = msg.get(detail.t);
+      if (fn) {
+        fn(detail);
       }
 
-      message = v.safeParse(RemoveTvGame, detail)
-      if (message.success) {
-        let game = message.output.game
-        games.value = games.value.filter((item) => item.id != game)
-        return
-      }
-      message = v.safeParse(NewTvGame, detail)
-      if (message.success) {
-        games.value.push(message.output.game)
-        return
-      }
-      message = v.safeParse(NewTvMove, detail)
-      if (message.success) {
-        this.addMove(message.output)
-        return
-      }
     },
     listen() {
       listener = ev2('wsMessage', this.onMessage)
@@ -63,13 +61,6 @@ export const useTvStore = defineStore('tv', () => {
         if (cg) {
           game.cg = cg
         }
-        tempPosition(game)
-      }
-    },
-    addMove(move: NewTvMove) {
-      let game = games.value.find((game) => game.id == move.game)
-      if (game) {
-        game.sfen = move.game_move
         tempPosition(game)
       }
     },
@@ -141,8 +132,8 @@ export function tempPosition(game: RedirectToPlacement) {
     const parts = formatted.game_move.split(isPlacement ? '@' : '_')
     const from = parts[0]
     const to = parts[1]
-    ;(game.cg as Api).setLastMove(from, to)
+      ; (game.cg as Api).setLastMove(from, to)
   } else {
-    ;(game.cg as Api).state.lastMove! = []
+    ; (game.cg as Api).state.lastMove! = []
   }
 }

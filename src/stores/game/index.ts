@@ -10,25 +10,13 @@ import { useCgStore } from './useCgStore'
 import { useAnalyzeStore } from './useAnalyzeStore'
 
 import { useWs } from '../ws'
-import {
-  ConfirmSelection,
-  GameEnd,
-  GetHandServer,
-  MovePiece,
-  OfferDraw,
-  PlaceMove,
-  RedirectToPlacement,
-  StartClock,
-  type GameState,
-  type UserLive,
-} from '@/helpers/wsTypes'
 import { FenBtn, formatSfen } from '@/helpers/fen'
 import { variantStr } from '@/helpers/variantDescription'
 import { playAudio } from '@/helpers/audio'
 import { ev2, rmEv2, type Event2 } from '@/helpers/customEvent'
 import { MessageType } from '@/helpers/messageType'
-import * as v from 'valibot'
 import { newTitle } from '@/helpers/backend'
+import type { ShuuroGame, StartClock } from '@/helpers/rust_types'
 
 export const useGameStore = defineStore('useGameStore', () => {
   const state = ref(emptyGame())
@@ -39,6 +27,36 @@ export const useGameStore = defineStore('useGameStore', () => {
   const cgStore = useCgStore()
   const analyzeStore = useAnalyzeStore()
   const ws = useWs()
+
+  function setPlayer() {
+    let index = state.value.players.findIndex((item) => {
+      return item == ws.username
+    })
+    if (index != -1) {
+      user.value.player.player = index
+      user.value.player.isPlayer = true
+      if (index == 1) cgStore.flipBoard()
+    }
+    if (ws.username.length > 3) {
+      user.value.player.resolve(true)
+      user.value.historyIndex = -1
+    }
+    newTitle(state.value.players[0] + ' vs ' + state.value.players[1])
+  }
+
+  const msg = new Map<MessageType, any>();
+
+  msg.set(MessageType.StartClock, (message: StartClock) => {
+    let output = message
+    state.value.players = output.players
+    setPlayer()
+    state.value.tc.last_click = output.click
+    clockStore.setLastClock(output.click)
+    clockStore.activateClock()
+    shopStore.setHand('').then(() => { })
+    ws.redirectToastOpen = false
+
+  });
 
   let listener
 
@@ -61,14 +79,6 @@ export const useGameStore = defineStore('useGameStore', () => {
       }
       message = v.safeParse(StartClock, detail)
       if (message.success) {
-        let output = message.output
-        state.value.players = output.players
-        this.setPlayer()
-        state.value.tc.last_click = output.click
-        clockStore.setLastClock(output.click)
-        clockStore.activateClock()
-        shopStore.setHand('').then(() => {})
-        ws.redirectToastOpen = false
         return
       }
 
@@ -86,10 +96,10 @@ export const useGameStore = defineStore('useGameStore', () => {
         return
       }
 
-      message = v.safeParse(GetHandServer, detail)
+      message = v.safeParse(PlayerSelection, detail)
       if (message.success) {
         let output = message.output
-        shopStore.setHand(output.hand).then(() => {})
+        shopStore.setHand(output.hand).then(() => { })
         return
       }
 
@@ -302,21 +312,7 @@ export const useGameStore = defineStore('useGameStore', () => {
       clockStore.pause(other)
     },
 
-    setPlayer() {
-      let index = state.value.players.findIndex((item) => {
-        return item == ws.username
-      })
-      if (index != -1) {
-        this.player().player = index
-        this.player().isPlayer = true
-        if (index == 1) cgStore.flipBoard()
-      }
-      if (ws.username.length > 3) {
-        user.value.player.resolve(true)
-        user.value.historyIndex = -1
-      }
-      newTitle(state.value.players[0] + ' vs ' + state.value.players[1])
-    },
+
 
     resSound() {
       if (state.value.status <= 0) {
@@ -606,11 +602,11 @@ export const useGameStore = defineStore('useGameStore', () => {
       playAudio(s, '100')
     },
 
-    updateHeadTitle() {},
+    updateHeadTitle() { },
   }
 })
 
-function emptyGame(): GameState {
+function emptyGame(): ShuuroGame {
   return {
     _id: '',
     min: 0,
@@ -673,7 +669,7 @@ function cgColor(color: string) {
   } else if (color == 'b') {
     return 'black'
   }
-  ;('none')
+  ; ('none')
 }
 function cgColor2(color: string) {
   if (color == 'w') {
@@ -683,3 +679,12 @@ function cgColor2(color: string) {
   }
   return 2
 }
+
+
+export type UserLive = {
+  isPlayer: boolean
+  player: number
+  loaded: Promise<boolean>
+  resolve: (v: boolean) => void
+}
+

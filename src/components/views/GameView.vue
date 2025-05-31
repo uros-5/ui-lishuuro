@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
-import * as v from 'valibot'
 import Clock from '../Clock.vue'
 import ChessgroundView from '../ChessgroundView.vue'
 import FinishGameButtons from '../FinishGameButtons.vue'
@@ -17,7 +16,7 @@ import { MessageType } from '@/helpers/messageType'
 import router from '@/router'
 import { useGameStore } from '@/stores/game'
 import { GET } from '@/helpers/fetch'
-import { GameState } from '@/helpers/wsTypes'
+import type { ShuuroGame } from '@/helpers/rust_types'
 
 const route = useRoute()
 
@@ -56,7 +55,7 @@ game.listen()
 
 let gameId = ''
 
-function gameProps(): GameState | undefined | false {
+function gameProps(): ShuuroGame | undefined | false {
   // @ts-ignore
   let gameProps = window.gameProps
   if (gameProps == undefined) {
@@ -82,12 +81,8 @@ onMounted(async () => {
   let state = gameProps()
   if (state == undefined || state == false) {
     let state = await GET(`/vue/game/${gameId}`)
-    let newstate = v.safeParse(GameState, JSON.parse(state.data.value as string))
-    if (!newstate.success) {
-      router.push('/')
-      return
-    }
-    game.fromServer(newstate.output)
+    let newstate: ShuuroGame = JSON.parse(state.data.value as string)
+    game.fromServer(newstate)
     // @ts-ignore
     delete window.gameProps
   } else {

@@ -5,8 +5,6 @@ import { variants, type Description } from '@/helpers/variantDescription'
 import { useWs } from '@/stores/ws'
 import { MessageType } from '@/helpers/messageType'
 import { ev2, rmEv2, type Event2 } from '@/helpers/customEvent'
-import { GameCount, PlayerCount, RedirectToGame } from '@/helpers/wsTypes'
-import * as v from 'valibot'
 import VariantsPicker from '../VariantsPicker.vue'
 import VariantPicker from '../VariantPicker.vue'
 import { allowedDuration, updateState } from '@/helpers/home_state'
@@ -15,6 +13,7 @@ import { useHome } from '@/stores/home'
 import router from '@/router'
 import type { GameRequest, GameType } from '@/helpers/wsClientTypes'
 import { backend, newTitle } from '@/helpers/backend'
+import type { GamesCount, PlayersCount, RedirectPlayer } from '@/helpers/rust_types'
 
 const CreateGameModal = defineAsyncComponent({
   loader: () => import('../CreateGameModal.vue'),
@@ -25,24 +24,22 @@ const home = useHome()
 
 const variantsContainer = useTemplateRef('variant-container')
 
+const msg = new Map<MessageType, any>()
+msg.set(MessageType.PlayerCount, (data: PlayersCount) => {
+  home.players = data.count
+})
+msg.set(MessageType.GameCount, (data: GamesCount) => {
+  home.games = data.count
+})
+msg.set(MessageType.RedirectToGame, (data: RedirectPlayer) => {
+  ws.redirectToastOpen = true
+  router.push(`/game/${data.game}`)
+})
+
 function onMessage(event: Event2) {
-  let message
-  message = v.safeParse(PlayerCount, event.detail)
-  if (message.success) {
-    home.players = message.output.count
-    return
-  }
-
-  message = v.safeParse(GameCount, event.detail)
-  if (message.success) {
-    home.games = message.output.count
-    return
-  }
-
-  message = v.safeParse(RedirectToGame, event.detail)
-  if (message.success) {
-    ws.redirectToastOpen = true
-    router.push(`/game/${message.output.game}`)
+  const fn = msg.get(event.detail.t)
+  if (fn) {
+    fn(event.detail)
   }
 }
 
