@@ -3,7 +3,6 @@ import { onMounted, onUnmounted, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 import { variants, type Description } from '@/helpers/variantDescription'
 import { useWs } from '@/stores/ws'
-import { MessageType } from '@/helpers/messageType'
 import { ev2, rmEv2, type Event2 } from '@/helpers/customEvent'
 import VariantsPicker from '../VariantsPicker.vue'
 import VariantPicker from '../VariantPicker.vue'
@@ -11,9 +10,15 @@ import { allowedDuration, updateState } from '@/helpers/home_state'
 import { defineAsyncComponent } from 'vue'
 import { useHome } from '@/stores/home'
 import router from '@/router'
-import type { GameRequest, GameType } from '@/helpers/wsClientTypes'
 import { backend, newTitle } from '@/helpers/backend'
-import type { GamesCount, PlayersCount, RedirectPlayer } from '@/helpers/rust_types'
+import {
+  MessageType,
+  type GameRequest,
+  type GamesCount,
+  type PlayersCount,
+  type RedirectPlayer,
+  type TypeOfGame,
+} from '@/helpers/rust_types'
 
 const CreateGameModal = defineAsyncComponent({
   loader: () => import('../CreateGameModal.vue'),
@@ -57,13 +62,14 @@ function selectVariant(variant: Description) {
 }
 
 function sendGameRequest(newColor: number) {
-  function gameType(): GameType | undefined {
+  function gameType(): TypeOfGame | undefined {
     if (home.aiLevel.selected) {
       return {
-        vs_ai: home.aiLevel.level,
+        content: home.aiLevel.level,
+        type: 'VsAi',
       }
     } else if (home.friend.selected) {
-      return { vs_friend: home.friend.name }
+      return { type: 'VsFriend', content: home.friend.name }
     }
   }
   home.color = newColor
@@ -72,7 +78,7 @@ function sendGameRequest(newColor: number) {
   }
   let game_type = gameType()
   if (game_type == undefined) return
-  let request: GameRequest = {
+  let request = {
     t: MessageType.AddGameRequest,
     d: {
       minutes: allowedDuration[home.minute - 1],

@@ -12,11 +12,10 @@ import { ntw } from '@/not-tailwind'
 import { defineAsyncComponent } from 'vue'
 import { useWs } from '@/stores/ws'
 import { useRoute } from 'vue-router'
-import { MessageType } from '@/helpers/messageType'
 import router from '@/router'
 import { useGameStore } from '@/stores/game'
 import { GET } from '@/helpers/fetch'
-import type { ShuuroGame } from '@/helpers/rust_types'
+import { MessageType, type ShuuroGame } from '@/helpers/rust_types'
 
 const route = useRoute()
 
@@ -82,6 +81,7 @@ onMounted(async () => {
   if (state == undefined || state == false) {
     let state = await GET(`/vue/game/${gameId}`)
     let newstate: ShuuroGame = JSON.parse(state.data.value as string)
+    if (newstate._id == undefined) router.push('/')
     game.fromServer(newstate)
     // @ts-ignore
     delete window.gameProps

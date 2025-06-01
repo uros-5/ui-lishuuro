@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import type { GameState, RedirectToPlacement } from '@/helpers/wsTypes'
+import { MessageType, type ShuuroGame } from '@/helpers/rust_types'
 import { useGameSettings } from '@/stores/gameSettings'
-import { cgInfo, tempPosition, tvCg } from '@/stores/tvStore'
+import { cgInfo, tempPosition, tvCg, type TvGame } from '@/stores/tvStore'
 import { templateRef } from '@vueuse/core'
-import { Chessground } from 'chessground12'
 import { Geometry } from 'chessground12/types'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 
 const root = templateRef('root')
-const props = defineProps<{ game: GameState }>()
+const props = defineProps<{ game: ShuuroGame }>()
 const settings = useGameSettings()
 const geometry = computed(() => {
   return cgInfo(props.game.variant)[0]
@@ -26,12 +25,12 @@ function dataSize() {
 
 onMounted(() => {
   if (root.value == undefined) return
-  let meta: RedirectToPlacement = {
+  let meta: TvGame = {
     id: props.game._id,
     last_clock: '',
     players: props.game.players,
     sfen: props.game.sfen,
-    t: 0,
+    t: MessageType.RedirectToGame,
     variant: props.game.variant,
     cg: undefined,
   }

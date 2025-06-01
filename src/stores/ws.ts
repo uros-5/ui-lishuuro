@@ -5,7 +5,7 @@ import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
 import { ref } from 'vue'
 import router from '@/router'
-import { MessageType } from '@/helpers/messageType'
+import { MessageType } from '@/helpers/rust_types'
 
 type VueUser = { username: string; logged: boolean }
 let newconnection = 0

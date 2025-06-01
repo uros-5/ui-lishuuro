@@ -14,9 +14,8 @@ import { FenBtn, formatSfen } from '@/helpers/fen'
 import { variantStr } from '@/helpers/variantDescription'
 import { playAudio } from '@/helpers/audio'
 import { ev2, rmEv2, type Event2 } from '@/helpers/customEvent'
-import { MessageType } from '@/helpers/messageType'
 import { newTitle } from '@/helpers/backend'
-import type { ShuuroGame, StartClock } from '@/helpers/rust_types'
+import { MessageType, type ConfirmSelection, type GameDraw, type GameEnd, type MovePiece, type PlacePiece, type PlayerSelection, type RedirectToPlacement, type ShuuroGame, type StartClock } from '@/helpers/rust_types'
 
 export const useGameStore = defineStore('useGameStore', () => {
   const state = ref(emptyGame())
@@ -46,23 +45,52 @@ export const useGameStore = defineStore('useGameStore', () => {
 
   const msg = new Map<MessageType, any>();
 
-  msg.set(MessageType.StartClock, (message: StartClock) => {
-    let output = message
-    state.value.players = output.players
-    setPlayer()
-    state.value.tc.last_click = output.click
-    clockStore.setLastClock(output.click)
-    clockStore.activateClock()
-    shopStore.setHand('').then(() => { })
-    ws.redirectToastOpen = false
-
-  });
 
   let listener
 
-  return {
+  let s = {
     state,
     user,
+
+    messageHandler() {
+      msg.set(MessageType.NewPlayer, (_: any) => { setPlayer() });
+      msg.set(MessageType.StartClock, (message: StartClock) => {
+        state.value.players = message.players
+        setPlayer()
+        state.value.tc.last_click = message.click
+        clockStore.setLastClock(message.click)
+        clockStore.activateClock()
+        shopStore.setHand('').then(() => { })
+        ws.redirectToastOpen = false
+      });
+      msg.set(MessageType.Draw, (message: GameDraw) => {
+        user.value.offeredDraw = message.draw_offer
+      });
+      msg.set(MessageType.GameEnd, (message: GameEnd) => {
+        this.gameEnd(message)
+      });
+      msg.set(MessageType.GetHand, (message: PlayerSelection) => {
+        shopStore.setHand(message.hand).then(() => { })
+      });
+      msg.set(MessageType.ConfirmSelection, (message: ConfirmSelection) => {
+        if (!message.confirmed.includes(false)) {
+          clockStore.pauseBoth()
+        } else {
+          let player = message.confirmed.indexOf(true)
+          clockStore.pause(player)
+        }
+      });
+      msg.set(MessageType.RedirectToGame, (message: RedirectToPlacement) => {
+          this.redirectDeploy(message)
+      });
+      msg.set(MessageType.PlacePiece, (message: PlacePiece) => {
+        this.serverPlace(message)
+      });
+      msg.set(MessageType.MovePiece, (message: MovePiece) => {
+        this.serverMove(message)
+      });
+
+    },
 
     listen() {
       listener = ev2('wsMessage', this.onMessage)
@@ -71,66 +99,11 @@ export const useGameStore = defineStore('useGameStore', () => {
     onMessage(event: Event2) {
       // event.detail
       let detail = event.detail
-      let message
-
-      if (detail.t == MessageType.NewPlayer) {
-        this.setPlayer()
-        return
-      }
-      message = v.safeParse(StartClock, detail)
-      if (message.success) {
-        return
+      let fn = msg.get(detail.t);
+      if (fn) {
+        fn(detail);
       }
 
-      message = v.safeParse(OfferDraw, detail)
-      if (message.success) {
-        let output = message.output
-        user.value.offeredDraw = output.draw_offer
-        return
-      }
-
-      message = v.safeParse(GameEnd, detail)
-      if (message.success) {
-        let output = message.output
-        this.gameEnd({ t: 111, result: output.result, status: output.status })
-        return
-      }
-
-      message = v.safeParse(PlayerSelection, detail)
-      if (message.success) {
-        let output = message.output
-        shopStore.setHand(output.hand).then(() => { })
-        return
-      }
-
-      message = v.safeParse(ConfirmSelection, detail)
-      if (message.success) {
-        let output = message.output
-        if (!output.confirmed.includes(false)) {
-          clockStore.pauseBoth()
-        } else {
-          let player = output.confirmed.indexOf(true)
-          clockStore.pause(player)
-        }
-        return
-      }
-
-      message = v.safeParse(RedirectToPlacement, detail)
-      if (message.success) {
-        let output = message.output
-        this.redirectDeploy(output)
-        return
-      }
-
-      message = v.safeParse(PlaceMove, detail)
-      if (message.success) {
-        this.serverPlace(message.output)
-        return
-      }
-      message = v.safeParse(MovePiece, detail)
-      if (message.success) {
-        this.serverMove(message.output)
-      }
     },
 
     stopListening() {
@@ -243,14 +216,14 @@ export const useGameStore = defineStore('useGameStore', () => {
       this.reset()
     },
 
-    async fromServer(s: GameState) {
+    async fromServer(s: ShuuroGame) {
       user.value.clientStage = s.current_stage as Stage
       ws.SEND({ t: MessageType.ChangeRoom, d: `/game/${s._id}` })
       state.value = s
       user.value.server = true
       this.setTime(s)
       clockStore.fromServer(s)
-      this.setPlayer()
+      setPlayer()
       this.updateHeadTitle()
       user.value.historyIndex = -1
       clockStore.activateClock()
@@ -265,7 +238,7 @@ export const useGameStore = defineStore('useGameStore', () => {
       this.generateSfenHistory()
     },
 
-    setTime(s: GameState) {
+    setTime(s: ShuuroGame) {
       state.value.min = s.min / 60000
       state.value.incr = s.incr / 1000
       state.value.last_clock = new Date(s.tc.last_click).toString()
@@ -497,7 +470,7 @@ export const useGameStore = defineStore('useGameStore', () => {
       return user.value.historyIndex == state.value.history[stage].length - 1
     },
 
-    serverPlace(msg: PlaceMove) {
+    serverPlace(msg: PlacePiece) {
       if (!this.isIndexLive(1)) this.findFen(FenBtn.Last)
       cgStore.wasmPlace(msg.sfen, true)
       clockStore.fromMove(msg.clocks)
@@ -604,6 +577,8 @@ export const useGameStore = defineStore('useGameStore', () => {
 
     updateHeadTitle() { },
   }
+  s.messageHandler();
+  return s
 })
 
 function emptyGame(): ShuuroGame {
@@ -614,7 +589,7 @@ function emptyGame(): ShuuroGame {
     players: ['', ''],
     status: 0,
     side_to_move: 0,
-    last_clock: { $date: { $numberLong: '' } },
+    last_clock: "",
     current_stage: 0,
     result: 2,
     variant: 0,
@@ -629,6 +604,7 @@ function emptyGame(): ShuuroGame {
     sub_variant: 100,
     game_start: '',
     placement_start: '',
+    clocks: [10_000, 10_000]
   }
 }
 

@@ -4,15 +4,15 @@ import { useRoute } from 'vue-router'
 import router from '@/router'
 import { GET } from '@/helpers/fetch'
 import * as v from 'valibot'
-import { GameState, UserProfileGames } from '@/helpers/wsTypes'
 import { newTitle } from '@/helpers/backend'
 import UserProfileGame from '../UserProfileGame.vue'
 import { templateRef } from '@vueuse/core'
 import init from 'shuuro-wasm'
+import type { ShuuroGame, UserProfileGames } from '@/helpers/rust_types'
 const sword = '"'
 const route = useRoute()
 let currentPage = ref(-1)
-const games = ref([] as GameState[])
+const games = ref([] as ShuuroGame[])
 const name = ref('Player')
 const userDate = ref('')
 const scrollComponent = templateRef('container')
@@ -36,23 +36,21 @@ function handleScroll() {
 async function newGames(page: number) {
   let req = await GET(`/vue/@/${route.params.id}/${page}`)
   if (req.statusCode.value != 200) return
-  let response = v.safeParse(UserProfileGames, JSON.parse(req.data.value as string))
-  if (!response.success) {
+  let response: UserProfileGames = JSON.parse(req.data.value as string)
+  if (page < 2 && response.player == undefined) {
     router.push('/')
     return
-  } else if (page < 2 && response.output.player == undefined) {
-    router.push('/')
-    return
-  } else if (response.output.games == undefined) {
+  } else if (response.games == undefined) {
     router.push('/')
     return
   }
-  if (response.output.player != undefined) {
-    name.value = response.output.player._id
-    let date = new Date(Number(response.output.player.created_at['$date']['$numberLong']))
+  if (response.player != undefined) {
+    name.value = response.player._id
+    // @ts-ignore
+    let date = new Date(Number(response.player.created_at['$date']['$numberLong']))
     userDate.value = date.toLocaleDateString()
   }
-  games.value.push(...response.output.games)
+  games.value.push(...response.games)
 }
 
 onMounted(async () => {

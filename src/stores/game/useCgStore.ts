@@ -15,8 +15,8 @@ import { deployCg, fightCg } from '@/helpers/cg'
 import { variantStr } from '@/helpers/variantDescription'
 import { zoom } from '@/helpers/zoom'
 import { useWs } from '../ws'
-import { MessageType } from '@/helpers/messageType'
 import { cgInfo } from '../tvStore'
+import { MessageType } from '@/helpers/rust_types'
 
 export const useCgStore = defineStore('useCgStore', () => {
   const state = ref(empty())

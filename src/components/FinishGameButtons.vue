@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { MessageType } from '@/helpers/messageType'
+import { MessageType } from '@/helpers/rust_types'
 import { useGameStore } from '@/stores/game'
-import { useUser } from '@/stores/user'
+
 import { useWs } from '@/stores/ws'
-import { ref } from 'vue'
 
 let ws = useWs()
 let gameStore = useGameStore()

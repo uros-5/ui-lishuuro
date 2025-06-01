@@ -2,8 +2,8 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useGameStore } from '.'
 import { useShopStore } from './useShopStore'
-import type { GameState } from '@/helpers/wsTypes'
 import { Clock } from '@/helpers/clock'
+import type { ShuuroGame } from '@/helpers/rust_types'
 
 export const useClockStore = defineStore('useClockStore', () => {
   const gameStore = useGameStore()
@@ -48,7 +48,7 @@ export const useClockStore = defineStore('useClockStore', () => {
       state.value.last_clock = new Date(last_clock).toString()
     },
 
-    fromServer(s: GameState) {
+    fromServer(s: ShuuroGame) {
       state.value.clocks = [
         new Clock(s.min / 60000, s.incr / 1000, 0, '1') as any,
         new Clock(s.min / 60000, s.incr / 1000, 0, '0') as any,

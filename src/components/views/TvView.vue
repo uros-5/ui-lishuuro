@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useTvStore } from '@/stores/tvStore'
 import { useWs } from '@/stores/ws'
-import { MessageType } from '@/helpers/messageType'
-import type { RedirectToPlacement } from '@/helpers/wsTypes'
 import TvGame from '../TvGame.vue'
 import { newTitle } from '@/helpers/backend'
+import { MessageType } from '@/helpers/rust_types'
 
 const ws = useWs()
 const tvStore = useTvStore()

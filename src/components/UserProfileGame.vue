@@ -2,12 +2,12 @@
 import { useRoute } from 'vue-router'
 import ProfileChessground from './ProfileChessground.vue'
 import { computed, ref } from 'vue'
-import type { GameState } from '@/helpers/wsTypes'
 import { timeago } from '@/helpers/timeago'
 import { useWs } from '@/stores/ws'
+import type { ShuuroGame } from '@/helpers/rust_types'
 const sword = '"'
 const ws = useWs()
-let props = defineProps<{ game: GameState }>()
+let props = defineProps<{ game: ShuuroGame }>()
 
 const min = computed(() => {
   return props.game.min / 60000

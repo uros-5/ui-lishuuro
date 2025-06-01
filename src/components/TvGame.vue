@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import type { RedirectToPlacement } from '@/helpers/wsTypes'
 import { useGameSettings } from '@/stores/gameSettings'
-import { cgInfo, tvCg, useTvStore } from '@/stores/tvStore'
+import { cgInfo, tvCg, useTvStore, type TvGame } from '@/stores/tvStore'
 import { templateRef } from '@vueuse/core'
 import { Geometry } from 'chessground12/types'
 import { computed, onMounted } from 'vue'
 
-const props = defineProps<{ game: RedirectToPlacement }>()
+const props = defineProps<{ game: TvGame }>()
 
 const settings = useGameSettings()
 const element = templateRef('element')

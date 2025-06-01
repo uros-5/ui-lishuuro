@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia'
 import { useWs } from './ws'
 import { ref, type Ref } from 'vue'
-import { NewTvGame, NewTvMove, RedirectToPlacement, RemoveTvGame, TvGames } from '@/helpers/wsTypes'
 import { ev2, rmEv2, type Event2 } from '@/helpers/customEvent'
-import { MessageType } from '@/helpers/messageType'
 import { ShuuroPosition } from 'shuuro-wasm'
 import init from 'shuuro-wasm'
 import { Variant, variantStr } from '@/helpers/variantDescription'
@@ -13,12 +11,15 @@ import { anonConfig } from 'chessground12/configs'
 import { fightCg } from '@/helpers/cg'
 import type { Api } from 'chessground12/api'
 import { setCheck } from 'chessground12/board'
+import { MessageType, type AllGames, type NewTvGame, type NewTvMove, type RedirectToPlacement, type RemoveTvGame } from '@/helpers/rust_types'
+
+export type TvGame = (RedirectToPlacement & {cg?: Api})
 
 export const useTvStore = defineStore('tv', () => {
   const ws = useWs()
-  const games = ref([] as RedirectToPlacement[]) as Ref<RedirectToPlacement[]>
+  const games = ref([]) as Ref<TvGame []>
   const msg = new Map<MessageType, any>();
-  msg.set(MessageType.GetTv, (tv: TvGames) => games.value = tv.games);
+  msg.set(MessageType.GetTv, (tv: AllGames) => games.value = tv.games);
   msg.set(MessageType.RemoveTVGame, (message: RemoveTvGame) => {
     let game = message.game
     games.value = games.value.filter((item) => item.id != game)
@@ -33,15 +34,11 @@ export const useTvStore = defineStore('tv', () => {
       tempPosition(game)
     }
   })
-
   let listener
   let s = {
     games,
     onMessage(event: Event2) {
       let detail = event.detail
-      if (detail.t == MessageType.NewPlayer) {
-        return
-      }
       let fn = msg.get(detail.t);
       if (fn) {
         fn(detail);
@@ -59,6 +56,7 @@ export const useTvStore = defineStore('tv', () => {
       let game = games.value.find((game) => game.id == id)
       if (game) {
         if (cg) {
+
           game.cg = cg
         }
         tempPosition(game)
@@ -114,7 +112,7 @@ function setCheck2(cg: Api, sp: ShuuroPosition) {
   cg.state.dom.redraw()
 }
 
-export function tempPosition(game: RedirectToPlacement) {
+export function tempPosition(game: TvGame) {
   let sfen = game.sfen
   const position = new ShuuroPosition(variantStr(game.variant))
   position.change_variant(game.variant)
@@ -123,7 +121,7 @@ export function tempPosition(game: RedirectToPlacement) {
 
   let turnColor = position.side_to_move() == 'w' ? 'white' : 'black'
 
-  game.cg!.state.turnColor = turnColor
+  game.cg!.state.turnColor = turnColor as "white" | "black" | "none";
   setPieces(game.cg as Api, position, true)
   setPlinths(game.cg as Api, position)
   setCheck2(game.cg as Api, position)

@@ -3,29 +3,30 @@
 */
 
 export enum MessageType {
-	ChangeRoom = "ChangeRoom",
-	AddGameRequest = "AddGameRequest",
-	RedirectToGame = "RedirectToGame",
-	PlayerCount = "PlayerCount",
-	GameCount = "GameCount",
-	StartClock = "StartClock",
-	GetGame = "GetGame",
-	GetConfirmed = "GetConfirmed",
-	GetHistory = "GetHistory",
-	GetHand = "GetHand",
-	SelectMove = "SelectMove",
-	PlacePiece = "PlacePiece",
-	MovePiece = "MovePiece",
-	Draw = "Draw",
-	Resign = "Resign",
-	GameEnd = "GameEnd",
-	GetTv = "GetTv",
-	AddTvGame = "AddTvGame",
-	NewTvMove = "NewTvMove",
-	RemoveTVGame = "RemoveTVGame",
-	SaveState = "SaveState",
-	ReloadJinja = "ReloadJinja",
-	ConfirmSelection = "ConfirmSelection",
+	ChangeRoom,
+	AddGameRequest,
+	RedirectToGame,
+	PlayerCount,
+	GameCount,
+	StartClock,
+	GetGame,
+	GetConfirmed,
+	GetHistory,
+	GetHand,
+	SelectMove,
+	PlacePiece,
+	MovePiece,
+	Draw,
+	Resign,
+	GameEnd,
+	GetTv,
+	AddTvGame,
+	NewTvMove,
+	RemoveTVGame,
+	SaveState,
+	ReloadJinja,
+	ConfirmSelection,
+	NewPlayer,
 }
 
 export interface RedirectToPlacement {
@@ -85,15 +86,15 @@ export interface MovePiece {
 	game_move: string;
 }
 
-export interface NewMove {
-	t: MessageType;
-	game: string;
-	game_move: string;
-}
-
 export interface NewTvGame {
 	t: MessageType;
 	game: RedirectToPlacement;
+}
+
+export interface NewTvMove {
+	t: MessageType;
+	game: string;
+	game_move: string;
 }
 
 export interface PlacePiece {
@@ -151,11 +152,10 @@ export interface ShuuroGame {
 	credits: [number, number];
 	hands: [string, string];
 	sfen: string;
-	history: History;
+	history: [string[], string[], string[]];
 	game_start: string;
 	placement_start: string;
 	tc: TimeControl;
-	draws: [boolean, boolean];
 	sub_variant?: number;
 }
 

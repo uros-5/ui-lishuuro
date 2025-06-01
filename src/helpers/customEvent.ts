@@ -1,4 +1,4 @@
-import type { MessageType } from './messageType'
+import type { MessageType } from "./rust_types"
 
 export function ev2<K extends string, T>(
   type: K,

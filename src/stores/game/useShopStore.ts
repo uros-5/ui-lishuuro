@@ -3,9 +3,8 @@ import { defineStore } from 'pinia'
 import { useWasmStore } from './useWasmStore'
 import { useClockStore } from './useClockStore'
 import { useGameStore } from '.'
-import type { GetHand } from '@/helpers/wsClientTypes'
-import { MessageType } from '@/helpers/messageType'
 import { useWs } from '../ws'
+import { MessageType } from '@/helpers/rust_types'
 
 export const useShopStore = defineStore('useShopStore', () => {
   const wasmStore = useWasmStore()
@@ -17,7 +16,7 @@ export const useShopStore = defineStore('useShopStore', () => {
     state,
 
     shopInfo(): void {
-      ws.SEND({ t: MessageType.GetHand, d: null } as GetHand)
+      ws.SEND({ t: MessageType.GetHand, d: null } )
       ws.SEND({ t: MessageType.GetConfirmed, d: null })
     },
 
