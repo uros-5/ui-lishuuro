@@ -1,5 +1,5 @@
 import * as v from 'valibot'
-import type { Description } from './variantDescription'
+import { BoardSize, Variant, type Description } from './variantDescription'
 
 export const allowedDuration = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 60, 75,
@@ -25,9 +25,9 @@ export function homeState() {
   let defaultState = {
     minutes: minutes.success ? minutes.output : 14,
     increment: increment.success ? increment.output : 13,
-    variant: variant.success ? variant.output : undefined,
+    variant: variant.success ? variant.output : Variant.ShuuroMini,
     subVariant: subVariant.success ? subVariant.output : 100,
-    category: category.success ? category.output : undefined,
+    category: category.success ? category.output : BoardSize.Mini,
   }
   return defaultState
 }
