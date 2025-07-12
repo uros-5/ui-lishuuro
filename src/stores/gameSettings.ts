@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import * as v from 'valibot'
+import router from '@/router'
 
 export const useGameSettings = defineStore('gameSettings', () => {
   const state = defaultSettings()
@@ -21,6 +22,10 @@ export const useGameSettings = defineStore('gameSettings', () => {
     updateStorage()
   }
   function updatePiece(value: string) {
+    if (value == "custom") {
+      router.push("/custom-piece")
+      return
+    }
     piece.value = value
     updateStorage()
   }

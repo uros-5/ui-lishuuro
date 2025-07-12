@@ -93,7 +93,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-  if (route.params.id == undefined) router.push('/')
+  if (route.params.id == undefined && route.fullPath.includes('game/')) router.push('/')
   ws.SEND({ t: MessageType.ChangeRoom, d: '' })
   game.stopListening()
   window.removeEventListener('resize', resize)

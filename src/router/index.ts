@@ -33,6 +33,11 @@ const router = createRouter({
       path: '/logged',
       component: () => import('@/components/views/Logged.vue'),
     },
+    {
+      name: "custom-piece",
+      path: "/custom-piece",
+      component: () => import("@/components/views/CustomPieces.vue")
+    }
   ],
 })
 

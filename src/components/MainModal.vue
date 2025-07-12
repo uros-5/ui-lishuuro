@@ -39,6 +39,7 @@ const pieces = [
   { value: 'merida', url: '/pieces/merida/wN.svg' },
   { value: 'maestro', url: '/pieces/maestro/wN.svg' },
   { value: 'kaneo', url: '/pieces/kaneo/wN.svg' },
+  { value: 'custom', url: '/pieces/custom.svg' },
 ]
 </script>
 
@@ -105,6 +106,7 @@ const pieces = [
                 :value="i.value"
               />
               <label
+                :title="i.value"
                 class="bg-center bg-no-repeat p-8 [background-size:90%] hover:shadow-md hover:shadow-main-800 dark:hover:shadow-main-300 hover:cursor-pointer"
                 :for="`piece${i.value}`"
                 :style="`background-image: url(${i.url});`"
