@@ -1,5 +1,4 @@
 import JSZip from 'jszip';
-
 export type DBRecord = File | Blob | ArrayBuffer;
 
 export class IndexedDBStorage {
@@ -66,6 +65,33 @@ export class IndexedDBStorage {
         reject((event.target as IDBRequest).error);
       };
     });
+  }
+
+  public async getAllZips(): Promise<({name: string, blob: DBRecord}) [] | undefined> {
+    const db = this.db || await this.openDB();
+
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(this.storeName, 'readonly');
+      const store = transaction.objectStore(this.storeName);
+      const request = store.getAllKeys();
+
+      request.onsuccess = async (event: Event) => {
+        const result = (event.target as IDBRequest).result;
+        const items = [];
+        for (let i = 0; i < result.length; i++) {
+          const request = await this.getItem(result[i]);
+          if (request) {
+            items.push({name: result[i], blob: request})
+          }
+        }
+        resolve(items);
+      };
+
+      request.onerror = (event: Event) => {
+        reject((event.target as IDBRequest).error);
+      };
+    });
+
   }
 
   public async removeItem(key: string): Promise<void> {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ntw } from '@/not-tailwind'
+import { usePieces } from '@/stores/game/usePieces'
 import { useGameSettings } from '@/stores/gameSettings'
 import { useModal } from '@/stores/modal'
 import {
@@ -15,6 +16,7 @@ import { onMounted, onUnmounted } from 'vue'
 const modal = useModal()
 
 const settings = useGameSettings()
+let piecesStore = usePieces()
 
 const lightBorder = ntw.get('--color-main-600')
 const darkBorder = ntw.get('--color-main-200')
@@ -22,6 +24,11 @@ onMounted(() => {
   document.body.style.setProperty('--lightBorder', `var(${lightBorder})`)
   document.body.style.setProperty('--darkBorder', `var(${darkBorder})`)
 })
+
+onMounted(async () => {
+  await piecesStore.loadPieces()
+})
+
 onUnmounted(() => {
   document.body.style.removeProperty('--lightBorder')
   document.body.style.removeProperty('--darkBorder')
@@ -33,13 +40,6 @@ const boards = [
   { value: 'brown_yellow', url: '/board/8x8brown_yellow.svg' },
   { value: 'gray', url: '/board/8x8gray.svg' },
   { value: 'green', url: '/board/8x8green.svg' },
-]
-
-const pieces = [
-  { value: 'merida', url: '/pieces/merida/wN.svg' },
-  { value: 'maestro', url: '/pieces/maestro/wN.svg' },
-  { value: 'kaneo', url: '/pieces/kaneo/wN.svg' },
-  { value: 'custom', url: '/pieces/custom.svg' },
 ]
 </script>
 
@@ -86,6 +86,7 @@ const pieces = [
               <label
                 :for="`board${i.value}`"
                 :style="`background-image: url(${i.url});`"
+                :data-b="`background-image: url(${i.url});`"
                 class="[background-size:95%_95%] bg-center mx-auto bg-no-repeat min-w-0 p-8 hover:shadow-md hover:shadow-main-800 dark:hover:shadow-main-300 hover:cursor-pointer checked:border-2 checked:bg-main-800 cursor-pointer"
               ></label>
             </template>
@@ -96,7 +97,7 @@ const pieces = [
           <p>Pieces</p>
 
           <fieldset class="settings grid grid-cols-3 gap-3 p-2">
-            <template v-for="i in pieces">
+            <template v-for="i in piecesStore.pieces">
               <input
                 @change="settings.updatePiece(i.value)"
                 class="absolute scale-0 opacity-0"

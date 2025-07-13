@@ -38,7 +38,7 @@ const schema = v.object({
     v.string(),
     v.values(['blue', 'brown', 'brown_sand', 'brown_yellow', 'gray', 'green']),
   ),
-  piece: v.pipe(v.string(), v.values(['merida', 'maestro', 'kaneo'])),
+  piece: v.pipe(v.string()),
   zoom: v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
   sound: v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
 })

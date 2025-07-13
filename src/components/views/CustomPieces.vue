@@ -1,3 +1,146 @@
+<script setup lang="ts">
+import { createZipFile, extractZipFile, IndexedDBStorage } from '@/helpers/zip'
+import router from '@/router'
+import { onMounted, onUnmounted, ref } from 'vue'
+
+import {
+  ToastAction,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastRoot,
+  ToastTitle,
+  ToastViewport,
+  ToastPortal,
+} from 'reka-ui'
+
+enum Loading {
+  ImportZip,
+  OneByOne,
+  Question,
+}
+
+const option = ref(Loading.Question)
+const open = ref(false)
+
+let fileNames = [
+  'bA',
+  'bB',
+  'bC',
+  'bG',
+  'bK',
+  'bN',
+  'bP',
+  'bQ',
+  'bR',
+  'wA',
+  'wB',
+  'wC',
+  'wG',
+  'wK',
+  'wN',
+  'wP',
+  'wQ',
+  'wR',
+]
+fileNames.forEach((value) => {
+  if (!value.endsWith('.svg') || !value.endsWith('.png') || !value.endsWith('.jpg')) {
+    fileNames.push(value + '.svg')
+    fileNames.push(value + '.png')
+    fileNames.push(value + '.jpg')
+    fileNames.push(value + '.jpeg')
+  }
+})
+
+const zipFile = ref({} as HTMLInputElement)
+const shareZip = ref({} as HTMLAnchorElement)
+const styleName = ref('')
+
+function values(color: string) {
+  return [
+    { t: 'King', name: `${color}K`, value: undefined as undefined | File },
+    { t: 'Queen', name: `${color}Q`, value: undefined as undefined | File },
+    { t: 'Rook', name: `${color}R`, value: undefined as undefined | File },
+    { t: 'Bishop', name: `${color}B`, value: undefined as undefined | File },
+    { t: 'Knight', name: `${color}N`, value: undefined as undefined | File },
+    { t: 'Pawn', name: `${color}P`, value: undefined as undefined | File },
+    { t: 'Chancellor', name: `${color}C`, value: undefined as undefined | File },
+    { t: 'ArchBishop', name: `${color}A`, value: undefined as undefined | File },
+    { t: 'Giraffe', name: `${color}G`, value: undefined as undefined | File },
+  ]
+}
+
+const players = ref([
+  { title: 'Player 1', pieces: values('w') },
+  { title: 'Player 2', pieces: values('b') },
+])
+
+const db = new IndexedDBStorage('lishuuro', 'zip')
+
+onMounted(() => {
+  document.body.dataset['page'] = 'custom-pieces'
+})
+
+onUnmounted(() => {})
+
+async function addedZipFile() {
+  if (!zipFile.value) return
+  let firstItem = zipFile.value.files?.item(0)
+  if (!firstItem) return
+  let contents = await extractZipFile(firstItem)
+
+  if (checkZip(contents)) {
+    await db.setItem(firstItem.name, firstItem)
+    router.push('/')
+  }
+}
+
+function checkZip(contents: Record<string, Blob>): boolean {
+  let valid = false
+  Object.keys(contents).map((key) => {
+    if (fileNames.includes(key)) {
+      valid = true
+    }
+  })
+  return valid
+}
+
+async function share(dl = false) {
+  let style = styleName.value.length == 0 ? 'MyStyle' : styleName.value
+  let canCreate = false
+  let files: Record<string, Blob> = {}
+  let acceptedExtensions = ['svg', 'png', 'jpg', 'jpeg']
+  players.value.forEach((player) => {
+    player.pieces.forEach((piece) => {
+      if (piece.value != undefined) {
+        let ext = piece.value.name.split('.').at(-1)
+        if (!acceptedExtensions.includes(ext!)) return
+
+        if (piece.value.name) files[piece.name + '.' + ext] = piece.value
+        canCreate = true
+      }
+    })
+  })
+  if (canCreate) {
+    let zip = await createZipFile(files)
+    if (dl) {
+      shareZip.value.href = URL.createObjectURL(zip)
+      shareZip.value.download = style.replace('zip', '') + '.zip'
+      shareZip.value.click()
+    }
+    return zip
+  }
+}
+
+async function addToApp() {
+  let style = styleName.value.length == 0 ? 'MyStyle' : styleName.value
+  let file = await share()
+  if (!file) return
+  await db.setItem(style.replace('zip', '') + '.zip', file)
+  open.value = true
+}
+</script>
+
 <template>
   <section
     id="home"
@@ -65,13 +208,6 @@
               :for="player.title + piece.t"
               class="cursor-pointer flex items-center gap-4 px-6 py-4 hover:before:border-gray-300 group before:absolute before:inset-0 before:rounded-3xl before:border-dashed before:transition-transform before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 before:bg-gradient-to-r before:from-main-300 dark:before:from-main-600/50 before:dark:to-main-300/70 dark:before:to-main-500/70"
             >
-              <div class="w-max relative">
-                <!-- <img -->
-                <!-- class="w-auto" -->
-                <!-- src="https://www.svgrepo.com/show/485545/upload-cicle.svg" -->
-                <!-- alt="file upload icon" -->
-                <!-- /> -->
-              </div>
               <div class="relative">
                 <span
                   class="block text-base font-semibold relative text-main-700 dark:text-main-100 dark:group-hover:text-main-300 group-hover:text-main-600"
@@ -95,7 +231,6 @@
                   if (!target.files) return
                   if (!target.files.item(0)) return
                   piece.value = target.files.item(0) as File
-                  console.log(piece.value)
                 }
               "
               :id="player.title + piece.t"
@@ -124,140 +259,41 @@
       <a ref="shareZip" href="/" class="hidden"></a>
     </div>
   </section>
+
+  <ToastProvider>
+    <ToastRoot
+      v-model:open="open"
+      class="bg-white toast-root-grid rounded-lg shadow-sm border p-[15px] grid grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--reka-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut"
+    >
+      <ToastTitle class="[grid-area:_title] mb-[5px] font-medium text-slate12 text-sm">
+        Piece set
+      </ToastTitle>
+      <ToastDescription as-child>
+        <p class="[grid-area:_description] m-0 text-slate11 text-xs leading-[1.3]">
+          {{ styleName.length == 0 ? 'MyStyle' : styleName }}
+        </p>
+        <!-- <p class="!select-text">{{ frontend() }}game/{{ store.state._id }}</p> -->
+      </ToastDescription>
+      <ToastAction class="[grid-area:_action]" as-child alt-text="Copy game url">
+        <button
+          @click="open = false"
+          class="inline-flex items-center justify-center rounded-md font-medium text-xs px-[10px] leading-[25px] h-[25px] bg-green2 text-green11 shadow-[inset_0_0_0_1px] shadow-green7 hover:shadow-[inset_0_0_0_1px] hover:shadow-green8 focus:shadow-[0_0_0_2px] focus:shadow-green8"
+        >
+          Close
+        </button>
+      </ToastAction>
+    </ToastRoot>
+
+    <ToastPortal :defer="true" to="body">
+      <ToastViewport
+        class="[--viewport-padding:_25px] fixed bottom-0 right-0 flex flex-col p-[var(--viewport-padding)] gap-[10px] w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none"
+      />
+    </ToastPortal>
+  </ToastProvider>
 </template>
 
-<script setup lang="ts">
-import { createZipFile, extractZipFile, IndexedDBStorage } from '@/helpers/zip'
-import router from '@/router'
-import { onMounted, onUnmounted, ref } from 'vue'
-
-enum Loading {
-  ImportZip,
-  OneByOne,
-  Question,
+<style>
+.toast-root-grid {
+  grid-template-areas: 'title action' 'description action';
 }
-
-const option = ref(Loading.Question)
-
-let fileNames = [
-  'bA',
-  'bB',
-  'bC',
-  'bG',
-  'bK',
-  'bN',
-  'bP',
-  'bQ',
-  'bR',
-  'wA',
-  'wB',
-  'wC',
-  'wG',
-  'wK',
-  'wN',
-  'wP',
-  'wQ',
-  'wR',
-]
-fileNames.forEach((value) => {
-  if (!value.endsWith('.svg') || !value.endsWith('.png') || !value.endsWith('.jpg')) {
-    fileNames.push(value + '.svg')
-    fileNames.push(value + '.png')
-    fileNames.push(value + '.jpg')
-    fileNames.push(value + '.jpeg')
-  }
-})
-
-const zipFile = ref({} as HTMLInputElement)
-const shareZip = ref({} as HTMLAnchorElement)
-const styleName = ref('')
-
-function values(color: string) {
-  return [
-    { t: 'King', name: `${color}K`, value: undefined as undefined | File },
-    { t: 'Queen', name: `${color}Q`, value: undefined as undefined | File },
-    { t: 'Rook', name: `${color}R`, value: undefined as undefined | File },
-    { t: 'Bishop', name: `${color}B`, value: undefined as undefined | File },
-    { t: 'Knight', name: `${color}K`, value: undefined as undefined | File },
-    { t: 'Pawn', name: `${color}P`, value: undefined as undefined | File },
-    { t: 'Chancellor', name: `${color}C`, value: undefined as undefined | File },
-    { t: 'ArchBishop', name: `${color}A`, value: undefined as undefined | File },
-    { t: 'Giraffe', name: `${color}G`, value: undefined as undefined | File },
-  ]
-}
-
-const players = ref([
-  { title: 'Player 1', pieces: values('w') },
-  { title: 'Player 2', pieces: values('b') },
-])
-
-const db = new IndexedDBStorage('lishuuro', 'zip')
-
-onMounted(() => {
-  document.body.dataset['page'] = 'custom-pieces'
-  console.log('mounted')
-})
-
-onUnmounted(() => {
-  console.log('un mounted')
-})
-
-async function addedZipFile() {
-  if (!zipFile.value) return
-  let firstItem = zipFile.value.files?.item(0)
-  if (!firstItem) return
-  let contents = await extractZipFile(firstItem)
-
-  if (checkZip(contents)) {
-    await db.setItem(firstItem.name, firstItem)
-    router.push('/')
-  }
-}
-
-function checkZip(contents: Record<string, Blob>): boolean {
-  let valid = false
-  Object.keys(contents).map((key) => {
-    if (fileNames.includes(key)) {
-      valid = true
-    }
-  })
-  return valid
-}
-
-async function share(dl = false) {
-  let style = styleName.value.length == 0 ? 'MyStyle' : styleName.value
-  let canCreate = false
-  let files: Record<string, Blob> = {}
-  let acceptedExtensions = ['svg', 'png', 'jpg', 'jpeg']
-  players.value.forEach((player) => {
-    player.pieces.forEach((piece) => {
-      if (piece.value != undefined) {
-        let ext = piece.value.name.split('.').at(-1)
-        if (!acceptedExtensions.includes(ext!)) return
-
-        if (piece.value.name) files[piece.name + '.' + ext] = piece.value
-        canCreate = true
-      }
-    })
-  })
-  if (canCreate) {
-    let zip = await createZipFile(files)
-    console.log(zip)
-    if (dl) {
-      shareZip.value.href = URL.createObjectURL(zip)
-      shareZip.value.download = style.replace('zip', '') + '.zip'
-      shareZip.value.click()
-    }
-    return zip
-  }
-}
-
-async function addToApp() {
-  let style = styleName.value.length == 0 ? 'MyStyle' : styleName.value
-  let file = await share()
-  if (!file) return
-  await db.setItem(style.replace('zip', '') + '.zip', file)
-}
-</script>
-
-<style></style>
+</style>
