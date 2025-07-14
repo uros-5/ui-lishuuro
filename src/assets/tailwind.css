@@ -110,7 +110,8 @@
 body[data-page='home'],
 body[data-page='profile'],
 body[data-page='tv'],
-body[data-page='rules'] {
+body[data-page='rules'],
+body[data-page='custom-pieces'] {
   --main-max-width: 1400px !important;
 }
 

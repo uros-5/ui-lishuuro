@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import * as v from 'valibot'
+import router from '@/router'
 
 export const useGameSettings = defineStore('gameSettings', () => {
   const state = defaultSettings()
@@ -21,6 +22,10 @@ export const useGameSettings = defineStore('gameSettings', () => {
     updateStorage()
   }
   function updatePiece(value: string) {
+    if (value == "custom") {
+      router.push("/custom-piece")
+      return
+    }
     piece.value = value
     updateStorage()
   }
@@ -33,7 +38,7 @@ const schema = v.object({
     v.string(),
     v.values(['blue', 'brown', 'brown_sand', 'brown_yellow', 'gray', 'green']),
   ),
-  piece: v.pipe(v.string(), v.values(['merida', 'maestro', 'kaneo'])),
+  piece: v.pipe(v.string()),
   zoom: v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
   sound: v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
 })

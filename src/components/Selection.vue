@@ -18,7 +18,8 @@ type Piece = {
 
 const pieceStyle = computed(() => {
   return function (piece: string) {
-    const myColor = gameStore.playerColor()
+    let myColor = gameStore.playerColor()
+    if (myColor == 'none') myColor = 'white'
     return `piece ${piece}-piece ${myColor}`
   }
 })
@@ -98,7 +99,7 @@ onUnmounted(() => {
         v-for="(piece, index) in allPieces"
         class="flex flex-wrap text-2xl justify-around items-center font-main text-main-950 dark:text-main-100"
       >
-        <div class="">
+        <div>
           <piece class="" :class="pieceStyle(piece)"></piece>
         </div>
         <div>{{ shopStore.state.pieceCounter[index + 1] }} / {{ counter[1][index + 1] }}</div>
