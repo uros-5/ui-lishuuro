@@ -65,7 +65,7 @@ export const usePieces = defineStore('pieces', () => {
           let content = await file.text()
           url = `data:image/svg+xml;base64,${btoa(content)} `
         }
-        if (piece == "N") {
+        if (relativePath.startsWith("wN")) {
           introUrl = url;
         }
         cssFile += cssSelector(zipFile.name, piece, color, url) + "\n"
