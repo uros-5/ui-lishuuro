@@ -70,7 +70,7 @@ export const useWs = defineStore('ws', () => {
         SEND(value)
       })
       unsendMessages.value = []
-      pingInterval = setInterval(() => {
+      pingInterval = window.setInterval(() => {
         SEND('')
       }, 40 * 1000)
       connected.value = true
